@@ -1,0 +1,43 @@
+# Basic folders
+.vscode/
+.mypy_cache/
+__pycache__/
+build/
+build_*/
+install/
+external/
+
+# Local ignore files
+local_ignore/
+
+# CMake. Never commit user override's
+CMakeUserPresets.json
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Editor temp/backup files
+*~
+*.bak
+
+# Python compiled files
+*.pyc

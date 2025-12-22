@@ -1,0 +1,71 @@
+/*
+ * WARNING: This file is auto-generated. Do not edit.
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: © 1991-2025 Unicode, Inc.
+ * SPDX-License-Identifier: Unicode-DFS-2016
+ *
+ * This file includes data derived from the Unicode Character Database.
+ * For the full license, see https://www.unicode.org/license.txt.
+ */
+
+#ifndef {{prefix_header_guard}}MAPPING_H
+#define {{prefix_header_guard}}MAPPING_H
+
+#include "{{prefix_filename}}defines.h"
+
+#include <stdint.h>
+
+// Simple 1:1 mapping table
+typedef struct
+{
+    uint32_t value;
+} {{prefix_lc}}smap_t;
+
+// Multi codepoint mapping table
+typedef struct
+{
+    /**
+     * The mapping value of max {{prefix_uc}}MAX_MULTI_LEN codepoints.
+     * Unused slots are set with {{prefix_uc}}NO_VALUE.
+     */
+    uint32_t value[{{prefix_uc}}MAX_MULTI_LEN];
+} {{prefix_lc}}mmap_t;
+
+/**
+ * References:
+ * if value is 0:
+ *    No mapping
+ * if value is <= {{prefix_uc}}NUM_SIMPLE_MAP:
+ *    index into simple mapping table: value - 1
+ * if value is > {{prefix_uc}}NUM_SIMPLE_MAP:
+ *    index into multi mapping table: value - {{prefix_uc}}NUM_SIMPLE_MAP - 1
+ */
+typedef struct
+{
+    uint16_t to_upper;    // reference
+    uint16_t to_lower;    // reference
+    uint16_t to_title;    // reference
+    uint16_t to_casefold; // reference
+} {{prefix_lc}}mapping_t;
+
+static const {{prefix_lc}}smap_t s_{{prefix_lc}}smap_table[{{prefix_uc}}NUM_SIMPLE_MAP] = {
+{% for cp in smap %}
+    { {{ fmt_cp(cp)|rjust(8) }} },
+{% endfor %}
+};
+
+static const {{prefix_lc}}mmap_t s_{{prefix_lc}}mmap_table[{{prefix_uc}}NUM_MULTI_MAP] = {
+{% for cplist in mmap %}
+    { {{ fmt_cp_list(cplist, max_mmap_len, true) }} },
+{% endfor %}
+};
+
+static const {{prefix_lc}}mapping_t s_{{prefix_lc}}mapping_table[{{prefix_uc}}NUM_MAPPING] = {
+{% for entry in props if entry.has_mapping %}
+    {{ fmt_idx_list([entry.to_upper_index, entry.to_lower_index, entry.to_title_index, entry.casefold_index], just=true) }},
+{% endfor %}
+};
+
+#endif // {{prefix_header_guard}}MAPPING_H

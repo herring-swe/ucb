@@ -1,0 +1,7 @@
+* text eol=lf
+
+# Exceptions that may require CRLF
+# Shouldn't matter in ignored build folder
+*.bat text eol=crlf
+*.vcxproj* text eol=crlf
+*.sln text eol=crlf

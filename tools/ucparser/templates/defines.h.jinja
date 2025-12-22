@@ -1,0 +1,87 @@
+/*
+ * WARNING: This file is auto-generated. Do not edit.
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: © 1991-2025 Unicode, Inc.
+ * SPDX-License-Identifier: Unicode-DFS-2016
+ *
+ * This file includes data derived from the Unicode Character Database.
+ * For the full license, see https://www.unicode.org/license.txt.
+ */
+
+#ifndef {{prefix_header_guard}}DEF_H
+#define {{prefix_header_guard}}DEF_H
+
+#include <ucb/diag.h>
+
+{% if with_verif %}
+/*
+ * Additional data is included to verify design assumptions.
+ * This is removed to save space in release versions.
+ */
+#ifndef {{prefix_uc}}WITH_VERIF
+#define {{prefix_uc}}WITH_VERIF 1
+#endif
+{% endif %}
+
+#define {{prefix_uc}}NO_VALUE         {{ fmt_cp(no_codepoint_val) }}
+
+// Max folding values in entries
+#define {{prefix_uc}}MAX_MULTI_LEN    {{ max_mmap_len }}
+
+// Covered codepoints
+#define {{prefix_uc}}NUM_CODEPOINTS   {{ num_codepoints }}
+
+// Blocksize used for lookup tables
+#define {{prefix_uc}}BLOCK_SIZE       {{ block_size }}
+
+// Table sizes
+#define {{prefix_uc}}NUM_STAGE1       {{ num_stage1 }}
+#define {{prefix_uc}}NUM_STAGE2       {{ num_stage2 }}
+#define {{prefix_uc}}NUM_PROPERTIES   {{ num_props }}
+#define {{prefix_uc}}NUM_SIMPLE_MAP   {{ num_smap }}
+#define {{prefix_uc}}NUM_MULTI_MAP    {{ num_mmap }}
+#define {{prefix_uc}}NUM_MAPPING      {{ num_mapping_table }}
+#define {{prefix_uc}}NUM_DECOMP       {{ num_decomp_table }}
+#define {{prefix_uc}}NUM_COMBINER     {{ num_combiner_table }}
+
+/**
+ * General Categories
+ */
+{% set max_cname = enum_gc.c_name_max() %}
+typedef enum {{prefix_lc}}gc
+{
+{% for e_val in enum_gc %}
+    {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
+{% endfor %}
+} {{prefix_lc}}gc_t;
+
+/**
+ * Decomposition types
+ */
+{% set max_cname = enum_decomp.c_name_max() %}
+typedef enum {{prefix_lc}}dctype
+{
+{% for e_val in enum_decomp %}
+    {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
+{% endfor %}
+} {{prefix_lc}}dctype_t;
+
+// General category macros
+#define {{prefix_uc}}IS_LETTER(c)      ((c) >= {{enum_gc.prefix()}}LU && (c) <= {{enum_gc.prefix()}}LO)
+#define {{prefix_uc}}IS_MARK(c)        ((c) >= {{enum_gc.prefix()}}MN && (c) <= {{enum_gc.prefix()}}ME)
+#define {{prefix_uc}}IS_NUMBER(c)      ((c) >= {{enum_gc.prefix()}}ND && (c) <= {{enum_gc.prefix()}}NO)
+#define {{prefix_uc}}IS_PUNCTUATION(c) ((c) >= {{enum_gc.prefix()}}PC && (c) <= {{enum_gc.prefix()}}PO)
+#define {{prefix_uc}}IS_SYMBOL(c)      ((c) >= {{enum_gc.prefix()}}SM && (c) <= {{enum_gc.prefix()}}SO)
+#define {{prefix_uc}}IS_SEPARATOR(c)   ((c) >= {{enum_gc.prefix()}}ZS && (c) <= {{enum_gc.prefix()}}ZP)
+#define {{prefix_uc}}IS_OTHER(c)       ((c) >= {{enum_gc.prefix()}}CC && (c) <= {{enum_gc.prefix()}}CN)
+
+// Specialized macros
+#define {{prefix_uc}}IS_ALPHA(c)        {{prefix_uc}}IS_LETTER(c)
+// Exclude NO
+#define {{prefix_uc}}IS_NUMERIC(c)      ((c) >= {{enum_gc.prefix()}}ND && (c) <= {{enum_gc.prefix()}}NL)
+#define {{prefix_uc}}IS_ALPHANUMERIC(c) ({{prefix_uc}}IS_LETTER(c) || {{prefix_uc}}IS_NUMBER(c))
+#define {{prefix_uc}}IS_WHITESPACE(c)   {{prefix_uc}}IS_SEPARATOR(c)
+
+#endif // {{prefix_header_guard}}DEF_H

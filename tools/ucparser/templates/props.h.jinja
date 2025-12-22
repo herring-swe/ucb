@@ -1,0 +1,71 @@
+/*
+ * WARNING: This file is auto-generated. Do not edit.
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: © 1991-2025 Unicode, Inc.
+ * SPDX-License-Identifier: Unicode-DFS-2016
+ *
+ * This file includes data derived from the Unicode Character Database.
+ * For the full license, see https://www.unicode.org/license.txt.
+ */
+
+#ifndef {{prefix_header_guard}}TABLE_H
+#define {{prefix_header_guard}}TABLE_H
+
+#include "{{prefix_filename}}defines.h"
+
+#include <stdint.h>
+
+/**
+ * Property flags
+ */
+{% set max_cname = flags_prop.c_name_max() %}
+{% for f_val in flags_prop %}
+#define {{f_val.c_fname()|ljust(max_cname)}} {{f_val.c_val()}} // {{ f_val.description }}
+{% endfor %}
+
+// Main property table
+typedef struct
+{
+    uint8_t flags : 3;    // Property flags (max 3 flags)
+    uint8_t category : 5; // General category (max 31)
+    uint8_t ccc;          // Canonical combining class
+    {{cstduint(num_mapping_table+1)}} mapping_idx; // Index of mapping table + 1
+    {{cstduint(num_decomp_table+1)}} decomp_idx;  // Index of decomposition table + 1
+    {{cstduint(num_combiner_table+1)}} combiner_idx;  // Index of combiner table + 1
+    
+} {{prefix_lc}}prop_t;
+
+static const {{prefix_lc}}prop_t s_{{prefix_lc}}prop_table[{{prefix_uc}}NUM_PROPERTIES] = {
+{% for entry in props -%}
+    {{ "    { " }}
+    {{- entry.flags|rjust(2) }}{{ ", " }}
+    {{- (entry.gc.c_ename()~",")|ljust(14) }}{{ " " }} 
+    {{- entry.ccc|rjust(3) }}{{ ", " }} 
+    {{- entry.mapping_idx|rjust(4) }}{{ ", " }} 
+    {{- entry.decomp_idx|rjust(4) }}{{ "," }}
+    {{- entry.combiner_idx|rjust(4) }}{{ " }," }}
+    {%- if with_comments %} // {{ entry.cp_comment }}
+    {% else %}{{ "" }}
+    {% endif %}
+{% endfor %}
+};
+
+static const {{stage2_type}} s_{{prefix_lc}}stage2_table[{{prefix_uc}}NUM_STAGE2] = {
+{% for index in stage2 %}
+{%- if loop.index0 % 15 == 0 %}{{"    "}}{% endif %}
+{{- index|rjust(stage2_mw) -}}{% if not loop.last %},{% endif %}
+{%- if loop.index % 15 == 0 or loop.last %}{{"\n"}}{% endif %}
+{%- endfor %}
+};
+
+static const {{stage1_type}} s_{{prefix_lc}}stage1_table[{{prefix_uc}}NUM_STAGE1] = {
+{% for index in stage1 %}
+{%- if loop.index0 % 20 == 0 %}{{"    "}}{% endif %}
+{{- index|rjust(stage1_mw) -}}{% if not loop.last %},{% endif %}
+{%- if loop.index % 20 == 0 or loop.last %}{{"\n"}}{% endif %}
+{%- endfor %}
+};
+
+#endif // {{prefix_header_guard}}TABLE_H

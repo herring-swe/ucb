@@ -1,0 +1,15 @@
+# This file is part of the UCB project
+# SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+# SPDX-License-Identifier: MIT
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ucparser"
+version = "0.1.0"
+description = "Unicode Character Database Parser"
+
+[project.scripts]
+ucparser = "ucparser.cli:parse_main"

@@ -1,0 +1,21 @@
+---
+Checks: "*,
+         -llvmlibc-restrict-system-libc-headers,
+         -*-magic-numbers,
+         -bugprone-easily-swappable-parameters,
+         -google-readability-todo,
+         -*-braces-around-statements,
+         -clang-diagnostic-declaration-after-statement"
+# Enforce m_ prefix, but public members collide with struct
+# So all public members are allowed to be without prefix.
+CheckOptions:
+  - key: readability-identifier-naming.PublicMemberPrefix
+    value: ''    
+  - key: readability-identifier-naming.MemberPrefix
+    value: 'm_'
+  - key: readability-identifier-naming.ClassMemberPrefix
+    value: 's_'
+  - key: cppcoreguidelines-avoid-non-const-global-variables.AllowInternalLinkage
+    value: True
+WarningsAsErrors: ''
+HeaderFilterRegex: 'include/*/.*'

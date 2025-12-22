@@ -1,0 +1,59 @@
+/*
+ * WARNING: This file is auto-generated. Do not edit.
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: © 1991-2025 Unicode, Inc.
+ * SPDX-License-Identifier: Unicode-DFS-2016
+ *
+ * This file includes data derived from the Unicode Character Database.
+ * For the full license, see https://www.unicode.org/license.txt.
+ */
+
+#ifndef {{prefix_header_guard}}DECOMP_H
+#define {{prefix_header_guard}}DECOMP_H
+
+#include "{{prefix_filename}}defines.h"
+
+#include <stdint.h>
+
+UCB_DIAG_PUSH
+UCB_DIAG_IGN_PADDED
+typedef struct
+{
+#ifdef {{prefix_uc}}WITH_VERIF
+    uint32_t cp; // Original codepoint
+#endif
+    uint8_t type; // Decomposition type (enum {{prefix_lc}}decomp_type)
+    uint8_t len;  // Length of decomposition (0=none, 1–2=inline, >2=pointer)
+    union
+    {
+        uint32_t vals[2]; // For decompose_len ≤ 2
+        const uint32_t* ptr;   // For decompose_len > 2 (points to static array)
+    };
+} {{prefix_lc}}decomp_t;
+UCB_DIAG_POP
+
+// Outlier sequences (long decompositions)
+{% for entry in props if entry.has_decomp and entry.dcvals|length > 2 %}
+static const uint32_t s_decompose_{{ fmt_cp_key(entry.cp) }}[{{ entry.dcvals|length }}]
+    {{-" = "}}{{ fmt_cp_list(entry.dcvals) }};
+{% endfor %}
+
+// Main decomposition table
+static const {{prefix_lc}}decomp_t s_{{prefix_lc}}decomp_table[{{prefix_uc}}NUM_DECOMP] = {
+{% for entry in props if entry.has_decomp %}
+    { {% if with_verif %}
+    {{- fmt_cp(entry.cp)|rjust(8) }}{{ ", " }}
+    {%- endif %}
+    {{- (entry.dctype.c_ename()~",")|ljust(19) }}
+    {{- entry.dcvals|length|rjust(2) -}}{{ ", " }}
+    {%- if entry.dcvals|length > 2 -%}
+    {.ptr = s_decompose_{{ fmt_cp_key(entry.cp) }}}
+    {%- else -%}
+    {.vals = {{fmt_cp_list(entry.dcvals, 2)}}}
+    {%- endif %} },
+{% endfor %}
+};
+
+#endif // {{prefix_header_guard}}DECOMP_H

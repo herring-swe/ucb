@@ -1,0 +1,57 @@
+/*
+ * WARNING: This file is auto-generated. Do not edit.
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ * SPDX-FileCopyrightText: © 1991-2025 Unicode, Inc.
+ * SPDX-License-Identifier: Unicode-DFS-2016
+ *
+ * This file includes data derived from the Unicode Character Database.
+ * For the full license, see https://www.unicode.org/license.txt.
+ */
+
+#ifndef {{prefix_header_guard}}COMBINE_H
+#define {{prefix_header_guard}}COMBINE_H
+
+#include "{{prefix_filename}}defines.h"
+
+#include <stdint.h>
+
+
+typedef struct {
+    uint32_t combiner;
+    uint32_t composed;
+} combiner_entry_t;
+
+UCB_DIAG_PUSH
+UCB_DIAG_IGN_PADDED
+typedef struct
+{
+#ifdef {{prefix_uc}}WITH_VERIF
+    uint32_t starter; // Original starter codepoint
+#endif
+    uint8_t len; // Number of combiners (only canonical)
+    const combiner_entry_t* entries; // Pointer entry table, which is sorted by combiner
+} {{prefix_lc}}combiners_t;
+UCB_DIAG_POP
+
+{% for entry in combiners %}
+static const combiner_entry_t s_combiner_entries_{{ fmt_cp_key(entry.starter) }}[{{ entry.num_entries }}] = {
+{% for combiner, composed in entry.entries %}
+    { {{ fmt_cp(combiner)|rjust(8) }}{{ ", " }}{{ fmt_cp(composed)|rjust(8) }} }{% if not loop.last %}{{",\n"}}{% endif %}
+{% endfor %}
+{{"\n};"}}
+{% endfor %}
+
+// Main combiner table
+static const {{prefix_lc}}combiners_t s_{{prefix_lc}}combiner_table[{{prefix_uc}}NUM_COMBINER] = {
+{% for entry in combiners %}
+    { {% if with_verif %}
+    {{- fmt_cp(entry.starter)|rjust(8) }}{{ ", " }}
+    {%- endif %}
+    {{- entry.num_entries|rjust(2) -}}{{ ", " -}}
+    s_combiner_entries_{{ fmt_cp_key(entry.starter) }} },
+{% endfor %}
+};
+
+#endif // {{prefix_header_guard}}COMBINE_H

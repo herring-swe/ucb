@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/ucbTargets.cmake")
+check_required_variables(ucb_DIR)

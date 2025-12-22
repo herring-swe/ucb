@@ -1,0 +1,24 @@
+version = 1
+
+SPDX-PackageName = "ucb"
+SPDX-PackageSupplier = "Åke Svedin <ake@svedin.org>"
+SPDX-PackageDownloadLocation = "https://github.com/herring-swe/ucb"
+[[annotations]]
+path = [".*", "**/*.cmake.in", "src/.*"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2025 Åke Svedin <ake@svedin.org>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+# Documentation files, treat as Creative Commons Zero
+path = ["**/*.md"]
+precedence = "aggregate"
+SPDX-FileType = "Documentation"
+SPDX-FileCopyrightText = "None"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["tests/doctest/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2016-2023 Viktor Kirilov"
+SPDX-License-Identifier = "MIT"
