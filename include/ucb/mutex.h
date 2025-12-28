@@ -18,12 +18,12 @@
 typedef struct ucb_mutex ucb_mutex_t;
 
 UCB_API ucb_mutex_t* ucb_mutex_new(int flags);
-UCB_API ucb_error_t ucb_mutex_init(ucb_mutex_t* mutex, int flags);
-UCB_API ucb_error_t ucb_mutex_release(ucb_mutex_t* mutex);
+UCB_API ucb_ecode ucb_mutex_init(ucb_mutex_t* mutex, int flags);
+UCB_API ucb_ecode ucb_mutex_release(ucb_mutex_t* mutex);
 UCB_API void ucb_mutex_free(ucb_mutex_t* mutex);
 
-UCB_API ucb_error_t ucb_mutex_lock(ucb_mutex_t* mutex);
-UCB_API ucb_error_t ucb_mutex_trylock(ucb_mutex_t* mutex);
-UCB_API ucb_error_t ucb_mutex_unlock(ucb_mutex_t* mutex);
+UCB_API ucb_ecode ucb_mutex_lock(ucb_mutex_t* mutex);
+UCB_API ucb_ecode ucb_mutex_trylock(ucb_mutex_t* mutex);
+UCB_API ucb_ecode ucb_mutex_unlock(ucb_mutex_t* mutex);
 
 #endif // UCB_MUTEX_H

@@ -80,17 +80,17 @@ int ucb_cstr_icomp(const char* a, const char* b)
 #endif // UCB_W
 }
 
-int ucb_cstr_vsnprintf(char* buffer, size_t buffer_size, size_t count, const char* fmt,
-                       va_list argptr)
+int ucb_cstr_vsnprintf(char* buffer, size_t buffer_size, const char* fmt, va_list argptr)
 {
     if (!buffer)
         return -1;
-    if (buffer_size < count)
-        return -1;
 #ifdef _WIN32
-    return _vsnprintf_s(buffer, buffer_size, count, fmt, argptr);
+    size_t count = buffer_size ? buffer_size - 1 : 0;
+    return vsnprintf_s(buffer, buffer_size, count, fmt, argptr);
+#elif defined(__STDC_LIB_EXT1__)
+    return vsnprintf_s(buffer, buffer_size, fmt, argptr);
 #else
-    return vsnprintf(buffer, count, fmt, argptr);
+    return vsnprintf(buffer, buffer_size, fmt, argptr);
 #endif
 }
 
@@ -114,14 +114,14 @@ int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list a
     }
     va_list args_copy;
     va_copy(args_copy, args);
-    int len = ucb_cstr_vsnprintf(NULL, 0, 0, fmt, args_copy);
+    int len = ucb_cstr_vsnprintf(NULL, 0, fmt, args_copy);
     va_end(args_copy);
     if (len < 0)
         return -1;
     char* str = ucb_malloc_type((size_t)len + 1, char);
     if (!str)
         return -1;
-    len = ucb_cstr_vsnprintf(str, (size_t)len + 1, (size_t)len + 1, fmt, args);
+    len = ucb_cstr_vsnprintf(str, (size_t)len + 1, fmt, args);
     if (len < 0)
     {
         ucb_free(str);

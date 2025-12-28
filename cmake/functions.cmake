@@ -38,6 +38,8 @@ function(ucb_target_init name)
         # Source and execution character sets
         target_compile_options(${name} PRIVATE /utf-8)
         target_compile_definitions(${name} PRIVATE _UNICODE UNICODE)
+    elseif(UNIX)
+        target_compile_definitions(${name} PRIVATE _GNU_SOURCE _XOPEN_SOURCE)
     endif()
 
     ucb_target_set_warnings(${name})

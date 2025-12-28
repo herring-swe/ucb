@@ -14,12 +14,13 @@
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 
 #include <process.h>
 #else
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/types.h>
 #endif
 
 /**
@@ -45,7 +46,7 @@ struct ucb_thread
     // TODO: Support stack size and priority
 };
 
-ucb_pid_t ucb_thread_id()
+ucb_pid_t ucb_thread_id(void)
 {
 #ifdef _WIN32
     return GetCurrentThreadId();
@@ -93,7 +94,7 @@ ucb_thread_t* ucb_thread_new()
     return th;
 }
 
-ucb_error_t ucb_thread_init(ucb_thread_t* th)
+ucb_ecode ucb_thread_init(ucb_thread_t* th)
 {
     if (!th)
         return UCB_ERROR_INVALID_ARG;
@@ -120,8 +121,9 @@ void ucb_thread_free(ucb_thread_t* th)
     ucb_free(th);
 }
 
-ucb_error_t ucb_thread_start(ucb_thread_t* th, ucb_thread_func_t func, void* arg)
+ucb_ecode ucb_thread_start(ucb_thread_t* th, ucb_thread_func_t func, void* arg)
 {
+    // TODO: Nedds error checking
     if (th->running)
     {
         return UCB_ERROR_THREAD_BUSY;
@@ -146,8 +148,9 @@ ucb_error_t ucb_thread_start(ucb_thread_t* th, ucb_thread_func_t func, void* arg
     return 0;
 }
 
-ucb_error_t ucb_thread_join(ucb_thread_t* th)
+ucb_ecode ucb_thread_join(ucb_thread_t* th)
 {
+    // TODO: Nedds error checking
     if (!th->running)
     {
         return UCB_OK;

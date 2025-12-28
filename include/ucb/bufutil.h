@@ -12,6 +12,7 @@
 #include "export.h"
 
 #include <stdalign.h>
+#include <stddef.h>
 
 /**
  * @brief Cast buffer into a type.

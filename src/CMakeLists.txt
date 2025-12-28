@@ -17,6 +17,7 @@ ucb_target_public_headers(ucb FILES
     ucb/cstring.h
     ucb/defines.h
     ucb/error.h
+    ucb/math.h
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h

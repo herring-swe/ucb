@@ -23,7 +23,7 @@ UCB_DIAG_PUSH
 UCB_DIAG_IGN_PADDED
 typedef struct ucb_unicode_result
 {
-    ucb_error_t error;
+    ucb_ecode error;
     const char* error_pos;
     /**
      * @brief The resulting NULL-terminated string or UCB_NULL on error.
@@ -81,7 +81,7 @@ UCB_API uint32_t ucb_uc_iter_utf8(const unsigned char** iter);
 //     size_t capacity;
 // } ucb_uc_buffer_t;
 
-UCB_API ucb_error_t ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints,
+UCB_API ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints,
                                              size_t len);
 
 /**
@@ -90,8 +90,8 @@ UCB_API ucb_error_t ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* 
  * @param size if not UCB_NULL, will be set to the length of the string
  * @return UCB_OK if valid
  */
-UCB_API ucb_error_t ucb_uc_validate(const char* str, size_t* size);
-UCB_API ucb_error_t ucb_uc_validate_buf(const char* str, size_t size);
+UCB_API ucb_ecode ucb_uc_validate(const char* str, size_t* size);
+UCB_API ucb_ecode ucb_uc_validate_buf(const char* str, size_t size);
 
 UCB_API size_t ucb_uc_num_cp(const char* str);
 UCB_API size_t ucb_uc_num_chars(const char* str);
@@ -104,7 +104,6 @@ UCB_API ucb_unicode_result_t ucb_uc_casefold(const char* str, size_t size);
 /**
  * Normalize an utf-8 string
  * If the string is ascii, it will be copied as-is
- * @param dstbuf buffer to use
  * @param str string to normalize, must be a valid utf-8 string
  * @param form the normalization form to use
  * @returns result, with the normalized string on success

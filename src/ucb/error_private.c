@@ -24,7 +24,7 @@
 #define NOERROR 0
 #endif
 
-ucb_error_t ucb_wrap_errno(int err)
+ucb_ecode ucb_err_wrap_errno(int err)
 {
     switch (err)
     {
@@ -41,14 +41,14 @@ ucb_error_t ucb_wrap_errno(int err)
     }
 }
 
-void ucb_set_last_errno(void)
+ucb_ecode ucb_err_get_errno(void)
 {
-    ucb_set_last_error(ucb_wrap_errno(errno));
+    return ucb_err_wrap_errno(errno);
 }
 
 #ifdef _WIN32
 
-ucb_error_t ucb_wrap_win32_error(uint32_t err)
+ucb_ecode ucb_err_wrap_win32(uint32_t err)
 {
     switch (err)
     {
@@ -68,9 +68,9 @@ ucb_error_t ucb_wrap_win32_error(uint32_t err)
     }
 }
 
-void ucb_set_last_win32_error(void)
+ucb_ecode ucb_err_get_win32(void)
 {
-    ucb_set_last_error(ucb_wrap_win32_error(GetLastError()));
+    return ucb_err_wrap_win32(GetLastError());
 }
 
 #endif

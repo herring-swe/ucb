@@ -9,7 +9,7 @@
  * asserts inside the function." - A.Shelly, stackoverflow.com.
  *
  * This, our philosophy is:
- *  - Prefer returning ucb_error_t
+ *  - Prefer returning ucb_ecode
  *  - For simple functions, the basic return type is used:
  *    - For pointers, return UCB_NULL on error.
  *    - For arithmetic types, document which value may denote an error.
@@ -19,19 +19,20 @@
  * - Always catch errors from system and internally
  * - Always set last error on error
  * - No need to clear errors
- * - If error handling becomes difficult, refactor to use ucb_error_t
+ * - If error handling becomes difficult, refactor to use ucb_ecode
  */
 
 #ifndef UCB_ERROR_CODES_H
 #define UCB_ERROR_CODES_H
 
-enum ucb_error
+enum ucb_error_code
 {
     UCB_OK = 0,                  //
     UCB_ERROR_FALSE,             // For boolean type methods
     UCB_ERROR_INVALID_UTF8,      // Invalid UTF-8 sequence
     UCB_ERROR_INVALID_CODEPOINT, //
     UCB_ERROR_INTERNAL,          // Internal error, should not happen
+    UCB_ERROR_INVALID_STATE,     // Invalid state. The error message should describe the state
     UCB_ERROR_NOT_IMPLEMENTED,
     UCB_ERROR_BUFFER,
     UCB_ERROR_LOCKED,
@@ -41,7 +42,12 @@ enum ucb_error
      * May also catch double free's. This is only enabled in debug builds
      */
     UCB_ERROR_INVALID_ALLOC,
-    UCB_ERROR_THREAD_BUSY,      // Thread already running
+    UCB_ERROR_THREAD_BUSY, // Thread already running
+    /**
+     * @brief Mutex is locked by another thread
+     * A fatal error if releasing a mutex, as this is undefined behavior.
+     */
+    UCB_ERROR_MUTEX_LOCKED,
 
     // System errors
     UCB_ERROR_UNKNOWN,       //

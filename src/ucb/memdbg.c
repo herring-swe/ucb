@@ -14,6 +14,7 @@
 
 #include "ucb/errcodes.h"
 #include "ucb/error.h"
+#include "ucb/math.h"
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
 #include "ucb/mutex_private.h"
@@ -24,6 +25,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#define VERIFY_LEVEL 0
 
 #define ALLOC_MAGIC   0xBEA01234
 #define DEALLOC_MAGIC 0x0DEADBEA
@@ -118,6 +121,7 @@ static void ucb_mem_tracking_default_report_func(const ucb_mem_report_t* const r
     printf("*** End of report *************************************************************\n");
 }
 
+#if VERIFY_LEVEL
 static void verify_level(int level)
 {
     if (level < 0 || level > s_trace_level)
@@ -144,6 +148,7 @@ static void verify_level(int level)
     assert(tp->current_alloc == num);
     assert(tp->current_size == size);
 }
+#endif // VERIFY_LEVEL
 
 /**
  * Generate a report of allocations from a specific level and up
@@ -178,7 +183,8 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             if (!report)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_set_fatal_error(UCB_ERROR_OUT_OF_MEMORY);
+                ucb_fatal(ucb_error_literal(UCB_ERROR_OUT_OF_MEMORY,
+                                            "Failed to allocate memory for memory report"));
                 from_level = -1;
                 goto cleanup;
             }
@@ -187,9 +193,9 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             report->leaks = leaks;
         }
 
-        report->peak_alloc       = max(report->peak_alloc, tp->peak_alloc);
-        report->peak_size        = max(report->peak_size, tp->peak_size);
-        report->peak_alloc_block = max(report->peak_alloc_block, tp->peak_alloc_block);
+        report->peak_alloc       = ucb_max(report->peak_alloc, tp->peak_alloc);
+        report->peak_size        = ucb_max(report->peak_size, tp->peak_size);
+        report->peak_alloc_block = ucb_max(report->peak_alloc_block, tp->peak_alloc_block);
         report->total_alloc += tp->total_alloc;
         report->total_size += tp->total_size;
 
@@ -199,7 +205,8 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             if (!cur)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_set_fatal_error(UCB_ERROR_OUT_OF_MEMORY);
+                ucb_fatal(ucb_error_literal(UCB_ERROR_OUT_OF_MEMORY,
+                                            "Failed to allocate memory for memory report"));
                 from_level = -1;
                 goto cleanup;
             }
@@ -303,14 +310,13 @@ int ucb_mem_tracking_level(void)
     return level;
 }
 
-int ucb_mem_tracking_push(void)
+void ucb_mem_tracking_push(void)
 {
-    return ucb_mem_tracking_push_name(UCB_NULL);
+    ucb_mem_tracking_push_name(UCB_NULL);
 }
 
-int ucb_mem_tracking_push_name(const char* name)
+void ucb_mem_tracking_push_name(const char* name)
 {
-    int ret = -1;
     ucb_mutex_lock(&s_mutex);
     assert(s_trace_points);
     if (s_trace_level < MAX_TRACEPOINTS - 1)
@@ -327,21 +333,17 @@ int ucb_mem_tracking_push_name(const char* name)
         }
 
         s_trace_points[s_trace_level] = tp;
-
-        ret = s_trace_level;
     }
     ucb_mutex_unlock(&s_mutex);
-    return ret;
 }
 
-int ucb_mem_tracking_pop(void)
+void ucb_mem_tracking_pop(void)
 {
-    int ret = -1;
     ucb_mutex_lock(&s_mutex);
     if (s_trace_level == 0)
     {
         ucb_mutex_unlock(&s_mutex);
-        return -1;
+        return;
     }
 
     ucb_tracepoint_t* tp = s_trace_points[s_trace_level];
@@ -362,8 +364,10 @@ int ucb_mem_tracking_pop(void)
     ucb_tracepoint_t* tp_up = s_trace_points[level_up];
     assert(tp_up);
 
-    // verify_level(s_trace_level);
-    // verify_level(level_up);
+#if VERIFY_LEVEL
+    verify_level(s_trace_level);
+    verify_level(level_up);
+#endif
 
     while (entry)
     {
@@ -392,21 +396,21 @@ int ucb_mem_tracking_pop(void)
 
     tp_up->peak_alloc += tp->peak_alloc;
     tp_up->peak_size += tp->peak_size;
-    tp_up->peak_alloc_block = max(tp_up->peak_alloc_block, tp->peak_alloc_block);
+    tp_up->peak_alloc_block = ucb_max(tp_up->peak_alloc_block, tp->peak_alloc_block);
 
     free(tp);
     s_trace_points[s_trace_level] = UCB_NULL;
     s_trace_level--;
 
-    // verify_level(level_up);
-    ret = s_trace_level;
+#if VERIFY_LEVEL
+    verify_level(level_up);
+#endif
     ucb_mutex_unlock(&s_mutex);
-    return ret;
 }
 
-int ucb_mem_tracking_report(void)
+void ucb_mem_tracking_report(void)
 {
-    return gen_tracepoint_report(s_trace_level, false);
+    gen_tracepoint_report(s_trace_level, false);
 }
 
 static inline void* register_alloc(ucb_alloc_meta_t* entry, size_t size, const char* file, int line)
@@ -441,9 +445,9 @@ static inline void* register_alloc(ucb_alloc_meta_t* entry, size_t size, const c
     tp->total_alloc++;
     tp->total_size += entry->size;
 
-    tp->peak_alloc       = max(tp->current_alloc, tp->peak_alloc);
-    tp->peak_size        = max(tp->current_size, tp->peak_size);
-    tp->peak_alloc_block = max(entry->size, tp->peak_alloc_block);
+    tp->peak_alloc       = ucb_max(tp->current_alloc, tp->peak_alloc);
+    tp->peak_size        = ucb_max(tp->current_size, tp->peak_size);
+    tp->peak_alloc_block = ucb_max(entry->size, tp->peak_alloc_block);
 
     ucb_mutex_unlock(&s_mutex);
 
@@ -525,7 +529,12 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
     ucb_alloc_meta_t* entry = ((ucb_alloc_meta_t*)ptr) - 1;
     if (entry->magic != ALLOC_MAGIC)
     {
-        ucb_set_fatal_error(UCB_ERROR_INVALID_ALLOC);
+        ucb_fatal(ucb_error_msg(UCB_ERROR_INVALID_ALLOC,
+                                "Invalid allocation, possible memory corruption at %p\n."
+                                "Current realloc of %zu bytes called from: %s:%d\n"
+                                "NOTE, the following info may be incorrect:\n"
+                                "Originally %zu bytes allocated at %s:%s",
+                                ptr, size, file, line, entry->size, entry->file, entry->line));
         // If allowed to continue, reallocate and register
         if (size > 0)
         {
@@ -590,7 +599,12 @@ void ucb_free_debug(void* ptr, const char* file, int line)
     }
     else
     {
-        ucb_set_fatal_error(UCB_ERROR_INVALID_ALLOC);
+        ucb_fatal(ucb_error_msg(UCB_ERROR_INVALID_ALLOC,
+                                "Invalid allocation, possible memory corruption at %p\n."
+                                "Current free called from: %s:%d\n"
+                                "NOTE, the following info may be incorrect:\n"
+                                "Originally %zu bytes allocated at %s:%s",
+                                ptr, file, line, entry->size, entry->file, entry->line));
         // In this case, rather leak than free possibly invalid memory.
     }
 }

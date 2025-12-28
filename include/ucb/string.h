@@ -16,6 +16,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+struct ucb_error;
+
 /**
  * @brief The default string flag, guaranteed to be 0.
  */
@@ -42,7 +44,7 @@ typedef struct ucb_str ucb_str_t;
 
 typedef struct
 {
-    ucb_error_t error;
+    ucb_ecode error;
     ucb_str_t* str;
 } ucb_str_result_t;
 
@@ -84,7 +86,7 @@ UCB_API ucb_str_t* ucb_str_substr(const ucb_str_t* str, size_t index, size_t cou
  *             will be determined.
  * @return ucb_str_t* utf8 string or NULL on error
  */
-UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen);
+UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error *err);
 
 /**
  * Creates a Windows wide string from a utf8 string
@@ -92,7 +94,7 @@ UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen);
  * @param wlen_out optional pointer, set to length of the returned string
  * @return wchar_t* UTF-16 string or UCB_NULL on error
  */
-UCB_API wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out);
+UCB_API wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, struct ucb_error *err);
 #endif
 
 #endif // UCB_STRING_H

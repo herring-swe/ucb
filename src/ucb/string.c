@@ -8,9 +8,10 @@
 
 #include "ucb/string.h"
 
+#include "ucb/cstring.h"
 #include "ucb/defines.h"
-#include "ucb/error.h"
 #include "ucb/errcodes.h"
+#include "ucb/error.h"
 #include "ucb/memory.h"
 #include "ucb/string_private.h"
 
@@ -34,15 +35,8 @@ ucb_str_t* ucb_str_new(const char* cstr, size_t len, uint32_t flags)
     else
     {
         // TODO: Verify len and utf-8
-        str->data       = ucb_malloc_type(len + 1, char);
-        ucb_error_t err = ucb_memcpy(str->data, len + 1, cstr, len);
-        if (err != UCB_OK)
-        {
-            ucb_free(str->data);
-            ucb_free(str);
-            ucb_set_last_error(err);
-            return UCB_NULL;
-        }
+        str->data = ucb_malloc_type(len + 1, char);
+        memcpy(str->data, cstr, len);
         str->data[len] = '\0';
     }
     str->size  = len;
@@ -73,7 +67,6 @@ size_t ucb_str_size(const ucb_str_t* str)
 {
     if (!str)
     {
-        ucb_set_last_error(UCB_ERROR_INVALID_ARG);
         return 0;
     }
     return 0;

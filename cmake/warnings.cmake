@@ -15,6 +15,10 @@ function(ucb_target_set_warnings name)
         # /W4 => -Wall -Wextra
         target_compile_options(${name} PRIVATE -Wall -Wextra)
 
+        target_compile_options(${name} PRIVATE
+            -Wno-missing-field-initializers # Complains on = {0}
+        )
+
         if(CMAKE_C_COMPILER_ID MATCHES "Clang")
             # Good flag, but not supported by GCC
             target_compile_options(${name} PRIVATE -Wnonportable-system-include-path)
@@ -33,18 +37,18 @@ function(ucb_target_set_warnings name)
                 -Wno-c++98-compat # Clang-cl...
                 -Wno-c++98-compat-pedantic # Clang-cl...
                 # -Wno-format-nonliteral # Eh...
-                -Wno-missing-field-initializers # Complains on = {0}
             )
 
-            # Disable some silly warnings when compiling C code
-            # Might be only with clang-cl
-            target_compile_options(${name} PRIVATE
-                $<$<COMPILE_LANGUAGE:C>:
-                -Wno-pre-c11-compat
-                -Wno-c++-keyword
-                -Wno-unsafe-buffer-usage
-                >
-            )
+            # Disable some silly warnings when compiling C code with clang-cl
+            if(MSVC)
+                target_compile_options(${name} PRIVATE
+                    $<$<COMPILE_LANGUAGE:C>:
+                    -Wno-pre-c11-compat
+                    -Wno-c++-keyword
+                    -Wno-unsafe-buffer-usage
+                    >
+                )
+            endif()
 
             # And more silly warnings with C++ (doctest)
             target_compile_options(${name} PRIVATE

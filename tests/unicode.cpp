@@ -181,11 +181,11 @@ static inline void test_mapping(const char* input, const char* lower, const char
 }
 
 static inline unsigned int test_norm_bench(const std::string& input, const std::string& correct,
-                                  ucb_norm_form_t type)
+                                           ucb_norm_form_t type)
 {
     ucb_unicode_result_t ucres = ucb_uc_normalize(input.c_str(), input.size(), type);
 
-    int success = 0;
+    unsigned int success = 0;
     if (ucres.error == UCB_OK)
     {
         if (std::string(ucres.data) == correct)
@@ -219,13 +219,13 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
 
     if (std::string(ucres.data) != std::string(correct))
     {
-        size_t idx                    = 0;
         const unsigned char* iter_res = reinterpret_cast<const unsigned char*>(ucres.data);
         const unsigned char* iter_cor = reinterpret_cast<const unsigned char*>(correct);
         uint32_t cp_res               = 1;
         uint32_t cp_cor               = 1;
         std::stringstream ss_res("");
         std::stringstream ss_cor("");
+
         do
         {
             int width = 4;
@@ -248,13 +248,10 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
                     ss_cor << "!!>";
                 ss_cor << std::setw(width) << std::setfill('0') << std::hex << cp_cor << " ";
             }
-            idx++;
         } while (cp_res && cp_cor);
-        // idx--;
+
         std::string cps_res = ss_res.str();
         std::string cps_cor = ss_cor.str();
-        // std::cout << cps_res << std::endl;
-        // std::cout << cps_cor << std::endl;
         CAPTURE(ss_inp.str());
         CAPTURE(cps_res);
         CAPTURE(cps_cor);
@@ -551,6 +548,9 @@ TEST_CASE("Benchmark normalization")
         test_strlens += test.nfkc.size();
         test_strlens += test.nfkd.size();
     }
+    UCB_DIAG_PUSH
+    UCB_DIAG_IGN_IMPL_INT_FLOAT
+    UCB_DIAG_CLANG_IGN("-Wsource-uses-openmp")
     double test_avg_strlen = test_strlens / 5.0;
 
 #ifdef USE_OPENMP
@@ -598,15 +598,19 @@ TEST_CASE("Benchmark normalization")
     uint64_t num_ops   = num_tests * 20;
 
     std::cout << "Total time: " << duration << " ms" << std::endl;
-    std::cout << "Passed: " << std::fixed << std::setprecision(1) << 100 * passed / (double)num_ops
-              << " %" << std::endl;
+    std::cout << "Passed: " << std::fixed << std::setprecision(1)
+              << 100 * passed / static_cast<double>(num_ops) << " %" << std::endl;
     std::cout << "Tests per second: " << std::fixed << std::setprecision(2)
-              << (num_tests * 1000) / (double)duration << " s" << std::endl;
+              << (num_tests * 1000) / static_cast<double>(duration) << " s" << std::endl;
     std::cout << "Ops per second: " << std::fixed << std::setprecision(2)
-              << (num_ops * 1000) / (double)duration << " s" << std::endl;
+              << (num_ops * 1000) / static_cast<double>(duration) << " s" << std::endl;
     std::cout << "Characters per second: " << std::fixed << std::setprecision(2)
-              << 1000 * test_avg_strlen * iterations / (double)duration << " s" << std::endl;
-    std::cout << "Average test time: " << duration / (double)iterations << " ms" << std::endl;
+              << 1000 * test_avg_strlen * iterations / static_cast<double>(duration) << " s"
+              << std::endl;
+    std::cout << "Average test time: " << duration / static_cast<double>(iterations) << " ms"
+              << std::endl;
+
+    UCB_DIAG_POP
 }
 
 TEST_SUITE_END();

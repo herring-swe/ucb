@@ -13,21 +13,22 @@ UCB_DIAG_IGN_NRVO
 #include "doctest.h"
 UCB_DIAG_POP
 
+#include <ucb/diag.h>
 #include <ucb/error.h>
 #include <ucb/memdbg.h>
 #include <ucb/ucb.h>
 
 [[noreturn]]
-static void testing_errfunc(ucb_error_t error)
+static void testing_errfunc(ucb_errlvl lvl, const ucb_error* e)
 {
-    printf("Fatal error: %s\n", ucb_get_error_string(error));
+    ucb_error_print(lvl, e);
     abort();
 }
 
 static ucb_mem_report_func_t s_default_mem_report;
 
-#pragma warning(push)
-#pragma warning(disable : 4505)
+UCB_DIAG_PUSH
+UCB_DIAG_IGN_UNUSED_FUNCTION
 static void testing_memreport(const ucb_mem_report_t* report)
 {
     if (s_default_mem_report)
@@ -38,7 +39,7 @@ static void testing_memreport(const ucb_mem_report_t* report)
         CHECK(report->allocs == UCB_NULL);
     }
 }
-#pragma warning(pop)
+UCB_DIAG_POP
 
 // struct VerboseReporter : public doctest::ConsoleReporter
 // {
@@ -63,7 +64,7 @@ DOCTEST_MSVC_SUPPRESS_WARNING_WITH_PUSH(4007) // 'function' : must be 'attribute
 int main(int argc, char** argv)
 {
     ucb_init_console();
-    ucb_set_fatal_errfunc(testing_errfunc);
+    ucb_error_set_func(testing_errfunc);
     UCB_MEMTRACK_ENABLE();
     s_default_mem_report = UCB_MEMTRACK_SET_FUNC(testing_memreport);
     return doctest::Context(argc, argv).run();

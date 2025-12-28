@@ -22,9 +22,9 @@ const char* ucb_get_version(void)
     return "0.1.0";
 }
 
-#ifdef _WIN32
 void ucb_init_console(void)
 {
-    SetConsoleOutputCP( CP_UTF8 ); // CP_UTF8 - 65001
-}
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8); // CP_UTF8 - 65001
 #endif
+}

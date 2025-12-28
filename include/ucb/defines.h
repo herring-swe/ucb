@@ -47,27 +47,4 @@
 #endif
 // clang-format on
 
-// Boilerplate macro for functions that return ucb_error_t
-#define UCB_TRY(call)              \
-    do                             \
-    {                              \
-        ucb_error_t _err = (call); \
-        if (_err != UCB_ERROR_OK)  \
-            return _err;           \
-    } while (0)
-
-/**
- * Boilerplate macro for functions that return something else than ucb_error_t
- */
-#define UCB_TRY_SET(call, errval)     \
-    do                                \
-    {                                 \
-        ucb_error_t _err = (call);    \
-        if (_err != UCB_ERROR_OK)     \
-        {                             \
-            ucb_set_last_error(_err); \
-            return errval;            \
-        }                             \
-    } while (0)
-
 #endif // UCB_DEFINES_H

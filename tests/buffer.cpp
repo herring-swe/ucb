@@ -73,7 +73,7 @@ TEST_CASE("buffer utils")
         ucb_buffer_t buf = {unaligned_buf + 1, 16}; // 16 bytes (4x uint32_t)
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
-        unaligned_buf[0] = 0xFFu; // First byte is 0xFF
+        unaligned_buf[0] = 0xFF; // First byte is 0xFF
         UCB_DIAG_POP
 
         // Check that we got a copy
@@ -92,10 +92,8 @@ TEST_CASE("buffer utils")
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
 
-        CHECK(result ==
-              nullptr); // Or CHECK(result == buf.data) if your impl returns input for size=0
+        CHECK(result == nullptr);
         CHECK(count == 0);
-        // No free needed (no allocation for empty buffer)
     }
 
     SUBCASE("partial alignment")
@@ -110,10 +108,11 @@ TEST_CASE("buffer utils")
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
 
         CHECK(count == 2); // Only 2 full uint32_t elements
-        REQUIRE(reinterpret_cast<void*>(result) == reinterpret_cast<void*>(buf.data));
+        // Could be both cast or copied
         CHECK(result[0] == 0xAABBCCDD);
         CHECK(result[1] == 0x12345678);
-        // ucb_free(result);
+        if (reinterpret_cast<uintptr_t>(result) != reinterpret_cast<uintptr_t>(buf.data))
+            ucb_free(result);
     }
 
     SUBCASE("tiny buffer")
@@ -151,8 +150,8 @@ TEST_CASE("buffer utils")
         CHECK(alignof(test_struct) == 4);
         CHECK(sizeof(test_struct) == 12);
 
-        constexpr size_t num_data = 50;
-        constexpr size_t misalign = 3;
+        constexpr size_t num_data  = 50;
+        constexpr size_t misalign  = 3;
         constexpr size_t data_size = num_data * sizeof(test_struct) + misalign;
 
         char bufmem[data_size];
@@ -167,15 +166,15 @@ TEST_CASE("buffer utils")
             };
         }
 
-        void* data       = reinterpret_cast<void*>(bufmem + misalign);
+        void* data = reinterpret_cast<void*>(bufmem + misalign);
         // size_t data_size = sizeof(struct_data) * num_data;
 
         size_t count;
         test_struct* result = UCB_BUFCAST(test_struct, data, data_size, &count);
         REQUIRE(count == 50);
         REQUIRE(reinterpret_cast<void*>(result) != data);
-        
-        for(size_t i = 0; i < count; i++)
+
+        for (size_t i = 0; i < count; i++)
         {
             REQUIRE(result[i].ch == struct_data[i].ch);
             REQUIRE(result[i].i32 == struct_data[i].i32);

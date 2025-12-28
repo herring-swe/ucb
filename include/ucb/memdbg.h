@@ -6,6 +6,7 @@
  * @brief Memory debugging functions
  */
 
+#include "defines.h"
 #include "diag.h"
 #include "export.h"
 
@@ -55,21 +56,28 @@ UCB_API void ucb_mem_tracking_reset(void);
 UCB_API ucb_mem_report_func_t ucb_mem_tracking_set_report_func(ucb_mem_report_func_t report_func);
 UCB_API bool ucb_mem_tracking_is_enabled(void);
 UCB_API int ucb_mem_tracking_level(void);
-UCB_API int ucb_mem_tracking_push(void);
-UCB_API int ucb_mem_tracking_push_name(const char* name);
-UCB_API int ucb_mem_tracking_pop(void);
-UCB_API int ucb_mem_tracking_report(void);
+UCB_API void ucb_mem_tracking_push(void);
+UCB_API void ucb_mem_tracking_push_name(const char* name);
+UCB_API void ucb_mem_tracking_pop(void);
+UCB_API void ucb_mem_tracking_report(void);
 
 #ifdef NDEBUG
-#define UCB_MEMTRACK_ENABLE()        ((void)0)
-#define UCB_MEMTRACK_RESET()         ((void)0)
-#define UCB_MEMTRACK_SET_FUNC(func)  ((ucb_mem_report_func_t)0)
+UCB_DIAG_PUSH
+UCB_DIAG_IGN_UNUSED_VALUE
+#define UCB_MEMTRACK_ENABLE() ((void)0)
+#define UCB_MEMTRACK_RESET()  ((void)0)
+static inline ucb_mem_report_func_t UCB_MEMTRACK_SET_FUNC(ucb_mem_report_func_t func)
+{
+    UCB_UNUSED(func);
+    return UCB_NULL;
+}
 #define UCB_MEMTRACK_IS_ENABLED()    false
 #define UCB_MEMTRACK_LEVEL()         (-1)
-#define UCB_MEMTRACK_PUSH()          (-1)
-#define UCB_MEMTRACK_PUSH_NAME(name) (-1)
-#define UCB_MEMTRACK_POP()           (-1)
-#define UCB_MEMTRACK_REPORT()        (-1)
+#define UCB_MEMTRACK_PUSH()          ((void)0)
+#define UCB_MEMTRACK_PUSH_NAME(name) ((void)0)
+#define UCB_MEMTRACK_POP()           ((void)0)
+#define UCB_MEMTRACK_REPORT()        ((void)0)
+UCB_DIAG_POP
 #else // Debug build
 #define UCB_MEMTRACK_ENABLE()        ucb_mem_tracking_enable()
 #define UCB_MEMTRACK_RESET()         ucb_mem_tracking_reset()

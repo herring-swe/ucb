@@ -27,7 +27,7 @@ ucb_buffer_t* ucb_buffer_new_static(void* data, size_t size)
     return buf;
 }
 
-ucb_error_t ucb_buffer_init_static(ucb_buffer_t* buf, void* data, size_t size)
+ucb_ecode ucb_buffer_init_static(ucb_buffer_t* buf, void* data, size_t size)
 {
     if (!buf || !data || size == 0)
         return UCB_ERROR_INVALID_ARG;
@@ -52,7 +52,7 @@ ucb_buffer_t* ucb_buffer_new_heap(size_t initial_capacity)
     return buf;
 }
 
-static ucb_error_t ucb_buffer_resize_heap(ucb_buffer_t* buf, size_t new_capacity)
+static ucb_ecode ucb_buffer_resize_heap(ucb_buffer_t* buf, size_t new_capacity)
 {
     char* tmp = (char*)ucb_realloc2(buf->data, new_capacity, false);
     if (!tmp)
@@ -69,7 +69,7 @@ static void ucb_buffer_free_heap(ucb_buffer_t* buf)
     buf->data = UCB_NULL;
 }
 
-static ucb_error_t ucb_buffer_transfer_heap(ucb_buffer_t* buf, void** out_data, size_t* out_used,
+static ucb_ecode ucb_buffer_transfer_heap(ucb_buffer_t* buf, void** out_data, size_t* out_used,
                                             size_t* out_capacity)
 {
     *out_data = buf->data;
@@ -80,7 +80,7 @@ static ucb_error_t ucb_buffer_transfer_heap(ucb_buffer_t* buf, void** out_data, 
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_init_heap(ucb_buffer_t* buf, size_t initial_capacity)
+ucb_ecode ucb_buffer_init_heap(ucb_buffer_t* buf, size_t initial_capacity)
 {
     if (!buf || initial_capacity == 0)
         return UCB_ERROR_INVALID_ARG;
@@ -132,7 +132,7 @@ bool ucb_buffer_can_transfer(ucb_buffer_t* buf)
     return buf && buf->_impl_transfer;
 }
 
-ucb_error_t ucb_buffer_transfer(ucb_buffer_t* buf, void** out_data, size_t* out_size,
+ucb_ecode ucb_buffer_transfer(ucb_buffer_t* buf, void** out_data, size_t* out_size,
                                 size_t* out_capacity)
 {
     if (!buf || !out_data)
@@ -140,7 +140,7 @@ ucb_error_t ucb_buffer_transfer(ucb_buffer_t* buf, void** out_data, size_t* out_
     if (!buf->_impl_transfer)
         return UCB_ERROR_BUFFER;
 
-    ucb_error_t ret = buf->_impl_transfer(buf, out_data, out_size, out_capacity);
+    ucb_ecode ret = buf->_impl_transfer(buf, out_data, out_size, out_capacity);
     if (ret == UCB_OK)
     {
         memset(buf, 0, sizeof(ucb_buffer_t));
@@ -153,7 +153,7 @@ bool ucb_buffer_can_resize(ucb_buffer_t* buf)
     return buf && buf->_impl_resize;
 }
 
-ucb_error_t ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity)
+ucb_ecode ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity)
 {
     if (!buf)
         return UCB_ERROR_INVALID_ARG;
@@ -162,7 +162,7 @@ ucb_error_t ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity)
     if (!buf->_impl_resize)
         return UCB_ERROR_BUFFER;
 
-    ucb_error_t ret = buf->_impl_resize(buf, new_capacity);
+    ucb_ecode ret = buf->_impl_resize(buf, new_capacity);
     if (ret != UCB_OK)
         return ret;
     assert(buf->capacity == new_capacity);
@@ -171,7 +171,7 @@ ucb_error_t ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity)
     return ret;
 }
 
-ucb_error_t ucb_buffer_grow(ucb_buffer_t* buf, size_t inc_capacity)
+ucb_ecode ucb_buffer_grow(ucb_buffer_t* buf, size_t inc_capacity)
 {
     if (buf == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -180,7 +180,7 @@ ucb_error_t ucb_buffer_grow(ucb_buffer_t* buf, size_t inc_capacity)
     return ucb_buffer_resize(buf, buf->capacity + inc_capacity);
 }
 
-ucb_error_t ucb_buffer_ensure(ucb_buffer_t* buf, size_t size)
+ucb_ecode ucb_buffer_ensure(ucb_buffer_t* buf, size_t size)
 {
     if (buf == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -189,15 +189,15 @@ ucb_error_t ucb_buffer_ensure(ucb_buffer_t* buf, size_t size)
     return ucb_buffer_grow(buf, buf->used + size - buf->capacity);
 }
 
-ucb_error_t ucb_buffer_read(ucb_buffer_t buf, void* out_data, size_t size, size_t offset);
+ucb_ecode ucb_buffer_read(ucb_buffer_t buf, void* out_data, size_t size, size_t offset);
 
-ucb_error_t ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t size)
+ucb_ecode ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t size)
 {
     if (buf == UCB_NULL || data == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
     if (buf->used + size > buf->capacity)
     {
-        ucb_error_t err = ucb_buffer_grow(buf, buf->used + size - buf->capacity);
+        ucb_ecode err = ucb_buffer_grow(buf, buf->used + size - buf->capacity);
         if (err != UCB_OK)
             return err;
     }
@@ -207,7 +207,7 @@ ucb_error_t ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t size)
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_pop(ucb_buffer_t* buf, void* out_data, size_t size)
+ucb_ecode ucb_buffer_pop(ucb_buffer_t* buf, void* out_data, size_t size)
 {
     if (buf == UCB_NULL || out_data == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -222,7 +222,7 @@ ucb_error_t ucb_buffer_pop(ucb_buffer_t* buf, void* out_data, size_t size)
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_clear(ucb_buffer_t* buf)
+ucb_ecode ucb_buffer_clear(ucb_buffer_t* buf)
 {
     if (buf == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -231,7 +231,7 @@ ucb_error_t ucb_buffer_clear(ucb_buffer_t* buf)
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_fit(ucb_buffer_t* buf)
+ucb_ecode ucb_buffer_fit(ucb_buffer_t* buf)
 {
     if (buf == UCB_NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -244,7 +244,7 @@ ucb_error_t ucb_buffer_fit(ucb_buffer_t* buf)
 /*                                 Buffer view                                */
 /* -------------------------------------------------------------------------- */
 
-ucb_error_t ucb_buffer_view_init(ucb_buffer_view_t* view, ucb_buffer_t* buf, size_t offset,
+ucb_ecode ucb_buffer_view_init(ucb_buffer_view_t* view, ucb_buffer_t* buf, size_t offset,
                                  size_t element_size)
 {
     if (!view || !buf)
@@ -326,7 +326,7 @@ size_t ucb_buffer_view_get_capacity(ucb_buffer_view_t* view)
     return (view->buf->capacity - view->offset) / view->element_size;
 }
 
-ucb_error_t ucb_buffer_view_grow(ucb_buffer_view_t* view, size_t inc_count)
+ucb_ecode ucb_buffer_view_grow(ucb_buffer_view_t* view, size_t inc_count)
 {
     if (!view || !view->buf)
         return UCB_ERROR_INVALID_ARG;
@@ -334,7 +334,7 @@ ucb_error_t ucb_buffer_view_grow(ucb_buffer_view_t* view, size_t inc_count)
     return ucb_buffer_grow(view->buf, inc_count * view->element_size);
 }
 
-ucb_error_t ucb_buffer_view_ensure(ucb_buffer_view_t* view, size_t count)
+ucb_ecode ucb_buffer_view_ensure(ucb_buffer_view_t* view, size_t count)
 {
     if (!view || !view->buf)
         return UCB_ERROR_INVALID_ARG;
@@ -348,7 +348,7 @@ ucb_error_t ucb_buffer_view_ensure(ucb_buffer_view_t* view, size_t count)
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size_t count)
+ucb_ecode ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size_t count)
 {
     if (!view || !view->buf)
         return UCB_ERROR_INVALID_ARG;
@@ -358,7 +358,7 @@ ucb_error_t ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size
     size_t bytes_free = view->buf->capacity - view->offset;
     if (bytes_free < bytes_used + bytes_need)
     {
-        ucb_error_t err = ucb_buffer_grow(view->buf, bytes_used + bytes_need - bytes_free);
+        ucb_ecode err = ucb_buffer_grow(view->buf, bytes_used + bytes_need - bytes_free);
         if (err != UCB_OK)
             return err;
     }
@@ -368,7 +368,7 @@ ucb_error_t ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size
     return UCB_OK;
 }
 
-ucb_error_t ucb_buffer_view_pop(ucb_buffer_view_t* view, void* out_data, size_t count)
+ucb_ecode ucb_buffer_view_pop(ucb_buffer_view_t* view, void* out_data, size_t count)
 {
     if (!view || !view->buf)
         return UCB_ERROR_INVALID_ARG;

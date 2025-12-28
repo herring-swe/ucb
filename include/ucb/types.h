@@ -9,7 +9,19 @@
 #ifndef UCB_TYPES_H
 #define UCB_TYPES_H
 
-typedef int ucb_error_t;
-typedef int ucb_pid_t;
+#include <stdint.h>
+
+#define UCB_PID_INVALID 0
+
+/**
+ * Default error type.
+ * Always 0 for no error (UCB_OK).
+ */
+typedef int ucb_ecode;
+
+/**
+ * Process or thread ID
+ */
+typedef uint32_t ucb_pid_t;
 
 #endif // UCB_TYPES_H

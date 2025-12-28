@@ -69,7 +69,7 @@ static const ucb_uc_combiners_t* ucb_uc_get_combiners(const ucb_uc_prop_t* prop)
     return UCB_NULL;
 }
 
-bool is_combining_mark(ucb_uc_prop_t* prop)
+static bool is_combining_mark(ucb_uc_prop_t* prop)
 {
     return prop && prop->ccc > 0;
 }
@@ -141,7 +141,7 @@ uint32_t ucb_uc_iter_utf8(const unsigned char** iter)
 //     return (size_t)(iter - (const unsigned char*)src);
 // }
 
-ucb_error_t ucb_uc_validate(const char* str, size_t* size)
+ucb_ecode ucb_uc_validate(const char* str, size_t* size)
 {
     if (!str)
         return UCB_ERROR_INVALID_ARG;
@@ -155,7 +155,7 @@ ucb_error_t ucb_uc_validate(const char* str, size_t* size)
 // NOTE:
 // See implementation notes here:
 // https://unicode.org/mail-arch/unicode-ml/y2003-m02/att-0467/01-The_Algorithm_to_Valide_an_UTF-8_String
-ucb_error_t ucb_uc_validate_buf(const char* str, size_t size)
+ucb_ecode ucb_uc_validate_buf(const char* str, size_t size)
 {
     if (str == NULL)
         return UCB_ERROR_INVALID_ARG;
@@ -254,13 +254,13 @@ ucb_norm_form_t ucb_uc_norm_form_from_str(const char* str)
  * to the buffer.
  * Assumes that the buffer codepoints and len are valid.
  */
-ucb_error_t ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints, size_t len)
+ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints, size_t len)
 {
     // Minimum chunks to work with
     uint8_t bytes[5 * UCB_UC_MAX_MULTI_LEN];
     size_t bytes_len = 0;
     uint32_t cp;
-    ucb_error_t err;
+    ucb_ecode err;
     for (size_t i = 0; i < len; i++)
     {
         cp = codepoints[i];
@@ -393,7 +393,7 @@ typedef struct
     uint32_t last_cp;
 } casemap_ctx_t;
 
-static ucb_error_t ucb_uc_case_map_cp(casemap_ctx_t* ctx)
+static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
 {
     ctx->out_len = 1; // By default, keep value sent in
     if (!ctx->buf[0]) // Null terminator
@@ -473,7 +473,7 @@ static ucb_unicode_result_t ucb_uc_case_map(const char* str, size_t size, ucb_uc
 {
     const unsigned char* iter = (const unsigned char*)str;
     uint32_t cp;
-    ucb_error_t err;
+    ucb_ecode err;
     bool own_buffer = false;
     casemap_ctx_t ctx;
     ctx.last_cp   = UCB_UC_NO_VALUE;
@@ -582,7 +582,7 @@ typedef struct
     uint8_t flags;
 } norm_ctx_t;
 
-static inline ucb_error_t norm_ctx_add(norm_ctx_t* ctx, uint32_t cp, uint8_t ccc)
+static inline ucb_ecode norm_ctx_add(norm_ctx_t* ctx, uint32_t cp, uint8_t ccc)
 {
     if (ctx->len == NORM_CTX_BUFSIZE)
         return UCB_ERROR_INTERNAL;
@@ -610,12 +610,12 @@ static inline ucb_error_t norm_ctx_add(norm_ctx_t* ctx, uint32_t cp, uint8_t ccc
     return UCB_OK;
 }
 
-static ucb_error_t norm_ctx_flush(norm_ctx_t* ctx)
+static ucb_ecode norm_ctx_flush(norm_ctx_t* ctx)
 {
     if (ctx->len == 0)
         return UCB_OK;
 
-    ucb_error_t err;
+    ucb_ecode err;
     if (ctx->flags & UC_FLAGS_COMPOSE)
     {
         // Flush as codepoints
@@ -647,7 +647,7 @@ static inline bool is_trailing_jamo(uint32_t c)
     return (c >= 0x11A8 && c <= 0x11C2);
 }
 
-static ucb_error_t norm_decompose_hangul(norm_ctx_t* ctx, uint32_t syllable)
+static ucb_ecode norm_decompose_hangul(norm_ctx_t* ctx, uint32_t syllable)
 {
     assert(is_hangul_syllable(syllable));
 
@@ -673,16 +673,9 @@ static inline uint32_t compose_hangul(uint32_t L, uint32_t V, uint32_t T)
     return 0xAC00 + (L_idx0 * 21 + V_idx0) * 28 + T_idx1;
 }
 
-static inline bool norm_decomp_matches(uint8_t decomp_type, bool compat)
+static ucb_ecode norm_decompose_cp(norm_ctx_t* ctx, uint32_t cp, bool must_decomp)
 {
-    if (compat && decomp_type == UCB_UC_DC_COMPAT)
-        return true;
-    return decomp_type == UCB_UC_DC_CANON;
-}
-
-static ucb_error_t norm_decompose_cp(norm_ctx_t* ctx, uint32_t cp, bool must_decomp)
-{
-    ucb_error_t ret = UCB_OK;
+    ucb_ecode ret = UCB_OK;
 
     uint8_t ccc                   = 0;
     const ucb_uc_prop_t* prop     = ucb_uc_get_prop(cp);
@@ -711,33 +704,6 @@ static ucb_error_t norm_decompose_cp(norm_ctx_t* ctx, uint32_t cp, bool must_dec
         ret              = norm_decompose_cp(ctx, next_cp, must_decomp);
     }
     return ret;
-}
-
-static void norm_ctx_canonical_order(uint32_t* cp, uint8_t* ccc, size_t len)
-{
-    if (len <= 1)
-        return;
-
-    for (size_t i = 1; i < len; i++)
-    {
-        if (ccc[i] == 0)
-            continue;
-
-        for (size_t j = i; j > 0; j--)
-        {
-            if (ccc[j - 1] == 0 || ccc[j - 1] < ccc[j])
-            {
-                break;
-            }
-
-            uint32_t tmp_cp = cp[j];
-            uint8_t tmp_ccc = ccc[j];
-            cp[j]           = cp[j - 1];
-            ccc[j]          = ccc[j - 1];
-            cp[j - 1]       = tmp_cp;
-            ccc[j - 1]      = tmp_ccc;
-        }
-    }
 }
 
 static uint32_t norm_compose_cp(uint32_t starter, uint32_t combiner,
@@ -779,7 +745,7 @@ static size_t norm_compose(uint32_t* cps, size_t count)
     const ucb_uc_prop_t* prev_prop;
     const ucb_uc_combiners_t* combiners = UCB_NULL;
     // size_t last_starter_idx             = 0; // Only valid if combiners != NULL
-    for (int i = 1; i < count; i++)
+    for (size_t i = 1; i < count; i++)
     {
         if (is_leading_jamo(cps[i - 1]) && is_vowel_jamo(cps[i]))
         {
@@ -797,8 +763,9 @@ static size_t norm_compose(uint32_t* cps, size_t count)
         }
 
         // Seek back left to find last starting character
+        // int due to possible overflow
         prop = ucb_uc_get_prop(cps[i]);
-        for (int j = i - 1; j >= 0; j--)
+        for (int j = (int)i - 1; j >= 0; j--)
         {
             prev_prop         = ucb_uc_get_prop(cps[j]);
             combiners         = prev_prop ? ucb_uc_get_combiners(prev_prop) : UCB_NULL;
@@ -828,11 +795,11 @@ static size_t norm_compose(uint32_t* cps, size_t count)
     return count;
 }
 
-static ucb_error_t normalize(norm_ctx_t* ctx, const char* str, bool must_decomp)
+static ucb_ecode normalize(norm_ctx_t* ctx, const char* str, bool must_decomp)
 {
     uint32_t cp;
     const unsigned char* iter = (const unsigned char*)str;
-    ucb_error_t err           = UCB_OK;
+    ucb_ecode err           = UCB_OK;
 
     while ((cp = ucb_uc_next_valid(&iter)))
     {
@@ -946,7 +913,7 @@ ucb_unicode_result_t ucb_uc_normalize(const char* str, size_t size, ucb_norm_for
     //     return (ucb_unicode_result_t){.error = UCB_OK, .data = res, .size = size};
     // }
 
-    ucb_error_t err;
+    ucb_ecode err;
 
     // Allocate for worst case decompose. This can be adjusted once
     // we can quick check the input.

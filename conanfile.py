@@ -39,7 +39,7 @@ class UcbConan(ConanFile):
         "fPIC": True,
         "with_beaver": False,  # But maybe not by default :'(
         "with_utf8": True,
-        "with_iconv": "iconv",
+        "with_iconv": None,
     }
     option_description = {
         "with_beaver": "Beaver mode or serious mode - you decide",

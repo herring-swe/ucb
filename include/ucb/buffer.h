@@ -31,7 +31,7 @@ typedef struct ucb_buffer ucb_buffer_t;
  *
  * @see ucb_buffer_resize
  */
-typedef ucb_error_t (*ucb_buffer_resize_func)(ucb_buffer_t* buf, size_t new_capacity);
+typedef ucb_ecode (*ucb_buffer_resize_func)(ucb_buffer_t* buf, size_t new_capacity);
 
 /**
  * @brief Buffer implementation specific free function
@@ -51,7 +51,7 @@ typedef void (*ucb_buffer_free_func)(ucb_buffer_t* buf);
  *
  * @see ucb_buffer_transfer
  */
-typedef ucb_error_t (*ucb_buffer_transfer_func)(ucb_buffer_t* buf, void** out_data,
+typedef ucb_ecode (*ucb_buffer_transfer_func)(ucb_buffer_t* buf, void** out_data,
                                                 size_t* out_used, size_t* out_capacity);
 
 /**
@@ -137,7 +137,7 @@ UCB_API ucb_buffer_t* ucb_buffer_new_static(void* data, size_t size);
  * @param data pointer to the data to use as buffer, must be non-null
  * @param size the size of the data in bytes, must be non-zero
  */
-UCB_API ucb_error_t ucb_buffer_init_static(ucb_buffer_t* buf, void* data, size_t size);
+UCB_API ucb_ecode ucb_buffer_init_static(ucb_buffer_t* buf, void* data, size_t size);
 
 /**
  * Allocates and returns a new initiated heap buffer
@@ -153,7 +153,7 @@ UCB_API ucb_buffer_t* ucb_buffer_new_heap(size_t initial_capacity);
  * @param buf pointer to a zeroed buffer struct
  * @param initial_capacity initial capacity in bytes, must be non-zero
  */
-UCB_API ucb_error_t ucb_buffer_init_heap(ucb_buffer_t* buf, size_t initial_capacity);
+UCB_API ucb_ecode ucb_buffer_init_heap(ucb_buffer_t* buf, size_t initial_capacity);
 
 /**
  * @brief Free all resources within buffer
@@ -178,7 +178,7 @@ UCB_API bool ucb_buffer_can_transfer(ucb_buffer_t* buf);
  * The buffer will then become invalid. Either call ucb_free_buffer or
  * reinitialize it.
  */
-UCB_API ucb_error_t ucb_buffer_transfer(ucb_buffer_t* buf, void** out_data, size_t* out_size,
+UCB_API ucb_ecode ucb_buffer_transfer(ucb_buffer_t* buf, void** out_data, size_t* out_size,
                                         size_t* out_capacity);
 
 /**
@@ -196,7 +196,7 @@ UCB_API bool ucb_buffer_can_resize(ucb_buffer_t* buf);
  *         UCB_ERROR_OUT_OF_MEMORY if the (re-)allocation failed.
  *         UCB_ERROR_BUFFER if the buffer does not support resizing.
  */
-UCB_API ucb_error_t ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity);
+UCB_API ucb_ecode ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity);
 
 /**
  * Grow the buffer capacity by given bytes. This will always try to allocate memory.
@@ -206,16 +206,16 @@ UCB_API ucb_error_t ucb_buffer_resize(ucb_buffer_t* buf, size_t new_capacity);
  * @param inc_capacity number of bytes to grow from current capacity
  * @see ucb_buffer_grow_func
  */
-UCB_API ucb_error_t ucb_buffer_grow(ucb_buffer_t* buf, size_t inc_capacity);
+UCB_API ucb_ecode ucb_buffer_grow(ucb_buffer_t* buf, size_t inc_capacity);
 
 /**
  * Ensure that a certain amount of bytes are available as free space in the buffer.
  * If the buffer capacity is too small, it will be grown to accomodate the request.
  * Calls ucb_buffer_grow if needed
  * @param size size to ensure
- * @return ucb_error_t
+ * @return ucb_ecode
  */
-UCB_API ucb_error_t ucb_buffer_ensure(ucb_buffer_t* buf, size_t size);
+UCB_API ucb_ecode ucb_buffer_ensure(ucb_buffer_t* buf, size_t size);
 
 /**
  * Read from the buffer at a given offset.
@@ -225,7 +225,7 @@ UCB_API ucb_error_t ucb_buffer_ensure(ucb_buffer_t* buf, size_t size);
  * @return UCB_OK on success
  *         UCB_ERROR_NOT_FOUND if the offset is out of bounds of the buffer
  */
-UCB_API ucb_error_t ucb_buffer_read(ucb_buffer_t buf, void* out_data, size_t size, size_t offset);
+UCB_API ucb_ecode ucb_buffer_read(ucb_buffer_t buf, void* out_data, size_t size, size_t offset);
 
 /**
  * Push data to the end of the buffer, growing the buffer if needed.
@@ -233,7 +233,7 @@ UCB_API ucb_error_t ucb_buffer_read(ucb_buffer_t buf, void* out_data, size_t siz
  * @param data data to push, must be at least size bytes
  * @param size number of bytes to push
  */
-UCB_API ucb_error_t ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t size);
+UCB_API ucb_ecode ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t size);
 
 /**
  * Copies the last size data from the buffer and reduce the buffers used size.
@@ -243,17 +243,17 @@ UCB_API ucb_error_t ucb_buffer_push(ucb_buffer_t* buf, const void* data, size_t 
  * @return UCB_OK on success
  *         UCB_ERROR_NOT_FOUND it does not contain enough data
  */
-UCB_API ucb_error_t ucb_buffer_pop(ucb_buffer_t* buf, void* out_data, size_t size);
+UCB_API ucb_ecode ucb_buffer_pop(ucb_buffer_t* buf, void* out_data, size_t size);
 
 /**
  * Marks the buffer as unused but does not shrink the buffer capacity.
  */
-UCB_API ucb_error_t ucb_buffer_clear(ucb_buffer_t* buf);
+UCB_API ucb_ecode ucb_buffer_clear(ucb_buffer_t* buf);
 
 /**
  * Resize the capacity of the buffer to the size of the data
  */
-UCB_API ucb_error_t ucb_buffer_fit(ucb_buffer_t* buf);
+UCB_API ucb_ecode ucb_buffer_fit(ucb_buffer_t* buf);
 
 /* -------------------------------------------------------------------------- */
 /*                               Grow functions                               */
@@ -287,7 +287,7 @@ static inline size_t ucb_buffer_grow_double(ucb_buffer_t* buf, size_t size_neede
  * The view is not thread safe.
  */
 
-ucb_error_t ucb_buffer_view_init(ucb_buffer_view_t* view, ucb_buffer_t* buf, size_t offset,
+ucb_ecode ucb_buffer_view_init(ucb_buffer_view_t* view, ucb_buffer_t* buf, size_t offset,
                                  size_t element_size);
 void ucb_buffer_view_release(ucb_buffer_view_t* view);
 
@@ -301,11 +301,11 @@ void ucb_buffer_view_set_count(ucb_buffer_view_t* view, size_t count);
 size_t ucb_buffer_view_get_count(ucb_buffer_view_t* view);
 size_t ucb_buffer_view_get_capacity(ucb_buffer_view_t* view);
 
-ucb_error_t ucb_buffer_view_grow(ucb_buffer_view_t* view, size_t inc_count);
-ucb_error_t ucb_buffer_view_ensure(ucb_buffer_view_t* view, size_t count);
+ucb_ecode ucb_buffer_view_grow(ucb_buffer_view_t* view, size_t inc_count);
+ucb_ecode ucb_buffer_view_ensure(ucb_buffer_view_t* view, size_t count);
 
-ucb_error_t ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size_t count);
-ucb_error_t ucb_buffer_view_pop(ucb_buffer_view_t* view, void* out_data, size_t count);
+ucb_ecode ucb_buffer_view_push(ucb_buffer_view_t* view, const void* data, size_t count);
+ucb_ecode ucb_buffer_view_pop(ucb_buffer_view_t* view, void* out_data, size_t count);
 
 #define ucb_buffer_view_init_type(view, buf, type) ucb_buffer_view_init(view, buf, sizeof(type))
 
@@ -313,62 +313,64 @@ ucb_error_t ucb_buffer_view_pop(ucb_buffer_view_t* view, void* out_data, size_t 
 /*                              Generic interface                             */
 /* -------------------------------------------------------------------------- */
 
-// typedef struct ucb_bufobj
-// {
-//     union
-//     {
-//         ucb_buffer_t* buf;
-//         ucb_buffer_view_t* view;
-//     };
-//     bool is_view;
-// } ucb_bufobj_t;
+#if 0
+typedef struct ucb_bufobj
+{
+    union
+    {
+        ucb_buffer_t* buf;
+        ucb_buffer_view_t* view;
+    };
+    bool is_view;
+} ucb_bufobj_t;
 
-// static inline ucb_bufobj_t ucb_buffer_as_obj(ucb_buffer_t* buf)
-// {
-//     return (ucb_bufobj_t){.buf = buf, .is_view = false};
-// }
+static inline ucb_bufobj_t ucb_buffer_as_obj(ucb_buffer_t* buf)
+{
+    return (ucb_bufobj_t){.buf = buf, .is_view = false};
+}
 
-// static inline ucb_bufobj_t ucb_buffer_view_as_obj(ucb_buffer_view_t* view)
-// {
-//     return (ucb_bufobj_t){.view = view, .is_view = true};
-// }
+static inline ucb_bufobj_t ucb_buffer_view_as_obj(ucb_buffer_view_t* view)
+{
+    return (ucb_bufobj_t){.view = view, .is_view = true};
+}
 
-// #define ucb_as_bufobj(obj) \
-//     _Generic((obj), ucb_buffer_t*: ucb_buffer_as_obj, ucb_buffer_view_t*:
-//     ucb_buffer_view_as_obj)( \
-//         obj)
+#define ucb_as_bufobj(obj) \
+    _Generic((obj), ucb_buffer_t*: ucb_buffer_as_obj, ucb_buffer_view_t*:
+    ucb_buffer_view_as_obj)( \
+        obj)
 
-// static inline void ucb_bufobj_release(ucb_bufobj_t* obj)
-// {
-//     if (obj->is_view)
-//     {
-//         ucb_buffer_view_release(obj->view);
-//         obj->view = UCB_NULL;
-//     }
-//     else
-//     {
-//         ucb_buffer_release(obj->buf);
-//         obj->buf = UCB_NULL;
-//     }
-// }
+static inline void ucb_bufobj_release(ucb_bufobj_t* obj)
+{
+    if (obj->is_view)
+    {
+        ucb_buffer_view_release(obj->view);
+        obj->view = UCB_NULL;
+    }
+    else
+    {
+        ucb_buffer_release(obj->buf);
+        obj->buf = UCB_NULL;
+    }
+}
 
-// #define ucb_buf_release(obj)                         \
-//     _Generic(obj,                                    \
-//         ucb_buffer_t*: ucb_buffer_release,           \
-//         ucb_buffer_view_t*: ucb_buffer_view_release, \
-//         ucb_bufobj_t*: ucb_bufobj_release)(obj)
+#define ucb_buf_release(obj)                         \
+    _Generic(obj,                                    \
+        ucb_buffer_t*: ucb_buffer_release,           \
+        ucb_buffer_view_t*: ucb_buffer_view_release, \
+        ucb_bufobj_t*: ucb_bufobj_release)(obj)
 
-// static inline bool ucb_buf_can_transfer(ucb_bufobj_t* obj)
-// {
-//     if (obj->is_view)
-//         return false;
-//     return ucb_buffer_can_transfer(obj->buf);
-// }
+static inline bool ucb_buf_can_transfer(ucb_bufobj_t* obj)
+{
+    if (obj->is_view)
+        return false;
+    return ucb_buffer_can_transfer(obj->buf);
+}
 
-// #define ucb_buf_can_transfer(obj)                    \
-//     _Generic(obj,                                    \
-//         ucb_buffer_t*: ucb_buffer_can_transfer,      \
-//         ucb_buffer_view_t*: ucb_buffer_can_transfer, \
-//         ucb_bufobj_t*: ucb_buf_can_transfer)(obj)
+#define ucb_buf_can_transfer(obj)                    \
+    _Generic(obj,                                    \
+        ucb_buffer_t*: ucb_buffer_can_transfer,      \
+        ucb_buffer_view_t*: ucb_buffer_can_transfer, \
+        ucb_bufobj_t*: ucb_buf_can_transfer)(obj)
+#endif
 
 #endif // UCB_BUFFER_H

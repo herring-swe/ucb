@@ -2,6 +2,8 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
+from __future__ import annotations
+
 from typing import List, Dict, Any, Iterable, TYPE_CHECKING
 import sys
 import re

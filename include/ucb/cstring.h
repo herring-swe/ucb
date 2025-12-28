@@ -21,7 +21,6 @@ UCB_API char* ucb_cstr_ndup(const char* str, size_t max_len);
 UCB_API int ucb_cstr_comp(const char* a, const char* b);
 UCB_API int ucb_cstr_icomp(const char* a, const char* b);
 
-UCB_API int ucb_cstr_vsnprintf(char* buffer, size_t buffer_size, size_t count, const char* fmt,
-                               va_list argptr);
+UCB_API int ucb_cstr_vsnprintf(char* buffer, size_t buffer_size, const char* fmt, va_list argptr);
 UCB_API int ucb_cstr_asprintf(char** restrict pstr, const char* restrict fmt, ...);
 UCB_API int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list args);

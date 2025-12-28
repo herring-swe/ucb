@@ -33,8 +33,8 @@ UCB_DIAG_POP
 
 static memtrack_state s_state = {0};
 
-#pragma warning(push)
-#pragma warning(disable : 4505)
+UCB_DIAG_PUSH
+UCB_DIAG_IGN_UNUSED_FUNCTION
 static void memtrack_func(const ucb_mem_report_t* const report)
 {
     if (!report)
@@ -64,7 +64,7 @@ static void memtrack_func(const ucb_mem_report_t* const report)
     REQUIRE(cur_alloc == report->current_alloc);
     REQUIRE(cur_size == report->current_size);
 }
-#pragma warning(pop)
+UCB_DIAG_POP
 
 // Force test mutex
 static std::mutex s_mutex;
@@ -183,7 +183,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
 
         // Push new level
         s_state = {0};
-        CHECK(1 == UCB_MEMTRACK_PUSH());
+        UCB_MEMTRACK_PUSH();
+        CHECK(1 == UCB_MEMTRACK_LEVEL());
 
         // Allocate some memory
         ptrs.push_back(ucb_malloc(32));
@@ -191,7 +192,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         void* ptr = ucb_malloc(8);
 
         s_state = {0};
-        CHECK(0 == UCB_MEMTRACK_POP());
+        UCB_MEMTRACK_POP();
+        CHECK(0 == UCB_MEMTRACK_LEVEL());
 
         // A report of leaks should be generated
         REQUIRE(s_state.reported == true);
@@ -221,7 +223,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         REQUIRE(s_state.alloc == 3);
         REQUIRE(s_state.size == 80);
 
-        CHECK(1 == UCB_MEMTRACK_PUSH());
+        UCB_MEMTRACK_PUSH();
+        CHECK(1 == UCB_MEMTRACK_LEVEL());
 
         // No mallocs by these calls
         ucb_malloc(0);
@@ -229,7 +232,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         ucb_realloc(nullptr, 0);
 
         s_state = {0};
-        CHECK(1 == UCB_MEMTRACK_REPORT());
+        CHECK(1 == UCB_MEMTRACK_LEVEL());
+        UCB_MEMTRACK_REPORT();
 
         // New level must be empty
         REQUIRE(s_state.reported == true);
@@ -253,7 +257,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         CHECK(s_state.peak_size == 10240);
 
         s_state = {0};
-        CHECK(0 == UCB_MEMTRACK_POP());
+        UCB_MEMTRACK_POP();
+        CHECK(0 == UCB_MEMTRACK_LEVEL());
 
         // Generates a leak report of previous level
         REQUIRE(s_state.reported == true);
@@ -267,7 +272,7 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         CHECK(s_state.peak_size == 10240);
 
         s_state = {0};
-        CHECK(0 == UCB_MEMTRACK_REPORT());
+        UCB_MEMTRACK_REPORT();
         REQUIRE(s_state.reported == true);
         REQUIRE(s_state.alloc == 10 + 3);
         REQUIRE(s_state.size == 10240 + 80);
@@ -289,8 +294,9 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking")
         {
             UCB_MEMTRACK_POP();
         }
-        CHECK(UCB_MEMTRACK_LEVEL() == 0);
-        CHECK(-1 == UCB_MEMTRACK_POP());
+        CHECK(0 == UCB_MEMTRACK_LEVEL());
+        UCB_MEMTRACK_POP();
+        CHECK(0 == UCB_MEMTRACK_LEVEL());
 
         for (std::vector<void*>::iterator it = ptrs.begin(); it != ptrs.end(); ++it)
             ucb_free(*it);
@@ -327,7 +333,8 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory tracking stress")
     {
         UCB_MEMTRACK_PUSH();
         void* ptr = ucb_malloc(1);
-        CHECK(UCB_MEMTRACK_POP() == expected);
+        UCB_MEMTRACK_POP();
+        CHECK(UCB_MEMTRACK_LEVEL() == expected);
         ucb_free(ptr);
     }
     REQUIRE(UCB_MEMTRACK_LEVEL() == expected);

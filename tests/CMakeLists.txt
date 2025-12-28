@@ -31,12 +31,24 @@ find_package(OpenMP)
 ucb_add_executable(ucb_tests LANGUAGE CXX)
 
 ucb_target_sources(ucb_tests PRIVATE
+    FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
+    test_math.h
+    test_types.h
+)
+
+ucb_target_sources(ucb_tests PRIVATE
     main_doctest.cpp
 
     # Actual tests
     buffer.cpp
+    math.cpp
     memory.cpp
+    types.cpp
     unicode.cpp
+
+    # Pure C tests
+    test_math.c
+    test_types.c
 
     ${NORM_TEST_FILE}
 )
@@ -52,7 +64,7 @@ if(OpenMP_FOUND)
 endif()
 
 set(doctest_VERSION 2.4.12)
-find_package(doctest ${doctest_VERSION} QUIET)
+# find_package(doctest ${doctest_VERSION} QUIET)
 
 if(NOT doctest_FOUND)
     message(STATUS "Using internal doctest version ${doctest_VERSION}")
@@ -68,4 +80,6 @@ else()
     include(doctest)
 endif()
 
-doctest_discover_tests(ucb_tests)
+if(NOT CMAKE_CROSSCOMPILING)
+    doctest_discover_tests(ucb_tests)
+endif()

@@ -6,6 +6,10 @@
  * @brief Cross-platform mutex implementation
  */
 
+#if defined(__INTELLISENSE__) && defined(__GNUC__)
+#define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
+#endif
+
 #include "ucb/mutex.h"
 
 #include "ucb/errcodes.h"
@@ -14,7 +18,7 @@
 
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 #else
 #include <pthread.h>
 #include <unistd.h>
@@ -24,11 +28,11 @@ struct ucb_mutex
 {
 #if defined(_WIN32)
     CRITICAL_SECTION handle;
-    ucb_pid_t owner;
     int count;
 #else
     pthread_mutex_t handle;
 #endif
+    ucb_pid_t owner;
     int flags;
 };
 
@@ -43,19 +47,19 @@ ucb_mutex_t* ucb_mutex_new(int flags)
     return mutex;
 }
 
-ucb_error_t ucb_mutex_init(ucb_mutex_t* mutex, int flags)
+ucb_ecode ucb_mutex_init(ucb_mutex_t* mutex, int flags)
 {
     if (!mutex)
         return UCB_ERROR_INVALID_ARG;
     mutex->flags = flags;
 #if defined(_WIN32)
-    mutex->owner = -1;
+    mutex->owner = UCB_PID_INVALID;
     mutex->count = 0;
     InitializeCriticalSection(&mutex->handle);
 #else
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
-    if (recursive)
+    if (mutex->flags & UCB_MUTEX_RECURSIVE)
     {
         pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     }
@@ -64,12 +68,15 @@ ucb_error_t ucb_mutex_init(ucb_mutex_t* mutex, int flags)
     return UCB_OK;
 }
 
-ucb_error_t ucb_mutex_release(ucb_mutex_t* mutex)
+ucb_ecode ucb_mutex_release(ucb_mutex_t* mutex)
 {
     if (!mutex)
         return UCB_ERROR_INVALID_ARG;
-    if (mutex->owner != -1)
-        ucb_mutex_unlock(mutex);
+    if (mutex->owner != UCB_PID_INVALID)
+    {
+        ucb_user(ucb_error_literal(UCB_ERROR_MUTEX_LOCKED, "Mutex locked during release"));
+        return UCB_ERROR_MUTEX_LOCKED;
+    }
 #ifdef _WIN32
     DeleteCriticalSection(&mutex->handle);
 #else
@@ -86,7 +93,7 @@ void ucb_mutex_free(ucb_mutex_t* mutex)
     ucb_free(mutex);
 }
 
-ucb_error_t ucb_mutex_lock(ucb_mutex_t* mutex)
+ucb_ecode ucb_mutex_lock(ucb_mutex_t* mutex)
 {
 #if defined(_WIN32)
     if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
@@ -103,7 +110,7 @@ ucb_error_t ucb_mutex_lock(ucb_mutex_t* mutex)
     return UCB_OK;
 }
 
-ucb_error_t ucb_mutex_trylock(ucb_mutex_t* mutex)
+ucb_ecode ucb_mutex_trylock(ucb_mutex_t* mutex)
 {
 #if defined(_WIN32)
     if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
@@ -123,7 +130,7 @@ ucb_error_t ucb_mutex_trylock(ucb_mutex_t* mutex)
 #endif
 }
 
-ucb_error_t ucb_mutex_unlock(ucb_mutex_t* mutex)
+ucb_ecode ucb_mutex_unlock(ucb_mutex_t* mutex)
 {
 #if defined(_WIN32)
     if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
@@ -134,7 +141,7 @@ ucb_error_t ucb_mutex_unlock(ucb_mutex_t* mutex)
     }
     LeaveCriticalSection(&mutex->handle);
     mutex->count = 0;
-    mutex->owner = -1;
+    mutex->owner = UCB_PID_INVALID;
 #else
     return pthread_mutex_unlock(&mutex->handle);
 #endif
