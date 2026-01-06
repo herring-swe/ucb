@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.26)
 
 # Come before project call
 include(cmake/setup.cmake)
@@ -16,6 +16,11 @@ option(UCB_CLANG_TIDY "Use clang-tidy" OFF)
 option(UCB_WITH_BEAVER "Beaver mode" OFF)
 option(UCB_WITH_UTF8 "Enable UTF-8 library" ON)
 option(UCB_WITH_ICONV "Enable iconv library" OFF)
+
+# Internal options and details
+option(UCB_DEVEL "Enables development logging and assertions for debug builds" ON)
+option(UCB_MEMTRACK_BACKTRACE "Enable backtrace support for memory tracking (SLOW)" OFF)
+set(UCB_BTRACE_MAX_FRAMES 64 CACHE STRING "Maximum number of frames to capture in a backtrace")
 
 # External includes
 include(GNUInstallDirs)
@@ -34,9 +39,11 @@ if(UCB_CLANG_TIDY)
     else()
         find_program(CLANG_TIDY_EXE clang-tidy)
     endif()
+
     if(CLANG_TIDY_EXE)
         message(STATUS "Using clang-tidy: ${CLANG_TIDY_EXE}")
         set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
         # set(CMAKE_C_CLANG_TIDY "${CLANG_TIDY_EXE}" -checks=-*,readability-*)
         set(CMAKE_C_CLANG_TIDY clang-tidy;-p=${CMAKE_BINARY_DIR})
     else()
@@ -47,6 +54,9 @@ endif()
 if(UCB_WITH_UTF8 AND UCB_WITH_ICONV)
     find_package(Iconv REQUIRED)
 endif()
+
+configure_file(config.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/config.h)
+include_directories(${CMAKE_BINARY_DIR}/include)
 
 add_subdirectory(src)
 

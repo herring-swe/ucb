@@ -18,18 +18,18 @@ UCB_DIAG_POP
 #include <ucb/memdbg.h>
 #include <ucb/ucb.h>
 
-[[noreturn]]
 static void testing_errfunc(ucb_errlvl lvl, const ucb_error* e)
 {
     ucb_error_print(lvl, e);
-    abort();
+    if (lvl != UCB_ERRLVL_WARNING)
+        abort();
 }
 
-static ucb_mem_report_func_t s_default_mem_report;
+static ucb_mem_report_func s_default_mem_report;
 
 UCB_DIAG_PUSH
 UCB_DIAG_IGN_UNUSED_FUNCTION
-static void testing_memreport(const ucb_mem_report_t* report)
+static void testing_memreport(const ucb_mem_report* report)
 {
     if (s_default_mem_report)
         s_default_mem_report(report);
@@ -37,6 +37,17 @@ static void testing_memreport(const ucb_mem_report_t* report)
     if (report)
     {
         CHECK(report->allocs == UCB_NULL);
+    }
+}
+
+static void testing_memreport_final(const ucb_mem_report* report)
+{
+    if (report && report->allocs != NULL)
+    {
+        if (s_default_mem_report)
+            s_default_mem_report(report);
+
+        exit(1);
     }
 }
 UCB_DIAG_POP
@@ -67,6 +78,9 @@ int main(int argc, char** argv)
     ucb_error_set_func(testing_errfunc);
     UCB_MEMTRACK_ENABLE();
     s_default_mem_report = UCB_MEMTRACK_SET_FUNC(testing_memreport);
-    return doctest::Context(argc, argv).run();
+    int ret              = doctest::Context(argc, argv).run();
+    UCB_MEMTRACK_SET_FUNC(testing_memreport_final);
+    UCB_MEMTRACK_FINAL();
+    return ret;
 }
 DOCTEST_MSVC_SUPPRESS_WARNING_POP

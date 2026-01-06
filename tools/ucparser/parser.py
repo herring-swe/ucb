@@ -73,7 +73,7 @@ log = logging.getLogger(__name__)
 
 class ParseError(Exception):
     def __init__(
-        self, msg: str, filename: str = "", lineno: int = -1, e: Exception | None = None
+        self, msg: str, filename: str = "", lineno: int = -1, e: Optional[Exception] = None
     ):
         super().__init__(msg)
         self.message = msg

@@ -2,9 +2,9 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
-from __future__ import annotations
+# from __future__ import annotations
 
-from typing import List, Dict, Any, Iterable, TYPE_CHECKING
+from typing import List, Dict, Any, Iterable, TextIO, TYPE_CHECKING
 import sys
 import re
 from enum import Enum
@@ -17,12 +17,15 @@ RE_C_IDENT = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 
 GLOBAL_PREFIX = ""
 
+
 def set_global_prefix(prefix: str) -> None:
     global GLOBAL_PREFIX
     GLOBAL_PREFIX = prefix
 
+
 def get_global_prefix() -> str:
     return GLOBAL_PREFIX
+
 
 def is_valid_c_ident(name: str) -> bool:
     return RE_C_IDENT.match(name) is not None
@@ -210,7 +213,7 @@ class Align(Enum):
     RIGHT = 2
 
 
-def pprint(d: Dict, file: SupportsWrite[str] = sys.stdout, indent=0, align=Align.NONE):
+def pprint(d: Dict, file: TextIO = sys.stdout, indent=0, align=Align.NONE):
     indstr = " " * indent
     if align != Align.NONE:
         maxw = max([len(k) for k in d.keys()])

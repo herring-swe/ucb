@@ -13,7 +13,11 @@ function(ucb_target_set_warnings name)
         # Counter-intuitive clang-cl:
         # -Wall is read as /Wall => -Weverything
         # /W4 => -Wall -Wextra
-        target_compile_options(${name} PRIVATE -Wall -Wextra)
+        if(MSVC)
+            target_compile_options(${name} PRIVATE /W4 -Wextra)
+        else()
+            target_compile_options(${name} PRIVATE -Wall -Wextra)
+        endif()
 
         target_compile_options(${name} PRIVATE
             -Wno-missing-field-initializers # Complains on = {0}

@@ -11,6 +11,12 @@
 
 #define UCB_UNUSED(x) (void)(x)
 
+#ifdef _MSC_VER
+#define UCB_RESTRICT __restrict
+#else
+#define UCB_RESTRICT __restrict__
+#endif
+
 // clang-format off
 #ifdef __cplusplus
     #define UCB_NULL nullptr

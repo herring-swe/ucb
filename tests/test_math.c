@@ -121,41 +121,41 @@
         }                                                                            \
     } while (0)
 
-#define test_calls_signed_float(TYPE)                       \
-    do                                                      \
-    {                                                       \
-        TYPE a = 1.f;                                       \
-        TYPE b = -1.f;                                      \
-        if (!ucb_equal(ucb_sign(a), a))                     \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_sign(%d) != %d\n", (int)a, (int)a); \
-        }                                                   \
-        if (!ucb_equal(ucb_sign(b), b))                     \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_sign(%d) != %d\n", (int)b, (int)b); \
-        }                                                   \
-        if (ucb_equal(ucb_sign(a), b))                      \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_sign(%d) == %d\n", (int)a, (int)b); \
-        }                                                   \
-        if (!ucb_equal(ucb_abs(a), a))                      \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_abs(%d) != %d\n", (int)a, (int)a);  \
-        }                                                   \
-        if (!ucb_equal(ucb_abs(b), a))                      \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_abs(%d) != %d\n", (int)b, (int)b);  \
-        }                                                   \
-        if (ucb_equal(ucb_abs(a), b))                       \
-        {                                                   \
-            errs++;                                         \
-            printf("ucb_abs(%d) == %d\n", (int)a, (int)b);  \
-        }                                                   \
+#define test_calls_signed_float(TYPE)                               \
+    do                                                              \
+    {                                                               \
+        TYPE a = 1.f;                                               \
+        TYPE b = -1.f;                                              \
+        if (!ucb_equal((TYPE)ucb_sign(a), a))                       \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_sign(%g) != %g\n", a, a);                   \
+        }                                                           \
+        if (!ucb_equal((TYPE)ucb_sign(b), b))                       \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_sign(%g) != %g\n", b, b);                   \
+        }                                                           \
+        if (ucb_equal((TYPE)ucb_sign(a), b))                        \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_sign(%g) == %g (%d)\n", a, b, ucb_sign(a)); \
+        }                                                           \
+        if (!ucb_equal(ucb_abs(a), a))                              \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_abs(%g) != %g\n", a, a);                    \
+        }                                                           \
+        if (!ucb_equal(ucb_abs(b), a))                              \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_abs(%g) != %g\n", b, b);                    \
+        }                                                           \
+        if (ucb_equal(ucb_abs(a), b))                               \
+        {                                                           \
+            errs++;                                                 \
+            printf("ucb_abs(%g) == %g\n", a, b);                    \
+        }                                                           \
     } while (0)
 
 int test_math(void)
@@ -179,7 +179,7 @@ int test_math(void)
     test_calls_float(float);
     test_calls_float(double);
 
-#if CHAR_MIN < 0
+#if !UCB_CHAR_DUPLICATE && UCB_CHAR_IS_SIGNED
     test_calls_signed(char);
 #endif
     test_calls_signed(signed char);

@@ -9,8 +9,10 @@
 #include "ucb/cstring.h"
 
 #include "ucb/defines.h"
+#include "ucb/error.h"
 #include "ucb/memory.h"
 
+#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -80,18 +82,46 @@ int ucb_cstr_icomp(const char* a, const char* b)
 #endif // UCB_W
 }
 
-int ucb_cstr_vsnprintf(char* buffer, size_t buffer_size, const char* fmt, va_list argptr)
+int ucb_cstr_sprintf(char* restrict buffer, size_t buffer_size, const char* restrict fmt, ...)
 {
     if (!buffer)
         return -1;
-#ifdef _WIN32
-    size_t count = buffer_size ? buffer_size - 1 : 0;
-    return vsnprintf_s(buffer, buffer_size, count, fmt, argptr);
-#elif defined(__STDC_LIB_EXT1__)
-    return vsnprintf_s(buffer, buffer_size, fmt, argptr);
+    va_list ap;
+    va_start(ap, fmt);
+    int r = ucb_cstr_vsprintf(buffer, buffer_size, fmt, ap);
+    va_end(ap);
+    return r;
+}
+
+int ucb_cstr_vsprintf(char* restrict buffer, size_t buffer_size, const char* restrict fmt,
+                      va_list vlist)
+{
+    if (!buffer)
+        return -1;
+#if defined(__STDC_LIB_EXT1__) || defined(_WIN32)
+    return vsprintf_s(buffer, buffer_size, fmt, vlist);
 #else
-    return vsnprintf(buffer, buffer_size, fmt, argptr);
+    UCB_UNUSED(buffer_size);
+    return vsprintf(buffer, fmt, vlist);
 #endif
+}
+
+int ucb_cstr_snprintf(char* restrict buffer, size_t count, const char* restrict fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    int r = ucb_cstr_vsnprintf(buffer, count, fmt, ap);
+    va_end(ap);
+    return r;
+}
+
+int ucb_cstr_vsnprintf(char* buffer, size_t count, const char* fmt, va_list vlist)
+{
+    UCB_VERIFY_ARGS_RET(fmt && (buffer ? count > 0 : count == 0), -1);
+    int ret = vsnprintf(buffer, count, fmt, vlist);
+    if (ret < 0)
+        UCB_VERIFY_ERRNO(errno, "Failed call to vsnprintf");
+    return ret;
 }
 
 int ucb_cstr_asprintf(char** restrict pstr, const char* restrict fmt, ...)
@@ -103,7 +133,7 @@ int ucb_cstr_asprintf(char** restrict pstr, const char* restrict fmt, ...)
     return r;
 }
 
-int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list args)
+int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list vlist)
 {
     if (!pstr)
         return -1;
@@ -113,7 +143,7 @@ int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list a
         return 0;
     }
     va_list args_copy;
-    va_copy(args_copy, args);
+    va_copy(args_copy, vlist);
     int len = ucb_cstr_vsnprintf(NULL, 0, fmt, args_copy);
     va_end(args_copy);
     if (len < 0)
@@ -121,7 +151,7 @@ int ucb_cstr_vasprintf(char** restrict pstr, const char* restrict fmt, va_list a
     char* str = ucb_malloc_type((size_t)len + 1, char);
     if (!str)
         return -1;
-    len = ucb_cstr_vsnprintf(str, (size_t)len + 1, fmt, args);
+    len = ucb_cstr_vsnprintf(str, (size_t)len + 1, fmt, vlist);
     if (len < 0)
     {
         ucb_free(str);

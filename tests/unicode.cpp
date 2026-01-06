@@ -30,7 +30,7 @@
 #define NORM_TEST_FILE "dummy"
 #endif
 
-typedef ucb_unicode_result_t (*mapping_func)(const char* str, size_t size);
+typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, const ucb_error** perr);
 
 static int split_line(const std::string& line, char c, std::vector<std::string>& result,
                       int max = -1)
@@ -69,7 +69,7 @@ static inline void hexstr_to_utf8(const char* input, char** output)
 {
     size_t in_len = strlen(input);
 
-    ucb_buffer_t buf = {};
+    ucb_buffer buf;
     ucb_buffer_init_heap(&buf, in_len);
 
     // Decode whitespace separated hex string (without 0x prefix) into ucb_buffer
@@ -101,9 +101,9 @@ static inline void hexstr_to_utf8(const char* input, char** output)
 
     size_t count = buf.used / sizeof(uint32_t);
     buf.used     = 0; // reset buffer
-    ucb_uc_encode_codepoints(&buf, reinterpret_cast<uint32_t*>(buf.data), count);
+    ucb_uc_encode_codepoints(&buf, reinterpret_cast<uint32_t*>(buf.data), count, nullptr);
     ucb_buffer_push(&buf, "\0", 1);
-    ucb_buffer_transfer(&buf, reinterpret_cast<void**>(output), nullptr, nullptr);
+    ucb_buffer_transfer(&buf, reinterpret_cast<void**>(output), nullptr, nullptr, nullptr);
     ucb_buffer_release(&buf);
 }
 
@@ -124,7 +124,7 @@ static inline void test_basics(const char* input, size_t len, size_t num_cp, siz
 {
     size_t check_len;
     printf("%s\n", input);
-    REQUIRE((ucb_uc_validate(input, &check_len)) == UCB_OK);
+    REQUIRE(ucb_uc_validate(input, &check_len));
     CHECK(len == check_len);
     CHECK(len == strlen(input));
     CHECK(ucb_uc_num_cp(input) == num_cp);
@@ -136,7 +136,7 @@ static inline void test_grapheme(const char* input, size_t len, size_t num_cp, s
 {
     size_t check_len;
     printf("%s\n", input);
-    REQUIRE((ucb_uc_validate(input, &check_len)) == UCB_OK);
+    REQUIRE(ucb_uc_validate(input, &check_len));
     CHECK(len == check_len);
     CHECK(len == strlen(input));
     CHECK(ucb_uc_num_cp(input) == num_cp);
@@ -151,7 +151,8 @@ static inline void test_mapping(const char* input, const char* lower, const char
                                 const char* title, const char* casefold)
 {
     size_t len;
-    ucb_unicode_result_t ucres;
+    ucb_uc_result ucres;
+    const ucb_error* err = nullptr;
 
     const char* strings[5] = {input, lower, upper, title, casefold};
     mapping_func func[5]   = {nullptr, ucb_uc_to_lower, ucb_uc_to_upper, ucb_uc_to_title,
@@ -160,15 +161,15 @@ static inline void test_mapping(const char* input, const char* lower, const char
 
     for (int i = 0; i < 5; i++)
     {
-        REQUIRE((ucb_uc_validate(strings[i], &len)) == UCB_OK);
+        REQUIRE(ucb_uc_validate(strings[i], &len));
         REQUIRE(len == strlen(strings[i]));
 
         if (func[i] == nullptr)
             continue;
 
-        ucres = func[i](strings[0], len);
-        CHECK(ucres.error == UCB_OK);
-        CHECK(ucres.error_pos == nullptr);
+        ucres = func[i](strings[0], len, &err);
+        CHECK(ucb_error_check(err));
+        ucb_error_clear(&err);
         CHECK(ucres.data != nullptr);
         if (ucres.data)
         {
@@ -181,30 +182,32 @@ static inline void test_mapping(const char* input, const char* lower, const char
 }
 
 static inline unsigned int test_norm_bench(const std::string& input, const std::string& correct,
-                                           ucb_norm_form_t type)
+                                           ucb_norm_form type)
 {
-    ucb_unicode_result_t ucres = ucb_uc_normalize(input.c_str(), input.size(), type);
+    const ucb_error* err = nullptr;
+    ucb_uc_result ucres  = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
 
     unsigned int success = 0;
-    if (ucres.error == UCB_OK)
+    if (ucb_error_check(err))
     {
         if (std::string(ucres.data) == correct)
             success = 1;
         ucb_free(ucres.data);
     }
+    ucb_error_clear(&err);
     return success;
 }
 
-static inline void test_norm(const char* input, const char* correct, ucb_norm_form_t type)
+static inline void test_norm(const char* input, const char* correct, ucb_norm_form type)
 {
-    ucb_unicode_result_t ucres = ucb_uc_normalize(input, strlen(input), type);
+    const ucb_error* err = nullptr;
+    ucb_uc_result ucres  = ucb_uc_normalize(input, strlen(input), type, &err);
     std::string type_str(ucb_uc_norm_form_to_str(type));
 
     CAPTURE(type_str);
 
-    REQUIRE(ucres.error == UCB_OK);
-    // CHECK(ucres.size == strlen(correct));
-    // CHECK(std::string(ucres.data) == std::string(correct));
+    CHECK(ucb_error_check(err));
+    ucb_error_clear(&err);
 
     std::stringstream ss_inp("");
     const unsigned char* inp_iter = reinterpret_cast<const unsigned char*>(input);
@@ -260,7 +263,7 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
     ucb_free(ucres.data);
 }
 
-static inline void test_norm_hex(const char* input, const char* hex_correct, ucb_norm_form_t type)
+static inline void test_norm_hex(const char* input, const char* hex_correct, ucb_norm_form type)
 {
     char* correct = nullptr;
     hexstr_to_utf8(hex_correct, &correct);
@@ -528,7 +531,7 @@ TEST_CASE("unicode official normalization test")
     std::cout << "Number of normalizations run: " << tests.size() * 20 << std::endl;
 }
 
-TEST_CASE("Benchmark normalization")
+TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest::skip())
 {
     constexpr int iterations = 1000;
 

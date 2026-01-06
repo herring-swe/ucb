@@ -12,7 +12,8 @@
 
 #include "ucb/memdbg.h"
 
-#include "ucb/errcodes.h"
+#include "ucb/btrace.h"
+#include "ucb/config.h"
 #include "ucb/error.h"
 #include "ucb/math.h"
 #include "ucb/memory.h"
@@ -30,7 +31,7 @@
 
 #define ALLOC_MAGIC   0xBEA01234
 #define DEALLOC_MAGIC 0x0DEADBEA
-#define META_SIZE     sizeof(ucb_alloc_meta_t)
+#define META_SIZE     sizeof(ucb_alloc_meta)
 
 // TODO: Should be configurable via CMake
 #define MAX_TRACEPOINTS     10
@@ -40,17 +41,20 @@ typedef struct ucb_alloc_meta
 {
     struct ucb_alloc_meta* prev;
     struct ucb_alloc_meta* next;
+#ifdef UCB_MEMTRACK_BACKTRACE
+    ucb_btrace bt;
+#endif
     size_t size;
     const char* file;
     int line;
     int level; // tracepoint
     uint32_t magic;
-} ucb_alloc_meta_t;
+} ucb_alloc_meta;
 
 typedef struct ucb_tracepoint
 {
     char name[MAX_TRACEPOINT_NAME];
-    ucb_alloc_meta_t* alloc;
+    ucb_alloc_meta* alloc;
     size_t current_alloc;    // Current number of allocations
     size_t current_size;     // Current allocated memory
     size_t peak_alloc;       // Max number of allocations at any point
@@ -62,10 +66,10 @@ typedef struct ucb_tracepoint
 
 // Global list of allocations
 static ucb_tracepoint_t* s_trace_points[MAX_TRACEPOINTS];
-static int s_trace_level                   = -1;
-static ucb_mem_report_func_t s_report_func = UCB_NULL;
+static int s_trace_level                 = -1;
+static ucb_mem_report_func s_report_func = UCB_NULL;
 
-static ucb_mutex_t s_mutex = {0};
+static ucb_mutex s_mutex = {0};
 
 // Global setting
 static bool s_tracking_enabled = false;
@@ -93,7 +97,7 @@ static inline int mem_sprintf(char* str, size_t size, const char* fmt, ...)
 /*                               Implementation                               */
 /* -------------------------------------------------------------------------- */
 
-static void ucb_mem_tracking_default_report_func(const ucb_mem_report_t* const report)
+static void ucb_mem_tracking_default_report_func(const ucb_mem_report* const report)
 {
     if (!report)
         return;
@@ -113,10 +117,16 @@ static void ucb_mem_tracking_default_report_func(const ucb_mem_report_t* const r
             printf("!! LEAKS DETECTED !!\n\n");
         printf("Current allocations:\n\n");
     }
-    for (ucb_mem_alloc_t* alloc = report->allocs; alloc; alloc = alloc->next)
+    for (ucb_mem_alloc* alloc = report->allocs; alloc; alloc = alloc->next)
     {
         printf("    Address: %p of size %zu bytes\n", alloc->ptr, alloc->size);
-        printf("    Allocated at: %s:%d\n\n", alloc->file, alloc->line);
+        printf("    Allocated at: %s:%d\n", alloc->file, alloc->line);
+        if (alloc->bt)
+        {
+            printf("    Backtrace:\n");
+            ucb_btrace_print(alloc->bt, stdout, 8);
+        }
+        printf("\n");
     }
     printf("*** End of report *************************************************************\n");
 }
@@ -133,8 +143,8 @@ static void verify_level(int level)
     size_t num  = 0;
     size_t size = 0;
 
-    ucb_alloc_meta_t* prev = UCB_NULL;
-    for (ucb_alloc_meta_t* cur = tp->alloc; cur; cur = cur->next)
+    ucb_alloc_meta* prev = UCB_NULL;
+    for (ucb_alloc_meta* cur = tp->alloc; cur; cur = cur->next)
     {
         assert(cur->magic == ALLOC_MAGIC);
         assert(cur->level == level);
@@ -163,9 +173,9 @@ static int gen_tracepoint_report(int from_level, bool leaks)
         return -1;
     }
 
-    ucb_mem_report_t* report = UCB_NULL;
-    ucb_mem_alloc_t* last    = UCB_NULL;
-    ucb_mem_alloc_t* cur     = UCB_NULL;
+    ucb_mem_report* report = UCB_NULL;
+    ucb_mem_alloc* last    = UCB_NULL;
+    ucb_mem_alloc* cur     = UCB_NULL;
 
     if (from_level < 0)
         from_level = 0;
@@ -179,12 +189,12 @@ static int gen_tracepoint_report(int from_level, bool leaks)
 
         if (!report)
         {
-            report = (ucb_mem_report_t*)calloc(1, sizeof(ucb_mem_report_t));
+            report = (ucb_mem_report*)calloc(1, sizeof(ucb_mem_report));
             if (!report)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_fatal(ucb_error_literal(UCB_ERROR_OUT_OF_MEMORY,
-                                            "Failed to allocate memory for memory report"));
+                ucb_fatal_literal(UCB_ERROR_OUT_OF_MEMORY,
+                                  "Failed to allocate memory for memory report");
                 from_level = -1;
                 goto cleanup;
             }
@@ -199,14 +209,14 @@ static int gen_tracepoint_report(int from_level, bool leaks)
         report->total_alloc += tp->total_alloc;
         report->total_size += tp->total_size;
 
-        for (ucb_alloc_meta_t* alloc = tp->alloc; alloc; alloc = alloc->next)
+        for (ucb_alloc_meta* alloc = tp->alloc; alloc; alloc = alloc->next)
         {
-            cur = (ucb_mem_alloc_t*)calloc(1, sizeof(ucb_mem_alloc_t));
+            cur = (ucb_mem_alloc*)calloc(1, sizeof(ucb_mem_alloc));
             if (!cur)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_fatal(ucb_error_literal(UCB_ERROR_OUT_OF_MEMORY,
-                                            "Failed to allocate memory for memory report"));
+                ucb_fatal_literal(UCB_ERROR_OUT_OF_MEMORY,
+                                  "Failed to allocate memory for memory report");
                 from_level = -1;
                 goto cleanup;
             }
@@ -215,6 +225,10 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             cur->size = alloc->size;
             cur->file = alloc->file;
             cur->line = alloc->line;
+
+#ifdef UCB_MEMTRACK_BACKTRACE
+            cur->bt = ucb_btrace_clone(&alloc->bt);
+#endif
 
             report->current_alloc++;
             report->current_size += cur->size;
@@ -290,10 +304,10 @@ void ucb_mem_tracking_reset(void)
     ucb_mutex_unlock(&s_mutex);
 }
 
-ucb_mem_report_func_t ucb_mem_tracking_set_report_func(ucb_mem_report_func_t func)
+ucb_mem_report_func ucb_mem_tracking_set_report_func(ucb_mem_report_func func)
 {
-    ucb_mem_report_func_t old = s_report_func;
-    s_report_func             = func;
+    ucb_mem_report_func old = s_report_func;
+    s_report_func           = func;
     return old;
 }
 
@@ -318,7 +332,6 @@ void ucb_mem_tracking_push(void)
 void ucb_mem_tracking_push_name(const char* name)
 {
     ucb_mutex_lock(&s_mutex);
-    assert(s_trace_points);
     if (s_trace_level < MAX_TRACEPOINTS - 1)
     {
         s_trace_level++;
@@ -349,8 +362,8 @@ void ucb_mem_tracking_pop(void)
     ucb_tracepoint_t* tp = s_trace_points[s_trace_level];
     assert(tp);
 
-    ucb_alloc_meta_t* entry = tp->alloc;
-    ucb_alloc_meta_t* next;
+    ucb_alloc_meta* entry = tp->alloc;
+    ucb_alloc_meta* next;
 
     if (entry)
     {
@@ -408,12 +421,16 @@ void ucb_mem_tracking_pop(void)
     ucb_mutex_unlock(&s_mutex);
 }
 
-void ucb_mem_tracking_report(void)
+void ucb_mem_tracking_report(bool final)
 {
-    gen_tracepoint_report(s_trace_level, false);
+    if (final)
+        gen_tracepoint_report(s_trace_level >= 0 ? 0 : -1, true);
+    else
+        gen_tracepoint_report(s_trace_level, false);
 }
 
-static inline void* register_alloc(ucb_alloc_meta_t* entry, size_t size, const char* file, int line)
+static inline void init_alloc(ucb_alloc_meta* entry, size_t size, const char* file, int line,
+                              ucb_btrace* bt)
 {
     assert(entry);
 
@@ -421,6 +438,26 @@ static inline void* register_alloc(ucb_alloc_meta_t* entry, size_t size, const c
     entry->size  = size;
     entry->file  = file;
     entry->line  = line;
+
+#ifdef UCB_MEMTRACK_BACKTRACE
+    if (bt)
+    {
+        entry->bt.count = bt->count;
+        entry->bt.strs  = bt->strs;
+    }
+    else
+    {
+        ucb_btrace_init(&entry->bt);
+        ucb_btrace_capture(&entry->bt);
+    }
+#else
+    UCB_UNUSED(bt);
+#endif
+}
+
+static inline void* register_alloc(ucb_alloc_meta* entry)
+{
+    assert(entry);
 
     ucb_mutex_lock(&s_mutex);
 
@@ -455,7 +492,7 @@ static inline void* register_alloc(ucb_alloc_meta_t* entry, size_t size, const c
     return (void*)(entry + 1);
 }
 
-static inline void unregister_alloc(ucb_alloc_meta_t* entry)
+static inline void unregister_alloc(ucb_alloc_meta* entry)
 {
     ucb_mutex_lock(&s_mutex);
 
@@ -494,8 +531,9 @@ void* ucb_malloc_debug(size_t size, const char* file, int line)
 {
     if (s_tracking_enabled && size > 0)
     {
-        ucb_alloc_meta_t* entry = (ucb_alloc_meta_t*)ucb_malloc(size + META_SIZE);
-        return register_alloc(entry, size, file, line);
+        ucb_alloc_meta* entry = (ucb_alloc_meta*)ucb_malloc(size + META_SIZE);
+        init_alloc(entry, size, file, line, UCB_NULL);
+        return register_alloc(entry);
     }
     return ucb_malloc(size);
 }
@@ -504,8 +542,9 @@ void* ucb_calloc_debug(size_t num, size_t size, const char* file, int line)
 {
     if (s_tracking_enabled && num > 0 && size > 0)
     {
-        ucb_alloc_meta_t* entry = (ucb_alloc_meta_t*)ucb_calloc(1, num * size + META_SIZE);
-        return register_alloc(entry, num * size, file, line);
+        ucb_alloc_meta* entry = (ucb_alloc_meta*)ucb_calloc(1, num * size + META_SIZE);
+        init_alloc(entry, num * size, file, line, UCB_NULL);
+        return register_alloc(entry);
     }
     return ucb_calloc(num, size);
 }
@@ -526,19 +565,19 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
         return ucb_malloc_debug(size, file, line);
     }
 
-    ucb_alloc_meta_t* entry = ((ucb_alloc_meta_t*)ptr) - 1;
+    ucb_alloc_meta* entry = ((ucb_alloc_meta*)ptr) - 1;
     if (entry->magic != ALLOC_MAGIC)
     {
-        ucb_fatal(ucb_error_msg(UCB_ERROR_INVALID_ALLOC,
-                                "Invalid allocation, possible memory corruption at %p\n."
-                                "Current realloc of %zu bytes called from: %s:%d\n"
-                                "NOTE, the following info may be incorrect:\n"
-                                "Originally %zu bytes allocated at %s:%s",
-                                ptr, size, file, line, entry->size, entry->file, entry->line));
+        ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
+                         "Invalid allocation, possible memory corruption at %p\n."
+                         "Current realloc of %zu bytes called from: %s:%d\n"
+                         "NOTE, the following info may be incorrect:\n"
+                         "Originally %zu bytes allocated at %s:%s",
+                         ptr, size, file, line, entry->size, entry->file, entry->line);
         // If allowed to continue, reallocate and register
         if (size > 0)
         {
-            entry = (ucb_alloc_meta_t*)ucb_realloc2(ptr, size + META_SIZE, free_on_failure);
+            entry = (ucb_alloc_meta*)ucb_realloc2(ptr, size + META_SIZE, free_on_failure);
         }
         else
         {
@@ -546,30 +585,55 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
             ucb_free(ptr);
         }
         if (entry)
-            return register_alloc(entry, size, file, line);
+        {
+            init_alloc(entry, size, file, line, UCB_NULL);
+            return register_alloc(entry);
+        }
         return UCB_NULL;
     }
 
-    ucb_alloc_meta_t* old_entry = entry;
+    ucb_alloc_meta* old_entry = entry;
 
     // Always remove entry first or we may use invalid memory
     unregister_alloc(entry);
+#ifdef UCB_MEMTRACK_BACKTRACE
+    // Save old btrace data, in order to free it on failure
+    ucb_btrace old_bt = {
+        .count = entry->bt.count,
+        .strs  = entry->bt.strs,
+    };
+#endif
     if (size > 0)
     {
-        entry = (ucb_alloc_meta_t*)ucb_realloc2(entry, size + META_SIZE, free_on_failure);
+        entry = (ucb_alloc_meta*)ucb_realloc2(entry, size + META_SIZE, free_on_failure);
+#ifdef UCB_MEMTRACK_BACKTRACE
+        if (!entry && free_on_failure)
+            ucb_btrace_release(&old_bt);
+#endif
     }
-    else
+    else // Regular free
     {
-        entry = UCB_NULL;
+#ifdef UCB_MEMTRACK_BACKTRACE
+        ucb_btrace_release(&entry->bt);
+#endif
         ucb_free(entry);
+        entry = UCB_NULL;
     }
     if (entry)
-        return register_alloc(entry, size, file, line);
+    {
+        // Carry over previous info including btrace
+#ifdef UCB_MEMTRACK_BACKTRACE
+        init_alloc(entry, size, file, line, &old_bt);
+#else
+        init_alloc(entry, size, file, line, UCB_NULL);
+#endif
+        return register_alloc(entry);
+    }
     else if (!free_on_failure)
     {
         // Re-register the old allocation
         // The old_entry pointer is still valid and contains the old data
-        register_alloc(old_entry, old_entry->size, old_entry->file, old_entry->line);
+        register_alloc(old_entry);
     }
     return UCB_NULL;
 }
@@ -591,20 +655,23 @@ void ucb_free_debug(void* ptr, const char* file, int line)
     if (!ptr)
         return;
 
-    ucb_alloc_meta_t* entry = ((ucb_alloc_meta_t*)ptr) - 1;
+    ucb_alloc_meta* entry = ((ucb_alloc_meta*)ptr) - 1;
     if (entry->magic == ALLOC_MAGIC)
     {
         unregister_alloc(entry);
+#ifdef UCB_MEMTRACK_BACKTRACE
+        ucb_btrace_release(&entry->bt);
+#endif
         ucb_free(entry);
     }
     else
     {
-        ucb_fatal(ucb_error_msg(UCB_ERROR_INVALID_ALLOC,
-                                "Invalid allocation, possible memory corruption at %p\n."
-                                "Current free called from: %s:%d\n"
-                                "NOTE, the following info may be incorrect:\n"
-                                "Originally %zu bytes allocated at %s:%s",
-                                ptr, file, line, entry->size, entry->file, entry->line));
+        ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
+                         "Invalid allocation, possible memory corruption at %p\n."
+                         "Current free called from: %s:%d\n"
+                         "NOTE, the following info may be incorrect:\n"
+                         "Originally %zu bytes allocated at %s:%s",
+                         ptr, file, line, entry->size, entry->file, entry->line);
         // In this case, rather leak than free possibly invalid memory.
     }
 }

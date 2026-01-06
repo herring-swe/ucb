@@ -24,11 +24,13 @@ specified.
    - Windows
    - Linux
  - Compilers:
-   - MSVC - Visual Studio 2022 or later tested.
+   - MSVC
    - GCC
    - Clang
  - Build systems:
    - CMake
+  
+See [dependencies](#dependencies) for exact versions.
 
 Anything not listed above is not tested and is not a priority. Please help out if you want additional support and are able to maintain it.
 
@@ -71,6 +73,7 @@ Anything not listed above is not tested and is not a priority. Please help out i
  - File system functions
  - Process launching
  - Argument parsing
+ - Settings helper
  - ???
 
 ## Limitations
@@ -93,6 +96,11 @@ This section needs verification.
 
  - CMake 3.28 or later
  - Python 3.6 or later
+
+ - MSVC:
+   - The following are required for C11 support:
+     - At least Visual Studio 2019 (v16.8)
+     - At least Windows 10 SDK 10.0.20348.0
   
 ## Building
 
@@ -119,13 +127,6 @@ cmake --build . --config Release
 ```
 
 It is recommended to use Ninja.
-  
-## License
-
-MIT License
-Copyright (c) 2025 Åke Svedin <ake@svedin.org>
-
-See [NOTICE.md](NOTICE.md) for details and [LICENSES](LICENSES) for the full license texts.
 
 ## Contributing
 

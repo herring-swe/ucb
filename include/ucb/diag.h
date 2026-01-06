@@ -37,10 +37,12 @@
 #define UCB_DIAG_GCC_IGN(w)            UCB_DIAG_IGN(w)
 #define UCB_DIAG_IGN_ALIGN_CAST        UCB_DIAG_IGN("-Wcast-align")
 #define UCB_DIAG_IGN_FORMAT_NONLITERAL UCB_DIAG_IGN("-Wformat-nonliteral")
-#define UCB_DIAG_IGN_NRVO              UCB_DIAG_IGN("-Wnrvo")
 #define UCB_DIAG_IGN_PADDED            UCB_DIAG_IGN("-Wpadded")
 #define UCB_DIAG_IGN_UNUSED_FUNCTION   UCB_DIAG_IGN("-Wunused-function")
 #define UCB_DIAG_IGN_UNUSED_VALUE      UCB_DIAG_IGN("-Wunused-value")
+#if defined(__GNUC__) && __GNUC__ >= 14
+#define UCB_DIAG_IGN_NRVO UCB_DIAG_IGN("-Wnrvo")
+#endif
 #elif defined(_MSC_VER)
 #define UCB_DIAG_PUSH                __pragma(warning(push))
 #define UCB_DIAG_POP                 __pragma(warning(pop))

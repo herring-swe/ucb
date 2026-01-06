@@ -1,5 +1,7 @@
 #include "test_types.h"
 
+#include "ucb/cstring.h"
+#include "ucb/defines.h"
 #include "ucb/diag.h"
 #include "ucb/math.h"
 
@@ -7,6 +9,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+#define BUFSIZE 256
 
 int test_types(void)
 {
@@ -30,46 +34,46 @@ int test_types(void)
     wchar_t* val_pwchar_t = L"15";
     void* val_pvoid       = NULL;
 
-    char buf[256];
+    char buf[BUFSIZE];
 
     UCB_DIAG_PUSH
     UCB_DIAG_IGN_FORMAT_NONLITERAL
     UCB_DIAG_IGN_DBL_PROM
 
-    sprintf(buf, "Test unsigned char = %s\n", UCB_FMT(val_uchar));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned char = %s\n", UCB_FMT(val_uchar));
     printf(buf, val_uchar);
 
-    sprintf(buf, "Test unsigned short = %s\n", UCB_FMT(val_ushort));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned short = %s\n", UCB_FMT(val_ushort));
     printf(buf, val_ushort);
 
-    sprintf(buf, "Test unsigned int = %s\n", UCB_FMT(val_uint));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned int = %s\n", UCB_FMT(val_uint));
     printf(buf, val_uint);
 
-    sprintf(buf, "Test unsigned long = %s\n", UCB_FMT(val_ulong));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned long = %s\n", UCB_FMT(val_ulong));
     printf(buf, val_ulong);
 
-    sprintf(buf, "Test unsigned long long = %s\n", UCB_FMT(val_ullong));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned long long = %s\n", UCB_FMT(val_ullong));
     printf(buf, val_ullong);
 
-    sprintf(buf, "Test char = %s\n", UCB_FMT(val_char));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test char = %s\n", UCB_FMT(val_char));
     printf(buf, val_char);
 
-    sprintf(buf, "Test short = %s\n", UCB_FMT(val_short));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test short = %s\n", UCB_FMT(val_short));
     printf(buf, val_short);
 
-    sprintf(buf, "Test int = %s\n", UCB_FMT(val_int));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test int = %s\n", UCB_FMT(val_int));
     printf(buf, val_int);
 
-    sprintf(buf, "Test long = %s\n", UCB_FMT(val_long));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test long = %s\n", UCB_FMT(val_long));
     printf(buf, val_long);
 
-    sprintf(buf, "Test long long = %s\n", UCB_FMT(val_llong));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test long long = %s\n", UCB_FMT(val_llong));
     printf(buf, val_llong);
 
-    sprintf(buf, "Test float = %s\n", UCB_FMT(val_float));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test float = %s\n", UCB_FMT(val_float));
     printf(buf, val_float);
 
-    sprintf(buf, "Test double = %s\n", UCB_FMT(val_double));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test double = %s\n", UCB_FMT(val_double));
     printf(buf, val_double);
 
     size_t val_size_t   = 1;
@@ -84,19 +88,28 @@ int test_types(void)
     intptr_t val_intptr_t = 10;
     // uintptr_t val_uintptr_t = 11;
 
-    sprintf(buf, "Test size_t = %s\n", UCB_FMT(val_size_t));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test size_t = %s\n", UCB_FMT(val_size_t));
     printf(buf, val_size_t);
 
-    sprintf(buf, "Test int8_t = %s\n", UCB_FMT(val_int8_t));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test int8_t = %s\n", UCB_FMT(val_int8_t));
     printf(buf, val_int8_t);
 
-    sprintf(buf, "Test int32_t = %s\n", UCB_FMT(val_int32_t));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test int32_t = %s\n", UCB_FMT(val_int32_t));
     printf(buf, val_int32_t);
 
-    sprintf(buf, "Test uint64_t = %s\n", UCB_FMT(val_uint64_t));
+    ucb_cstr_sprintf(buf, BUFSIZE, "Test uint64_t = %s\n", UCB_FMT(val_uint64_t));
     printf(buf, val_uint64_t);
 
     UCB_DIAG_POP
+
+    UCB_UNUSED(val_intptr_t);
+    UCB_UNUSED(val_uint32_t);
+    UCB_UNUSED(val_pwchar_t);
+    UCB_UNUSED(val_ldouble);
+    UCB_UNUSED(val_uint8_t);
+    UCB_UNUSED(val_pvoid);
+    UCB_UNUSED(val_pchar);
+    UCB_UNUSED(val_int64_t);
 
     printf("Test unsigned char = %s\n", UCB_TYPE(val_uchar));
     printf("Test short = %s\n", UCB_TYPE(val_short));

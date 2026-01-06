@@ -20,9 +20,8 @@ set(UNICODE_DATA_DIR "${UCB_SOURCE_DIR}/ucb_data")
 set(NORM_TEST_FILE "${UNICODE_DATA_DIR}/NormalizationTest.txt")
 
 # if(NOT EXISTS ${NORM_TEST_FILE})
-#     message(FATAL_ERROR "Could not find ${NORM_TEST_FILE}")
+# message(FATAL_ERROR "Could not find ${NORM_TEST_FILE}")
 # endif()
-
 enable_language(CXX)
 
 # Enable OpenMP in future maybe
@@ -34,17 +33,20 @@ ucb_target_sources(ucb_tests PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     test_math.h
     test_types.h
+    common.h
 )
 
 ucb_target_sources(ucb_tests PRIVATE
     main_doctest.cpp
 
     # Actual tests
+    btrace.cpp
     buffer.cpp
     math.cpp
     memory.cpp
     types.cpp
     unicode.cpp
+    threads.cpp
 
     # Pure C tests
     test_math.c
@@ -56,16 +58,18 @@ ucb_target_sources(ucb_tests PRIVATE
 target_compile_definitions(ucb_tests PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
 
 target_link_libraries(ucb_tests PRIVATE ucb)
+
 if(OpenMP_FOUND)
     target_link_libraries(ucb_tests PRIVATE OpenMP::OpenMP_CXX)
     target_compile_definitions(ucb_tests PRIVATE USE_OPENMP)
+
     # target_link_libraries(ucb_tests PRIVATE $<$<CONFIG:Release>:OpenMP::OpenMP_CXX>)
     # target_compile_definitions(ucb_tests PRIVATE $<$<CONFIG:Release>:USE_OPENMP>)
 endif()
 
 set(doctest_VERSION 2.4.12)
-# find_package(doctest ${doctest_VERSION} QUIET)
 
+# find_package(doctest ${doctest_VERSION} QUIET)
 if(NOT doctest_FOUND)
     message(STATUS "Using internal doctest version ${doctest_VERSION}")
     target_include_directories(ucb_tests PRIVATE doctest)

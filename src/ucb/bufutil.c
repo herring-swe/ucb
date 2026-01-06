@@ -39,6 +39,7 @@ void* ucb_bufcast_align(void* buf, size_t size, size_t align_size, size_t elem_s
 
     // Create new buffer and copy data
     void* aligned_buf = ucb_malloc(new_size);
-    ucb_memcpy(aligned_buf, new_size, buf, new_size);
+    if (aligned_buf)
+        ucb_memcpy_s(aligned_buf, new_size, buf, new_size);
     return aligned_buf;
 }

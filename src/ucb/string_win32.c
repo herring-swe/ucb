@@ -11,8 +11,7 @@
 #endif
 
 #include "ucb/defines.h"
-#include "ucb/errcodes.h"
-#include "ucb/error_private.h"
+#include "ucb/error.h"
 #include "ucb/memory.h"
 #include "ucb/string_private.h"
 
@@ -23,13 +22,10 @@
 
 #include <stdlib.h>
 
-ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error* err)
+ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** perr)
 {
-    if (!wstr)
-    {
-        UCB_ERR_SET(err, UCB_ERROR_INVALID_ARG, UCB_NULL);
-        return UCB_NULL;
-    }
+    UCB_VERIFY_ARGS_RET(wstr, UCB_NULL);
+
     // Check string length if needed, once
     // Include NULL character in query and the output will also include it
     int query_wlen = (int)wlen;
@@ -50,11 +46,9 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error
     size_t str_size = 0;
     int ret =
         WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstr, query_wlen, NULL, 0, NULL, NULL);
-    if (ret <= 0)
+    if (ret == 0)
     {
-        UCB_ERR_SET_WIN32(
-            err,
-            "Failed to calculate size of multi-byte string from wide char (ucb_str_from_wchar)");
+        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
         return UCB_NULL;
     }
     str_size = (size_t)ret;
@@ -68,8 +62,7 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error
                               (int)str_size, NULL, NULL);
     if (ret == 0)
     {
-        UCB_ERR_SET_WIN32(
-            err, "Failed to convert wide char string to multi-byte string (ucb_str_from_wchar)");
+        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
         ucb_free(buffer);
         return UCB_NULL;
     }
@@ -77,15 +70,12 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error
     return ucb_str_new(buffer, str_size - 1, UCB_STR_NO_VERIFY);
 }
 
-wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, struct ucb_error* err)
+wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, const ucb_error** perr)
 {
+    UCB_VERIFY_ARGS_RET(str, UCB_NULL);
+
     if (wlen_out)
         *wlen_out = 0;
-    if (!str)
-    {
-        UCB_ERR_SET(err, UCB_ERROR_INVALID_ARG, UCB_NULL);
-        return UCB_NULL;
-    }
     if (str->size == 0)
     {
         // Empty string
@@ -97,9 +87,7 @@ wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, struct ucb_err
     int ret = MultiByteToWideChar(CP_UTF8, 0, str->data, (int)str->size + 1, NULL, 0);
     if (ret == 0)
     {
-        UCB_ERR_SET_WIN32(
-            err,
-            "Failed to calculate size of wide string from multi-byte string (ucb_str_to_wchar)");
+        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
         return UCB_NULL;
     }
     size_t wstr_size = (size_t)ret;
@@ -110,8 +98,7 @@ wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, struct ucb_err
     ret = MultiByteToWideChar(CP_UTF8, 0, str->data, (int)str->size + 1, wstr, (int)wstr_size);
     if (ret == 0)
     {
-        UCB_ERR_SET_WIN32(err,
-                          "Failed to convert multi-byte string to wide string (ucb_str_to_wchar)");
+        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
         ucb_free(wstr);
         return UCB_NULL;
     }

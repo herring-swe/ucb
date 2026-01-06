@@ -10,8 +10,9 @@
 
 #include "ucb/bufutil.h"
 #include "ucb/cstring.h"
+#include "ucb/debug.h"
 #include "ucb/defines.h"
-#include "ucb/errcodes.h"
+#include "ucb/error.h"
 #include "ucb/memory.h"
 
 #include "unicode_combine.h"
@@ -21,6 +22,7 @@
 #include "unicode_props.h"
 
 #include <assert.h>
+#include <inttypes.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -30,7 +32,7 @@
 /*                               Property lookup                              */
 /* -------------------------------------------------------------------------- */
 
-static const ucb_uc_prop_t* ucb_uc_get_prop(uint32_t cp)
+static const ucb_uc_prop_t* ucb_uc_get_prop(ucb_cp cp)
 {
     assert(cp <= 0x110000);
     unsigned int offset = s_ucb_uc_stage1_table[cp / UCB_UC_BLOCK_SIZE] * UCB_UC_BLOCK_SIZE;
@@ -78,20 +80,20 @@ static bool is_combining_mark(ucb_uc_prop_t* prop)
 /*                                 Validation                                 */
 /* -------------------------------------------------------------------------- */
 
-static inline uint32_t ucb_uc_fetch2(const unsigned char* bytes)
+static inline ucb_cp ucb_uc_fetch2(const unsigned char* bytes)
 {
     return ((bytes[0] & 0x1Fu) << 6) //
            | (bytes[1] & 0x3Fu);
 }
 
-static inline uint32_t ucb_uc_fetch3(const unsigned char* bytes)
+static inline ucb_cp ucb_uc_fetch3(const unsigned char* bytes)
 {
     return ((bytes[0] & 0x0Fu) << 12)  //
            | ((bytes[1] & 0x3Fu) << 6) //
            | (bytes[2] & 0x3Fu);       //
 }
 
-static inline uint32_t ucb_uc_fetch4(const unsigned char* bytes)
+static inline ucb_cp ucb_uc_fetch4(const unsigned char* bytes)
 {
     return ((bytes[0] & 0x07u) << 18)   //
            | ((bytes[1] & 0x3Fu) << 12) //
@@ -102,12 +104,12 @@ static inline uint32_t ucb_uc_fetch4(const unsigned char* bytes)
 /**
  * @brief UTF-8 string iterator, only works on validated string
  * @param iter pointer to current position, will increment to next valid position
- * @return uint32_t, might be NULL
+ * @return ucb_cp, might be NULL
  */
-static inline uint32_t ucb_uc_next_valid(const unsigned char** iter)
+static inline ucb_cp ucb_uc_next_valid(const unsigned char** iter)
 {
     const unsigned char* bytes = *iter;
-    uint32_t cp;
+    ucb_cp cp;
     if (bytes[0] < 0x80u)
     {
         cp    = bytes[0];
@@ -131,7 +133,7 @@ static inline uint32_t ucb_uc_next_valid(const unsigned char** iter)
     return cp;
 }
 
-uint32_t ucb_uc_iter_utf8(const unsigned char** iter)
+ucb_cp ucb_uc_iter_utf8(const unsigned char** iter)
 {
     return ucb_uc_next_valid(iter);
 }
@@ -141,10 +143,9 @@ uint32_t ucb_uc_iter_utf8(const unsigned char** iter)
 //     return (size_t)(iter - (const unsigned char*)src);
 // }
 
-ucb_ecode ucb_uc_validate(const char* str, size_t* size)
+bool ucb_uc_validate(const char* str, size_t* size)
 {
-    if (!str)
-        return UCB_ERROR_INVALID_ARG;
+    UCB_VERIFY_ARGS_RET(str, false);
 
     size_t s = strlen(str);
     if (size)
@@ -155,13 +156,12 @@ ucb_ecode ucb_uc_validate(const char* str, size_t* size)
 // NOTE:
 // See implementation notes here:
 // https://unicode.org/mail-arch/unicode-ml/y2003-m02/att-0467/01-The_Algorithm_to_Valide_an_UTF-8_String
-ucb_ecode ucb_uc_validate_buf(const char* str, size_t size)
+bool ucb_uc_validate_buf(const char* str, size_t size)
 {
-    if (str == NULL)
-        return UCB_ERROR_INVALID_ARG;
+    UCB_VERIFY_ARGS_RET(str, false);
 
     const unsigned char* bytes = (const unsigned char*)str;
-    uint32_t cp;
+    ucb_cp cp;
     size_t i = 0;
     while (i < size)
     {
@@ -174,44 +174,44 @@ ucb_ecode ucb_uc_validate_buf(const char* str, size_t size)
         else if ((c & 0xE0u) == 0xC0u) // 110x xxxx, 2 bytes
         {
             if (i + 1 >= size || (bytes[i + 1] & 0xC0u) != 0x80u)
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             cp = ucb_uc_fetch2(bytes + i);
             if (cp < 0x80u) // Overlong
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             i += 2;
         }
         else if ((c & 0xF0u) == 0xE0u) // 1110 xxxx, 3 bytes
         {
             if (i + 2 >= size || (bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u)
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             cp = ucb_uc_fetch3(bytes + i);
             if (cp < 0x800u) // Overlong
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             if (cp >= 0xD800u && cp <= 0xDFFFu) // Surrogate
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             i += 3;
         }
         else if ((c & 0xF8u) == 0xF0u) // 1111 xxxx, 4 bytes
         {
             if (i + 3 >= size || (bytes[i + 1] & 0xC0u) != 0x80u ||
                 (bytes[i + 2] & 0xC0u) != 0x80u || (bytes[i + 3] & 0xC0u) != 0x80u)
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             cp = ucb_uc_fetch4(bytes + i);
             if (cp < 0x10000u || cp > 0x10FFFFu) // Out of range
-                return UCB_ERROR_INVALID_UTF8;
+                return false;
             i += 4;
         }
         else
-            return UCB_ERROR_INVALID_UTF8;
+            return false;
     }
-    return UCB_OK;
+    return true;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                    Enum                                    */
 /* -------------------------------------------------------------------------- */
 
-const char* ucb_uc_norm_form_to_str(ucb_norm_form_t form)
+const char* ucb_uc_norm_form_to_str(ucb_norm_form form)
 {
     switch (form)
     {
@@ -231,7 +231,7 @@ const char* ucb_uc_norm_form_to_str(ucb_norm_form_t form)
     return "";
 }
 
-ucb_norm_form_t ucb_uc_norm_form_from_str(const char* str)
+ucb_norm_form ucb_uc_norm_form_from_str(const char* str)
 {
     if (ucb_cstr_icomp(str, "NFC") == 0)
         return UCB_UC_NORM_NFC;
@@ -254,13 +254,13 @@ ucb_norm_form_t ucb_uc_norm_form_from_str(const char* str)
  * to the buffer.
  * Assumes that the buffer codepoints and len are valid.
  */
-ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints, size_t len)
+bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t len,
+                              const ucb_error** perr)
 {
     // Minimum chunks to work with
     uint8_t bytes[5 * UCB_UC_MAX_MULTI_LEN];
     size_t bytes_len = 0;
-    uint32_t cp;
-    ucb_ecode err;
+    ucb_cp cp;
     for (size_t i = 0; i < len; i++)
     {
         cp = codepoints[i];
@@ -294,22 +294,20 @@ ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints
         else
         {
             // Invalid code point (outside Unicode range)
-            return UCB_ERROR_INVALID_CODEPOINT;
+            ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32, cp);
+            return false;
         }
 
         // Push to buffer if next pass might overflow
         if (bytes_len >= 4 * UCB_UC_MAX_MULTI_LEN)
         {
-            err = ucb_buffer_push(buf, bytes, bytes_len);
-            if (err)
-                return err;
+            if (!ucb_buffer_push(buf, bytes, bytes_len))
+                return false;
             bytes_len = 0;
         }
     }
     // Push remaining bytes
-    if (bytes_len)
-        return ucb_buffer_push(buf, bytes, bytes_len);
-    return UCB_OK;
+    return bytes_len == 0 || ucb_buffer_push(buf, bytes, bytes_len);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -332,7 +330,7 @@ size_t ucb_uc_num_chars(const char* str)
 {
     // Simple implementation before implementing grapheme clusters
     size_t num = 0;
-    uint32_t cp;
+    ucb_cp cp;
     const ucb_uc_prop_t* prop;
 
     const unsigned char* iter = (const unsigned char*)str;
@@ -359,7 +357,7 @@ typedef enum ucb_uc_case_op
 } ucb_uc_case_op_t;
 
 // Returns true if the code point is a word separator for titlecase purposes.
-static bool ucb_uc_is_word_separator(uint32_t cp, const ucb_uc_prop_t* prop)
+static bool ucb_uc_is_word_separator(ucb_cp cp, const ucb_uc_prop_t* prop)
 {
     if (cp == 0x27)
         return false; // Apostrophe (') is not a separator
@@ -387,28 +385,32 @@ static bool ucb_uc_is_word_separator(uint32_t cp, const ucb_uc_prop_t* prop)
 typedef struct
 {
     size_t out_len;
-    uint32_t buf[UCB_UC_MAX_MULTI_LEN];
+    ucb_cp buf[UCB_UC_MAX_MULTI_LEN];
     ucb_uc_case_op_t op;
     const ucb_uc_prop_t* last_prop;
-    uint32_t last_cp;
+    ucb_cp last_cp;
 } casemap_ctx_t;
 
-static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
+static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
 {
     ctx->out_len = 1; // By default, keep value sent in
     if (!ctx->buf[0]) // Null terminator
-        return UCB_OK;
+        return true;
 
     const ucb_uc_prop_t* prop = ucb_uc_get_prop(ctx->buf[0]);
+
     if (!prop)
-        return UCB_ERROR_INVALID_CODEPOINT;
+    {
+        ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32,
+                         ctx->buf[0]);
+    }
 
     const ucb_uc_mapping_t* mapping = ucb_uc_get_mapping(prop);
     if (!mapping)
     {
         ctx->last_cp   = ctx->buf[0];
         ctx->last_prop = prop;
-        return UCB_OK;
+        return true;
     }
 
     uint16_t ref;
@@ -431,7 +433,8 @@ static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
         ref = mapping->to_casefold;
         break;
     default:
-        return UCB_ERROR_INVALID_ARG;
+        UCB_ASSERT_INTERNAL(false, "Invalid operation");
+        return false;
     }
 
     // No more use for last prop
@@ -439,7 +442,7 @@ static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
     ctx->last_cp   = ctx->buf[0];
 
     if (!ref)
-        return UCB_OK;
+        return true;
 
     if (ref <= UCB_UC_NUM_SIMPLE_MAP)
     {
@@ -449,8 +452,7 @@ static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
     else
     {
         int idx = ref - UCB_UC_NUM_SIMPLE_MAP - 1;
-        if (idx > UCB_UC_NUM_MULTI_MAP)
-            return UCB_ERROR_INTERNAL;
+        UCB_ASSERT_INTERNAL(idx <= UCB_UC_NUM_MULTI_MAP, "Invalid mapping index");
         const ucb_uc_mmap_t* entry = &s_ucb_uc_mmap_table[idx];
 
         size_t len = 0;
@@ -460,7 +462,7 @@ static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
         }
         ctx->out_len = len;
     }
-    return UCB_OK;
+    return true;
 }
 
 /**
@@ -468,12 +470,14 @@ static ucb_ecode ucb_uc_case_map_cp(casemap_ctx_t* ctx)
  * Setting codepoint of different sizes + UTF-8 encoding may result in different string
  * lengths.
  */
-static ucb_unicode_result_t ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_op_t op,
-                                            ucb_buffer_t* dstbuf)
+static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_op_t op,
+                                     ucb_buffer* dstbuf, const ucb_error** perr)
 {
+    ucb_uc_result ret = {0};
+    UCB_VERIFY_ARGS_RET(str, ret);
+
     const unsigned char* iter = (const unsigned char*)str;
-    uint32_t cp;
-    ucb_ecode err;
+    ucb_cp cp;
     bool own_buffer = false;
     casemap_ctx_t ctx;
     ctx.last_cp   = UCB_UC_NO_VALUE;
@@ -484,14 +488,16 @@ static ucb_unicode_result_t ucb_uc_case_map(const char* str, size_t size, ucb_uc
     {
         dstbuf = ucb_buffer_new_heap(size + 1);
         if (!dstbuf)
-            return (ucb_unicode_result_t){.error = UCB_ERROR_UNKNOWN};
+            return ret;
         dstbuf->grow_func = ucb_buffer_grow_double;
         own_buffer        = true;
     }
 
-    err = ucb_buffer_ensure(dstbuf, size + 1);
-    if (err != UCB_OK)
-        return (ucb_unicode_result_t){.error = err};
+    if (!ucb_buffer_ensure(dstbuf, size + 1))
+    {
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate buffer");
+        return ret;
+    }
 
     while ((cp = ucb_uc_next_valid(&iter)))
     {
@@ -499,39 +505,23 @@ static ucb_unicode_result_t ucb_uc_case_map(const char* str, size_t size, ucb_uc
             break;
         ctx.buf[0] = cp;
 
-        err = ucb_uc_case_map_cp(&ctx);
-        if (err != UCB_OK)
-        {
-            return (ucb_unicode_result_t){
-                .error     = err,
-                .error_pos = (const char*)iter,
-            };
-        }
+        if (!ucb_uc_case_map_cp(&ctx, perr))
+            return ret;
         assert(ctx.out_len > 0 && ctx.out_len <= UCB_UC_MAX_MULTI_LEN);
 
-        err = ucb_uc_encode_codepoints(dstbuf, ctx.buf, ctx.out_len);
-        if (err != UCB_OK)
-        {
-            return (ucb_unicode_result_t){
-                .error     = err,
-                .error_pos = (const char*)iter,
-            };
-        }
+        if (!ucb_uc_encode_codepoints(dstbuf, ctx.buf, ctx.out_len, perr))
+            return ret;
     }
-    err = ucb_buffer_push(dstbuf, "\0", 1);
-    if (err != UCB_OK)
+    if (!ucb_buffer_push(dstbuf, "\0", 1))
     {
-        return (ucb_unicode_result_t){
-            .error     = err,
-            .error_pos = (const char*)iter,
-        };
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed push null terminator");
+        return ret;
     }
 
-    ucb_unicode_result_t ret = {.error = UCB_OK};
     if (own_buffer)
     {
         ucb_buffer_fit(dstbuf);
-        ucb_buffer_transfer(dstbuf, (void**)&ret.data, &ret.size, UCB_NULL);
+        ucb_buffer_transfer(dstbuf, (void**)&ret.data, &ret.size, UCB_NULL, UCB_NULL);
         ucb_buffer_free(dstbuf);
         ret.size -= 1; // Do not count null-terminator
     }
@@ -544,24 +534,24 @@ static ucb_unicode_result_t ucb_uc_case_map(const char* str, size_t size, ucb_uc
     return ret;
 }
 
-ucb_unicode_result_t ucb_uc_to_upper(const char* str, size_t size)
+ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, const ucb_error** perr)
 {
-    return ucb_uc_case_map(str, size, UCB_UC_CASE_UPPER, UCB_NULL);
+    return ucb_uc_case_map(str, size, UCB_UC_CASE_UPPER, UCB_NULL, perr);
 }
 
-ucb_unicode_result_t ucb_uc_to_lower(const char* str, size_t size)
+ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, const ucb_error** perr)
 {
-    return ucb_uc_case_map(str, size, UCB_UC_CASE_LOWER, UCB_NULL);
+    return ucb_uc_case_map(str, size, UCB_UC_CASE_LOWER, UCB_NULL, perr);
 }
 
-ucb_unicode_result_t ucb_uc_to_title(const char* str, size_t size)
+ucb_uc_result ucb_uc_to_title(const char* str, size_t size, const ucb_error** perr)
 {
-    return ucb_uc_case_map(str, size, UCB_UC_CASE_TITLE, UCB_NULL);
+    return ucb_uc_case_map(str, size, UCB_UC_CASE_TITLE, UCB_NULL, perr);
 }
 
-ucb_unicode_result_t ucb_uc_casefold(const char* str, size_t size)
+ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const ucb_error** perr)
 {
-    return ucb_uc_case_map(str, size, UCB_UC_CASE_FOLD, UCB_NULL);
+    return ucb_uc_case_map(str, size, UCB_UC_CASE_FOLD, UCB_NULL, perr);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -574,18 +564,17 @@ ucb_unicode_result_t ucb_uc_casefold(const char* str, size_t size)
 
 typedef struct
 {
-    ucb_buffer_t cp; // Codepoint buffer
-    uint32_t cp_buf[NORM_CTX_BUFSIZE];
+    ucb_buffer cp; // Codepoint buffer
+    ucb_cp cp_buf[NORM_CTX_BUFSIZE];
     uint8_t ccc_buf[NORM_CTX_BUFSIZE];
     size_t len;
     char* errpos;
     uint8_t flags;
 } norm_ctx_t;
 
-static inline ucb_ecode norm_ctx_add(norm_ctx_t* ctx, uint32_t cp, uint8_t ccc)
+static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
 {
-    if (ctx->len == NORM_CTX_BUFSIZE)
-        return UCB_ERROR_INTERNAL;
+    UCB_ASSERT_INTERNAL(ctx->len < NORM_CTX_BUFSIZE, "Buffer overflow");
 
     ctx->cp_buf[ctx->len]  = cp;
     ctx->ccc_buf[ctx->len] = ccc;
@@ -606,77 +595,75 @@ static inline ucb_ecode norm_ctx_add(norm_ctx_t* ctx, uint32_t cp, uint8_t ccc)
             i--;
         }
     }
-
-    return UCB_OK;
 }
 
-static ucb_ecode norm_ctx_flush(norm_ctx_t* ctx)
+static bool norm_ctx_flush(norm_ctx_t* ctx, const ucb_error** perr)
 {
-    if (ctx->len == 0)
-        return UCB_OK;
-
-    ucb_ecode err;
-    if (ctx->flags & UC_FLAGS_COMPOSE)
+    bool ret = true;
+    if (ctx->len > 0)
     {
-        // Flush as codepoints
-        err = ucb_buffer_push(&ctx->cp, ctx->cp_buf, ctx->len * sizeof(uint32_t));
-    }
-    else
-    {
-        // Flush as UTF-8
-        err = ucb_uc_encode_codepoints(&ctx->cp, ctx->cp_buf, ctx->len);
+        if (ctx->flags & UC_FLAGS_COMPOSE)
+        {
+            // Flush as codepoints
+            ret = ucb_buffer_push(&ctx->cp, ctx->cp_buf, ctx->len * sizeof(ucb_cp));
+            if (!ret)
+            {
+                ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Could not push to internal buffer");
+            }
+        }
+        else
+        {
+            // Flush as UTF-8
+            ret = ucb_uc_encode_codepoints(&ctx->cp, ctx->cp_buf, ctx->len, perr);
+        }
     }
     ctx->len = 0;
-    return err;
+    return ret;
 }
 
-static inline bool is_hangul_syllable(uint32_t c)
+static inline bool is_hangul_syllable(ucb_cp c)
 {
     return (c >= 0xAC00 && c <= 0xD7A3); // was 0xD7AF
 }
-static inline bool is_leading_jamo(uint32_t c)
+static inline bool is_leading_jamo(ucb_cp c)
 {
     return (c >= 0x1100 && c <= 0x1112);
 }
-static inline bool is_vowel_jamo(uint32_t c)
+static inline bool is_vowel_jamo(ucb_cp c)
 {
     return (c >= 0x1161 && c <= 0x1175);
 }
-static inline bool is_trailing_jamo(uint32_t c)
+static inline bool is_trailing_jamo(ucb_cp c)
 {
     return (c >= 0x11A8 && c <= 0x11C2);
 }
 
-static ucb_ecode norm_decompose_hangul(norm_ctx_t* ctx, uint32_t syllable)
+static void norm_decompose_hangul(norm_ctx_t* ctx, ucb_cp syllable)
 {
     assert(is_hangul_syllable(syllable));
 
-    const uint32_t S      = syllable - 0xAC00;
-    const uint32_t T_idx1 = S % 28;
-    const uint32_t V_idx0 = ((S - T_idx1) % 588) / 28; // was = (S / 28) % 21;
-    const uint32_t L_idx0 = S / 588;                   // was = S / (28 * 21);
+    const ucb_cp S      = syllable - 0xAC00;
+    const ucb_cp T_idx1 = S % 28;
+    const ucb_cp V_idx0 = ((S - T_idx1) % 588) / 28; // was = (S / 28) % 21;
+    const ucb_cp L_idx0 = S / 588;                   // was = S / (28 * 21);
 
     // No need to check error since buffer is assured.
     norm_ctx_add(ctx, 0x1100 + L_idx0, 0);
     norm_ctx_add(ctx, 0x1161 + V_idx0, 0);
     if (T_idx1 != 0)
         norm_ctx_add(ctx, 0x11A7 + T_idx1, 0);
-
-    return UCB_OK;
 }
 
-static inline uint32_t compose_hangul(uint32_t L, uint32_t V, uint32_t T)
+static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
 {
-    const uint32_t L_idx0 = L - 0x1100;
-    const uint32_t V_idx0 = V - 0x1161;
-    const uint32_t T_idx1 = (T != 0) ? T - 0x11A7 : 0; // Note: SUBTRACT 0x11A8 - 1
+    const ucb_cp L_idx0 = L - 0x1100;
+    const ucb_cp V_idx0 = V - 0x1161;
+    const ucb_cp T_idx1 = (T != 0) ? T - 0x11A7 : 0; // Note: SUBTRACT 0x11A8 - 1
     return 0xAC00 + (L_idx0 * 21 + V_idx0) * 28 + T_idx1;
 }
 
-static ucb_ecode norm_decompose_cp(norm_ctx_t* ctx, uint32_t cp, bool must_decomp)
+static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, const ucb_error** perr)
 {
-    ucb_ecode ret = UCB_OK;
-
     uint8_t ccc                   = 0;
     const ucb_uc_prop_t* prop     = ucb_uc_get_prop(cp);
     const ucb_uc_decomp_t* decomp = UCB_NULL;
@@ -691,23 +678,24 @@ static ucb_ecode norm_decompose_cp(norm_ctx_t* ctx, uint32_t cp, bool must_decom
 #endif
     if (!decomp || !(decomp->type == UCB_UC_DC_CANON || ctx->flags & UC_FLAGS_COMPAT))
     {
-        if (ccc == 0)
-            norm_ctx_flush(ctx);
+        if (ccc == 0 && !norm_ctx_flush(ctx, perr))
+            return false;
         // No decomposition or wrong type: append as-is
-        return norm_ctx_add(ctx, cp, ccc);
+        norm_ctx_add(ctx, cp, ccc);
+        return true;
     }
 
     // Recursively decompose each codepoint
-    for (size_t i = 0; i < decomp->len && ret == UCB_OK; i++)
+    bool ret = true;
+    for (size_t i = 0; i < decomp->len && ret; i++)
     {
-        uint32_t next_cp = (decomp->len <= 2) ? decomp->vals[i] : decomp->ptr[i];
-        ret              = norm_decompose_cp(ctx, next_cp, must_decomp);
+        ucb_cp next_cp = (decomp->len <= 2) ? decomp->vals[i] : decomp->ptr[i];
+        ret            = norm_decompose_cp(ctx, next_cp, must_decomp, perr);
     }
     return ret;
 }
 
-static uint32_t norm_compose_cp(uint32_t starter, uint32_t combiner,
-                                const ucb_uc_combiners_t* combiners)
+static ucb_cp norm_compose_cp(ucb_cp starter, ucb_cp combiner, const ucb_uc_combiners_t* combiners)
 {
     if (!combiners)
         return 0;
@@ -736,7 +724,7 @@ static uint32_t norm_compose_cp(uint32_t starter, uint32_t combiner,
     return 0; // Not found
 }
 
-static size_t norm_compose(uint32_t* cps, size_t count)
+static size_t norm_compose(ucb_cp* cps, size_t count)
 {
     if (count < 2)
         return count; // Nothing to compose
@@ -749,14 +737,14 @@ static size_t norm_compose(uint32_t* cps, size_t count)
     {
         if (is_leading_jamo(cps[i - 1]) && is_vowel_jamo(cps[i]))
         {
-            uint32_t T = (i + 1 < count) ? cps[i + 1] : 0;
+            ucb_cp T = (i + 1 < count) ? cps[i + 1] : 0;
             if (!is_trailing_jamo(T))
                 T = 0;
 
             cps[i - 1] = compose_hangul(cps[i - 1], cps[i], T);
             // Remove 1 or 2 codepoints and shift the rest
             size_t shift = (T != 0) ? 2 : 1;
-            memmove(&cps[i], &cps[i + shift], (count - i - shift) * sizeof(uint32_t));
+            memmove(&cps[i], &cps[i + shift], (count - i - shift) * sizeof(ucb_cp));
             count -= shift;
             i--; // recheck same index
             continue;
@@ -767,16 +755,16 @@ static size_t norm_compose(uint32_t* cps, size_t count)
         prop = ucb_uc_get_prop(cps[i]);
         for (int j = (int)i - 1; j >= 0; j--)
         {
-            prev_prop         = ucb_uc_get_prop(cps[j]);
-            combiners         = prev_prop ? ucb_uc_get_combiners(prev_prop) : UCB_NULL;
-            uint32_t composed = 0;
+            prev_prop       = ucb_uc_get_prop(cps[j]);
+            combiners       = prev_prop ? ucb_uc_get_combiners(prev_prop) : UCB_NULL;
+            ucb_cp composed = 0;
             if (combiners)
                 composed = norm_compose_cp(cps[j], cps[i], combiners);
             if (composed != 0)
             {
                 cps[j] = composed;
                 // Remove current combiner and shift the rest
-                memmove(&cps[i], &cps[i + 1], (count - i - 1) * sizeof(uint32_t));
+                memmove(&cps[i], &cps[i + 1], (count - i - 1) * sizeof(ucb_cp));
                 count--;
                 i--; // recheck same index
                 break;
@@ -795,42 +783,45 @@ static size_t norm_compose(uint32_t* cps, size_t count)
     return count;
 }
 
-static ucb_ecode normalize(norm_ctx_t* ctx, const char* str, bool must_decomp)
+static bool normalize(norm_ctx_t* ctx, const char* str, bool must_decomp, const ucb_error** perr)
 {
-    uint32_t cp;
+    ucb_cp cp;
     const unsigned char* iter = (const unsigned char*)str;
-    ucb_ecode err           = UCB_OK;
 
     while ((cp = ucb_uc_next_valid(&iter)))
     {
         if (is_hangul_syllable(cp))
         {
-            err = norm_decompose_hangul(ctx, cp);
-            norm_ctx_flush(ctx);
+            norm_decompose_hangul(ctx, cp);
+            if (!norm_ctx_flush(ctx, perr))
+                return false;
         }
         else
         {
-            err = norm_decompose_cp(ctx, cp, must_decomp);
+            if (!norm_decompose_cp(ctx, cp, must_decomp, perr))
+                return perr;
+
             // Only flush if last is a starter
             if (ctx->ccc_buf[ctx->len - 1] == 0)
-                norm_ctx_flush(ctx);
+            {
+                if (!norm_ctx_flush(ctx, perr))
+                    return false;
+            }
         }
-        if (err != UCB_OK)
-            return err;
     }
-    norm_ctx_flush(ctx);
+    if (!norm_ctx_flush(ctx, perr))
+        return false;
 
     if (ctx->flags & UC_FLAGS_COMPOSE)
     {
-        uint32_t* cps = (uint32_t*)ctx->cp.data;
-        size_t count  = ctx->cp.used / sizeof(uint32_t);
+        ucb_cp* cps  = (ucb_cp*)ctx->cp.data;
+        size_t count = ctx->cp.used / sizeof(ucb_cp);
 
         count = norm_compose(cps, count);
 
         ucb_buffer_clear(&ctx->cp);
-        err = ucb_uc_encode_codepoints(&ctx->cp, cps, count);
-        if (err != UCB_OK)
-            return err;
+        if (!ucb_uc_encode_codepoints(&ctx->cp, cps, count, perr))
+            return false;
     }
 
     return ucb_buffer_push(&ctx->cp, "\0", 1);
@@ -842,7 +833,7 @@ static size_t ucb_uc_check_norm(const char* str, bool* is_latin1, bool* must_dec
 
     bool check_latin1 = true;
     bool check_decomp = must_decomp ? false : true;
-    uint32_t cp;
+    ucb_cp cp;
     const unsigned char* iter = (const unsigned char*)str;
     while ((cp = ucb_uc_next_valid(&iter)))
     {
@@ -868,10 +859,12 @@ static size_t ucb_uc_check_norm(const char* str, bool* is_latin1, bool* must_dec
     return num;
 }
 
-ucb_unicode_result_t ucb_uc_normalize(const char* str, size_t size, ucb_norm_form_t form)
+ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
+                               const ucb_error** perr)
 {
     UCB_UNUSED(size);
-    norm_ctx_t ctx = {0};
+    norm_ctx_t ctx    = {0};
+    ucb_uc_result ret = {0};
 
     bool must_decomp = true;
 
@@ -890,13 +883,10 @@ ucb_unicode_result_t ucb_uc_normalize(const char* str, size_t size, ucb_norm_for
         break;
     case UCB_UC_NORM_INVALID:
     default:
-        return (ucb_unicode_result_t){.error = UCB_ERROR_INVALID_ARG};
+        UCB_VERIFY_ARGS_RET(true, ret);
     }
 
-    if (!str)
-    {
-        return (ucb_unicode_result_t){.error = UCB_ERROR_INVALID_ARG};
-    }
+    UCB_VERIFY_ARGS_RET(str, ret);
 
     // Find out how many codepoints we deal with and do fast checks
     bool is_latin1 = false;
@@ -910,25 +900,23 @@ ucb_unicode_result_t ucb_uc_normalize(const char* str, size_t size, ucb_norm_for
     //     char* res = ucb_malloc_type(size + 1, char);
     //     memcpy(res, str, size);
     //     res[size] = '\0';
-    //     return (ucb_unicode_result_t){.error = UCB_OK, .data = res, .size = size};
+    //     return (ucb_uc_result){.error = UCB_OK, .data = res, .size = size};
     // }
-
-    ucb_ecode err;
 
     // Allocate for worst case decompose. This can be adjusted once
     // we can quick check the input.
-    err = ucb_buffer_init_heap(&ctx.cp, 4 * numcp * sizeof(uint32_t) + 1);
-    if (err != UCB_OK)
-        return (ucb_unicode_result_t){.error = err};
+    if (!ucb_buffer_init_heap(&ctx.cp, 4 * numcp * sizeof(ucb_cp) + 1))
+    {
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate buffer");
+        return ret;
+    }
     ctx.cp.grow_func = ucb_buffer_grow_double;
 
-    err = normalize(&ctx, str, must_decomp);
-    if (err != UCB_OK)
-        return (ucb_unicode_result_t){.error = err, .error_pos = ctx.errpos};
+    if (!normalize(&ctx, str, must_decomp, perr))
+        return ret;
 
-    ucb_unicode_result_t ret = {.error = UCB_OK};
     ucb_buffer_fit(&ctx.cp);
-    ucb_buffer_transfer(&ctx.cp, (void**)&ret.data, &ret.size, UCB_NULL);
+    ucb_buffer_transfer(&ctx.cp, (void**)&ret.data, &ret.size, UCB_NULL, UCB_NULL);
     ucb_buffer_release(&ctx.cp);
     ret.size -= 1; // Do not count null-terminator
     return ret;

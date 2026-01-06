@@ -22,6 +22,11 @@ typedef int ucb_ecode;
 /**
  * Process or thread ID
  */
-typedef uint32_t ucb_pid_t;
+typedef uint32_t ucb_pid;
+
+/**
+ * Unicode codepoint
+ */
+typedef uint32_t ucb_cp;
 
 #endif // UCB_TYPES_H

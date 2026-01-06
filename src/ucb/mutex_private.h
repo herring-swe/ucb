@@ -23,7 +23,7 @@ struct ucb_mutex
 {
 #if defined(_WIN32)
     CRITICAL_SECTION handle;
-    ucb_pid_t owner;
+    ucb_pid owner;
     int count;
 #else
     pthread_mutex_t handle;

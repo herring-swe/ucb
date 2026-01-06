@@ -12,7 +12,7 @@
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
 #include "ucb/memory.h"
-#include "ucb/thread.h"
+#include "ucb/threads.h"
 #include "ucb/types.h"
 
 #include <assert.h>
@@ -43,6 +43,30 @@ static ucb_error* ucb_error_get(void)
     return &s_err;
 }
 
+static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
+{
+    ucb_error* err = UCB_NULL;
+    if (perr)
+    {
+        if (*perr)
+        {
+            ucb_user_literal(
+                UCB_ERROR_UNHANDLED_ERROR,
+                "ucb_error_prepare_throw: Found unhandled error when preparing a new error. All "
+                "errors returned from functions must be free'd with ucb_error_free().");
+            ucb_error_clear(perr);
+        }
+        err   = ucb_calloc_type(1, ucb_error);
+        *perr = err;
+        return err;
+    }
+    return err;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                    Error                                   */
+/* -------------------------------------------------------------------------- */
+
 ucb_error* ucb_error_copy(const ucb_error* err)
 {
     ucb_error* ret = UCB_NULL;
@@ -71,17 +95,17 @@ void ucb_error_free(ucb_error* err)
     }
 }
 
-const ucb_error* ucb_error_msg(ucb_ecode code, const char* fmt, ...)
+const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...)
 {
     const ucb_error* ret;
     va_list args;
     va_start(args, fmt);
-    ret = ucb_error_msgv(code, fmt, args);
+    ret = ucb_error_formatv(code, fmt, args);
     va_end(args);
     return ret;
 }
 
-const ucb_error* ucb_error_msgv(ucb_ecode code, const char* fmt, va_list args)
+const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args)
 {
     ucb_error* err = ucb_error_get();
     err->code      = code;
@@ -109,13 +133,41 @@ void ucb_error_print(ucb_errlvl lvl, const ucb_error* err)
         fprintf(stderr, "\n");
 }
 
-void ucb_error_report(ucb_errlvl lvl, const ucb_error* err)
+/* -------------------------------------------------------------------------- */
+/*                                Thrown errors                               */
+/* -------------------------------------------------------------------------- */
+
+void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg)
 {
-    if (s_ucb_errfunc)
-        s_ucb_errfunc(lvl, err);
-    else
-        ucb_error_print(lvl, err);
+    ucb_error* err = ucb_error_prepare_throw(perr);
+    if (!err)
+        return;
+
+    err->code = code;
+    err->msg  = ucb_cstr_dup(msg);
 }
+
+void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    ucb_throw_formatv(perr, code, fmt, args);
+    va_end(args);
+}
+
+void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const char* fmt, va_list args)
+{
+    ucb_error* err = ucb_error_prepare_throw(perr);
+    if (!err)
+        return;
+
+    err->code = code;
+    ucb_cstr_vasprintf((char**)&err->msg, fmt, args);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Reporting errors                              */
+/* -------------------------------------------------------------------------- */
 
 ucb_error_func ucb_error_set_func(ucb_error_func func)
 {
@@ -129,52 +181,10 @@ ucb_error_func ucb_error_get_func(void)
     return s_ucb_errfunc;
 }
 
-const char* ucb_error_lvlstr(ucb_errlvl lvl)
+void ucb_error_report(ucb_errlvl lvl, const ucb_error* err)
 {
-    switch (lvl)
-    {
-    case UCB_ERRLVL_FATAL:
-        return "FATAL ERROR";
-    case UCB_ERRLVL_USER:
-        return "ERROR";
-    case UCB_ERRLVL_WARNING:
-        return "WARNING";
-    default:
-        break;
-    }
-    return "UNKNOWN LEVEL";
-}
-
-const char* ucb_error_codestr(ucb_ecode error)
-{
-    // FIXME: Write all missing ones
-    switch (error)
-    {
-    case UCB_OK:
-        return "SUCCESS";
-    case UCB_ERROR_UNKNOWN:
-        return "ERROR_UNKNOWN";
-    case UCB_ERROR_UNSUPPORTED:
-        return "ERROR_UNSUPORTED";
-    case UCB_ERROR_INVALID_ARG:
-        return "ERROR_INVALID_ARG";
-    case UCB_ERROR_NOT_FOUND:
-        return "ERROR_NOT_FOUND";
-    case UCB_ERROR_ACCESS_DENIED:
-        return "ERROR_ACCESS_DENIED";
-    case UCB_ERROR_IO:
-        return "ERROR_IO";
-    case UCB_ERROR_OUT_OF_MEMORY:
-        return "ERROR_OUT_OF_MEMRY";
-    case UCB_ERROR_ENCODING:
-        return "ERROR_ENCODING";
-    case UCB_ERROR_NOT_IMPLEMENTED:
-        return "ERROR_NOT_IMPLEMENTED";
-    case UCB_ERROR_RANGE:
-        return "ERROR_RANGE";
-    default:
-        break;
-    }
-    assert(0);
-    return "ERROR_UNKNOWN";
+    if (s_ucb_errfunc)
+        s_ucb_errfunc(lvl, err);
+    else
+        ucb_error_print(lvl, err);
 }

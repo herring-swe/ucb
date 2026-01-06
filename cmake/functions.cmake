@@ -22,9 +22,9 @@ function(ucb_target_init name)
     endif()
 
     if("CXX" IN_LIST ARGS_LANGUAGE)
-        target_compile_features(${name} PRIVATE cxx_std_11)
+        target_compile_features(${name} PRIVATE c_std_11 cxx_std_11)
+
         if(NOT MSVC AND NOT APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-            # 
             target_compile_options(${name} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-stdlib=libstdc++>)
             target_link_libraries(${name} PUBLIC -lstdc++ -lm)
         endif()
@@ -37,9 +37,23 @@ function(ucb_target_init name)
     if(MSVC)
         # Source and execution character sets
         target_compile_options(${name} PRIVATE /utf-8)
-        target_compile_definitions(${name} PRIVATE _UNICODE UNICODE)
+
+        if(UCB_MEMTRACK_BACKTRACE)
+            target_compile_options(${name} PRIVATE "$<$<CONFIG:DEBUG>:/Oy->")
+        endif()
+
+        target_compile_definitions(${name} PRIVATE
+            _UNICODE UNICODE
+            _CRT_SECURE_NO_WARNINGS
+        )
     elseif(UNIX)
-        target_compile_definitions(${name} PRIVATE _GNU_SOURCE _XOPEN_SOURCE)
+        target_compile_definitions(${name} PRIVATE
+            _GNU_SOURCE _XOPEN_SOURCE
+        )
+
+        if(UCB_MEMTRACK_BACKTRACE)
+            target_compile_options(${name} PRIVATE "$<$<CONFIG:DEBUG>:-fno-omit-frame-pointer>")
+        endif()
     endif()
 
     ucb_target_set_warnings(${name})
@@ -80,6 +94,10 @@ function(ucb_add_library name)
         target_compile_definitions(${name} PUBLIC UCB_SHARED_LIB)
     else()
         target_compile_definitions(${name} PUBLIC UCB_STATIC_LIB)
+    endif()
+
+    if(UCB_DEVEL)
+        target_compile_definitions(${name} PUBLIC "$<$<CONFIG:DEBUG>:UCB_DEVEL>")
     endif()
 
     if(NOT MSVC)

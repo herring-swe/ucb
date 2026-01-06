@@ -10,12 +10,11 @@ from typing import (
     Iterable,
     Tuple,
     Type,
-    TypeAlias,
     TypeVar,
     Union,
     List,
 )
-from enum import IntEnum, Flag
+from enum import IntEnum
 from functools import total_ordering
 
 from .util import fmt_char, fmt_cp, fmt_cp_key_list, get_global_prefix
@@ -348,9 +347,6 @@ class Codepoint(int):
         if isinstance(other, (Codepoint, int)):
             return int.__lt__(self, other)
         raise TypeError(f"Cannot compare Codepoint with {type(other)}")
-
-
-CpValue: TypeAlias = Union[Codepoint, int, str]
 
 
 class CodepointSet(object):

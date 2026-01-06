@@ -21,10 +21,8 @@
 
 UCB_DIAG_PUSH
 UCB_DIAG_IGN_PADDED
-typedef struct ucb_unicode_result
+typedef struct ucb_uc_result
 {
-    ucb_ecode error;
-    const char* error_pos;
     /**
      * @brief The resulting NULL-terminated string or UCB_NULL on error.
      * The string must be free'd with ucb_free by the caller.
@@ -34,7 +32,7 @@ typedef struct ucb_unicode_result
      * @brief The size of the resulting string, excluding the NULL-terminator.
      */
     size_t size;
-} ucb_unicode_result_t;
+} ucb_uc_result;
 UCB_DIAG_POP
 
 typedef enum ucb_norm_form
@@ -64,25 +62,14 @@ typedef enum ucb_norm_form
      * NOTE: This is destructive, the produced string cannot be converted back to the original.
      */
     UCB_UC_NORM_NFKC,
-} ucb_norm_form_t;
+} ucb_norm_form;
 
-UCB_API const char* ucb_uc_norm_form_to_str(ucb_norm_form_t form);
-UCB_API ucb_norm_form_t ucb_uc_norm_form_from_str(const char* str);
+UCB_API const char* ucb_uc_norm_form_to_str(ucb_norm_form form);
+UCB_API ucb_norm_form ucb_uc_norm_form_from_str(const char* str);
 
-UCB_API uint32_t ucb_uc_iter_utf8(const unsigned char** iter);
+UCB_API ucb_cp ucb_uc_iter_utf8(const unsigned char** iter);
 
-// /**
-//  * @brief Buffer for unicode operations
-//  */
-// typedef struct
-// {
-//     char* buffer;
-//     size_t size;
-//     size_t capacity;
-// } ucb_uc_buffer_t;
-
-UCB_API ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* codepoints,
-                                             size_t len);
+UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t len, const struct ucb_error** perr);
 
 /**
  * @brief Validate a string as UTF-8
@@ -90,16 +77,16 @@ UCB_API ucb_ecode ucb_uc_encode_codepoints(ucb_buffer_t* buf, const uint32_t* co
  * @param size if not UCB_NULL, will be set to the length of the string
  * @return UCB_OK if valid
  */
-UCB_API ucb_ecode ucb_uc_validate(const char* str, size_t* size);
-UCB_API ucb_ecode ucb_uc_validate_buf(const char* str, size_t size);
+UCB_API bool ucb_uc_validate(const char* str, size_t* size);
+UCB_API bool ucb_uc_validate_buf(const char* str, size_t size);
 
 UCB_API size_t ucb_uc_num_cp(const char* str);
 UCB_API size_t ucb_uc_num_chars(const char* str);
 
-UCB_API ucb_unicode_result_t ucb_uc_to_upper(const char* str, size_t size);
-UCB_API ucb_unicode_result_t ucb_uc_to_lower(const char* str, size_t size);
-UCB_API ucb_unicode_result_t ucb_uc_to_title(const char* str, size_t size);
-UCB_API ucb_unicode_result_t ucb_uc_casefold(const char* str, size_t size);
+UCB_API ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, const struct ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, const struct ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_to_title(const char* str, size_t size, const struct ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const struct ucb_error** perr);
 
 /**
  * Normalize an utf-8 string
@@ -108,6 +95,7 @@ UCB_API ucb_unicode_result_t ucb_uc_casefold(const char* str, size_t size);
  * @param form the normalization form to use
  * @returns result, with the normalized string on success
  */
-UCB_API ucb_unicode_result_t ucb_uc_normalize(const char* str, size_t size, ucb_norm_form_t form);
+UCB_API ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
+                                       const struct ucb_error** perr);
 
 #endif // UCB_UNICODE_H

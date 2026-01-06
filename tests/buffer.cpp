@@ -70,10 +70,10 @@ TEST_CASE("buffer utils")
         UCB_DIAG_IGN_ALIGN_CAST
         *reinterpret_cast<uint32_t*>(unaligned_buf + 1) =
             0xAABBCCDD;                             // Write uint32_t at offset 1 (misaligned)
-        ucb_buffer_t buf = {unaligned_buf + 1, 16}; // 16 bytes (4x uint32_t)
+        ucb_buffer buf = {unaligned_buf + 1, 16}; // 16 bytes (4x uint32_t)
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
-        unaligned_buf[0] = 0xFF; // First byte is 0xFF
+        unaligned_buf[0] = 0xFFu; // First byte is 0xFF
         UCB_DIAG_POP
 
         // Check that we got a copy
@@ -88,7 +88,7 @@ TEST_CASE("buffer utils")
 
     SUBCASE("empty buffer")
     {
-        ucb_buffer_t buf = {nullptr, 0};
+        ucb_buffer buf = {nullptr, 0};
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
 
@@ -103,7 +103,7 @@ TEST_CASE("buffer utils")
         *reinterpret_cast<uint32_t*>(partial_buf + 0) = 0xAABBCCDD;
         *reinterpret_cast<uint32_t*>(partial_buf + 4) = 0x12345678;
 
-        ucb_buffer_t buf = {partial_buf, sizeof(partial_buf)};
+        ucb_buffer buf = {partial_buf, sizeof(partial_buf)};
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.used, &count);
 

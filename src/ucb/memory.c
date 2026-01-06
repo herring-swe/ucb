@@ -10,9 +10,7 @@
 
 #include "ucb/memory.h"
 
-#include "ucb/errcodes.h"
 #include "ucb/error.h"
-#include "ucb/error_private.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -31,8 +29,8 @@ void* ucb_malloc(size_t size)
         mem = malloc(size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal(ucb_error_msg(UCB_ERROR_OUT_OF_MEMORY,
-                                "ucb_malloc: Failed to allocate %zu bytes of memory", size));
+        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
+                         "ucb_malloc: Failed to allocate %zu bytes of memory", size);
     }
     return mem;
 }
@@ -45,9 +43,9 @@ void* ucb_calloc(size_t num, size_t size)
         mem = calloc(num, size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal(ucb_error_msg(UCB_ERROR_OUT_OF_MEMORY,
-                                "ucb_calloc: Failed to allocate %zu * %zu = %zu bytes of memory",
-                                num, size));
+        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
+                         "ucb_calloc: Failed to allocate %zu * %zu = %zu bytes of memory", num,
+                         size);
     }
     return mem;
 }
@@ -65,8 +63,8 @@ void* ucb_realloc2(void* ptr, size_t size, bool free_on_failure)
         mem = realloc(ptr, size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal(ucb_error_msg(UCB_ERROR_OUT_OF_MEMORY,
-                                "ucb_realloc2: Failed to allocate %zu bytes of memory", size));
+        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
+                         "ucb_realloc2: Failed to allocate %zu bytes of memory", size);
         // Avoid unintentional leak
         if (free_on_failure && ptr)
             free(ptr);
@@ -87,16 +85,14 @@ void ucb_free(void* ptr)
         free(ptr);
 }
 
-ucb_ecode ucb_memcpy(void* dest, size_t dest_size, const void* src, size_t src_size)
+void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void* UCB_RESTRICT src,
+                  size_t src_size)
 {
 #if defined(__STDC_LIB_EXT1__) || defined(_WIN32)
-    return ucb_err_wrap_errno(memcpy_s(dest, dest_size, src, src_size));
+    UCB_VERIFY_ERRNO(memcpy_s(dest, dest_size, src, src_size), "Failed to copy memory");
 #else
-    if (!dest || !src)
-        return UCB_ERROR_INVALID_ARG;
-    if (dest_size < src_size)
-        return UCB_ERROR_RANGE;
+    UCB_VERIFY(dest && src, UCB_ERRSYS_EINVAL, "Invalid arguments");
+    UCB_VERIFY(dest_size >= src_size, UCB_ERRSYS_ERANGE, "Destination buffer too small");
     memcpy(dest, src, src_size);
-    return UCB_OK;
 #endif
 }

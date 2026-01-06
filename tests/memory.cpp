@@ -35,7 +35,7 @@ static memtrack_state s_state = {0};
 
 UCB_DIAG_PUSH
 UCB_DIAG_IGN_UNUSED_FUNCTION
-static void memtrack_func(const ucb_mem_report_t* const report)
+static void memtrack_func(const ucb_mem_report* const report)
 {
     if (!report)
         return;
@@ -51,7 +51,7 @@ static void memtrack_func(const ucb_mem_report_t* const report)
     s_state.total_size       = report->total_size;
 
     // Verify report
-    ucb_mem_alloc_t* cur = report->allocs;
+    ucb_mem_alloc* cur = report->allocs;
     size_t cur_alloc     = 0;
     size_t cur_size      = 0;
     while (cur)
@@ -150,7 +150,7 @@ TEST_CASE("basic memory")
  */
 struct MemTrackFixture
 {
-    ucb_mem_report_func_t prev_func;
+    ucb_mem_report_func prev_func;
     MemTrackFixture() : prev_func(UCB_MEMTRACK_SET_FUNC(memtrack_func)) {}
     ~MemTrackFixture()
     {

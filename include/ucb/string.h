@@ -2,7 +2,7 @@
  * This file is part of the UCB project
  * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
  * SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Contain string implementation and related functions
  */
 
@@ -86,7 +86,8 @@ UCB_API ucb_str_t* ucb_str_substr(const ucb_str_t* str, size_t index, size_t cou
  *             will be determined.
  * @return ucb_str_t* utf8 string or NULL on error
  */
-UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct ucb_error *err);
+UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen,
+                                      const struct ucb_error** perr);
 
 /**
  * Creates a Windows wide string from a utf8 string
@@ -94,7 +95,8 @@ UCB_API ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, struct u
  * @param wlen_out optional pointer, set to length of the returned string
  * @return wchar_t* UTF-16 string or UCB_NULL on error
  */
-UCB_API wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, struct ucb_error *err);
+UCB_API wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out,
+                                  const struct ucb_error** perr);
 #endif
 
 #endif // UCB_STRING_H

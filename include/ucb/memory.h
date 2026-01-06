@@ -98,7 +98,8 @@ UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
 /*                           Other memory functions                           */
 /* -------------------------------------------------------------------------- */
 
-UCB_API ucb_ecode ucb_memcpy(void* dest, size_t dest_size, const void* src, size_t src_size);
+UCB_API void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void* UCB_RESTRICT src,
+                          size_t src_size);
 
 /* -------------------------------------------------------------------------- */
 /*                                Helper macros                               */
