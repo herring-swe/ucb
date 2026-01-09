@@ -183,7 +183,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
 
         // Pre-allocate buffer with an estimate
         size_t array_size = frames * sizeof(char*);
-        size_t total_size = array_size + frames * sizeof(char) * 60;
+        size_t total_size = array_size + frames * sizeof(char) * 80;
 
         if (!ucb_buffer_init_malloc(&buf, total_size))
         {

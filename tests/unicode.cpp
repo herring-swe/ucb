@@ -551,8 +551,8 @@ TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest
         test_strlens += test.nfkc.size();
         test_strlens += test.nfkd.size();
     }
-    UCB_DIAG_PUSH
-    UCB_DIAG_IGN_IMPL_INT_FLOAT
+    UCB_DIAG_PUSH()
+    UCB_DIAG_IGN_IMPL_INT_FLOAT()
     UCB_DIAG_CLANG_IGN("-Wsource-uses-openmp")
     double test_avg_strlen = test_strlens / 5.0;
 
@@ -613,7 +613,7 @@ TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest
     std::cout << "Average test time: " << duration / static_cast<double>(iterations) << " ms"
               << std::endl;
 
-    UCB_DIAG_POP
+    UCB_DIAG_POP()
 }
 
 TEST_SUITE_END();

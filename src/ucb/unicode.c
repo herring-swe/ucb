@@ -32,7 +32,7 @@
 /*                               Property lookup                              */
 /* -------------------------------------------------------------------------- */
 
-static const ucb_uc_prop_t* ucb_uc_get_prop(ucb_cp cp)
+static const ucb_uc_prop* ucb_uc_get_prop(ucb_cp cp)
 {
     assert(cp <= 0x110000);
     unsigned int offset = s_ucb_uc_stage1_table[cp / UCB_UC_BLOCK_SIZE] * UCB_UC_BLOCK_SIZE;
@@ -41,7 +41,7 @@ static const ucb_uc_prop_t* ucb_uc_get_prop(ucb_cp cp)
     return s_ucb_uc_prop_table + index;
 }
 
-static const ucb_uc_mapping_t* ucb_uc_get_mapping(const ucb_uc_prop_t* prop)
+static const ucb_uc_mapping* ucb_uc_get_mapping(const ucb_uc_prop* prop)
 {
     if (prop && prop->mapping_idx)
     {
@@ -51,7 +51,7 @@ static const ucb_uc_mapping_t* ucb_uc_get_mapping(const ucb_uc_prop_t* prop)
     return UCB_NULL;
 }
 
-static const ucb_uc_decomp_t* ucb_uc_get_decomp(const ucb_uc_prop_t* prop)
+static const ucb_uc_decomp* ucb_uc_get_decomp(const ucb_uc_prop* prop)
 {
     if (prop && prop->decomp_idx)
     {
@@ -61,7 +61,7 @@ static const ucb_uc_decomp_t* ucb_uc_get_decomp(const ucb_uc_prop_t* prop)
     return UCB_NULL;
 }
 
-static const ucb_uc_combiners_t* ucb_uc_get_combiners(const ucb_uc_prop_t* prop)
+static const ucb_uc_combiners* ucb_uc_get_combiners(const ucb_uc_prop* prop)
 {
     if (prop && prop->combiner_idx)
     {
@@ -71,7 +71,7 @@ static const ucb_uc_combiners_t* ucb_uc_get_combiners(const ucb_uc_prop_t* prop)
     return UCB_NULL;
 }
 
-static bool is_combining_mark(ucb_uc_prop_t* prop)
+static bool is_combining_mark(ucb_uc_prop* prop)
 {
     return prop && prop->ccc > 0;
 }
@@ -331,7 +331,7 @@ size_t ucb_uc_num_chars(const char* str)
     // Simple implementation before implementing grapheme clusters
     size_t num = 0;
     ucb_cp cp;
-    const ucb_uc_prop_t* prop;
+    const ucb_uc_prop* prop;
 
     const unsigned char* iter = (const unsigned char*)str;
     while ((cp = ucb_uc_next_valid(&iter)))
@@ -357,7 +357,7 @@ typedef enum ucb_uc_case_op
 } ucb_uc_case_op_t;
 
 // Returns true if the code point is a word separator for titlecase purposes.
-static bool ucb_uc_is_word_separator(ucb_cp cp, const ucb_uc_prop_t* prop)
+static bool ucb_uc_is_word_separator(ucb_cp cp, const ucb_uc_prop* prop)
 {
     if (cp == 0x27)
         return false; // Apostrophe (') is not a separator
@@ -387,7 +387,7 @@ typedef struct
     size_t out_len;
     ucb_cp buf[UCB_UC_MAX_MULTI_LEN];
     ucb_uc_case_op_t op;
-    const ucb_uc_prop_t* last_prop;
+    const ucb_uc_prop* last_prop;
     ucb_cp last_cp;
 } casemap_ctx_t;
 
@@ -397,7 +397,7 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
     if (!ctx->buf[0]) // Null terminator
         return true;
 
-    const ucb_uc_prop_t* prop = ucb_uc_get_prop(ctx->buf[0]);
+    const ucb_uc_prop* prop = ucb_uc_get_prop(ctx->buf[0]);
 
     if (!prop)
     {
@@ -405,7 +405,7 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
                          ctx->buf[0]);
     }
 
-    const ucb_uc_mapping_t* mapping = ucb_uc_get_mapping(prop);
+    const ucb_uc_mapping* mapping = ucb_uc_get_mapping(prop);
     if (!mapping)
     {
         ctx->last_cp   = ctx->buf[0];
@@ -453,7 +453,7 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
     {
         int idx = ref - UCB_UC_NUM_SIMPLE_MAP - 1;
         UCB_ASSERT_INTERNAL(idx <= UCB_UC_NUM_MULTI_MAP, "Invalid mapping index");
-        const ucb_uc_mmap_t* entry = &s_ucb_uc_mmap_table[idx];
+        const ucb_uc_mmap* entry = &s_ucb_uc_mmap_table[idx];
 
         size_t len = 0;
         for (; len < UCB_UC_MAX_MULTI_LEN && entry->value[len] != UCB_UC_NO_VALUE; len++)
@@ -665,8 +665,8 @@ static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
 static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, const ucb_error** perr)
 {
     uint8_t ccc                   = 0;
-    const ucb_uc_prop_t* prop     = ucb_uc_get_prop(cp);
-    const ucb_uc_decomp_t* decomp = UCB_NULL;
+    const ucb_uc_prop* prop     = ucb_uc_get_prop(cp);
+    const ucb_uc_decomp* decomp = UCB_NULL;
     if (prop)
     {
         ccc = prop->ccc;
@@ -695,7 +695,7 @@ static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, cons
     return ret;
 }
 
-static ucb_cp norm_compose_cp(ucb_cp starter, ucb_cp combiner, const ucb_uc_combiners_t* combiners)
+static ucb_cp norm_compose_cp(ucb_cp starter, ucb_cp combiner, const ucb_uc_combiners* combiners)
 {
     if (!combiners)
         return 0;
@@ -703,7 +703,7 @@ static ucb_cp norm_compose_cp(ucb_cp starter, ucb_cp combiner, const ucb_uc_comb
     UCB_UNUSED(starter);
     assert(starter == combiners->starter);
 #endif
-    const combiner_entry_t* entries = combiners->entries;
+    const ucb_uc_combiner_entry* entries = combiners->entries;
 
     // Binary search for the combiner
     size_t left  = 0;
@@ -729,9 +729,9 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
     if (count < 2)
         return count; // Nothing to compose
 
-    const ucb_uc_prop_t* prop;
-    const ucb_uc_prop_t* prev_prop;
-    const ucb_uc_combiners_t* combiners = UCB_NULL;
+    const ucb_uc_prop* prop;
+    const ucb_uc_prop* prev_prop;
+    const ucb_uc_combiners* combiners = UCB_NULL;
     // size_t last_starter_idx             = 0; // Only valid if combiners != NULL
     for (size_t i = 1; i < count; i++)
     {
@@ -842,7 +842,7 @@ static size_t ucb_uc_check_norm(const char* str, bool* is_latin1, bool* must_dec
             check_latin1 = false;
         if (!check_decomp)
         {
-            const ucb_uc_prop_t* prop = ucb_uc_get_prop(cp);
+            const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
             if (!prop)
                 continue;
             if (prop->ccc > 0 || (prop->flags & UCB_UC_PROP_COMPEXCL))

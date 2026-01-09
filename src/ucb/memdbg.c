@@ -85,10 +85,10 @@ static inline int mem_sprintf(char* str, size_t size, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    UCB_DIAG_PUSH
-    UCB_DIAG_IGN_FORMAT_NONLITERAL
+    UCB_DIAG_PUSH()
+    UCB_DIAG_IGN_FORMAT_NONLITERAL()
     int ret = vsnprintf(str, size, fmt, args);
-    UCB_DIAG_POP
+    UCB_DIAG_POP()
     va_end(args);
     return ret;
 }

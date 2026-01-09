@@ -1,9 +1,11 @@
 /**
+ * @file math.h
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Your Name <your@email.com>
- * SPDX-License-Identifier: MIT
- *
- * @brief Common generic math functions
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Type generic math functions
+ * @todo Split up into tgval.h and tgmath.h
  */
 
 #ifndef UCB_MATH_H

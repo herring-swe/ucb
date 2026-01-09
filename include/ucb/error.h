@@ -1,22 +1,35 @@
 /**
+ * @file error.h
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
  *
  * @brief Error handling
  *
- * This, our philosophy is:
- *  - Prefer returning ucb_ecode
- *  - For simple functions, the basic return type is used:
- *    - For pointers, return UCB_NULL on error.
- *    - For arithmetic types, document which value may denote an error.
- *    - For bool, return maybe /s
+ * @todo Write a more fluid documentation.
  *
- * - Always check arguments (UCB_ERROR_INVALID_ARG)
- * - Always catch errors from system and internally
- * - Always set last error on error
- * - No need to clear errors
- * - If error handling becomes difficult, refactor to use ucb_ecode
+ * UCB handles errors in the following way:
+ * - Fatal errors, user errors and warnings:
+ *   - Are **reported** to a single error handling function.
+ *   - By default these errors are written to stderr, but the program is **not** terminated.
+ *   - The user can override the default error handler, with @ref ucb_error_set_func.
+ *   - Examples or each type:
+ *     - Fatal error: Out of memory. Functions try to return early, but no guarantee.
+ *     - User error: Invalid arguments or states in input. Functions return early.
+ *     - Warning: Recoverable errors where fallbacks may be used to continue.
+ * - Complex errors:
+ *   - For more complex errors, where input may lead to invalid results, arithmetic failures or
+ * similar, the function will **throw** an @ref ucb_error.
+ *   - These functions takes a @ref ucb_error double pointer as argument and must return a type such
+ * as bool or NULL pointer which can indicate that an error has occured.
+ *   - The @ref ucb_error contain an @ref ucb_ecode and a message of the error.
+ *   - Errors may be ignored by not providing an @ref ucb_error pointer, but this is not
+ * recommended.
+ *   - Any errors thrown must be handled by the caller or propagated. The error is cleared by
+ * calling @ref ucb_error_clear.
+ * - Otherwise for simple functions, like getters, any input NULL pointers may be ignored if the
+ * return type allows it.
+ * - All functions must document if they behave differently than above rules.
  */
 
 #ifndef UCB_ERROR_H

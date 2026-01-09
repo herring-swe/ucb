@@ -1,25 +1,10 @@
 /**
+ * @file errcodes.h
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Error handling definition
- *
- * Quote: "If the only possible errors are programmer errors, don't return an error code, use
- * asserts inside the function." - A.Shelly, stackoverflow.com.
- *
- * This, our philosophy is:
- *  - Prefer returning ucb_ecode
- *  - For simple functions, the basic return type is used:
- *    - For pointers, return UCB_NULL on error.
- *    - For arithmetic types, document which value may denote an error.
- *    - For bool, return maybe /s
- *
- * - Always check arguments (UCB_ERROR_INVALID_ARG)
- * - Always catch errors from system and internally
- * - Always set last error on error
- * - No need to clear errors
- * - If error handling becomes difficult, refactor to use ucb_ecode
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Error codes
  */
 
 #ifndef UCB_ERROR_CODES_H

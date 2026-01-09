@@ -17,8 +17,8 @@
 
 #include <stdint.h>
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_PADDED
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_PADDED()
 typedef struct
 {
 #ifdef {{prefix_uc}}WITH_VERIF
@@ -31,8 +31,8 @@ typedef struct
         uint32_t vals[2]; // For decompose_len ≤ 2
         const uint32_t* ptr;   // For decompose_len > 2 (points to static array)
     };
-} {{prefix_lc}}decomp_t;
-UCB_DIAG_POP
+} {{prefix_lc}}decomp;
+UCB_DIAG_POP()
 
 // Outlier sequences (long decompositions)
 {% for entry in props if entry.has_decomp and entry.dcvals|length > 2 %}
@@ -41,7 +41,7 @@ static const uint32_t s_decompose_{{ fmt_cp_key(entry.cp) }}[{{ entry.dcvals|len
 {% endfor %}
 
 // Main decomposition table
-static const {{prefix_lc}}decomp_t s_{{prefix_lc}}decomp_table[{{prefix_uc}}NUM_DECOMP] = {
+static const {{prefix_lc}}decomp s_{{prefix_lc}}decomp_table[{{prefix_uc}}NUM_DECOMP] = {
 {% for entry in props if entry.has_decomp %}
     { {% if with_verif %}
     {{- fmt_cp(entry.cp)|rjust(8) }}{{ ", " }}

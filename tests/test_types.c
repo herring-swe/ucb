@@ -1,3 +1,9 @@
+/*
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "test_types.h"
 
 #include "ucb/cstring.h"
@@ -36,9 +42,9 @@ int test_types(void)
 
     char buf[BUFSIZE];
 
-    UCB_DIAG_PUSH
-    UCB_DIAG_IGN_FORMAT_NONLITERAL
-    UCB_DIAG_IGN_DBL_PROM
+    UCB_DIAG_PUSH()
+    UCB_DIAG_IGN_FORMAT_NONLITERAL()
+    UCB_DIAG_IGN_DBL_PROM()
 
     ucb_cstr_sprintf(buf, BUFSIZE, "Test unsigned char = %s\n", UCB_FMT(val_uchar));
     printf(buf, val_uchar);
@@ -100,7 +106,7 @@ int test_types(void)
     ucb_cstr_sprintf(buf, BUFSIZE, "Test uint64_t = %s\n", UCB_FMT(val_uint64_t));
     printf(buf, val_uint64_t);
 
-    UCB_DIAG_POP
+    UCB_DIAG_POP()
 
     UCB_UNUSED(val_intptr_t);
     UCB_UNUSED(val_uint32_t);
@@ -135,8 +141,8 @@ int test_types(void)
     printf("Test uint64_t = %s\n", UCB_TYPE(val_uint64_t));
     printf("Test intptr_t = %s\n", UCB_TYPE(val_intptr_t));
 
-    UCB_DIAG_PUSH
-    UCB_DIAG_IGN_UNREACHABLE_CODE
+    UCB_DIAG_PUSH()
+    UCB_DIAG_IGN_UNREACHABLE_CODE()
 #if defined(_WIN32) // LLP64
 #if defined(_WIN64)
     if (strcmp(UCB_TYPE(val_size_t), "unsigned long long") != 0)
@@ -148,6 +154,6 @@ int test_types(void)
         errs++;
 #endif
 #endif
-    UCB_DIAG_POP
+    UCB_DIAG_POP()
     return errs;
 }

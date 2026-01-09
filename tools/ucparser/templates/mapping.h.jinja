@@ -21,7 +21,7 @@
 typedef struct
 {
     uint32_t value;
-} {{prefix_lc}}smap_t;
+} {{prefix_lc}}smap;
 
 // Multi codepoint mapping table
 typedef struct
@@ -31,7 +31,7 @@ typedef struct
      * Unused slots are set with {{prefix_uc}}NO_VALUE.
      */
     uint32_t value[{{prefix_uc}}MAX_MULTI_LEN];
-} {{prefix_lc}}mmap_t;
+} {{prefix_lc}}mmap;
 
 /**
  * References:
@@ -48,21 +48,21 @@ typedef struct
     uint16_t to_lower;    // reference
     uint16_t to_title;    // reference
     uint16_t to_casefold; // reference
-} {{prefix_lc}}mapping_t;
+} {{prefix_lc}}mapping;
 
-static const {{prefix_lc}}smap_t s_{{prefix_lc}}smap_table[{{prefix_uc}}NUM_SIMPLE_MAP] = {
+static const {{prefix_lc}}smap s_{{prefix_lc}}smap_table[{{prefix_uc}}NUM_SIMPLE_MAP] = {
 {% for cp in smap %}
     { {{ fmt_cp(cp)|rjust(8) }} },
 {% endfor %}
 };
 
-static const {{prefix_lc}}mmap_t s_{{prefix_lc}}mmap_table[{{prefix_uc}}NUM_MULTI_MAP] = {
+static const {{prefix_lc}}mmap s_{{prefix_lc}}mmap_table[{{prefix_uc}}NUM_MULTI_MAP] = {
 {% for cplist in mmap %}
     { {{ fmt_cp_list(cplist, max_mmap_len, true) }} },
 {% endfor %}
 };
 
-static const {{prefix_lc}}mapping_t s_{{prefix_lc}}mapping_table[{{prefix_uc}}NUM_MAPPING] = {
+static const {{prefix_lc}}mapping s_{{prefix_lc}}mapping_table[{{prefix_uc}}NUM_MAPPING] = {
 {% for entry in props if entry.has_mapping %}
     {{ fmt_idx_list([entry.to_upper_index, entry.to_lower_index, entry.to_title_index, entry.casefold_index], just=true) }},
 {% endfor %}

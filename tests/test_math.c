@@ -1,3 +1,9 @@
+/*
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "test_math.h"
 
 #include "ucb/diag.h"
@@ -160,8 +166,8 @@
 
 int test_math(void)
 {
-    UCB_DIAG_PUSH
-    UCB_DIAG_IGN_DBL_PROM
+    UCB_DIAG_PUSH()
+    UCB_DIAG_IGN_DBL_PROM()
 
     int errs = 0;
 
@@ -190,7 +196,7 @@ int test_math(void)
     test_calls_signed_float(float);
     test_calls_signed_float(double);
 
-    UCB_DIAG_POP
+    UCB_DIAG_POP()
 
     return errs;
 }

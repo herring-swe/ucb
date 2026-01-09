@@ -21,22 +21,22 @@
 typedef struct {
     uint32_t combiner;
     uint32_t composed;
-} combiner_entry_t;
+} {{prefix_lc}}combiner_entry;
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_PADDED
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_PADDED()
 typedef struct
 {
 #ifdef {{prefix_uc}}WITH_VERIF
     uint32_t starter; // Original starter codepoint
 #endif
     uint8_t len; // Number of combiners (only canonical)
-    const combiner_entry_t* entries; // Pointer entry table, which is sorted by combiner
-} {{prefix_lc}}combiners_t;
-UCB_DIAG_POP
+    const {{prefix_lc}}combiner_entry* entries; // Pointer entry table, which is sorted by combiner
+} {{prefix_lc}}combiners;
+UCB_DIAG_POP()
 
 {% for entry in combiners %}
-static const combiner_entry_t s_combiner_entries_{{ fmt_cp_key(entry.starter) }}[{{ entry.num_entries }}] = {
+static const {{prefix_lc}}combiner_entry s_combiner_entries_{{ fmt_cp_key(entry.starter) }}[{{ entry.num_entries }}] = {
 {% for combiner, composed in entry.entries %}
     { {{ fmt_cp(combiner)|rjust(8) }}{{ ", " }}{{ fmt_cp(composed)|rjust(8) }} }{% if not loop.last %}{{",\n"}}{% endif %}
 {% endfor %}
@@ -44,7 +44,7 @@ static const combiner_entry_t s_combiner_entries_{{ fmt_cp_key(entry.starter) }}
 {% endfor %}
 
 // Main combiner table
-static const {{prefix_lc}}combiners_t s_{{prefix_lc}}combiner_table[{{prefix_uc}}NUM_COMBINER] = {
+static const {{prefix_lc}}combiners s_{{prefix_lc}}combiner_table[{{prefix_uc}}NUM_COMBINER] = {
 {% for entry in combiners %}
     { {% if with_verif %}
     {{- fmt_cp(entry.starter)|rjust(8) }}{{ ", " }}

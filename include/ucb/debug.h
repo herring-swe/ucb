@@ -1,9 +1,10 @@
 /**
+ * @file debug.h
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Debug macros and helpers
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Debug helper macros
  */
 
 #ifndef UCB_DEBUG_H

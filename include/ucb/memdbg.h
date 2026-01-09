@@ -14,8 +14,8 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_PADDED
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_PADDED()
 typedef struct ucb_mem_report_alloc
 {
     struct ucb_mem_report_alloc* next;
@@ -40,7 +40,7 @@ typedef struct ucb_mem_report
     size_t total_alloc;      // Total number of allocations
     size_t total_size;       // Total allocated memory
 } ucb_mem_report;
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 /**
  * @brief Custom report function
@@ -64,8 +64,8 @@ UCB_API void ucb_mem_tracking_pop(void);
 UCB_API void ucb_mem_tracking_report(bool final);
 
 #ifdef NDEBUG
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_UNUSED_VALUE
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_UNUSED_VALUE()
 #define UCB_MEMTRACK_ENABLE() ((void)0)
 #define UCB_MEMTRACK_RESET()  ((void)0)
 static inline ucb_mem_report_func UCB_MEMTRACK_SET_FUNC(ucb_mem_report_func func)
@@ -80,7 +80,7 @@ static inline ucb_mem_report_func UCB_MEMTRACK_SET_FUNC(ucb_mem_report_func func
 #define UCB_MEMTRACK_POP()           ((void)0)
 #define UCB_MEMTRACK_REPORT()        ((void)0)
 #define UCB_MEMTRACK_FINAL()         ((void)0)
-UCB_DIAG_POP
+UCB_DIAG_POP()
 #else // Debug build
 #define UCB_MEMTRACK_ENABLE()        ucb_mem_tracking_enable()
 #define UCB_MEMTRACK_RESET()         ucb_mem_tracking_reset()

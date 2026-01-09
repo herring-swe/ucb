@@ -8,10 +8,10 @@
 #include <ucb/diag.h>
 
 #define DOCTEST_CONFIG_IMPLEMENT
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_NRVO
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_NRVO()
 #include "doctest.h"
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 #include <ucb/diag.h>
 #include <ucb/error.h>
@@ -27,8 +27,8 @@ static void testing_errfunc(ucb_errlvl lvl, const ucb_error* e)
 
 static ucb_mem_report_func s_default_mem_report;
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_UNUSED_FUNCTION
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_UNUSED_FUNCTION()
 static void testing_memreport(const ucb_mem_report* report)
 {
     if (s_default_mem_report)
@@ -50,7 +50,7 @@ static void testing_memreport_final(const ucb_mem_report* report)
         exit(1);
     }
 }
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 // struct VerboseReporter : public doctest::ConsoleReporter
 // {

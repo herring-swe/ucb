@@ -15,6 +15,7 @@ Just basic notes to quickly get a configuration up and running.
 - Better Comments (aaron-bond.better-comments)
 - Doxygen Documentation Generator (cschlosser.doxdocgen)
   - **NOTE:** Has shown issues when rearranging lines. Need to investigate.
+- Doxygen Runner (betwo.vscode-doxygen-runner)
 
 ### Required for Python
 - Python (ms-python.python)
@@ -44,11 +45,13 @@ Some settings may make more sense in user settings.json
     // Additional file documentation. One tag per line will be added. Can template `{year}`, `{date}`, `{author}`, `{email}` and `{file}`. You have to specify the prefix.
     "doxdocgen.file.customTag": [
         "This file is part of the UCB project",
-        "SPDX-FileCopyrightText: © {year} {author} <{email}>",
-        "SPDX-License-Identifier: MIT"
+        "- SPDX-FileCopyrightText: © {year} {author} <{email}>",
+        "- SPDX-License-Identifier: MIT",
     ],
     // The order to use for the file comment. Values can be used multiple times. Valid values are shown in default setting.
     "doxdocgen.file.fileOrder": [
+        "file",
+        "empty",
         "custom",
         "empty",
         "brief",

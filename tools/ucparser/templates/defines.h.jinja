@@ -55,7 +55,7 @@ typedef enum {{prefix_lc}}gc
 {% for e_val in enum_gc %}
     {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
 {% endfor %}
-} {{prefix_lc}}gc_t;
+} {{prefix_lc}}gc;
 
 /**
  * Decomposition types
@@ -66,7 +66,7 @@ typedef enum {{prefix_lc}}dctype
 {% for e_val in enum_decomp %}
     {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
 {% endfor %}
-} {{prefix_lc}}dctype_t;
+} {{prefix_lc}}dctype;
 
 // General category macros
 #define {{prefix_uc}}IS_LETTER(c)      ((c) >= {{enum_gc.prefix()}}LU && (c) <= {{enum_gc.prefix()}}LO)

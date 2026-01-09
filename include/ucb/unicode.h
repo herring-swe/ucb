@@ -19,8 +19,8 @@
 
 #define UCB_NOCP 0xFFFF
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_PADDED
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_PADDED()
 typedef struct ucb_uc_result
 {
     /**
@@ -33,7 +33,7 @@ typedef struct ucb_uc_result
      */
     size_t size;
 } ucb_uc_result;
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 typedef enum ucb_norm_form
 {

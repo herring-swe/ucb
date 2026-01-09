@@ -14,8 +14,8 @@
 #include <vector>
 #include <mutex>
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_PADDED
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_PADDED()
 typedef struct memtrack_state
 {
     uint32_t magic;
@@ -29,12 +29,12 @@ typedef struct memtrack_state
     bool reported;
     bool leaks;
 } memtrack_state;
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 static memtrack_state s_state = {0};
 
-UCB_DIAG_PUSH
-UCB_DIAG_IGN_UNUSED_FUNCTION
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_UNUSED_FUNCTION()
 static void memtrack_func(const ucb_mem_report* const report)
 {
     if (!report)
@@ -64,7 +64,7 @@ static void memtrack_func(const ucb_mem_report* const report)
     REQUIRE(cur_alloc == report->current_alloc);
     REQUIRE(cur_size == report->current_size);
 }
-UCB_DIAG_POP
+UCB_DIAG_POP()
 
 // Force test mutex
 static std::mutex s_mutex;

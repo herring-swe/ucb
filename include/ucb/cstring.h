@@ -1,10 +1,11 @@
 /**
+ * @file cstring.h
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
  * @brief Cross-platform C string functions
- * Not aware of encodings. For unicode use string.h or unicode.h
+ * @remark Not aware of encodings. For unicode use @ref string.h or @ref unicode.h
  */
 
 #ifndef UCB_CSTRING_H

@@ -35,9 +35,9 @@ typedef struct
     {{cstduint(num_decomp_table+1)}} decomp_idx;  // Index of decomposition table + 1
     {{cstduint(num_combiner_table+1)}} combiner_idx;  // Index of combiner table + 1
     
-} {{prefix_lc}}prop_t;
+} {{prefix_lc}}prop;
 
-static const {{prefix_lc}}prop_t s_{{prefix_lc}}prop_table[{{prefix_uc}}NUM_PROPERTIES] = {
+static const {{prefix_lc}}prop s_{{prefix_lc}}prop_table[{{prefix_uc}}NUM_PROPERTIES] = {
 {% for entry in props -%}
     {{ "    { " }}
     {{- entry.flags|rjust(2) }}{{ ", " }}

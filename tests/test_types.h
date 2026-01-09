@@ -1,3 +1,9 @@
+/*
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ */
+
 #ifndef TESTS_TEST_TYPES_H
 #define TESTS_TEST_TYPES_H
 
