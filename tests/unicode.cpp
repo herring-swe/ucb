@@ -1,7 +1,11 @@
 /**
+ * @file unicode.cpp
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief unicode tests
  */
 
 #include "doctest.h"
@@ -168,7 +172,7 @@ static inline void test_mapping(const char* input, const char* lower, const char
             continue;
 
         ucres = func[i](strings[0], len, &err);
-        CHECK(ucb_error_check(err));
+        CHECK(!UCB_IS_THROWN(err));
         ucb_error_clear(&err);
         CHECK(ucres.data != nullptr);
         if (ucres.data)
@@ -188,7 +192,7 @@ static inline unsigned int test_norm_bench(const std::string& input, const std::
     ucb_uc_result ucres  = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
 
     unsigned int success = 0;
-    if (ucb_error_check(err))
+    if (!UCB_IS_THROWN(err))
     {
         if (std::string(ucres.data) == correct)
             success = 1;
@@ -206,7 +210,7 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
 
     CAPTURE(type_str);
 
-    CHECK(ucb_error_check(err));
+    CHECK(!UCB_IS_THROWN(err));
     ucb_error_clear(&err);
 
     std::stringstream ss_inp("");

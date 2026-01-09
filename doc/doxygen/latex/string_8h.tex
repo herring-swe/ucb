@@ -1,80 +1,94 @@
-\doxysection{include/\+ucb/\+string.h File Reference}
+\doxysection{include/ucb/string.h File Reference}
 \hypertarget{string_8h}{}\label{string_8h}\index{include/ucb/string.h@{include/ucb/string.h}}
-{\ttfamily \+\#include "{}export.\+h"{}}\newline
-{\ttfamily \+\#include "{}types.\+h"{}}\newline
-{\ttfamily \+\#include $<$stdbool.\+h$>$}\newline
-{\ttfamily \+\#include $<$stddef.\+h$>$}\newline
-{\ttfamily \+\#include $<$stdint.\+h$>$}\newline
+
+
+String type and related functions.  
+
+
+{\ttfamily \#include "{}export.\+h"{}}\newline
+{\ttfamily \#include "{}types.\+h"{}}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
 \doxysubsubsection*{Classes}
 \begin{DoxyCompactItemize}
 \item 
-struct \doxymbox{\hyperlink{structucb__str__result__t}{ucb\+\_\+str\+\_\+result\+\_\+t}}
+struct \mbox{\hyperlink{structucb__str__result__t}{ucb\+\_\+str\+\_\+result\+\_\+t}}
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Typedefs}
 \begin{DoxyCompactItemize}
 \item 
-typedef struct ucb\+\_\+str \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}}
+typedef struct ucb\+\_\+str \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}}
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{string_8h_ab5aa73b9a6508f611a91a5ca8e0fddba}{ucb\+\_\+str\+\_\+new}} (const char \texorpdfstring{$\ast$}{*}cstr, size\+\_\+t len, uint32\+\_\+t flags)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{string_8h_ab5aa73b9a6508f611a91a5ca8e0fddba}{ucb\+\_\+str\+\_\+new}} (const char \texorpdfstring{$\ast$}{*}cstr, size\+\_\+t len, uint32\+\_\+t flags)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{string_8h_ab54acb38d1971456bdc6f40795e6e2ac}{ucb\+\_\+str\+\_\+free}} (\doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \mbox{\hyperlink{string_8h_ab54acb38d1971456bdc6f40795e6e2ac}{ucb\+\_\+str\+\_\+free}} (\mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{string_8h_ad7674f6ea9670945d321f16cfb2d8d6b}{ucb\+\_\+str\+\_\+is\+\_\+shallow}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \mbox{\hyperlink{string_8h_ad7674f6ea9670945d321f16cfb2d8d6b}{ucb\+\_\+str\+\_\+is\+\_\+shallow}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{string_8h_ad72259dc739c65efdf303a5cef11789d}{ucb\+\_\+str\+\_\+cstr}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{string_8h_ad72259dc739c65efdf303a5cef11789d}{ucb\+\_\+str\+\_\+cstr}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \doxymbox{\hyperlink{string_8h_a792c6c2d96feef43a52b52faf7a242d7}{ucb\+\_\+str\+\_\+size}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \mbox{\hyperlink{string_8h_a792c6c2d96feef43a52b52faf7a242d7}{ucb\+\_\+str\+\_\+size}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \doxymbox{\hyperlink{string_8h_a33f40b6e671f4c5c79937dc4c56b7c9c}{ucb\+\_\+str\+\_\+len}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \mbox{\hyperlink{string_8h_a33f40b6e671f4c5c79937dc4c56b7c9c}{ucb\+\_\+str\+\_\+len}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \doxymbox{\hyperlink{string_8h_a80c01cedcfd4ef8ba707abf9c94f92ec}{ucb\+\_\+str\+\_\+num\+\_\+chars}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \mbox{\hyperlink{string_8h_a80c01cedcfd4ef8ba707abf9c94f92ec}{ucb\+\_\+str\+\_\+num\+\_\+chars}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{string_8h_af06c0a108ebd326ddf8c4a85ca26395b}{ucb\+\_\+str\+\_\+copy}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{string_8h_af06c0a108ebd326ddf8c4a85ca26395b}{ucb\+\_\+str\+\_\+copy}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{string_8h_ad077b90342665985e82d03dbfbc362df}{ucb\+\_\+str\+\_\+concat}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str1, const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str2)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{string_8h_ad077b90342665985e82d03dbfbc362df}{ucb\+\_\+str\+\_\+concat}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str1, const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str2)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{string_8h_a81ea1e25563bdf35ea8563672edccbbd}{ucb\+\_\+str\+\_\+substr}} (const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str, size\+\_\+t index, size\+\_\+t count, int flags)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{string_8h_a81ea1e25563bdf35ea8563672edccbbd}{ucb\+\_\+str\+\_\+substr}} (const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}str, size\+\_\+t index, size\+\_\+t count, int flags)
 \begin{DoxyCompactList}\small\item\em Create a substring from a string. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
-\label{doc-typedef-members}
-\Hypertarget{string_8h_doc-typedef-members}
+\doxysubsection{Detailed Description}
+String type and related functions. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text\+: © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier\+: MIT 
+\end{DoxyItemize}
+
+Definition in file \mbox{\hyperlink{string_8h_source}{string.\+h}}.
+
+
+
 \doxysubsection{Typedef Documentation}
 \Hypertarget{string_8h_ac8d174e80a7d6a63832376910e740a6f}\index{string.h@{string.h}!ucb\_str\_t@{ucb\_str\_t}}
 \index{ucb\_str\_t@{ucb\_str\_t}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_t}{ucb\_str\_t}}
 {\footnotesize\ttfamily \label{string_8h_ac8d174e80a7d6a63832376910e740a6f} 
-typedef struct ucb\+\_\+str \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}}}
+typedef struct ucb\+\_\+str \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}}}
 
 
 
-Definition at line \doxymbox{\hyperlink{string_8h_source_l00043}{43}} of file \doxymbox{\hyperlink{string_8h_source}{string.\+h}}.
+Definition at line \mbox{\hyperlink{string_8h_source_l00045}{45}} of file \mbox{\hyperlink{string_8h_source}{string.\+h}}.
 
 
 
-\label{doc-func-members}
-\Hypertarget{string_8h_doc-func-members}
 \doxysubsection{Function Documentation}
 \Hypertarget{string_8h_ad077b90342665985e82d03dbfbc362df}\index{string.h@{string.h}!ucb\_str\_concat@{ucb\_str\_concat}}
 \index{ucb\_str\_concat@{ucb\_str\_concat}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_concat()}{ucb\_str\_concat()}}
 {\footnotesize\ttfamily \label{string_8h_ad077b90342665985e82d03dbfbc362df} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+concat (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str1}{, }\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str2}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+concat (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str1}{, }\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str2}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_af06c0a108ebd326ddf8c4a85ca26395b}\index{string.h@{string.h}!ucb\_str\_copy@{ucb\_str\_copy}}
 \index{ucb\_str\_copy@{ucb\_str\_copy}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_copy()}{ucb\_str\_copy()}}
 {\footnotesize\ttfamily \label{string_8h_af06c0a108ebd326ddf8c4a85ca26395b} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+copy (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+copy (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_ad72259dc739c65efdf303a5cef11789d}\index{string.h@{string.h}!ucb\_str\_cstr@{ucb\_str\_cstr}}
 \index{ucb\_str\_cstr@{ucb\_str\_cstr}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_cstr()}{ucb\_str\_cstr()}}
 {\footnotesize\ttfamily \label{string_8h_ad72259dc739c65efdf303a5cef11789d} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+cstr (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+cstr (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 Get the underlying NULL-\/terminated C string. Do not manipulate this string. 
 \begin{DoxyParams}{Parameters}
@@ -88,43 +102,43 @@ read-\/only pointer to the underlying C string or UCB\+\_\+\+NULL
 \index{ucb\_str\_free@{ucb\_str\_free}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_free()}{ucb\_str\_free()}}
 {\footnotesize\ttfamily \label{string_8h_ab54acb38d1971456bdc6f40795e6e2ac} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+str\+\_\+free (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+str\+\_\+free (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_ad7674f6ea9670945d321f16cfb2d8d6b}\index{string.h@{string.h}!ucb\_str\_is\_shallow@{ucb\_str\_is\_shallow}}
 \index{ucb\_str\_is\_shallow@{ucb\_str\_is\_shallow}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_is\_shallow()}{ucb\_str\_is\_shallow()}}
 {\footnotesize\ttfamily \label{string_8h_ad7674f6ea9670945d321f16cfb2d8d6b} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+str\+\_\+is\+\_\+shallow (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+str\+\_\+is\+\_\+shallow (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_a33f40b6e671f4c5c79937dc4c56b7c9c}\index{string.h@{string.h}!ucb\_str\_len@{ucb\_str\_len}}
 \index{ucb\_str\_len@{ucb\_str\_len}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_len()}{ucb\_str\_len()}}
 {\footnotesize\ttfamily \label{string_8h_a33f40b6e671f4c5c79937dc4c56b7c9c} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+len (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+len (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_ab5aa73b9a6508f611a91a5ca8e0fddba}\index{string.h@{string.h}!ucb\_str\_new@{ucb\_str\_new}}
 \index{ucb\_str\_new@{ucb\_str\_new}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_new()}{ucb\_str\_new()}}
 {\footnotesize\ttfamily \label{string_8h_ab5aa73b9a6508f611a91a5ca8e0fddba} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+new (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{cstr}{, }\item[{size\+\_\+t}]{len}{, }\item[{uint32\+\_\+t}]{flags}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+new (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{cstr}{, }\item[{size\+\_\+t}]{len}{, }\item[{uint32\+\_\+t}]{flags}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_a80c01cedcfd4ef8ba707abf9c94f92ec}\index{string.h@{string.h}!ucb\_str\_num\_chars@{ucb\_str\_num\_chars}}
 \index{ucb\_str\_num\_chars@{ucb\_str\_num\_chars}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_num\_chars()}{ucb\_str\_num\_chars()}}
 {\footnotesize\ttfamily \label{string_8h_a80c01cedcfd4ef8ba707abf9c94f92ec} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+num\+\_\+chars (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+num\+\_\+chars (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_a792c6c2d96feef43a52b52faf7a242d7}\index{string.h@{string.h}!ucb\_str\_size@{ucb\_str\_size}}
 \index{ucb\_str\_size@{ucb\_str\_size}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_size()}{ucb\_str\_size()}}
 {\footnotesize\ttfamily \label{string_8h_a792c6c2d96feef43a52b52faf7a242d7} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+size (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+str\+\_\+size (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{}\end{DoxyParamCaption})}
 
 \Hypertarget{string_8h_a81ea1e25563bdf35ea8563672edccbbd}\index{string.h@{string.h}!ucb\_str\_substr@{ucb\_str\_substr}}
 \index{ucb\_str\_substr@{ucb\_str\_substr}!string.h@{string.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_str\_substr()}{ucb\_str\_substr()}}
 {\footnotesize\ttfamily \label{string_8h_a81ea1e25563bdf35ea8563672edccbbd} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+substr (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{, }\item[{size\+\_\+t}]{index}{, }\item[{size\+\_\+t}]{count}{, }\item[{int}]{flags}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*} ucb\+\_\+str\+\_\+substr (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{string_8h_ac8d174e80a7d6a63832376910e740a6f}{ucb\+\_\+str\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{str}{, }\item[{size\+\_\+t}]{index}{, }\item[{size\+\_\+t}]{count}{, }\item[{int}]{flags}{}\end{DoxyParamCaption})}
 
 
 

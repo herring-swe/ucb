@@ -1,0 +1,106 @@
+\chapter{VSCode setup}
+\hypertarget{md_doc_2markdown_2VSCode}{}\label{md_doc_2markdown_2VSCode}\index{VSCode setup@{VSCode setup}}
+\label{md_doc_2markdown_2VSCode_autotoc_md4}%
+\Hypertarget{md_doc_2markdown_2VSCode_autotoc_md4}%
+
+
+Just basic notes to quickly get a configuration up and running.\hypertarget{md_doc_2markdown_2VSCode_autotoc_md5}{}\doxysection{\texorpdfstring{Extensions}{Extensions}}\label{md_doc_2markdown_2VSCode_autotoc_md5}
+\hypertarget{md_doc_2markdown_2VSCode_autotoc_md6}{}\doxysubsection{\texorpdfstring{Required}{Required}}\label{md_doc_2markdown_2VSCode_autotoc_md6}
+
+\begin{DoxyItemize}
+\item C/\+C++ Extension Pack (ms-\/vscode.\+cpptools-\/extension-\/pack)
+\item Editor\+Config for VS Code (Editor\+Config.\+Editor\+Config)
+\end{DoxyItemize}\hypertarget{md_doc_2markdown_2VSCode_autotoc_md7}{}\doxysubsection{\texorpdfstring{Recommended}{Recommended}}\label{md_doc_2markdown_2VSCode_autotoc_md7}
+
+\begin{DoxyItemize}
+\item CMake Language Support (josetr.\+cmake-\/language-\/support-\/vscode)
+\item Comment Divder (stackbreak.\+comment-\/divider)
+\item Even Better TOML (tamasfe.\+even-\/better-\/toml)
+\item Better Comments (aaron-\/bond.\+better-\/comments)
+\item Doxygen Documentation Generator (cschlosser.\+doxdocgen)
+\begin{DoxyItemize}
+\item {\bfseries{NOTE\+:}} Has shown issues when rearranging lines. Need to investigate.
+\end{DoxyItemize}
+\item Doxygen Runner (betwo.\+vscode-\/doxygen-\/runner)
+\end{DoxyItemize}\hypertarget{md_doc_2markdown_2VSCode_autotoc_md8}{}\doxysubsection{\texorpdfstring{Required for Python}{Required for Python}}\label{md_doc_2markdown_2VSCode_autotoc_md8}
+
+\begin{DoxyItemize}
+\item Python (ms-\/python.\+python)
+\item Ruff (charliermarsh.\+ruff)
+\item Mypy Type Checker (ms-\/python.\+mypy-\/type-\/checker)
+\end{DoxyItemize}\hypertarget{md_doc_2markdown_2VSCode_autotoc_md9}{}\doxysubsection{\texorpdfstring{Recommended for Python}{Recommended for Python}}\label{md_doc_2markdown_2VSCode_autotoc_md9}
+
+\begin{DoxyItemize}
+\item Better Jinja (samuelcolvin.\+jinjahtml)
+\end{DoxyItemize}\hypertarget{md_doc_2markdown_2VSCode_autotoc_md10}{}\doxysection{\texorpdfstring{Settings}{Settings}}\label{md_doc_2markdown_2VSCode_autotoc_md10}
+Example .vscode/settings.\+json Some settings may make more sense in user settings.\+json
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ //\ Substitute\ \{author\}\ with\ git\ config\ -\/-\/get\ user.name.}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.generic.useGitUserName"{}:\ false,}
+\DoxyCodeLine{\ \ \ \ //\ Substitute\ \{email\}\ with\ git\ config\ -\/-\/get\ user.email.}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.generic.useGitUserEmail"{}:\ false,}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.generic.authorEmail"{}:\ "{}your@email.com"{},}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.generic.authorName"{}:\ "{}Your\ Name"{},}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.file.fileTemplate"{}:\ "{}@file\ \{name\}"{},}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.file.copyrightTag"{}:\ [}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}@copyright\ Copyright\ (c)\ \{year\}"{}}
+\DoxyCodeLine{\ \ \ \ ],}
+\DoxyCodeLine{\ \ \ \ //\ Additional\ file\ documentation.\ One\ tag\ per\ line\ will\ be\ added.\ Can\ template\ \`{}\{year\}`,\ \`{}\{date\}`,\ \`{}\{author\}`,\ \`{}\{email\}`\ and\ \`{}\{file\}`.\ You\ have\ to\ specify\ the\ prefix.}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.file.customTag"{}:\ [}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}This\ file\ is\ part\ of\ the\ UCB\ project"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}-\/\ SPDX-\/FileCopyrightText:\ ©\ \{year\}\ \{author\}\ <\{email\}>"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}-\/\ SPDX-\/License-\/Identifier:\ MIT"{},}
+\DoxyCodeLine{\ \ \ \ ],}
+\DoxyCodeLine{\ \ \ \ //\ The\ order\ to\ use\ for\ the\ file\ comment.\ Values\ can\ be\ used\ multiple\ times.\ Valid\ values\ are\ shown\ in\ default\ setting.}
+\DoxyCodeLine{\ \ \ \ "{}doxdocgen.file.fileOrder"{}:\ [}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}file"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}empty"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}custom"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}empty"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}brief"{},}
+\DoxyCodeLine{\ \ \ \ ],}
+\DoxyCodeLine{\ \ \ \ "{}C\_Cpp.default.cStandard"{}:\ "{}c17"{},}
+\DoxyCodeLine{\ \ \ \ "{}C\_Cpp.default.cppStandard"{}:\ "{}c++17"{},}
+\DoxyCodeLine{\ \ \ \ //\ Stop\ polluting\ files.associations\ with\ junk}
+\DoxyCodeLine{\ \ \ \ "{}C\_Cpp.autoAddFileAssociations"{}:\ false,}
+\DoxyCodeLine{\ \ \ \ "{}comment-\/divider.languagesMap"{}:\ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}cmake"{}:\ [}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ "{}\#"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ "{}\#"{}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ ]}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_doc_2markdown_2VSCode_autotoc_md11}{}\doxysection{\texorpdfstring{Debugging}{Debugging}}\label{md_doc_2markdown_2VSCode_autotoc_md11}
+To debug a specific doctest example, add for instance this into launch.\+json
+
+Example .vscode/launch.\+json
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ //\ Use\ IntelliSense\ to\ learn\ about\ possible\ attributes.}
+\DoxyCodeLine{\ \ \ \ //\ Hover\ to\ view\ descriptions\ of\ existing\ attributes.}
+\DoxyCodeLine{\ \ \ \ //\ For\ more\ information,\ visit:\ https://go.microsoft.com/fwlink/?linkid=830387}
+\DoxyCodeLine{\ \ \ \ "{}version"{}:\ "{}0.2.0"{},}
+\DoxyCodeLine{\ \ \ \ "{}configurations"{}:\ [}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}name"{}:\ "{}Test"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}type"{}:\ "{}cppvsdbg"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}request"{}:\ "{}launch"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}program"{}:\ "{}\$\{command:cmake.launchTargetPath\}"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}args"{}:\ [\ "{}-\/tc=unicode\ official\ normalization\ test"{}\ ],}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}stopAtEntry"{}:\ false,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}cwd"{}:\ "{}\$\{workspaceFolder\}"{},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}environment"{}:\ [],}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ "{}console"{}:\ "{}internalConsole"{}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ ]}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 

@@ -4,7 +4,7 @@
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
  * 
- * @brief Cross-platform backtrace support
+ * @brief Cross-platform backtrace
  */
 
 #ifndef UCB_BTRACE_H

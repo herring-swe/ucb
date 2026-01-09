@@ -1,9 +1,11 @@
 /**
+ * @file threads.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Cross-platform threading implementation
  */
 
 #include "ucb/threads.h"
@@ -262,7 +264,7 @@ void ucb_thread_set_stack_size(ucb_thread* thread, size_t stack_size)
     UCB_VERIFY_ARGS(thread && !thread->running);
 
 #ifndef _WIN32
-    if (stack_size > 0 && stack_size < PTHREAD_STACK_MIN)
+    if (stack_size > 0 && stack_size < (size_t)PTHREAD_STACK_MIN)
         stack_size = PTHREAD_STACK_MIN;
 #endif
     if (stack_size > 0)

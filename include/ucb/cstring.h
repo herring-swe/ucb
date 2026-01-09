@@ -5,6 +5,7 @@
  * - SPDX-License-Identifier: MIT
  * 
  * @brief Cross-platform C string functions
+ * 
  * @remark Not aware of encodings. For unicode use @ref string.h or @ref unicode.h
  */
 

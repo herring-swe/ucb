@@ -1,9 +1,11 @@
 /**
+ * @file ucb.h
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Master header for the UCB library
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Main header
  */
 
 #ifndef UCB_UCB_H

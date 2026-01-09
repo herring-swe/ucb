@@ -1,9 +1,11 @@
 /**
- * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
+ * @file sys_private.h
  * 
- * @brief System specific private functions
+ * This file is part of the UCB project
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Private system calls
  */
 
 #ifndef UCB_SYS_PRIVATE_H

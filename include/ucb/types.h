@@ -1,9 +1,11 @@
 /**
+ * @file types.h
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Common type definitions
  */
 
 #ifndef UCB_TYPES_H

@@ -1,9 +1,11 @@
 /**
+ * @file string_win32.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Windows specific UTF-8 implementation and helpers
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief String type windows specific implementation
  */
 
 #ifndef _WIN32

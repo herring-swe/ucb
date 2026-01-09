@@ -1,9 +1,11 @@
 /**
+ * @file unicode.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Contains general unicode string implementations
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Unicode support implementation
  */
 
 #include "ucb/unicode.h"

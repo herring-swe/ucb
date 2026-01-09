@@ -1,9 +1,11 @@
 /**
- * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
+ * @file mutex_private.h
  * 
- * @brief 
+ * This file is part of the UCB project
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Private mutex type
  */
 
 #ifndef UCB_MUTEX_PRIVATE_H

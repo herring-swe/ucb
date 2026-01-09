@@ -1,8 +1,10 @@
 /**
+ * @file error.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
  * @brief Error handling implementation
  */
 
@@ -136,6 +138,15 @@ void ucb_error_print(ucb_errlvl lvl, const ucb_error* err)
 /* -------------------------------------------------------------------------- */
 /*                                Thrown errors                               */
 /* -------------------------------------------------------------------------- */
+
+void ucb_error_clear(const ucb_error** perr)
+{
+    if (perr && *perr)
+    {
+        ucb_error_free((ucb_error*)*perr);
+        *perr = UCB_NULL;
+    }
+}
 
 void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg)
 {

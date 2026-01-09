@@ -1,9 +1,11 @@
 /**
+ * @file cstring.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Cross-platform C string functions implementations
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Cross-platform C string functions implementation
  */
 
 #include "ucb/cstring.h"

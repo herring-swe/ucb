@@ -1,9 +1,11 @@
 /**
+ * @file common.h
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Testing common utility
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief comment test utilities
  */
 
 #ifndef TESTS_COMMON_H

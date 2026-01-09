@@ -1,56 +1,56 @@
-\doxysection{include/\+ucb/\+math.h File Reference}
+\doxysection{include/ucb/math.h File Reference}
 \hypertarget{math_8h}{}\label{math_8h}\index{include/ucb/math.h@{include/ucb/math.h}}
 
 
 Type generic math functions.  
 
 
-{\ttfamily \+\#include "{}generics.\+h"{}}\newline
-{\ttfamily \+\#include $<$float.\+h$>$}\newline
-{\ttfamily \+\#include $<$limits.\+h$>$}\newline
-{\ttfamily \+\#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include "{}generics.\+h"{}}\newline
+{\ttfamily \#include $<$float.\+h$>$}\newline
+{\ttfamily \#include $<$limits.\+h$>$}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_a44bcfa59ed6acb9bf86a8bf99bc78585}{UCB\+\_\+\+EPSILON\+\_\+\+FLT}}~FLT\+\_\+\+EPSILON
+\#define \mbox{\hyperlink{math_8h_a44bcfa59ed6acb9bf86a8bf99bc78585}{UCB\+\_\+\+EPSILON\+\_\+\+FLT}}~FLT\+\_\+\+EPSILON
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_aba1cff0985b7c21719ad5c515adcfe74}{UCB\+\_\+\+EPSILON\+\_\+\+DBL}}~DBL\+\_\+\+EPSILON
+\#define \mbox{\hyperlink{math_8h_aba1cff0985b7c21719ad5c515adcfe74}{UCB\+\_\+\+EPSILON\+\_\+\+DBL}}~DBL\+\_\+\+EPSILON
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+IMPL}}(TNAME,  TYPE)
+\#define \mbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+IMPL}}(TNAME,  TYPE)
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+SIGNED\+\_\+\+IMPL}}(TNAME,  TYPE)
+\#define \mbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+SIGNED\+\_\+\+IMPL}}(TNAME,  TYPE)
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_aad7576cdb896ea926782fb3d1cb826f7}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+FLOAT\+\_\+\+IMPL}}(TNAME,  TMACRO,  TYPE)
+\#define \mbox{\hyperlink{math_8h_aad7576cdb896ea926782fb3d1cb826f7}{UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+FLOAT\+\_\+\+IMPL}}(TNAME,  TMACRO,  TYPE)
 \item 
-\+\#define \doxymbox{\hyperlink{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}{ucb\+\_\+min}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}{ucb\+\_\+min}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Get smallest value. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_ad0732db3eb32b1938f223ea814d41adb}{ucb\+\_\+max}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_ad0732db3eb32b1938f223ea814d41adb}{ucb\+\_\+max}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Get largest value. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}{ucb\+\_\+clamp}}(val,  min,  max)
+\#define \mbox{\hyperlink{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}{ucb\+\_\+clamp}}(val,  min,  max)
 \begin{DoxyCompactList}\small\item\em Clamp val between min and max. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}{ucb\+\_\+in\+\_\+range}}(val,  min,  max)
+\#define \mbox{\hyperlink{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}{ucb\+\_\+in\+\_\+range}}(val,  min,  max)
 \begin{DoxyCompactList}\small\item\em Check if val is between min and max. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}{ucb\+\_\+swap}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}{ucb\+\_\+swap}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Swap value of two variables. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}{ucb\+\_\+sign}}(val)
+\#define \mbox{\hyperlink{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}{ucb\+\_\+sign}}(val)
 \begin{DoxyCompactList}\small\item\em Return sign of val. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}{ucb\+\_\+abs}}(val)
+\#define \mbox{\hyperlink{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}{ucb\+\_\+abs}}(val)
 \begin{DoxyCompactList}\small\item\em Get absolute value. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_affd5cd6766c40675fd098f1c8cd2567b}{ucb\+\_\+equal\+\_\+eps}}(a,  b,  eps)
+\#define \mbox{\hyperlink{math_8h_affd5cd6766c40675fd098f1c8cd2567b}{ucb\+\_\+equal\+\_\+eps}}(a,  b,  eps)
 \begin{DoxyCompactList}\small\item\em Check if two values are equal within epsilon. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}{ucb\+\_\+equal}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}{ucb\+\_\+equal}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Check if two values are equal within the smallest epsilon for that type. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_ac6d6ef474caee4e9ae763fd825507da8}{ucb\+\_\+comp\+\_\+eps}}(a,  b,  eps)
+\#define \mbox{\hyperlink{math_8h_ac6d6ef474caee4e9ae763fd825507da8}{ucb\+\_\+comp\+\_\+eps}}(a,  b,  eps)
 \begin{DoxyCompactList}\small\item\em Compare two values within epsilon. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}{ucb\+\_\+comp}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}{ucb\+\_\+comp}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Compare two values within the smallest epsilon for that type. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a51366436760cda1f8d11e8e08c145e8a}{ucb\+\_\+approx\+\_\+equal\+\_\+eps}}(a,  b,  eps)
+\#define \mbox{\hyperlink{math_8h_a51366436760cda1f8d11e8e08c145e8a}{ucb\+\_\+approx\+\_\+equal\+\_\+eps}}(a,  b,  eps)
 \begin{DoxyCompactList}\small\item\em Approximate equality for floating point values. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a80e19736ad742482102c6ec6f8602a72}{ucb\+\_\+approx\+\_\+equal}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_a80e19736ad742482102c6ec6f8602a72}{ucb\+\_\+approx\+\_\+equal}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Approximate equality for floating point values using the smallest epsilon for that type. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}{ucb\+\_\+approx\+\_\+comp\+\_\+eps}}(a,  b,  eps)
+\#define \mbox{\hyperlink{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}{ucb\+\_\+approx\+\_\+comp\+\_\+eps}}(a,  b,  eps)
 \begin{DoxyCompactList}\small\item\em Approximate comparison for floating point values. \end{DoxyCompactList}\item 
-\+\#define \doxymbox{\hyperlink{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}{ucb\+\_\+approx\+\_\+comp}}(a,  b)
+\#define \mbox{\hyperlink{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}{ucb\+\_\+approx\+\_\+comp}}(a,  b)
 \begin{DoxyCompactList}\small\item\em Approximate comparison for floating point values using the smallest epsilon for that type. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
@@ -59,30 +59,28 @@ Type generic math functions.
 
 This file is part of the UCB project
 \begin{DoxyItemize}
-\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
-\item SPDX-\/\+License-\/\+Identifier:\+ MIT
+\item SPDX-\/\+File\+Copyright\+Text\+: © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier\+: MIT
 
 \begin{DoxyRefDesc}{Todo}
-\item[\doxymbox{\hyperlink{todo__todo000002}{Todo}}]Split up into tgval.\+h and tgmath.\+h \end{DoxyRefDesc}
+\item[\mbox{\hyperlink{todo__todo000002}{Todo}}]Split up into tgval.\+h and tgmath.\+h \end{DoxyRefDesc}
 
 \end{DoxyItemize}
 
-Definition in file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition in file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 
 
-\label{doc-define-members}
-\Hypertarget{math_8h_doc-define-members}
 \doxysubsection{Macro Definition Documentation}
 \Hypertarget{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}\index{math.h@{math.h}!ucb\_abs@{ucb\_abs}}
 \index{ucb\_abs@{ucb\_abs}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_abs}{ucb\_abs}}
 {\footnotesize\ttfamily \label{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40} 
-\+\#define ucb\+\_\+abs(\begin{DoxyParamCaption}\item[{}]{val}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+abs(\begin{DoxyParamCaption}\item[{}]{val}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{UCB\_GENERIC\_FUNC\_SIGNED\_1}}(\doxymbox{\hyperlink{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}{ucb\_abs}},\ val)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{UCB\_GENERIC\_FUNC\_SIGNED\_1}}(\mbox{\hyperlink{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}{ucb\_abs}},\ val)}
 
 \end{DoxyCode}
 
@@ -94,17 +92,17 @@ val or -\/val if val \texorpdfstring{$<$}{<} 0 Works for signed primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00170}{170}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00170}{170}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}\index{math.h@{math.h}!ucb\_approx\_comp@{ucb\_approx\_comp}}
 \index{ucb\_approx\_comp@{ucb\_approx\_comp}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_approx\_comp}{ucb\_approx\_comp}}
 {\footnotesize\ttfamily \label{math_8h_acb08e41ba36db00aac9fde4b8ded65ad} 
-\+\#define ucb\+\_\+approx\+\_\+comp(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+approx\+\_\+comp(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\doxymbox{\hyperlink{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}{ucb\_approx\_comp}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\mbox{\hyperlink{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}{ucb\_approx\_comp}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -119,17 +117,17 @@ int 0 if a and b are approximately equal, -\/1 if a \texorpdfstring{$<$}{<} b, 1
 \end{DoxySeeAlso}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00230}{230}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00230}{230}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}\index{math.h@{math.h}!ucb\_approx\_comp\_eps@{ucb\_approx\_comp\_eps}}
 \index{ucb\_approx\_comp\_eps@{ucb\_approx\_comp\_eps}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_approx\_comp\_eps}{ucb\_approx\_comp\_eps}}
 {\footnotesize\ttfamily \label{math_8h_a58c92a81eb8fcab742bc8ac9096776ab} 
-\+\#define ucb\+\_\+approx\+\_\+comp\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+approx\+\_\+comp\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\doxymbox{\hyperlink{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}{ucb\_approx\_comp\_eps}},\ a,\ b,\ eps)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\mbox{\hyperlink{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}{ucb\_approx\_comp\_eps}},\ a,\ b,\ eps)}
 
 \end{DoxyCode}
 
@@ -144,17 +142,17 @@ int 0 if a and b are approximately equal, -\/1 if a \texorpdfstring{$<$}{<} b, 1
 \end{DoxySeeAlso}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00222}{222}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00222}{222}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a80e19736ad742482102c6ec6f8602a72}\index{math.h@{math.h}!ucb\_approx\_equal@{ucb\_approx\_equal}}
 \index{ucb\_approx\_equal@{ucb\_approx\_equal}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_approx\_equal}{ucb\_approx\_equal}}
 {\footnotesize\ttfamily \label{math_8h_a80e19736ad742482102c6ec6f8602a72} 
-\+\#define ucb\+\_\+approx\+\_\+equal(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+approx\+\_\+equal(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\doxymbox{\hyperlink{math_8h_a80e19736ad742482102c6ec6f8602a72}{ucb\_approx\_equal}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\mbox{\hyperlink{math_8h_a80e19736ad742482102c6ec6f8602a72}{ucb\_approx\_equal}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -169,17 +167,17 @@ bool true if a and b are approximately equal
 \end{DoxySeeAlso}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00214}{214}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00214}{214}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a51366436760cda1f8d11e8e08c145e8a}\index{math.h@{math.h}!ucb\_approx\_equal\_eps@{ucb\_approx\_equal\_eps}}
 \index{ucb\_approx\_equal\_eps@{ucb\_approx\_equal\_eps}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_approx\_equal\_eps}{ucb\_approx\_equal\_eps}}
 {\footnotesize\ttfamily \label{math_8h_a51366436760cda1f8d11e8e08c145e8a} 
-\+\#define ucb\+\_\+approx\+\_\+equal\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+approx\+\_\+equal\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\doxymbox{\hyperlink{math_8h_a51366436760cda1f8d11e8e08c145e8a}{ucb\_approx\_equal\_eps}},\ a,\ b,\ eps)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\mbox{\hyperlink{math_8h_a51366436760cda1f8d11e8e08c145e8a}{ucb\_approx\_equal\_eps}},\ a,\ b,\ eps)}
 
 \end{DoxyCode}
 
@@ -191,17 +189,17 @@ bool true if a and b are approximately equal Approximate equality is defined as 
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00206}{206}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00206}{206}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}\index{math.h@{math.h}!ucb\_clamp@{ucb\_clamp}}
 \index{ucb\_clamp@{ucb\_clamp}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_clamp}{ucb\_clamp}}
 {\footnotesize\ttfamily \label{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a} 
-\+\#define ucb\+\_\+clamp(\begin{DoxyParamCaption}\item[{}]{val}{, }\item[{}]{min}{, }\item[{}]{max}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+clamp(\begin{DoxyParamCaption}\item[{}]{val}{, }\item[{}]{min}{, }\item[{}]{max}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{UCB\_GENERIC\_FUNC\_3}}(\doxymbox{\hyperlink{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}{ucb\_clamp}},\ val,\ min,\ max)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{UCB\_GENERIC\_FUNC\_3}}(\mbox{\hyperlink{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}{ucb\_clamp}},\ val,\ min,\ max)}
 
 \end{DoxyCode}
 
@@ -213,17 +211,17 @@ val if val is between min and max, otherwise min or max Works for all primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00141}{141}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00141}{141}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}\index{math.h@{math.h}!ucb\_comp@{ucb\_comp}}
 \index{ucb\_comp@{ucb\_comp}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_comp}{ucb\_comp}}
 {\footnotesize\ttfamily \label{math_8h_a6cbbb83658d120fbaf9f49a26be8408b} 
-\+\#define ucb\+\_\+comp(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+comp(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\doxymbox{\hyperlink{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}{ucb\_comp}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\mbox{\hyperlink{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}{ucb\_comp}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -235,17 +233,17 @@ int 0 if equal, -\/1 if a \texorpdfstring{$<$}{<} b, 1 if a \texorpdfstring{$>$}
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00198}{198}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00198}{198}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_ac6d6ef474caee4e9ae763fd825507da8}\index{math.h@{math.h}!ucb\_comp\_eps@{ucb\_comp\_eps}}
 \index{ucb\_comp\_eps@{ucb\_comp\_eps}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_comp\_eps}{ucb\_comp\_eps}}
 {\footnotesize\ttfamily \label{math_8h_ac6d6ef474caee4e9ae763fd825507da8} 
-\+\#define ucb\+\_\+comp\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+comp\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\doxymbox{\hyperlink{math_8h_ac6d6ef474caee4e9ae763fd825507da8}{ucb\_comp\_eps}},\ a,\ b,\ eps)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\mbox{\hyperlink{math_8h_ac6d6ef474caee4e9ae763fd825507da8}{ucb\_comp\_eps}},\ a,\ b,\ eps)}
 
 \end{DoxyCode}
 
@@ -257,37 +255,37 @@ int 0 if equal, -\/1 if a \texorpdfstring{$<$}{<} b, 1 if a \texorpdfstring{$>$}
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00191}{191}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00191}{191}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_aba1cff0985b7c21719ad5c515adcfe74}\index{math.h@{math.h}!UCB\_EPSILON\_DBL@{UCB\_EPSILON\_DBL}}
 \index{UCB\_EPSILON\_DBL@{UCB\_EPSILON\_DBL}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_EPSILON\_DBL}{UCB\_EPSILON\_DBL}}
 {\footnotesize\ttfamily \label{math_8h_aba1cff0985b7c21719ad5c515adcfe74} 
-\+\#define UCB\+\_\+\+EPSILON\+\_\+\+DBL~DBL\+\_\+\+EPSILON}
+\#define UCB\+\_\+\+EPSILON\+\_\+\+DBL~DBL\+\_\+\+EPSILON}
 
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00021}{21}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00021}{21}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a44bcfa59ed6acb9bf86a8bf99bc78585}\index{math.h@{math.h}!UCB\_EPSILON\_FLT@{UCB\_EPSILON\_FLT}}
 \index{UCB\_EPSILON\_FLT@{UCB\_EPSILON\_FLT}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_EPSILON\_FLT}{UCB\_EPSILON\_FLT}}
 {\footnotesize\ttfamily \label{math_8h_a44bcfa59ed6acb9bf86a8bf99bc78585} 
-\+\#define UCB\+\_\+\+EPSILON\+\_\+\+FLT~FLT\+\_\+\+EPSILON}
+\#define UCB\+\_\+\+EPSILON\+\_\+\+FLT~FLT\+\_\+\+EPSILON}
 
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00020}{20}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00020}{20}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}\index{math.h@{math.h}!ucb\_equal@{ucb\_equal}}
 \index{ucb\_equal@{ucb\_equal}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_equal}{ucb\_equal}}
 {\footnotesize\ttfamily \label{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3} 
-\+\#define ucb\+\_\+equal(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+equal(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\doxymbox{\hyperlink{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}{ucb\_equal}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}(\mbox{\hyperlink{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}{ucb\_equal}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -299,17 +297,17 @@ bool true if a and b are equal within epsilon Works for floating point primitive
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00184}{184}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00184}{184}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_affd5cd6766c40675fd098f1c8cd2567b}\index{math.h@{math.h}!ucb\_equal\_eps@{ucb\_equal\_eps}}
 \index{ucb\_equal\_eps@{ucb\_equal\_eps}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_equal\_eps}{ucb\_equal\_eps}}
 {\footnotesize\ttfamily \label{math_8h_affd5cd6766c40675fd098f1c8cd2567b} 
-\+\#define ucb\+\_\+equal\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+equal\+\_\+eps(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{eps}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\doxymbox{\hyperlink{math_8h_affd5cd6766c40675fd098f1c8cd2567b}{ucb\_equal\_eps}},\ a,\ b,\ eps)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}(\mbox{\hyperlink{math_8h_affd5cd6766c40675fd098f1c8cd2567b}{ucb\_equal\_eps}},\ a,\ b,\ eps)}
 
 \end{DoxyCode}
 
@@ -321,17 +319,17 @@ bool true if a and b are equal within epsilon Works for floating point primitive
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00177}{177}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00177}{177}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}\index{math.h@{math.h}!ucb\_in\_range@{ucb\_in\_range}}
 \index{ucb\_in\_range@{ucb\_in\_range}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_in\_range}{ucb\_in\_range}}
 {\footnotesize\ttfamily \label{math_8h_a51b96967cb106a7bf50a1c48bfefedb6} 
-\+\#define ucb\+\_\+in\+\_\+range(\begin{DoxyParamCaption}\item[{}]{val}{, }\item[{}]{min}{, }\item[{}]{max}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+in\+\_\+range(\begin{DoxyParamCaption}\item[{}]{val}{, }\item[{}]{min}{, }\item[{}]{max}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{UCB\_GENERIC\_FUNC\_3}}(\doxymbox{\hyperlink{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}{ucb\_in\_range}},\ val,\ min,\ max)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{UCB\_GENERIC\_FUNC\_3}}(\mbox{\hyperlink{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}{ucb\_in\_range}},\ val,\ min,\ max)}
 
 \end{DoxyCode}
 
@@ -343,85 +341,85 @@ bool true if val is between min and max Works for all primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00148}{148}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00148}{148}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_aad7576cdb896ea926782fb3d1cb826f7}\index{math.h@{math.h}!UCB\_MATH\_FUNCS\_FLOAT\_IMPL@{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}}
 \index{UCB\_MATH\_FUNCS\_FLOAT\_IMPL@{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}}
 {\footnotesize\ttfamily \label{math_8h_aad7576cdb896ea926782fb3d1cb826f7} 
-\+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+FLOAT\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TMACRO}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+FLOAT\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TMACRO}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
 
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00057}{57}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00057}{57}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}\index{math.h@{math.h}!UCB\_MATH\_FUNCS\_IMPL@{UCB\_MATH\_FUNCS\_IMPL}}
 \index{UCB\_MATH\_FUNCS\_IMPL@{UCB\_MATH\_FUNCS\_IMPL}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_MATH\_FUNCS\_IMPL}{UCB\_MATH\_FUNCS\_IMPL}}
 {\footnotesize\ttfamily \label{math_8h_a923f1a991618b9bfaf8193b9b79a8d12} 
-\+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_min\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ a,\ \textcolor{keyword}{const}\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ return\ (a\ <\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_max\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ a,\ \textcolor{keyword}{const}\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ return\ (a\ >\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_clamp\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val,\ \textcolor{keyword}{const}\ TYPE\ min\_val,\ \textcolor{keyword}{const}\ TYPE\ max\_val)\ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ ucb\_max\_\#\#TNAME(min\_val,\ ucb\_min\_\#\#TNAME(val,\ max\_val));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ ucb\_swap\_\#\#TNAME(TYPE*\ a,\ TYPE*\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ TYPE\ tmp\ =\ *a;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ *a\ \ \ \ \ \ \ =\ *b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ *b\ \ \ \ \ \ \ =\ tmp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ ucb\_in\_range\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val,\ \textcolor{keyword}{const}\ TYPE\ low,\ \textcolor{keyword}{const}\ TYPE\ high)\ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ return\ (val\ >=\ low)\ \&\&\ (val\ <=\ high);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_min\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ a,\ \textcolor{keyword}{const}\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ (a\ <\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_max\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ a,\ \textcolor{keyword}{const}\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ (a\ >\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_clamp\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val,\ \textcolor{keyword}{const}\ TYPE\ min\_val,\ \textcolor{keyword}{const}\ TYPE\ max\_val)\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ucb\_max\_\#\#TNAME(min\_val,\ ucb\_min\_\#\#TNAME(val,\ max\_val));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ ucb\_swap\_\#\#TNAME(TYPE*\ a,\ TYPE*\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ TYPE\ tmp\ =\ *a;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ *a\ \ \ \ \ \ \ =\ *b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ *b\ \ \ \ \ \ \ =\ tmp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ ucb\_in\_range\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val,\ \textcolor{keyword}{const}\ TYPE\ low,\ \textcolor{keyword}{const}\ TYPE\ high)\ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ (val\ >=\ low)\ \&\&\ (val\ <=\ high);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00023}{23}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00023}{23}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}\index{math.h@{math.h}!UCB\_MATH\_FUNCS\_SIGNED\_IMPL@{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}
 \index{UCB\_MATH\_FUNCS\_SIGNED\_IMPL@{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}
 {\footnotesize\ttfamily \label{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce} 
-\+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+SIGNED\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+MATH\+\_\+\+FUNCS\+\_\+\+SIGNED\+\_\+\+IMPL(\begin{DoxyParamCaption}\item[{}]{TNAME}{, }\item[{}]{TYPE}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ ucb\_sign\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val)\ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ return\ (val\ >\ 0)\ -\/\ (val\ <\ 0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_abs\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val)\ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ return\ (val\ <\ 0)\ ?\ -\/val\ :\ val;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ ucb\_sign\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val)\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ (val\ >\ 0)\ -\/\ (val\ <\ 0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ TYPE\ ucb\_abs\_\#\#TNAME(\textcolor{keyword}{const}\ TYPE\ val)\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ return\ (val\ <\ 0)\ ?\ -\/val\ :\ val;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00047}{47}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00047}{47}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_ad0732db3eb32b1938f223ea814d41adb}\index{math.h@{math.h}!ucb\_max@{ucb\_max}}
 \index{ucb\_max@{ucb\_max}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_max}{ucb\_max}}
 {\footnotesize\ttfamily \label{math_8h_ad0732db3eb32b1938f223ea814d41adb} 
-\+\#define ucb\+\_\+max(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+max(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\doxymbox{\hyperlink{math_8h_ad0732db3eb32b1938f223ea814d41adb}{ucb\_max}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\mbox{\hyperlink{math_8h_ad0732db3eb32b1938f223ea814d41adb}{ucb\_max}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -433,17 +431,17 @@ max of a and b Works for all primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00134}{134}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00134}{134}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}\index{math.h@{math.h}!ucb\_min@{ucb\_min}}
 \index{ucb\_min@{ucb\_min}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_min}{ucb\_min}}
 {\footnotesize\ttfamily \label{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2} 
-\+\#define ucb\+\_\+min(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+min(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\doxymbox{\hyperlink{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}{ucb\_min}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\mbox{\hyperlink{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}{ucb\_min}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -455,17 +453,17 @@ min of a and b Works for all primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00127}{127}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00127}{127}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}\index{math.h@{math.h}!ucb\_sign@{ucb\_sign}}
 \index{ucb\_sign@{ucb\_sign}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_sign}{ucb\_sign}}
 {\footnotesize\ttfamily \label{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573} 
-\+\#define ucb\+\_\+sign(\begin{DoxyParamCaption}\item[{}]{val}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+sign(\begin{DoxyParamCaption}\item[{}]{val}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{UCB\_GENERIC\_FUNC\_SIGNED\_1}}(\doxymbox{\hyperlink{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}{ucb\_sign}},\ val)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{UCB\_GENERIC\_FUNC\_SIGNED\_1}}(\mbox{\hyperlink{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}{ucb\_sign}},\ val)}
 
 \end{DoxyCode}
 
@@ -477,17 +475,17 @@ int -\/1, 0 or 1 Works for signed primitives
 \end{DoxyReturn}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00163}{163}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00163}{163}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 
 \Hypertarget{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}\index{math.h@{math.h}!ucb\_swap@{ucb\_swap}}
 \index{ucb\_swap@{ucb\_swap}!math.h@{math.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_swap}{ucb\_swap}}
 {\footnotesize\ttfamily \label{math_8h_a3fbe663c4aa2f72477794110cf91e6c5} 
-\+\#define ucb\+\_\+swap(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+swap(\begin{DoxyParamCaption}\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\doxymbox{\hyperlink{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}{ucb\_swap}},\ a,\ b)}
+\DoxyCodeLine{\mbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\_GENERIC\_FUNC\_2}}(\mbox{\hyperlink{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}{ucb\_swap}},\ a,\ b)}
 
 \end{DoxyCode}
 
@@ -503,5 +501,5 @@ Swap value of two variables.
 \end{DoxyParams}
 
 
-Definition at line \doxymbox{\hyperlink{math_8h_source_l00156}{156}} of file \doxymbox{\hyperlink{math_8h_source}{math.\+h}}.
+Definition at line \mbox{\hyperlink{math_8h_source_l00156}{156}} of file \mbox{\hyperlink{math_8h_source}{math.\+h}}.
 

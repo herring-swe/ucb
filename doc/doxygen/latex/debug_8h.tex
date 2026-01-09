@@ -1,30 +1,30 @@
-\doxysection{include/\+ucb/\+debug.h File Reference}
+\doxysection{include/ucb/debug.h File Reference}
 \hypertarget{debug_8h}{}\label{debug_8h}\index{include/ucb/debug.h@{include/ucb/debug.h}}
 
 
 Debug helper macros.  
 
 
-{\ttfamily \+\#include "{}error.\+h"{}}\newline
-{\ttfamily \+\#include $<$errno.\+h$>$}\newline
-{\ttfamily \+\#include $<$stdio.\+h$>$}\newline
-{\ttfamily \+\#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include "{}error.\+h"{}}\newline
+{\ttfamily \#include $<$errno.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\+\_\+\+ASSERT}}(expr,  code,  msg)
+\#define \mbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\+\_\+\+ASSERT}}(expr,  code,  msg)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_aa25ef4036ded5b1ae5141264c8772522}{UCB\+\_\+\+ASSERT\+\_\+\+INTERNAL}}(expr,  msg)
+\#define \mbox{\hyperlink{debug_8h_aa25ef4036ded5b1ae5141264c8772522}{UCB\+\_\+\+ASSERT\+\_\+\+INTERNAL}}(expr,  msg)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_a33ae73648e982e47355359b939b21e71}{UCB\+\_\+\+ASSERT\+\_\+\+STATUS}}(status,  msg)
+\#define \mbox{\hyperlink{debug_8h_a33ae73648e982e47355359b939b21e71}{UCB\+\_\+\+ASSERT\+\_\+\+STATUS}}(status,  msg)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_ac0897f314c8b590881e3df9ea5ed5920}{UCB\+\_\+\+ASSERT\+\_\+\+ERRNO}}(status,  msg)
+\#define \mbox{\hyperlink{debug_8h_ac0897f314c8b590881e3df9ea5ed5920}{UCB\+\_\+\+ASSERT\+\_\+\+ERRNO}}(status,  msg)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_a4b6b7abfc69c613f4a0a10e98c6f4904}{UCB\+\_\+\+WARN}}(code,  fmt, ...)
+\#define \mbox{\hyperlink{debug_8h_a4b6b7abfc69c613f4a0a10e98c6f4904}{UCB\+\_\+\+WARN}}(code,  fmt, ...)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_a215d698c9dda6c75cc075c370c8c928a}{UCB\+\_\+\+PRINT}}(fmt, ...)
+\#define \mbox{\hyperlink{debug_8h_a215d698c9dda6c75cc075c370c8c928a}{UCB\+\_\+\+PRINT}}(fmt, ...)
 \item 
-\+\#define \doxymbox{\hyperlink{debug_8h_a574817267706bfd6dee9a8b53cb70bdc}{UCB\+\_\+\+DPRINT}}(fmt, ...)
+\#define \mbox{\hyperlink{debug_8h_a574817267706bfd6dee9a8b53cb70bdc}{UCB\+\_\+\+DPRINT}}(fmt, ...)
 \end{DoxyCompactItemize}
 
 
@@ -33,126 +33,124 @@ Debug helper macros.
 
 This file is part of the UCB project
 \begin{DoxyItemize}
-\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
-\item SPDX-\/\+License-\/\+Identifier:\+ MIT 
+\item SPDX-\/\+File\+Copyright\+Text\+: © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier\+: MIT 
 \end{DoxyItemize}
 
-Definition in file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition in file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 
 
-\label{doc-define-members}
-\Hypertarget{debug_8h_doc-define-members}
 \doxysubsection{Macro Definition Documentation}
 \Hypertarget{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}\index{debug.h@{debug.h}!UCB\_ASSERT@{UCB\_ASSERT}}
 \index{UCB\_ASSERT@{UCB\_ASSERT}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_ASSERT}{UCB\_ASSERT}}
 {\footnotesize\ttfamily \label{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b} 
-\+\#define UCB\+\_\+\+ASSERT(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+ASSERT(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keywordflow}{do}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ ucb\_fatal\_format(code,\ \textcolor{stringliteral}{"{}\%s:\ Assertion\ failure\ -\/\ \%s"{}},\ \_\_func\_\_,\ msg);\ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \ \ \ \ abort();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
-\DoxyCodeLine{\}\ \textcolor{keywordflow}{while}\ (0)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{do}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ ucb\_fatal\_format(code,\ \textcolor{stringliteral}{"{}\%s:\ Assertion\ failure\ -\/\ \%s"{}},\ \_\_func\_\_,\ msg);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ abort();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \textcolor{keywordflow}{while}\ (0)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00021}{21}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00021}{21}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_ac0897f314c8b590881e3df9ea5ed5920}\index{debug.h@{debug.h}!UCB\_ASSERT\_ERRNO@{UCB\_ASSERT\_ERRNO}}
 \index{UCB\_ASSERT\_ERRNO@{UCB\_ASSERT\_ERRNO}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_ASSERT\_ERRNO}{UCB\_ASSERT\_ERRNO}}
 {\footnotesize\ttfamily \label{debug_8h_ac0897f314c8b590881e3df9ea5ed5920} 
-\+\#define UCB\+\_\+\+ASSERT\+\_\+\+ERRNO(\begin{DoxyParamCaption}\item[{}]{status}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+ASSERT\+\_\+\+ERRNO(\begin{DoxyParamCaption}\item[{}]{status}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(status\ ==\ 0,\ \doxymbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\_err\_wrap\_errno}}(errno),\ msg)}
+\DoxyCodeLine{\mbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(status\ ==\ 0,\ \mbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\_err\_wrap\_errno}}(errno),\ msg)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00033}{33}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00033}{33}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_aa25ef4036ded5b1ae5141264c8772522}\index{debug.h@{debug.h}!UCB\_ASSERT\_INTERNAL@{UCB\_ASSERT\_INTERNAL}}
 \index{UCB\_ASSERT\_INTERNAL@{UCB\_ASSERT\_INTERNAL}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_ASSERT\_INTERNAL}{UCB\_ASSERT\_INTERNAL}}
 {\footnotesize\ttfamily \label{debug_8h_aa25ef4036ded5b1ae5141264c8772522} 
-\+\#define UCB\+\_\+\+ASSERT\+\_\+\+INTERNAL(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+ASSERT\+\_\+\+INTERNAL(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(expr,\ \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0}{UCB\_ERROR\_INTERNAL}},\ msg)}
+\DoxyCodeLine{\mbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(expr,\ \mbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0}{UCB\_ERROR\_INTERNAL}},\ msg)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00031}{31}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00031}{31}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_a33ae73648e982e47355359b939b21e71}\index{debug.h@{debug.h}!UCB\_ASSERT\_STATUS@{UCB\_ASSERT\_STATUS}}
 \index{UCB\_ASSERT\_STATUS@{UCB\_ASSERT\_STATUS}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_ASSERT\_STATUS}{UCB\_ASSERT\_STATUS}}
 {\footnotesize\ttfamily \label{debug_8h_a33ae73648e982e47355359b939b21e71} 
-\+\#define UCB\+\_\+\+ASSERT\+\_\+\+STATUS(\begin{DoxyParamCaption}\item[{}]{status}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+ASSERT\+\_\+\+STATUS(\begin{DoxyParamCaption}\item[{}]{status}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(status\ ==\ 0,\ \doxymbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\_err\_wrap\_errno}}(status),\ msg)}
+\DoxyCodeLine{\mbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{UCB\_ASSERT}}(status\ ==\ 0,\ \mbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\_err\_wrap\_errno}}(status),\ msg)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00032}{32}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00032}{32}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_a574817267706bfd6dee9a8b53cb70bdc}\index{debug.h@{debug.h}!UCB\_DPRINT@{UCB\_DPRINT}}
 \index{UCB\_DPRINT@{UCB\_DPRINT}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_DPRINT}{UCB\_DPRINT}}
 {\footnotesize\ttfamily \label{debug_8h_a574817267706bfd6dee9a8b53cb70bdc} 
-\+\#define UCB\+\_\+\+DPRINT(\begin{DoxyParamCaption}\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+DPRINT(\begin{DoxyParamCaption}\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{((void)0)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00064}{64}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00064}{64}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_a215d698c9dda6c75cc075c370c8c928a}\index{debug.h@{debug.h}!UCB\_PRINT@{UCB\_PRINT}}
 \index{UCB\_PRINT@{UCB\_PRINT}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_PRINT}{UCB\_PRINT}}
 {\footnotesize\ttfamily \label{debug_8h_a215d698c9dda6c75cc075c370c8c928a} 
-\+\#define UCB\+\_\+\+PRINT(\begin{DoxyParamCaption}\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+PRINT(\begin{DoxyParamCaption}\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
 \DoxyCodeLine{fprintf(stderr,\ fmt,\ \#\#\_\_VA\_ARGS\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00040}{40}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00040}{40}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 
 \Hypertarget{debug_8h_a4b6b7abfc69c613f4a0a10e98c6f4904}\index{debug.h@{debug.h}!UCB\_WARN@{UCB\_WARN}}
 \index{UCB\_WARN@{UCB\_WARN}!debug.h@{debug.h}}
 \doxysubsubsection{\texorpdfstring{UCB\_WARN}{UCB\_WARN}}
 {\footnotesize\ttfamily \label{debug_8h_a4b6b7abfc69c613f4a0a10e98c6f4904} 
-\+\#define UCB\+\_\+\+WARN(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+\#define UCB\+\_\+\+WARN(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a045ed1301cd14a710d959367418c8a3c}{ucb\_warn\_format}}(code,\ \textcolor{stringliteral}{"{}\%s:\ "{}}\ fmt,\ \_\_func\_\_,\ \#\#\_\_VA\_ARGS\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{error_8h_a045ed1301cd14a710d959367418c8a3c}{ucb\_warn\_format}}(code,\ \textcolor{stringliteral}{"{}\%s:\ "{}}\ fmt,\ \_\_func\_\_,\ \#\#\_\_VA\_ARGS\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{debug_8h_source_l00038}{38}} of file \doxymbox{\hyperlink{debug_8h_source}{debug.\+h}}.
+Definition at line \mbox{\hyperlink{debug_8h_source_l00038}{38}} of file \mbox{\hyperlink{debug_8h_source}{debug.\+h}}.
 

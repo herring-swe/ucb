@@ -1,9 +1,12 @@
 /**
+ * @file unicode.h
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Contains general unicode string operations
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Unicode support
+ * 
  * Operates on UTF-8 strings, unless specifically documented.
  */
 

@@ -4,7 +4,7 @@
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
  * 
- * @brief 
+ * @brief General buffer interface
  */
 
 #ifndef UCB_BUFFER_H

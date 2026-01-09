@@ -1,7 +1,7 @@
 var NAVTREEINDEX0 =
 {
-"_safe-example.html":[5,1],
-"_unsafe-example.html":[5,0],
+"Safe-example.html":[5,1],
+"Unsafe-example.html":[5,0],
 "annotated.html":[3,0],
 "btrace_8h.html":[4,0,1,0,0],
 "btrace_8h.html#a094923a35ef0468578a247d81949f6c8":[4,0,1,0,0,1],

@@ -134,23 +134,17 @@ UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
 /* -------------------------------------------------------------------------- */
 
 /**
+ * @brief Check if an error is set and refer to a valid error object.
+ * @param err the ucb_error object to check
+ */
+#define UCB_IS_THROWN(err) ((err) && (err)->code != 0)
+
+/**
  * Clear an error previously thrown error from a function
  * The error will be free'd and the pointer set to UCB_NULL.
  * @param perr pointer to error to clear
  */
-static inline void ucb_error_clear(const ucb_error** perr)
-{
-    if (perr && *perr)
-    {
-        ucb_error_free((ucb_error*)*perr);
-        *perr = UCB_NULL;
-    }
-}
-
-static inline bool ucb_error_check(const ucb_error* err)
-{
-    return (!err || err->code == 0);
-}
+UCB_API void ucb_error_clear(const ucb_error** perr);
 
 UCB_API void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg);
 UCB_API void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...);

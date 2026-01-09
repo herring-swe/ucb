@@ -1,9 +1,11 @@
 /**
+ * @file memory.c
+ * 
  * This file is part of the UCB project
- * SPDX-FileCopyrightText: © 2025 Åke Svedin <ake@svedin.org>
- * SPDX-License-Identifier: MIT
- *
- * @brief Basic memory functions
+ * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-License-Identifier: MIT
+ * 
+ * @brief Memory allocation routines implementation
  */
 
 #define UCB_MEMORY_IMPL

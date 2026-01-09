@@ -1,210 +1,229 @@
-\doxysection{include/\+ucb/\+memory.h File Reference}
+\doxysection{include/ucb/memory.h File Reference}
 \hypertarget{memory_8h}{}\label{memory_8h}\index{include/ucb/memory.h@{include/ucb/memory.h}}
-{\ttfamily \+\#include "{}defines.\+h"{}}\newline
-{\ttfamily \+\#include "{}export.\+h"{}}\newline
-{\ttfamily \+\#include "{}types.\+h"{}}\newline
-{\ttfamily \+\#include $<$stdbool.\+h$>$}\newline
-{\ttfamily \+\#include $<$stddef.\+h$>$}\newline
+
+
+Memory allocation routines.  
+
+
+{\ttfamily \#include "{}defines.\+h"{}}\newline
+{\ttfamily \#include "{}export.\+h"{}}\newline
+{\ttfamily \#include "{}types.\+h"{}}\newline
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stddef.\+h$>$}\newline
 \doxysubsubsection*{Macros}
 \begin{DoxyCompactItemize}
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_ad66a811b266713e47a6680f48cb6e8aa}{ucb\+\_\+malloc}}(num)
+\#define \mbox{\hyperlink{memory_8h_ad66a811b266713e47a6680f48cb6e8aa}{ucb\+\_\+malloc}}(num)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_a5a0ccf104f525b498c6e5bad17551c34}{ucb\+\_\+calloc}}(num,  size)
+\#define \mbox{\hyperlink{memory_8h_a5a0ccf104f525b498c6e5bad17551c34}{ucb\+\_\+calloc}}(num,  size)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6}{ucb\+\_\+realloc}}(ptr,  num)
+\#define \mbox{\hyperlink{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6}{ucb\+\_\+realloc}}(ptr,  num)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_ac37ee150715fa2a8536e04fb9c22ec8a}{ucb\+\_\+realloc2}}(ptr,  num,  free)
+\#define \mbox{\hyperlink{memory_8h_ac37ee150715fa2a8536e04fb9c22ec8a}{ucb\+\_\+realloc2}}(ptr,  num,  free)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf}{ucb\+\_\+free}}(ptr)
+\#define \mbox{\hyperlink{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf}{ucb\+\_\+free}}(ptr)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_a679fa567fb635bf586555734add1c27a}{ucb\+\_\+malloc\+\_\+type}}(num,  tname)
+\#define \mbox{\hyperlink{memory_8h_a679fa567fb635bf586555734add1c27a}{ucb\+\_\+malloc\+\_\+type}}(num,  tname)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_aa25e784acd5a3774a2452813f05d3297}{ucb\+\_\+calloc\+\_\+type}}(num,  tname)
+\#define \mbox{\hyperlink{memory_8h_aa25e784acd5a3774a2452813f05d3297}{ucb\+\_\+calloc\+\_\+type}}(num,  tname)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_a8b1dde623a014d8306fb1ffa4211646b}{ucb\+\_\+realloc\+\_\+type}}(ptr,  num,  tname)
+\#define \mbox{\hyperlink{memory_8h_a8b1dde623a014d8306fb1ffa4211646b}{ucb\+\_\+realloc\+\_\+type}}(ptr,  num,  tname)
 \item 
-\+\#define \doxymbox{\hyperlink{memory_8h_a51efc70cca01541257a77e3c42351c9a}{ucb\+\_\+free\+\_\+null}}(ptr)
+\#define \mbox{\hyperlink{memory_8h_a51efc70cca01541257a77e3c42351c9a}{ucb\+\_\+free\+\_\+null}}(ptr)
 \end{DoxyCompactItemize}
 \doxysubsubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a2b52f7df6848e7b178b07eb3ef2b9c5c}{ucb\+\_\+malloc}} (size\+\_\+t size)
-\begin{DoxyCompactList}\small\item\em General memory handling. \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a4617ec777a496d72fe91b39ae300cda8}{ucb\+\_\+calloc}} (size\+\_\+t num, size\+\_\+t size)
-\begin{DoxyCompactList}\small\item\em Safe calloc. Allocate zeroied memory block. As stdlib calloc but:\+ \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a83a60fb7c852589c428dde634e799f18}{ucb\+\_\+realloc}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size)
-\begin{DoxyCompactList}\small\item\em Safe realloc. Reallocate memory block. As stdlib realloc but:\+ \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a820f2a0d20a8cff553d72ee965a3ebfb}{ucb\+\_\+realloc2}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, bool free\+\_\+on\+\_\+failure)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a2b52f7df6848e7b178b07eb3ef2b9c5c}{ucb\+\_\+malloc}} (size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Safe alloc. Allocate uninitialized memory block. As stdlib alloc but\+: \end{DoxyCompactList}\item 
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a4617ec777a496d72fe91b39ae300cda8}{ucb\+\_\+calloc}} (size\+\_\+t num, size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Safe calloc. Allocate zeroied memory block. As stdlib calloc but\+: \end{DoxyCompactList}\item 
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a83a60fb7c852589c428dde634e799f18}{ucb\+\_\+realloc}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Safe realloc. Reallocate memory block. As stdlib realloc but\+: \end{DoxyCompactList}\item 
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a820f2a0d20a8cff553d72ee965a3ebfb}{ucb\+\_\+realloc2}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, bool free\+\_\+on\+\_\+failure)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{memory_8h_a1736cedf278c2c590f2e1e3b74a513ec}{ucb\+\_\+free}} (void \texorpdfstring{$\ast$}{*}ptr)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \mbox{\hyperlink{memory_8h_a1736cedf278c2c590f2e1e3b74a513ec}{ucb\+\_\+free}} (void \texorpdfstring{$\ast$}{*}ptr)
 \begin{DoxyCompactList}\small\item\em Same as free, ignores NULL. \end{DoxyCompactList}\item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a85ba485b3c356b7f1f971009de63532a}{ucb\+\_\+malloc\+\_\+debug}} (size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a85ba485b3c356b7f1f971009de63532a}{ucb\+\_\+malloc\+\_\+debug}} (size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_ab96b9d0a7c68becb5aeaad5d337cf3de}{ucb\+\_\+calloc\+\_\+debug}} (size\+\_\+t num, size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_ab96b9d0a7c68becb5aeaad5d337cf3de}{ucb\+\_\+calloc\+\_\+debug}} (size\+\_\+t num, size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_ac09cf11633f56f58c68e9608a639238d}{ucb\+\_\+realloc\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_ac09cf11633f56f58c68e9608a639238d}{ucb\+\_\+realloc\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, const char \texorpdfstring{$\ast$}{*}file, int line)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{memory_8h_a685afff785a47ece81c6db7e6206f40a}{ucb\+\_\+realloc2\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, bool free\+\_\+on\+\_\+failure, const char \texorpdfstring{$\ast$}{*}file, int line)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{memory_8h_a685afff785a47ece81c6db7e6206f40a}{ucb\+\_\+realloc2\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, size\+\_\+t size, bool free\+\_\+on\+\_\+failure, const char \texorpdfstring{$\ast$}{*}file, int line)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{memory_8h_a451ef2bd694e2cdc33d4a8fe875ffde4}{ucb\+\_\+free\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, const char \texorpdfstring{$\ast$}{*}file, int line)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \mbox{\hyperlink{memory_8h_a451ef2bd694e2cdc33d4a8fe875ffde4}{ucb\+\_\+free\+\_\+debug}} (void \texorpdfstring{$\ast$}{*}ptr, const char \texorpdfstring{$\ast$}{*}file, int line)
 \item 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{memory_8h_a3eb1e2bb2f389cb4d325c72ca4e2f85c}{ucb\+\_\+memcpy\+\_\+s}} (void \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} dest, size\+\_\+t dest\+\_\+size, const void \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} src, size\+\_\+t src\+\_\+size)
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \mbox{\hyperlink{memory_8h_a3eb1e2bb2f389cb4d325c72ca4e2f85c}{ucb\+\_\+memcpy\+\_\+s}} (void \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} dest, size\+\_\+t dest\+\_\+size, const void \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} src, size\+\_\+t src\+\_\+size)
 \end{DoxyCompactItemize}
 
 
-\label{doc-define-members}
-\Hypertarget{memory_8h_doc-define-members}
+\doxysubsection{Detailed Description}
+Memory allocation routines. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text\+: © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier\+: MIT
+\end{DoxyItemize}
+
+Many of these are designed to return the allocation memory directly. In case of out-\/of-\/memory, the application will abort instead, \begin{DoxySeeAlso}{See also}
+\doxylink{error_8h}{ucb/error.\+h} 
+\end{DoxySeeAlso}
+
+
+Definition in file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+
+
+
 \doxysubsection{Macro Definition Documentation}
 \Hypertarget{memory_8h_a5a0ccf104f525b498c6e5bad17551c34}\index{memory.h@{memory.h}!ucb\_calloc@{ucb\_calloc}}
 \index{ucb\_calloc@{ucb\_calloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_calloc}{ucb\_calloc}}
 {\footnotesize\ttfamily \label{memory_8h_a5a0ccf104f525b498c6e5bad17551c34} 
-\+\#define ucb\+\_\+calloc(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{size}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+calloc(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{size}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{memory_8h_ab96b9d0a7c68becb5aeaad5d337cf3de}{ucb\_calloc\_debug}}((num),\ (size),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{memory_8h_ab96b9d0a7c68becb5aeaad5d337cf3de}{ucb\_calloc\_debug}}((num),\ (size),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00089}{89}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00091}{91}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_aa25e784acd5a3774a2452813f05d3297}\index{memory.h@{memory.h}!ucb\_calloc\_type@{ucb\_calloc\_type}}
 \index{ucb\_calloc\_type@{ucb\_calloc\_type}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_calloc\_type}{ucb\_calloc\_type}}
 {\footnotesize\ttfamily \label{memory_8h_aa25e784acd5a3774a2452813f05d3297} 
-\+\#define ucb\+\_\+calloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+calloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{((tname*)\doxymbox{\hyperlink{memory_8h_a5a0ccf104f525b498c6e5bad17551c34}{ucb\_calloc}}((num),\ \textcolor{keyword}{sizeof}(tname)))}
+\DoxyCodeLine{\ \ \ \ ((tname*)\mbox{\hyperlink{memory_8h_a5a0ccf104f525b498c6e5bad17551c34}{ucb\_calloc}}((num),\ \textcolor{keyword}{sizeof}(tname)))}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00131}{131}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00133}{133}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf}\index{memory.h@{memory.h}!ucb\_free@{ucb\_free}}
 \index{ucb\_free@{ucb\_free}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_free}{ucb\_free}}
 {\footnotesize\ttfamily \label{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf} 
-\+\#define ucb\+\_\+free(\begin{DoxyParamCaption}\item[{}]{ptr}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+free(\begin{DoxyParamCaption}\item[{}]{ptr}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{memory_8h_a451ef2bd694e2cdc33d4a8fe875ffde4}{ucb\_free\_debug}}((ptr),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{memory_8h_a451ef2bd694e2cdc33d4a8fe875ffde4}{ucb\_free\_debug}}((ptr),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00092}{92}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00094}{94}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_a51efc70cca01541257a77e3c42351c9a}\index{memory.h@{memory.h}!ucb\_free\_null@{ucb\_free\_null}}
 \index{ucb\_free\_null@{ucb\_free\_null}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_free\_null}{ucb\_free\_null}}
 {\footnotesize\ttfamily \label{memory_8h_a51efc70cca01541257a77e3c42351c9a} 
-\+\#define ucb\+\_\+free\+\_\+null(\begin{DoxyParamCaption}\item[{}]{ptr}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+free\+\_\+null(\begin{DoxyParamCaption}\item[{}]{ptr}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\textcolor{keywordflow}{do}\ \{\ \doxymbox{\hyperlink{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf}{ucb\_free}}((\textcolor{keywordtype}{void}*)(ptr));\ (ptr)\ =\ \doxymbox{\hyperlink{defines_8h_a723a75ddd054b2bb8fc40bfb6b91d64d}{UCB\_NULL}};\ \}\ \textcolor{keywordflow}{while}\ (0)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{do}\ \{\ \mbox{\hyperlink{memory_8h_ac251c1ddf874580728cbd0f26bc3f8cf}{ucb\_free}}((\textcolor{keywordtype}{void}*)(ptr));\ (ptr)\ =\ \mbox{\hyperlink{defines_8h_a723a75ddd054b2bb8fc40bfb6b91d64d}{UCB\_NULL}};\ \}\ \textcolor{keywordflow}{while}\ (0)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00136}{136}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00138}{138}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_ad66a811b266713e47a6680f48cb6e8aa}\index{memory.h@{memory.h}!ucb\_malloc@{ucb\_malloc}}
 \index{ucb\_malloc@{ucb\_malloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_malloc}{ucb\_malloc}}
 {\footnotesize\ttfamily \label{memory_8h_ad66a811b266713e47a6680f48cb6e8aa} 
-\+\#define ucb\+\_\+malloc(\begin{DoxyParamCaption}\item[{}]{num}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+malloc(\begin{DoxyParamCaption}\item[{}]{num}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{memory_8h_a85ba485b3c356b7f1f971009de63532a}{ucb\_malloc\_debug}}((num),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{memory_8h_a85ba485b3c356b7f1f971009de63532a}{ucb\_malloc\_debug}}((num),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
 
 \end{DoxyCode}
 Override memory functions to include file and line information Only for debug builds, see memdbh.\+h 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00088}{88}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00090}{90}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_a679fa567fb635bf586555734add1c27a}\index{memory.h@{memory.h}!ucb\_malloc\_type@{ucb\_malloc\_type}}
 \index{ucb\_malloc\_type@{ucb\_malloc\_type}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_malloc\_type}{ucb\_malloc\_type}}
 {\footnotesize\ttfamily \label{memory_8h_a679fa567fb635bf586555734add1c27a} 
-\+\#define ucb\+\_\+malloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+malloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{((tname*)\doxymbox{\hyperlink{memory_8h_ad66a811b266713e47a6680f48cb6e8aa}{ucb\_malloc}}((num)\ *\ \textcolor{keyword}{sizeof}(tname)))}
+\DoxyCodeLine{\ \ \ \ ((tname*)\mbox{\hyperlink{memory_8h_ad66a811b266713e47a6680f48cb6e8aa}{ucb\_malloc}}((num)\ *\ \textcolor{keyword}{sizeof}(tname)))}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00129}{129}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00131}{131}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6}\index{memory.h@{memory.h}!ucb\_realloc@{ucb\_realloc}}
 \index{ucb\_realloc@{ucb\_realloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc}{ucb\_realloc}}
 {\footnotesize\ttfamily \label{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6} 
-\+\#define ucb\+\_\+realloc(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+realloc(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{memory_8h_ac09cf11633f56f58c68e9608a639238d}{ucb\_realloc\_debug}}((ptr),\ (num),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{memory_8h_ac09cf11633f56f58c68e9608a639238d}{ucb\_realloc\_debug}}((ptr),\ (num),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00090}{90}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00092}{92}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_ac37ee150715fa2a8536e04fb9c22ec8a}\index{memory.h@{memory.h}!ucb\_realloc2@{ucb\_realloc2}}
 \index{ucb\_realloc2@{ucb\_realloc2}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc2}{ucb\_realloc2}}
 {\footnotesize\ttfamily \label{memory_8h_ac37ee150715fa2a8536e04fb9c22ec8a} 
-\+\#define ucb\+\_\+realloc2(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{, }\item[{}]{free}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+realloc2(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{, }\item[{}]{free}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{\doxymbox{\hyperlink{memory_8h_a685afff785a47ece81c6db7e6206f40a}{ucb\_realloc2\_debug}}((ptr),\ (num),\ (free),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
+\DoxyCodeLine{\mbox{\hyperlink{memory_8h_a685afff785a47ece81c6db7e6206f40a}{ucb\_realloc2\_debug}}((ptr),\ (num),\ (free),\ \_\_FILE\_\_,\ \_\_LINE\_\_)}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00091}{91}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00093}{93}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 \Hypertarget{memory_8h_a8b1dde623a014d8306fb1ffa4211646b}\index{memory.h@{memory.h}!ucb\_realloc\_type@{ucb\_realloc\_type}}
 \index{ucb\_realloc\_type@{ucb\_realloc\_type}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc\_type}{ucb\_realloc\_type}}
 {\footnotesize\ttfamily \label{memory_8h_a8b1dde623a014d8306fb1ffa4211646b} 
-\+\#define ucb\+\_\+realloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
+\#define ucb\+\_\+realloc\+\_\+type(\begin{DoxyParamCaption}\item[{}]{ptr}{, }\item[{}]{num}{, }\item[{}]{tname}{}\end{DoxyParamCaption})}
 
-{\bfseries Value:\+}
+{\bfseries Value\+:}
 \begin{DoxyCode}{0}
-\DoxyCodeLine{((tname*)\doxymbox{\hyperlink{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6}{ucb\_realloc}}((ptr),\ (num)\ *\ \textcolor{keyword}{sizeof}(tname)))}
+\DoxyCodeLine{\ \ \ \ ((tname*)\mbox{\hyperlink{memory_8h_a8cd4acfa24accfabea652ad2feaf9ac6}{ucb\_realloc}}((ptr),\ (num)\ *\ \textcolor{keyword}{sizeof}(tname)))}
 
 \end{DoxyCode}
 
 
-Definition at line \doxymbox{\hyperlink{memory_8h_source_l00133}{133}} of file \doxymbox{\hyperlink{memory_8h_source}{memory.\+h}}.
+Definition at line \mbox{\hyperlink{memory_8h_source_l00135}{135}} of file \mbox{\hyperlink{memory_8h_source}{memory.\+h}}.
 
 
 
-\label{doc-func-members}
-\Hypertarget{memory_8h_doc-func-members}
 \doxysubsection{Function Documentation}
 \Hypertarget{memory_8h_a4617ec777a496d72fe91b39ae300cda8}\index{memory.h@{memory.h}!ucb\_calloc@{ucb\_calloc}}
 \index{ucb\_calloc@{ucb\_calloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_calloc()}{ucb\_calloc()}}
 {\footnotesize\ttfamily \label{memory_8h_a4617ec777a496d72fe91b39ae300cda8} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+calloc (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{num}{, }\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+calloc (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{num}{, }\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
 
 
 
-Safe calloc. Allocate zeroied memory block. As stdlib calloc but:\+ 
+Safe calloc. Allocate zeroied memory block. As stdlib calloc but\+: 
 
 
 \begin{DoxyItemize}
@@ -224,13 +243,13 @@ pointer to new memory or UCB\+\_\+\+NULL
 \index{ucb\_calloc\_debug@{ucb\_calloc\_debug}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_calloc\_debug()}{ucb\_calloc\_debug()}}
 {\footnotesize\ttfamily \label{memory_8h_ab96b9d0a7c68becb5aeaad5d337cf3de} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+calloc\+\_\+debug (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{num}{, }\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+calloc\+\_\+debug (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{num}{, }\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_a1736cedf278c2c590f2e1e3b74a513ec}\index{memory.h@{memory.h}!ucb\_free@{ucb\_free}}
 \index{ucb\_free@{ucb\_free}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_free()}{ucb\_free()}}
 {\footnotesize\ttfamily \label{memory_8h_a1736cedf278c2c590f2e1e3b74a513ec} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+free (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+free (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{}\end{DoxyParamCaption})}
 
 
 
@@ -245,24 +264,19 @@ Same as free, ignores NULL.
 \index{ucb\_free\_debug@{ucb\_free\_debug}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_free\_debug()}{ucb\_free\_debug()}}
 {\footnotesize\ttfamily \label{memory_8h_a451ef2bd694e2cdc33d4a8fe875ffde4} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+free\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+free\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_a2b52f7df6848e7b178b07eb3ef2b9c5c}\index{memory.h@{memory.h}!ucb\_malloc@{ucb\_malloc}}
 \index{ucb\_malloc@{ucb\_malloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_malloc()}{ucb\_malloc()}}
 {\footnotesize\ttfamily \label{memory_8h_a2b52f7df6848e7b178b07eb3ef2b9c5c} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+malloc (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+malloc (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
 
 
 
-General memory handling. 
+Safe alloc. Allocate uninitialized memory block. As stdlib alloc but\+: 
 
-This file is part of the UCB project SPDX-\/\+File\+Copyright\+Text:\+ © 2025 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}} SPDX-\/\+License-\/\+Identifier:\+ MIT
 
-Many of these are designed to return the allocation memory directly. In case of out-\/of-\/memory, the application will abort instead, \begin{DoxySeeAlso}{See also}
-\doxylink{error_8h}{ucb/\+error.\+h}
-\end{DoxySeeAlso}
-Safe alloc. Allocate uninitialized memory block. As stdlib alloc but:\+
 \begin{DoxyItemize}
 \item If size is 0, will set UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+ARG and return UCB\+\_\+\+NULL
 \item If memory failed to allocate, will report fatal error UCB\+\_\+\+ERROR\+\_\+\+OUT\+\_\+\+OF\+\_\+\+MEMORY. 
@@ -278,23 +292,23 @@ pointer to new memory or UCB\+\_\+\+NULL
 \index{ucb\_malloc\_debug@{ucb\_malloc\_debug}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_malloc\_debug()}{ucb\_malloc\_debug()}}
 {\footnotesize\ttfamily \label{memory_8h_a85ba485b3c356b7f1f971009de63532a} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+malloc\+\_\+debug (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+malloc\+\_\+debug (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_a3eb1e2bb2f389cb4d325c72ca4e2f85c}\index{memory.h@{memory.h}!ucb\_memcpy\_s@{ucb\_memcpy\_s}}
 \index{ucb\_memcpy\_s@{ucb\_memcpy\_s}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_memcpy\_s()}{ucb\_memcpy\_s()}}
 {\footnotesize\ttfamily \label{memory_8h_a3eb1e2bb2f389cb4d325c72ca4e2f85c} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+memcpy\+\_\+s (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{dest}{, }\item[{size\+\_\+t}]{dest\+\_\+size}{, }\item[{const void \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{src}{, }\item[{size\+\_\+t}]{src\+\_\+size}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+memcpy\+\_\+s (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{dest}{, }\item[{size\+\_\+t}]{dest\+\_\+size}{, }\item[{const void \texorpdfstring{$\ast$}{*}\mbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{src}{, }\item[{size\+\_\+t}]{src\+\_\+size}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_a83a60fb7c852589c428dde634e799f18}\index{memory.h@{memory.h}!ucb\_realloc@{ucb\_realloc}}
 \index{ucb\_realloc@{ucb\_realloc}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc()}{ucb\_realloc()}}
 {\footnotesize\ttfamily \label{memory_8h_a83a60fb7c852589c428dde634e799f18} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{}\end{DoxyParamCaption})}
 
 
 
-Safe realloc. Reallocate memory block. As stdlib realloc but:\+ 
+Safe realloc. Reallocate memory block. As stdlib realloc but\+: 
 
 
 \begin{DoxyItemize}
@@ -315,17 +329,17 @@ pointer to new memory or UCB\+\_\+\+NULL
 \index{ucb\_realloc2@{ucb\_realloc2}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc2()}{ucb\_realloc2()}}
 {\footnotesize\ttfamily \label{memory_8h_a820f2a0d20a8cff553d72ee965a3ebfb} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc2 (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{bool}]{free\+\_\+on\+\_\+failure}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc2 (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{bool}]{free\+\_\+on\+\_\+failure}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_a685afff785a47ece81c6db7e6206f40a}\index{memory.h@{memory.h}!ucb\_realloc2\_debug@{ucb\_realloc2\_debug}}
 \index{ucb\_realloc2\_debug@{ucb\_realloc2\_debug}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc2\_debug()}{ucb\_realloc2\_debug()}}
 {\footnotesize\ttfamily \label{memory_8h_a685afff785a47ece81c6db7e6206f40a} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc2\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{bool}]{free\+\_\+on\+\_\+failure}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc2\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{bool}]{free\+\_\+on\+\_\+failure}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
 
 \Hypertarget{memory_8h_ac09cf11633f56f58c68e9608a639238d}\index{memory.h@{memory.h}!ucb\_realloc\_debug@{ucb\_realloc\_debug}}
 \index{ucb\_realloc\_debug@{ucb\_realloc\_debug}!memory.h@{memory.h}}
 \doxysubsubsection{\texorpdfstring{ucb\_realloc\_debug()}{ucb\_realloc\_debug()}}
 {\footnotesize\ttfamily \label{memory_8h_ac09cf11633f56f58c68e9608a639238d} 
-\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
+\mbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \texorpdfstring{$\ast$}{*} ucb\+\_\+realloc\+\_\+debug (\begin{DoxyParamCaption}\item[{void \texorpdfstring{$\ast$}{*}}]{ptr}{, }\item[{size\+\_\+t}]{size}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{int}]{line}{}\end{DoxyParamCaption})}
 
