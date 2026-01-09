@@ -1,0 +1,152 @@
+\doxysection{math.\+h}
+\hypertarget{math_8h_source}{}\label{math_8h_source}\index{include/ucb/math.h@{include/ucb/math.h}}
+\doxymbox{\hyperlink{math_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00011}00011\ \textcolor{preprocessor}{\#ifndef\ UCB\_MATH\_H}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00012}00012\ \textcolor{preprocessor}{\#define\ UCB\_MATH\_H}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00014}00014\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{generics_8h}{generics.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00015}00015\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <float.h>}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00018}00018\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00019}00019\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00020}\doxymbox{\hyperlink{math_8h_a44bcfa59ed6acb9bf86a8bf99bc78585}{00020}}\ \textcolor{preprocessor}{\#define\ UCB\_EPSILON\_FLT\ FLT\_EPSILON}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00021}\doxymbox{\hyperlink{math_8h_aba1cff0985b7c21719ad5c515adcfe74}{00021}}\ \textcolor{preprocessor}{\#define\ UCB\_EPSILON\_DBL\ DBL\_EPSILON}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00022}00022\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00023}\doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{00023}}\ \textcolor{preprocessor}{\#define\ UCB\_MATH\_FUNCS\_IMPL(TNAME,\ TYPE)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00024}00024\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ TYPE\ ucb\_min\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00025}00025\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00026}00026\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ (a\ <\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00027}00027\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00028}00028\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ TYPE\ ucb\_max\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00029}00029\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00030}00030\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ (a\ >\ b)\ ?\ a\ :\ b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00031}00031\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00032}00032\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ TYPE\ ucb\_clamp\_\#\#TNAME(const\ TYPE\ val,\ const\ TYPE\ min\_val,\ const\ TYPE\ max\_val)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00033}00033\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00034}00034\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_max\_\#\#TNAME(min\_val,\ ucb\_min\_\#\#TNAME(val,\ max\_val));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00035}00035\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00036}00036\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ void\ ucb\_swap\_\#\#TNAME(TYPE*\ a,\ TYPE*\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00037}00037\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00038}00038\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ TYPE\ tmp\ =\ *a;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00039}00039\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ *a\ \ \ \ \ \ \ =\ *b;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00040}00040\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ *b\ \ \ \ \ \ \ =\ tmp;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00041}00041\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00042}00042\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ bool\ ucb\_in\_range\_\#\#TNAME(const\ TYPE\ val,\ const\ TYPE\ low,\ const\ TYPE\ high)\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00043}00043\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00044}00044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ (val\ >=\ low)\ \&\&\ (val\ <=\ high);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00045}00045\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00047}\doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{00047}}\ \textcolor{preprocessor}{\#define\ UCB\_MATH\_FUNCS\_SIGNED\_IMPL(TNAME,\ TYPE)\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00048}00048\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ int\ ucb\_sign\_\#\#TNAME(const\ TYPE\ val)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00049}00049\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00050}00050\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ (val\ >\ 0)\ -\/\ (val\ <\ 0);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00051}00051\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00052}00052\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ TYPE\ ucb\_abs\_\#\#TNAME(const\ TYPE\ val)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00053}00053\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00054}00054\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ (val\ <\ 0)\ ?\ -\/val\ :\ val;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00055}00055\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00056}00056\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00057}\doxymbox{\hyperlink{math_8h_aad7576cdb896ea926782fb3d1cb826f7}{00057}}\ \textcolor{preprocessor}{\#define\ UCB\_MATH\_FUNCS\_FLOAT\_IMPL(TNAME,\ TMACRO,\ TYPE)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00058}00058\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ bool\ ucb\_equal\_eps\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b,\ const\ TYPE\ eps)\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00059}00059\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00060}00060\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_abs\_\#\#TNAME(a\ -\/\ b)\ <\ eps;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00061}00061\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00062}00062\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ bool\ ucb\_equal\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00063}00063\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00064}00064\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_equal\_eps\_\#\#TNAME(a,\ b,\ UCB\_EPSILON\_\#\#TMACRO);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00065}00065\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00066}00066\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ int\ ucb\_comp\_eps\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b,\ const\ TYPE\ eps)\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00067}00067\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00068}00068\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_equal\_eps\_\#\#TNAME(a,\ b,\ eps)\ ?\ 0\ :\ ucb\_sign\_\#\#TNAME(a\ -\/\ b);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00069}00069\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00070}00070\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ int\ ucb\_comp\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00071}00071\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00072}00072\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_comp\_eps\_\#\#TNAME(a,\ b,\ UCB\_EPSILON\_\#\#TMACRO);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00073}00073\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00074}00074\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ bool\ ucb\_approx\_equal\_eps\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b,\ const\ TYPE\ eps)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00075}00075\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00076}00076\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_abs\_\#\#TNAME(a\ -\/\ b)\ <=\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00077}00077\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ucb\_max\_\#\#TNAME(ucb\_abs\_\#\#TNAME(a),\ ucb\_abs\_\#\#TNAME(b))\ *\ eps;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00078}00078\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00079}00079\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ bool\ ucb\_approx\_equal\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00080}00080\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00081}00081\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_approx\_equal\_eps\_\#\#TNAME(a,\ b,\ UCB\_EPSILON\_\#\#TMACRO);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00082}00082\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00083}00083\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ int\ ucb\_approx\_comp\_eps\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b,\ const\ TYPE\ eps)\ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00084}00084\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00085}00085\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_approx\_equal\_eps\_\#\#TNAME(a,\ b,\ eps)\ ?\ 0\ :\ ucb\_sign\_\#\#TNAME(a\ -\/\ b);\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00086}00086\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00087}00087\ \textcolor{preprocessor}{\ \ \ \ static\ inline\ int\ ucb\_approx\_comp\_\#\#TNAME(const\ TYPE\ a,\ const\ TYPE\ b,\ const\ TYPE\ eps)\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00088}00088\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00089}00089\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ return\ ucb\_approx\_comp\_eps\_\#\#TNAME(a,\ b,\ eps);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00090}00090\ \textcolor{preprocessor}{\ \ \ \ \}}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00091}00091\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00092}00092\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(hhi,\ \textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00093}00093\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(hhu,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00094}00094\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(hi,\ \textcolor{keywordtype}{short})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00095}00095\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(hu,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00096}00096\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(i,\ \textcolor{keywordtype}{int})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00097}00097\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(u,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00098}00098\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(li,\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00099}00099\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(lu,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00100}00100\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(lli,\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00101}00101\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(llu,\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00102}00102\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(f,\ \textcolor{keywordtype}{float})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00103}00103\ \doxymbox{\hyperlink{math_8h_a923f1a991618b9bfaf8193b9b79a8d12}{UCB\_MATH\_FUNCS\_IMPL}}(d,\ \textcolor{keywordtype}{double})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00104}00104\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00105}00105\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(hhi,\ \textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00106}00106\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(hi,\ \textcolor{keywordtype}{short})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00107}00107\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(i,\ \textcolor{keywordtype}{int})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00108}00108\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(li,\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00109}00109\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(lli,\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00110}00110\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(f,\ \textcolor{keywordtype}{float})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00111}00111\ \doxymbox{\hyperlink{math_8h_a9efd784dbba1e51ed9216d7ceb6e92ce}{UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}(d,\ \textcolor{keywordtype}{double})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00112}00112\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00113}00113\ \doxymbox{\hyperlink{math_8h_aad7576cdb896ea926782fb3d1cb826f7}{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}}(f,\ FLT,\ \textcolor{keywordtype}{float})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00114}00114\ \doxymbox{\hyperlink{math_8h_aad7576cdb896ea926782fb3d1cb826f7}{UCB\_MATH\_FUNCS\_FLOAT\_IMPL}}(d,\ DBL,\ \textcolor{keywordtype}{double})}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00115}00115\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00116}00116\ \textcolor{preprocessor}{\#undef\ UCB\_MATH\_FUNCS\_IMPL}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00117}00117\ \textcolor{preprocessor}{\#undef\ UCB\_MATH\_FUNCS\_SIGNED\_IMPL}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00118}00118\ \textcolor{preprocessor}{\#undef\ UCB\_MATH\_FUNCS\_FLOAT\_IMPL}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00119}00119\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00120}00120\ \textcolor{preprocessor}{\#ifndef\ \_\_cplusplus}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00121}00121\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00127}\doxymbox{\hyperlink{math_8h_a71bad13eeaa2181807ac7d6d56d6e6b2}{00127}}\ \textcolor{preprocessor}{\#define\ ucb\_min(a,\ b)\ UCB\_GENERIC\_FUNC\_2(ucb\_min,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00128}00128\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00134}\doxymbox{\hyperlink{math_8h_ad0732db3eb32b1938f223ea814d41adb}{00134}}\ \textcolor{preprocessor}{\#define\ ucb\_max(a,\ b)\ UCB\_GENERIC\_FUNC\_2(ucb\_max,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00135}00135\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00141}\doxymbox{\hyperlink{math_8h_a4e9a496dbbaead27ac6e5a561df96c0a}{00141}}\ \textcolor{preprocessor}{\#define\ ucb\_clamp(val,\ min,\ max)\ UCB\_GENERIC\_FUNC\_3(ucb\_clamp,\ val,\ min,\ max)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00142}00142\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00148}\doxymbox{\hyperlink{math_8h_a51b96967cb106a7bf50a1c48bfefedb6}{00148}}\ \textcolor{preprocessor}{\#define\ ucb\_in\_range(val,\ min,\ max)\ UCB\_GENERIC\_FUNC\_3(ucb\_in\_range,\ val,\ min,\ max)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00149}00149\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00156}\doxymbox{\hyperlink{math_8h_a3fbe663c4aa2f72477794110cf91e6c5}{00156}}\ \textcolor{preprocessor}{\#define\ ucb\_swap(a,\ b)\ UCB\_GENERIC\_FUNC\_2(ucb\_swap,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00157}00157\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00163}\doxymbox{\hyperlink{math_8h_a454cfff5f8dd3042cff61a6f6d0fd573}{00163}}\ \textcolor{preprocessor}{\#define\ ucb\_sign(val)\ UCB\_GENERIC\_FUNC\_SIGNED\_1(ucb\_sign,\ val)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00164}00164\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00170}\doxymbox{\hyperlink{math_8h_a56312b19bb3b2cf4ad3f4a273b5b3c40}{00170}}\ \textcolor{preprocessor}{\#define\ ucb\_abs(val)\ UCB\_GENERIC\_FUNC\_SIGNED\_1(ucb\_abs,\ val)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00171}00171\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00177}\doxymbox{\hyperlink{math_8h_affd5cd6766c40675fd098f1c8cd2567b}{00177}}\ \textcolor{preprocessor}{\#define\ ucb\_equal\_eps(a,\ b,\ eps)\ UCB\_GENERIC\_FUNC\_FLOAT\_3(ucb\_equal\_eps,\ a,\ b,\ eps)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00178}00178\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00184}\doxymbox{\hyperlink{math_8h_af24a6a4335fe2ee5800d40ff1ef39ac3}{00184}}\ \textcolor{preprocessor}{\#define\ ucb\_equal(a,\ b)\ UCB\_GENERIC\_FUNC\_FLOAT\_2(ucb\_equal,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00185}00185\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00191}\doxymbox{\hyperlink{math_8h_ac6d6ef474caee4e9ae763fd825507da8}{00191}}\ \textcolor{preprocessor}{\#define\ ucb\_comp\_eps(a,\ b,\ eps)\ UCB\_GENERIC\_FUNC\_FLOAT\_3(ucb\_comp\_eps,\ a,\ b,\ eps)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00192}00192\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00198}\doxymbox{\hyperlink{math_8h_a6cbbb83658d120fbaf9f49a26be8408b}{00198}}\ \textcolor{preprocessor}{\#define\ ucb\_comp(a,\ b)\ UCB\_GENERIC\_FUNC\_FLOAT\_2(ucb\_comp,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00199}00199\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00206}\doxymbox{\hyperlink{math_8h_a51366436760cda1f8d11e8e08c145e8a}{00206}}\ \textcolor{preprocessor}{\#define\ ucb\_approx\_equal\_eps(a,\ b,\ eps)\ UCB\_GENERIC\_FUNC\_FLOAT\_3(ucb\_approx\_equal\_eps,\ a,\ b,\ eps)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00207}00207\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00214}\doxymbox{\hyperlink{math_8h_a80e19736ad742482102c6ec6f8602a72}{00214}}\ \textcolor{preprocessor}{\#define\ ucb\_approx\_equal(a,\ b)\ UCB\_GENERIC\_FUNC\_FLOAT\_2(ucb\_approx\_equal,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00215}00215\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00222}\doxymbox{\hyperlink{math_8h_a58c92a81eb8fcab742bc8ac9096776ab}{00222}}\ \textcolor{preprocessor}{\#define\ ucb\_approx\_comp\_eps(a,\ b,\ eps)\ UCB\_GENERIC\_FUNC\_FLOAT\_3(ucb\_approx\_comp\_eps,\ a,\ b,\ eps)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00223}00223\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00230}\doxymbox{\hyperlink{math_8h_acb08e41ba36db00aac9fde4b8ded65ad}{00230}}\ \textcolor{preprocessor}{\#define\ ucb\_approx\_comp(a,\ b)\ UCB\_GENERIC\_FUNC\_FLOAT\_2(ucb\_approx\_comp,\ a,\ b)}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00231}00231\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00232}00232\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ \_\_cplusplus}}
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00233}00233\ }
+\DoxyCodeLine{\Hypertarget{math_8h_source_l00234}00234\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_MATH\_H}}
+
+\end{DoxyCode}

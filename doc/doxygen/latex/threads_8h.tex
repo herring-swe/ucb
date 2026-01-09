@@ -1,0 +1,348 @@
+\doxysection{include/\+ucb/\+threads.h File Reference}
+\hypertarget{threads_8h}{}\label{threads_8h}\index{include/ucb/threads.h@{include/ucb/threads.h}}
+{\ttfamily \+\#include "{}error.\+h"{}}\newline
+{\ttfamily \+\#include "{}export.\+h"{}}\newline
+{\ttfamily \+\#include "{}types.\+h"{}}\newline
+{\ttfamily \+\#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \+\#include $<$stddef.\+h$>$}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a48910f07aca4cad3c13647441fc0fed6}{UCB\+\_\+\+THREAD\+\_\+\+LOCAL}}~\+\_\+\+Thread\+\_\+local
+\begin{DoxyCompactList}\small\item\em Basic threading support. \end{DoxyCompactList}\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_afbf3dd77847131ab81bde1a8f2835090}{UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+MIN}}~-\/10
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_ae31a9fcf7ba7dbe5fc9ebac7702268ca}{UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+LOW}}~-\/5
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a75ab1ce37d4642bf6916766d542f05b5}{UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+DEFAULT}}~0
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a57a057b13e1d13b2c5f6cb38fb5530f5}{UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+HIGH}}~5
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a4d375e3d4cd513ab3d6946e60f2564df}{UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+MAX}}~10
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a59440774980b05ce93b5730ff99f7ab0}{UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+DEFAULT}}~0x00
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_aaf07546f04f900a0f02e2956e538250d}{UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+JOINABLE}}~0x01
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a74286ce6d95828d9f2bb0abcce75cde8}{UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+DETACHED}}~0x02
+\item 
+\+\#define \doxymbox{\hyperlink{threads_8h_a29ad97016c9c8b608d8c9b8a74113fd2}{UCB\+\_\+\+THREAD\+\_\+\+NAME\+\_\+\+MAX}}~15
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}}
+\item 
+typedef void(\texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{threads_8h_aba13f58154dedff42598b7a3f48efce9}{ucb\+\_\+thread\+\_\+func\+\_\+t}}) (void \texorpdfstring{$\ast$}{*}arg)
+\item 
+typedef void(\texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{threads_8h_a820aa075797803fe6b7f73e6068cd376}{ucb\+\_\+thread\+\_\+exit\+\_\+func\+\_\+t}}) (void \texorpdfstring{$\ast$}{*}exit\+\_\+arg, void \texorpdfstring{$\ast$}{*}func\+\_\+arg)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{types_8h_a36035333cc0e28a2009db6724c475c6a}{ucb\+\_\+pid}} \doxymbox{\hyperlink{threads_8h_a4d8bf10caca793bb96fc83bb8af70894}{ucb\+\_\+thread\+\_\+id}} (void)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \doxymbox{\hyperlink{threads_8h_a14d3af5baacfb31d7fbfb11db5a71708}{ucb\+\_\+thread\+\_\+get\+\_\+current\+\_\+stack\+\_\+size}} (void)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{threads_8h_a7322fd5bae293d0430a6a79bfda1b263}{ucb\+\_\+thread\+\_\+new}} (int flags)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a45dc7671afadadaae0c8fa918ed6b2c1}{ucb\+\_\+thread\+\_\+free}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a7174a9cf50d6e40cc90c7bdd51c34aa9}{ucb\+\_\+thread\+\_\+set\+\_\+name}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread, const char \texorpdfstring{$\ast$}{*}name)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{threads_8h_a15951218a09a50b6c2f230f5cbbfd376}{ucb\+\_\+thread\+\_\+get\+\_\+name}} (const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_ae3db690dd92cee6bd4d95acdb54d6059}{ucb\+\_\+thread\+\_\+set\+\_\+stack\+\_\+size}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread, size\+\_\+t stack\+\_\+size)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t \doxymbox{\hyperlink{threads_8h_a6e72b9c322439639e0bcb19d048a7786}{ucb\+\_\+thread\+\_\+get\+\_\+stack\+\_\+size}} (const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a79b3d5ff34dedfb4861dfc642c3fb9e6}{ucb\+\_\+thread\+\_\+set\+\_\+priority}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread, int priority)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} int \doxymbox{\hyperlink{threads_8h_aea3cacb3cb56775cdda0526bbfa3f68f}{ucb\+\_\+thread\+\_\+get\+\_\+priority}} (const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{threads_8h_a222f95a343a9bc865951b2002651bac2}{ucb\+\_\+thread\+\_\+is\+\_\+joinable}} (const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a2ba6081320ab6a55b743c07999ce7ae1}{ucb\+\_\+thread\+\_\+set\+\_\+func}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread, \doxymbox{\hyperlink{threads_8h_aba13f58154dedff42598b7a3f48efce9}{ucb\+\_\+thread\+\_\+func\+\_\+t}} func, void \texorpdfstring{$\ast$}{*}arg)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a4d6384058d1614dde43ed31b0c7abda9}{ucb\+\_\+thread\+\_\+set\+\_\+exit\+\_\+func}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread, \doxymbox{\hyperlink{threads_8h_a820aa075797803fe6b7f73e6068cd376}{ucb\+\_\+thread\+\_\+exit\+\_\+func\+\_\+t}} func, void \texorpdfstring{$\ast$}{*}arg)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{types_8h_a36035333cc0e28a2009db6724c475c6a}{ucb\+\_\+pid}} \doxymbox{\hyperlink{threads_8h_a0373318068e70fcd186d2a9f8f32085a}{ucb\+\_\+thread\+\_\+get\+\_\+id}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{threads_8h_ada6b593caa6fc27c4581937461155f94}{ucb\+\_\+thread\+\_\+start}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{threads_8h_a23094efb6603e43b201a7ce45f04c11c}{ucb\+\_\+thread\+\_\+join}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{threads_8h_a623139e9984b4af695f7a1f4682c1195}{ucb\+\_\+thread\+\_\+is\+\_\+running}} (\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}thread)
+\end{DoxyCompactItemize}
+
+
+\label{doc-define-members}
+\Hypertarget{threads_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{threads_8h_a59440774980b05ce93b5730ff99f7ab0}\index{threads.h@{threads.h}!UCB\_THREAD\_FLAG\_DEFAULT@{UCB\_THREAD\_FLAG\_DEFAULT}}
+\index{UCB\_THREAD\_FLAG\_DEFAULT@{UCB\_THREAD\_FLAG\_DEFAULT}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_FLAG\_DEFAULT}{UCB\_THREAD\_FLAG\_DEFAULT}}
+{\footnotesize\ttfamily \label{threads_8h_a59440774980b05ce93b5730ff99f7ab0} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+DEFAULT~0x00}
+
+By default will create a joinable thread. 
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00036}{36}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a74286ce6d95828d9f2bb0abcce75cde8}\index{threads.h@{threads.h}!UCB\_THREAD\_FLAG\_DETACHED@{UCB\_THREAD\_FLAG\_DETACHED}}
+\index{UCB\_THREAD\_FLAG\_DETACHED@{UCB\_THREAD\_FLAG\_DETACHED}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_FLAG\_DETACHED}{UCB\_THREAD\_FLAG\_DETACHED}}
+{\footnotesize\ttfamily \label{threads_8h_a74286ce6d95828d9f2bb0abcce75cde8} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+DETACHED~0x02}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00038}{38}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_aaf07546f04f900a0f02e2956e538250d}\index{threads.h@{threads.h}!UCB\_THREAD\_FLAG\_JOINABLE@{UCB\_THREAD\_FLAG\_JOINABLE}}
+\index{UCB\_THREAD\_FLAG\_JOINABLE@{UCB\_THREAD\_FLAG\_JOINABLE}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_FLAG\_JOINABLE}{UCB\_THREAD\_FLAG\_JOINABLE}}
+{\footnotesize\ttfamily \label{threads_8h_aaf07546f04f900a0f02e2956e538250d} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+FLAG\+\_\+\+JOINABLE~0x01}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00037}{37}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a48910f07aca4cad3c13647441fc0fed6}\index{threads.h@{threads.h}!UCB\_THREAD\_LOCAL@{UCB\_THREAD\_LOCAL}}
+\index{UCB\_THREAD\_LOCAL@{UCB\_THREAD\_LOCAL}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_LOCAL}{UCB\_THREAD\_LOCAL}}
+{\footnotesize\ttfamily \label{threads_8h_a48910f07aca4cad3c13647441fc0fed6} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+LOCAL~\+\_\+\+Thread\+\_\+local}
+
+
+
+Basic threading support. 
+
+This file is part of the UCB project SPDX-\/\+File\+Copyright\+Text:\+ © 2025 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}} SPDX-\/\+License-\/\+Identifier:\+ MIT 
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00024}{24}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a29ad97016c9c8b608d8c9b8a74113fd2}\index{threads.h@{threads.h}!UCB\_THREAD\_NAME\_MAX@{UCB\_THREAD\_NAME\_MAX}}
+\index{UCB\_THREAD\_NAME\_MAX@{UCB\_THREAD\_NAME\_MAX}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_NAME\_MAX}{UCB\_THREAD\_NAME\_MAX}}
+{\footnotesize\ttfamily \label{threads_8h_a29ad97016c9c8b608d8c9b8a74113fd2} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+NAME\+\_\+\+MAX~15}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00040}{40}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a75ab1ce37d4642bf6916766d542f05b5}\index{threads.h@{threads.h}!UCB\_THREAD\_PRIO\_DEFAULT@{UCB\_THREAD\_PRIO\_DEFAULT}}
+\index{UCB\_THREAD\_PRIO\_DEFAULT@{UCB\_THREAD\_PRIO\_DEFAULT}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_PRIO\_DEFAULT}{UCB\_THREAD\_PRIO\_DEFAULT}}
+{\footnotesize\ttfamily \label{threads_8h_a75ab1ce37d4642bf6916766d542f05b5} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+DEFAULT~0}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00029}{29}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a57a057b13e1d13b2c5f6cb38fb5530f5}\index{threads.h@{threads.h}!UCB\_THREAD\_PRIO\_HIGH@{UCB\_THREAD\_PRIO\_HIGH}}
+\index{UCB\_THREAD\_PRIO\_HIGH@{UCB\_THREAD\_PRIO\_HIGH}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_PRIO\_HIGH}{UCB\_THREAD\_PRIO\_HIGH}}
+{\footnotesize\ttfamily \label{threads_8h_a57a057b13e1d13b2c5f6cb38fb5530f5} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+HIGH~5}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00030}{30}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_ae31a9fcf7ba7dbe5fc9ebac7702268ca}\index{threads.h@{threads.h}!UCB\_THREAD\_PRIO\_LOW@{UCB\_THREAD\_PRIO\_LOW}}
+\index{UCB\_THREAD\_PRIO\_LOW@{UCB\_THREAD\_PRIO\_LOW}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_PRIO\_LOW}{UCB\_THREAD\_PRIO\_LOW}}
+{\footnotesize\ttfamily \label{threads_8h_ae31a9fcf7ba7dbe5fc9ebac7702268ca} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+LOW~-\/5}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00028}{28}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a4d375e3d4cd513ab3d6946e60f2564df}\index{threads.h@{threads.h}!UCB\_THREAD\_PRIO\_MAX@{UCB\_THREAD\_PRIO\_MAX}}
+\index{UCB\_THREAD\_PRIO\_MAX@{UCB\_THREAD\_PRIO\_MAX}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_PRIO\_MAX}{UCB\_THREAD\_PRIO\_MAX}}
+{\footnotesize\ttfamily \label{threads_8h_a4d375e3d4cd513ab3d6946e60f2564df} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+MAX~10}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00031}{31}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_afbf3dd77847131ab81bde1a8f2835090}\index{threads.h@{threads.h}!UCB\_THREAD\_PRIO\_MIN@{UCB\_THREAD\_PRIO\_MIN}}
+\index{UCB\_THREAD\_PRIO\_MIN@{UCB\_THREAD\_PRIO\_MIN}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_THREAD\_PRIO\_MIN}{UCB\_THREAD\_PRIO\_MIN}}
+{\footnotesize\ttfamily \label{threads_8h_afbf3dd77847131ab81bde1a8f2835090} 
+\+\#define UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+MIN~-\/10}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00027}{27}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{threads_8h_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}\index{threads.h@{threads.h}!ucb\_thread@{ucb\_thread}}
+\index{ucb\_thread@{ucb\_thread}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread}{ucb\_thread}}
+{\footnotesize\ttfamily \label{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448} 
+typedef struct \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}}}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00043}{43}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_a820aa075797803fe6b7f73e6068cd376}\index{threads.h@{threads.h}!ucb\_thread\_exit\_func\_t@{ucb\_thread\_exit\_func\_t}}
+\index{ucb\_thread\_exit\_func\_t@{ucb\_thread\_exit\_func\_t}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_exit\_func\_t}{ucb\_thread\_exit\_func\_t}}
+{\footnotesize\ttfamily \label{threads_8h_a820aa075797803fe6b7f73e6068cd376} 
+typedef void(\texorpdfstring{$\ast$}{*} ucb\+\_\+thread\+\_\+exit\+\_\+func\+\_\+t) (void \texorpdfstring{$\ast$}{*}exit\+\_\+arg, void \texorpdfstring{$\ast$}{*}func\+\_\+arg)}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00049}{49}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+\Hypertarget{threads_8h_aba13f58154dedff42598b7a3f48efce9}\index{threads.h@{threads.h}!ucb\_thread\_func\_t@{ucb\_thread\_func\_t}}
+\index{ucb\_thread\_func\_t@{ucb\_thread\_func\_t}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_func\_t}{ucb\_thread\_func\_t}}
+{\footnotesize\ttfamily \label{threads_8h_aba13f58154dedff42598b7a3f48efce9} 
+typedef void(\texorpdfstring{$\ast$}{*} ucb\+\_\+thread\+\_\+func\+\_\+t) (void \texorpdfstring{$\ast$}{*}arg)}
+
+
+
+Definition at line \doxymbox{\hyperlink{threads_8h_source_l00048}{48}} of file \doxymbox{\hyperlink{threads_8h_source}{threads.\+h}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{threads_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{threads_8h_a45dc7671afadadaae0c8fa918ed6b2c1}\index{threads.h@{threads.h}!ucb\_thread\_free@{ucb\_thread\_free}}
+\index{ucb\_thread\_free@{ucb\_thread\_free}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_free()}{ucb\_thread\_free()}}
+{\footnotesize\ttfamily \label{threads_8h_a45dc7671afadadaae0c8fa918ed6b2c1} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+free (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a14d3af5baacfb31d7fbfb11db5a71708}\index{threads.h@{threads.h}!ucb\_thread\_get\_current\_stack\_size@{ucb\_thread\_get\_current\_stack\_size}}
+\index{ucb\_thread\_get\_current\_stack\_size@{ucb\_thread\_get\_current\_stack\_size}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_get\_current\_stack\_size()}{ucb\_thread\_get\_current\_stack\_size()}}
+{\footnotesize\ttfamily \label{threads_8h_a14d3af5baacfb31d7fbfb11db5a71708} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+thread\+\_\+get\+\_\+current\+\_\+stack\+\_\+size (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a0373318068e70fcd186d2a9f8f32085a}\index{threads.h@{threads.h}!ucb\_thread\_get\_id@{ucb\_thread\_get\_id}}
+\index{ucb\_thread\_get\_id@{ucb\_thread\_get\_id}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_get\_id()}{ucb\_thread\_get\_id()}}
+{\footnotesize\ttfamily \label{threads_8h_a0373318068e70fcd186d2a9f8f32085a} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{types_8h_a36035333cc0e28a2009db6724c475c6a}{ucb\+\_\+pid}} ucb\+\_\+thread\+\_\+get\+\_\+id (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a15951218a09a50b6c2f230f5cbbfd376}\index{threads.h@{threads.h}!ucb\_thread\_get\_name@{ucb\_thread\_get\_name}}
+\index{ucb\_thread\_get\_name@{ucb\_thread\_get\_name}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_get\_name()}{ucb\_thread\_get\_name()}}
+{\footnotesize\ttfamily \label{threads_8h_a15951218a09a50b6c2f230f5cbbfd376} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} ucb\+\_\+thread\+\_\+get\+\_\+name (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_aea3cacb3cb56775cdda0526bbfa3f68f}\index{threads.h@{threads.h}!ucb\_thread\_get\_priority@{ucb\_thread\_get\_priority}}
+\index{ucb\_thread\_get\_priority@{ucb\_thread\_get\_priority}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_get\_priority()}{ucb\_thread\_get\_priority()}}
+{\footnotesize\ttfamily \label{threads_8h_aea3cacb3cb56775cdda0526bbfa3f68f} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} int ucb\+\_\+thread\+\_\+get\+\_\+priority (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a6e72b9c322439639e0bcb19d048a7786}\index{threads.h@{threads.h}!ucb\_thread\_get\_stack\_size@{ucb\_thread\_get\_stack\_size}}
+\index{ucb\_thread\_get\_stack\_size@{ucb\_thread\_get\_stack\_size}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_get\_stack\_size()}{ucb\_thread\_get\_stack\_size()}}
+{\footnotesize\ttfamily \label{threads_8h_a6e72b9c322439639e0bcb19d048a7786} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} size\+\_\+t ucb\+\_\+thread\+\_\+get\+\_\+stack\+\_\+size (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a4d8bf10caca793bb96fc83bb8af70894}\index{threads.h@{threads.h}!ucb\_thread\_id@{ucb\_thread\_id}}
+\index{ucb\_thread\_id@{ucb\_thread\_id}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_id()}{ucb\_thread\_id()}}
+{\footnotesize\ttfamily \label{threads_8h_a4d8bf10caca793bb96fc83bb8af70894} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{types_8h_a36035333cc0e28a2009db6724c475c6a}{ucb\+\_\+pid}} ucb\+\_\+thread\+\_\+id (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a222f95a343a9bc865951b2002651bac2}\index{threads.h@{threads.h}!ucb\_thread\_is\_joinable@{ucb\_thread\_is\_joinable}}
+\index{ucb\_thread\_is\_joinable@{ucb\_thread\_is\_joinable}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_is\_joinable()}{ucb\_thread\_is\_joinable()}}
+{\footnotesize\ttfamily \label{threads_8h_a222f95a343a9bc865951b2002651bac2} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+thread\+\_\+is\+\_\+joinable (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a623139e9984b4af695f7a1f4682c1195}\index{threads.h@{threads.h}!ucb\_thread\_is\_running@{ucb\_thread\_is\_running}}
+\index{ucb\_thread\_is\_running@{ucb\_thread\_is\_running}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_is\_running()}{ucb\_thread\_is\_running()}}
+{\footnotesize\ttfamily \label{threads_8h_a623139e9984b4af695f7a1f4682c1195} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+thread\+\_\+is\+\_\+running (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a23094efb6603e43b201a7ce45f04c11c}\index{threads.h@{threads.h}!ucb\_thread\_join@{ucb\_thread\_join}}
+\index{ucb\_thread\_join@{ucb\_thread\_join}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_join()}{ucb\_thread\_join()}}
+{\footnotesize\ttfamily \label{threads_8h_a23094efb6603e43b201a7ce45f04c11c} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+join (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a7322fd5bae293d0430a6a79bfda1b263}\index{threads.h@{threads.h}!ucb\_thread\_new@{ucb\_thread\_new}}
+\index{ucb\_thread\_new@{ucb\_thread\_new}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_new()}{ucb\_thread\_new()}}
+{\footnotesize\ttfamily \label{threads_8h_a7322fd5bae293d0430a6a79bfda1b263} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*} ucb\+\_\+thread\+\_\+new (\begin{DoxyParamCaption}\item[{int}]{flags}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a4d6384058d1614dde43ed31b0c7abda9}\index{threads.h@{threads.h}!ucb\_thread\_set\_exit\_func@{ucb\_thread\_set\_exit\_func}}
+\index{ucb\_thread\_set\_exit\_func@{ucb\_thread\_set\_exit\_func}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_set\_exit\_func()}{ucb\_thread\_set\_exit\_func()}}
+{\footnotesize\ttfamily \label{threads_8h_a4d6384058d1614dde43ed31b0c7abda9} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+set\+\_\+exit\+\_\+func (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{, }\item[{\doxymbox{\hyperlink{threads_8h_a820aa075797803fe6b7f73e6068cd376}{ucb\+\_\+thread\+\_\+exit\+\_\+func\+\_\+t}}}]{func}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{arg}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a2ba6081320ab6a55b743c07999ce7ae1}\index{threads.h@{threads.h}!ucb\_thread\_set\_func@{ucb\_thread\_set\_func}}
+\index{ucb\_thread\_set\_func@{ucb\_thread\_set\_func}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_set\_func()}{ucb\_thread\_set\_func()}}
+{\footnotesize\ttfamily \label{threads_8h_a2ba6081320ab6a55b743c07999ce7ae1} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+set\+\_\+func (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{, }\item[{\doxymbox{\hyperlink{threads_8h_aba13f58154dedff42598b7a3f48efce9}{ucb\+\_\+thread\+\_\+func\+\_\+t}}}]{func}{, }\item[{void \texorpdfstring{$\ast$}{*}}]{arg}{}\end{DoxyParamCaption})}
+
+\Hypertarget{threads_8h_a7174a9cf50d6e40cc90c7bdd51c34aa9}\index{threads.h@{threads.h}!ucb\_thread\_set\_name@{ucb\_thread\_set\_name}}
+\index{ucb\_thread\_set\_name@{ucb\_thread\_set\_name}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_set\_name()}{ucb\_thread\_set\_name()}}
+{\footnotesize\ttfamily \label{threads_8h_a7174a9cf50d6e40cc90c7bdd51c34aa9} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+set\+\_\+name (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{name}{}\end{DoxyParamCaption})}
+
+Set the thread name. The name will be truncated if longer than UCB\+\_\+\+THREAD\+\_\+\+NAME\+\_\+\+MAX (excluding null). Only valid before the thread is started. 
+\begin{DoxyParams}{Parameters}
+{\em thread} & the thread \\
+\hline
+{\em name} & the name \\
+\hline
+\end{DoxyParams}
+\Hypertarget{threads_8h_a79b3d5ff34dedfb4861dfc642c3fb9e6}\index{threads.h@{threads.h}!ucb\_thread\_set\_priority@{ucb\_thread\_set\_priority}}
+\index{ucb\_thread\_set\_priority@{ucb\_thread\_set\_priority}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_set\_priority()}{ucb\_thread\_set\_priority()}}
+{\footnotesize\ttfamily \label{threads_8h_a79b3d5ff34dedfb4861dfc642c3fb9e6} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+set\+\_\+priority (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{, }\item[{int}]{priority}{}\end{DoxyParamCaption})}
+
+Set the thread priority. Only valid before the thread is started. The priority will be considered only if different from UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+DEFAULT and mapped into the platform\textquotesingle{}s priority range. Note, that increasing the priority may not be allowed. Any failure is logged only on debug builds as warnings. 
+\begin{DoxyParams}{Parameters}
+{\em thread} & the thread \\
+\hline
+{\em priority} & priority between and including UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+LOWEST and UCB\+\_\+\+THREAD\+\_\+\+PRIO\+\_\+\+HIGHEST \\
+\hline
+\end{DoxyParams}
+\Hypertarget{threads_8h_ae3db690dd92cee6bd4d95acdb54d6059}\index{threads.h@{threads.h}!ucb\_thread\_set\_stack\_size@{ucb\_thread\_set\_stack\_size}}
+\index{ucb\_thread\_set\_stack\_size@{ucb\_thread\_set\_stack\_size}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_set\_stack\_size()}{ucb\_thread\_set\_stack\_size()}}
+{\footnotesize\ttfamily \label{threads_8h_ae3db690dd92cee6bd4d95acdb54d6059} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+thread\+\_\+set\+\_\+stack\+\_\+size (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{, }\item[{size\+\_\+t}]{stack\+\_\+size}{}\end{DoxyParamCaption})}
+
+Set the minimum thread stack size. Only valid before the thread is started. The default stack (0) will use the same stack size as the current thread. Any other size may be rounded up to a minimum + any necessary alignment. Recommended minimum and increments are 64 KiB for platform compatibility. 
+\begin{DoxyParams}{Parameters}
+{\em thread} & the thread \\
+\hline
+{\em stack\+\_\+size} & size in bytes \\
+\hline
+\end{DoxyParams}
+\Hypertarget{threads_8h_ada6b593caa6fc27c4581937461155f94}\index{threads.h@{threads.h}!ucb\_thread\_start@{ucb\_thread\_start}}
+\index{ucb\_thread\_start@{ucb\_thread\_start}!threads.h@{threads.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_thread\_start()}{ucb\_thread\_start()}}
+{\footnotesize\ttfamily \label{threads_8h_ada6b593caa6fc27c4581937461155f94} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+thread\+\_\+start (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{threads_8h_a664fdbc0b575d356ea90d85e6d5d4448}{ucb\+\_\+thread}} \texorpdfstring{$\ast$}{*}}]{thread}{}\end{DoxyParamCaption})}
+

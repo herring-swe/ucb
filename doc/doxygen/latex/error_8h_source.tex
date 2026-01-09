@@ -1,0 +1,158 @@
+\doxysection{error.\+h}
+\hypertarget{error_8h_source}{}\label{error_8h_source}\index{include/ucb/error.h@{include/ucb/error.h}}
+\doxymbox{\hyperlink{error_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00034}00034\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00035}00035\ \textcolor{preprocessor}{\#ifndef\ UCB\_ERROR\_H}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00036}00036\ \textcolor{preprocessor}{\#define\ UCB\_ERROR\_H}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00038}00038\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{defines_8h}{defines.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00039}00039\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{errcodes_8h}{errcodes.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00040}00040\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{export_8h}{export.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00041}00041\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{types_8h}{types.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00042}00042\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00043}00043\ \textcolor{preprocessor}{\#include\ <stdarg.h>}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00044}00044\ \textcolor{preprocessor}{\#include\ <stdbool.h>}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00045}00045\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00046}\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{00046}}\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{enum}\ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00047}00047\ \{}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00048}\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}{00048}}\ \ \ \ \ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}{UCB\_ERRLVL\_FATAL}},}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00049}\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{00049}}\ \ \ \ \ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{UCB\_ERRLVL\_USER}},}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00050}\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}{00050}}\ \ \ \ \ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}{UCB\_ERRLVL\_WARNING}},}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00051}\doxymbox{\hyperlink{error_8h_a016cb98fa19cc3e7d47fb64db16e8be9}{00051}}\ \}\ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00052}00052\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00053}\doxymbox{\hyperlink{structucb__error}{00053}}\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{structucb__error}{ucb\_error}}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00054}00054\ \{}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00055}\doxymbox{\hyperlink{structucb__error_a2c3cb87d009c003069b9a90f020f8a9f}{00055}}\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{structucb__error_a2c3cb87d009c003069b9a90f020f8a9f}{msg}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00056}\doxymbox{\hyperlink{structucb__error_a3ca97c9a31e6a5ff2f23b75e100473e6}{00056}}\ \ \ \ \ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ \doxymbox{\hyperlink{structucb__error_a3ca97c9a31e6a5ff2f23b75e100473e6}{code}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00057}\doxymbox{\hyperlink{structucb__error_a304fbadb59a0f16927a48adfff3dd25f}{00057}}\ \ \ \ \ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{structucb__error_a304fbadb59a0f16927a48adfff3dd25f}{is\_static}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00058}\doxymbox{\hyperlink{error_8h_a66b27234e2db06ee47a8f1f4995270ad}{00058}}\ \}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00059}00059\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00060}\doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{00060}}\ \textcolor{keyword}{typedef}\ void\ (*\doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\_error\_func}})(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ error);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00061}00061\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00068}\doxymbox{\hyperlink{error_8h_abf471dc214c10359314a5d2cc383ab06}{00068}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{error_8h_abf471dc214c10359314a5d2cc383ab06}{ucb\_error\_lvlstr}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00069}00069\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00076}\doxymbox{\hyperlink{error_8h_a8a8236e3844181bbc6bed792fd76caa6}{00076}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{error_8h_a8a8236e3844181bbc6bed792fd76caa6}{ucb\_error\_codestr}}(\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00077}00077\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00078}00078\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00079}00079\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Error\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00080}00080\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00081}00081\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00087}\doxymbox{\hyperlink{error_8h_a427979c86b0eb47e2916e9e5e4868db9}{00087}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ \doxymbox{\hyperlink{error_8h_a427979c86b0eb47e2916e9e5e4868db9}{ucb\_error\_copy}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ err);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00096}\doxymbox{\hyperlink{error_8h_a9993b6c80ab589d7c45c41edc3266fc1}{00096}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_a9993b6c80ab589d7c45c41edc3266fc1}{ucb\_error\_free}}(\doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ err);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00097}00097\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00111}\doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{00111}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ \doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\_error\_format}}(\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,\ ...);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00116}\doxymbox{\hyperlink{error_8h_a3adbbfd86975402f778f13e013ab8123}{00116}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ \doxymbox{\hyperlink{error_8h_a3adbbfd86975402f778f13e013ab8123}{ucb\_error\_formatv}}(\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,\ va\_list\ args);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00123}\doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{00123}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ \doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{ucb\_error\_literal}}(\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ msg);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00124}00124\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00130}\doxymbox{\hyperlink{error_8h_aed66ef809c7b80a6ca1d566004ddfd5c}{00130}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_aed66ef809c7b80a6ca1d566004ddfd5c}{ucb\_error\_print}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ error);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00131}00131\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00132}00132\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00133}00133\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Thrown\ errors\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00134}00134\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00135}00135\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00141}00141\ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ ucb\_error\_clear(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr)}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00142}00142\ \{}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00143}00143\ \ \ \ \ \textcolor{keywordflow}{if}\ (perr\ \&\&\ *perr)}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00144}00144\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00145}00145\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{error_8h_a9993b6c80ab589d7c45c41edc3266fc1}{ucb\_error\_free}}((\doxymbox{\hyperlink{structucb__error}{ucb\_error}}*)*perr);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00146}00146\ \ \ \ \ \ \ \ \ *perr\ =\ \doxymbox{\hyperlink{defines_8h_a723a75ddd054b2bb8fc40bfb6b91d64d}{UCB\_NULL}};}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00147}00147\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00148}00148\ \}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00149}00149\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00150}00150\ \textcolor{keyword}{static}\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ ucb\_error\_check(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ err)}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00151}00151\ \{}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00152}00152\ \ \ \ \ \textcolor{keywordflow}{return}\ (!err\ ||\ err-\/>\doxymbox{\hyperlink{structucb__error_a3ca97c9a31e6a5ff2f23b75e100473e6}{code}}\ ==\ 0);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00153}00153\ \}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00154}00154\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00155}\doxymbox{\hyperlink{error_8h_abc47f0ab6d4a74ce0e0fed55583c5fef}{00155}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_abc47f0ab6d4a74ce0e0fed55583c5fef}{ucb\_throw}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr,\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ msg);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00156}\doxymbox{\hyperlink{error_8h_add00369be730bc0dc8022f9cc0650e97}{00156}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_add00369be730bc0dc8022f9cc0650e97}{ucb\_throw\_format}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr,\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,\ ...);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00157}\doxymbox{\hyperlink{error_8h_a6ec9e1c6df42d3f231094d0947d233eb}{00157}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_a6ec9e1c6df42d3f231094d0947d233eb}{ucb\_throw\_formatv}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr,\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ code,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ fmt,}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00158}00158\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ va\_list\ args);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00159}00159\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00160}00160\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00161}00161\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Reporting\ errors\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00162}00162\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00163}00163\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00164}\doxymbox{\hyperlink{error_8h_ae84f3055b261fa858e25ac7784904526}{00164}}\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY(expr,\ code,\ msg)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00165}00165\ \textcolor{preprocessor}{\ \ \ \ do\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00166}00166\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00167}00167\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00168}00168\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00169}00169\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ucb\_user\_format(code,\ "{}\%s:\ \%s"{},\ \_\_func\_\_,\ msg);\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00170}00170\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00171}00171\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00172}00172\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00173}00173\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00174}\doxymbox{\hyperlink{error_8h_ab8288882b313bee629489fd1fe41a93a}{00174}}\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY\_RET(expr,\ code,\ msg,\ ret)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00175}00175\ \textcolor{preprocessor}{\ \ \ \ do\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00176}00176\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00177}00177\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00178}00178\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00179}00179\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ucb\_user\_format(code,\ "{}\%s:\ \%s"{},\ \_\_func\_\_,\ msg);\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00180}00180\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ return\ ret;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00181}00181\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00182}00182\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00183}00183\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00184}\doxymbox{\hyperlink{error_8h_a6400bde0a8673a9efea8ce02cd80a8a6}{00184}}\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY\_ARGS(expr)\ UCB\_VERIFY(expr,\ UCB\_ERROR\_INVALID\_ARG,\ "{}Invalid\ arguments"{})}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00185}\doxymbox{\hyperlink{error_8h_a042a82c4165511bf4d54d0cfb7d94bfa}{00185}}\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY\_ARGS\_RET(expr,\ ret)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00186}00186\ \textcolor{preprocessor}{\ \ \ \ UCB\_VERIFY\_RET(expr,\ UCB\_ERROR\_INVALID\_ARG,\ "{}Invalid\ arguments"{},\ ret)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00187}00187\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00188}\doxymbox{\hyperlink{error_8h_a4675514e9347c46ad47a8f2145e7c004}{00188}}\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY\_ERRNO(status,\ msg)\ ucb\_report\_on\_status(status,\ UCB\_ERRLVL\_USER,\ msg,\ \_\_func\_\_)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00189}00189\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00190}00190\ \textcolor{preprocessor}{\#ifdef\ \_WIN32}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00191}00191\ \textcolor{preprocessor}{\#define\ UCB\_VERIFY\_WIN32(status,\ msg)\ ucb\_report\_on\_win32(status,\ UCB\_ERRLVL\_USER,\ msg,\ \_\_func\_\_)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00192}00192\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00193}00193\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00204}\doxymbox{\hyperlink{error_8h_a244d144e04b99a8ec2db4da0cad769e9}{00204}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\_error\_func}}\ \doxymbox{\hyperlink{error_8h_a244d144e04b99a8ec2db4da0cad769e9}{ucb\_error\_set\_func}}(\doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\_error\_func}}\ func);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00205}\doxymbox{\hyperlink{error_8h_a2905bd30e0f7320b491f9f53cc666af0}{00205}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\_error\_func}}\ \doxymbox{\hyperlink{error_8h_a2905bd30e0f7320b491f9f53cc666af0}{ucb\_error\_get\_func}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00206}00206\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00215}\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{00215}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl,\ \textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}*\ error);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00216}00216\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00217}00217\ \textcolor{comment}{/*\ Convenience\ functions\ that\ will\ call\ ucb\_error\_report\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00218}00218\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00219}\doxymbox{\hyperlink{error_8h_a1474301300e905943081aa97acc7932c}{00219}}\ \textcolor{preprocessor}{\#define\ ucb\_fatal\_format(code,\ fmt,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00220}00220\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_FATAL,\ ucb\_error\_format(code,\ fmt,\ \_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00221}\doxymbox{\hyperlink{error_8h_ab6a0d1062b35cafa5bc120b058d44aff}{00221}}\ \textcolor{preprocessor}{\#define\ ucb\_fatal\_literal(code,\ msg)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00222}00222\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_FATAL,\ ucb\_error\_literal(code,\ msg))}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00223}\doxymbox{\hyperlink{error_8h_a90c9d238429b033653498446e3ec7456}{00223}}\ \textcolor{preprocessor}{\#define\ ucb\_user\_format(code,\ fmt,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00224}00224\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_USER,\ ucb\_error\_format(code,\ fmt,\ \_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00225}\doxymbox{\hyperlink{error_8h_a654f8fa42ebffb6e3465e010a8ab4a81}{00225}}\ \textcolor{preprocessor}{\#define\ ucb\_user\_literal(code,\ msg)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00226}00226\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_USER,\ ucb\_error\_literal(code,\ msg))\ }\textcolor{comment}{//\ break}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00227}\doxymbox{\hyperlink{error_8h_a045ed1301cd14a710d959367418c8a3c}{00227}}\ \textcolor{preprocessor}{\#define\ ucb\_warn\_format(code,\ fmt,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00228}00228\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_WARNING,\ ucb\_error\_format(code,\ fmt,\ \_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00229}\doxymbox{\hyperlink{error_8h_a722942778ed3073d9d1771e6d4c362d5}{00229}}\ \textcolor{preprocessor}{\#define\ ucb\_warn\_literal(code,\ msg)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00230}00230\ \textcolor{preprocessor}{\ \ \ \ ucb\_error\_report(UCB\_ERRLVL\_WARNING,\ ucb\_error\_literal(code,\ msg))}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00231}00231\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00232}00232\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00233}00233\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Functions\ to\ wrap\ errno\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00234}00234\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00235}00235\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00236}\doxymbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{00236}}\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ \doxymbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\_err\_wrap\_errno}}(\textcolor{keywordtype}{int}\ err);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00237}\doxymbox{\hyperlink{error_8h_a56a9bcc88f7a37266e4945dbce50f37a}{00237}}\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ \doxymbox{\hyperlink{error_8h_a56a9bcc88f7a37266e4945dbce50f37a}{ucb\_err\_get\_errno}}(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00238}00238\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00239}\doxymbox{\hyperlink{error_8h_aace64e2465863dafaaf340f437b04c8f}{00239}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{error_8h_aace64e2465863dafaaf340f437b04c8f}{ucb\_report\_on\_status}}(\textcolor{keywordtype}{int}\ status,\ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\_RESTRICT}}\ msg,}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00240}00240\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\_RESTRICT}}\ function);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00241}00241\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00242}\doxymbox{\hyperlink{error_8h_ab61cf36a2a025f602b8ff86d1a2c0a04}{00242}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{bool}\ \doxymbox{\hyperlink{error_8h_ab61cf36a2a025f602b8ff86d1a2c0a04}{ucb\_throw\_on\_status}}(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr,\ \textcolor{keywordtype}{int}\ status,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ msg);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00243}00243\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00244}00244\ \textcolor{preprocessor}{\#ifdef\ \_WIN32}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00245}00245\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00246}00246\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00247}00247\ \textcolor{comment}{/*\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Functions\ to\ wrap\ Windows\ errors\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00248}00248\ \textcolor{comment}{/*\ -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/\ */}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00249}00249\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00250}00250\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ ucb\_err\_wrap\_win32(uint32\_t\ err);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00251}00251\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\_ecode}}\ ucb\_err\_get\_win32(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00256}00256\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{char}*\ ucb\_err\_msg\_win32(uint32\_t\ err);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00257}00257\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00258}00258\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{bool}\ ucb\_report\_on\_win32(uint32\_t\ status,\ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\_errlvl}}\ lvl,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ msg,}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00259}00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ function);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00260}00260\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{bool}\ ucb\_throw\_on\_win32(\textcolor{keyword}{const}\ \doxymbox{\hyperlink{structucb__error}{ucb\_error}}**\ perr,\ uint32\_t\ status,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ msg);}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00261}00261\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00262}00262\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00263}00263\ }
+\DoxyCodeLine{\Hypertarget{error_8h_source_l00264}00264\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_ERROR\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,39 @@
+\doxysection{cstring.\+h}
+\hypertarget{cstring_8h_source}{}\label{cstring_8h_source}\index{include/ucb/cstring.h@{include/ucb/cstring.h}}
+\doxymbox{\hyperlink{cstring_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00010}00010\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00011}00011\ \textcolor{preprocessor}{\#ifndef\ UCB\_CSTRING\_H}}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00012}00012\ \textcolor{preprocessor}{\#define\ UCB\_CSTRING\_H}}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00013}00013\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00014}00014\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{export_8h}{export.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00015}00015\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <stdarg.h>}}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00018}00018\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00019}\doxymbox{\hyperlink{cstring_8h_a0a12e4e4e7b9e202ef2952209bf41be4}{00019}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{size\_t}\ \doxymbox{\hyperlink{cstring_8h_a0a12e4e4e7b9e202ef2952209bf41be4}{ucb\_cstr\_len}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00020}\doxymbox{\hyperlink{cstring_8h_a6d1b2dbf7cbc163840624cf6132d6ad5}{00020}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{size\_t}\ \doxymbox{\hyperlink{cstring_8h_a6d1b2dbf7cbc163840624cf6132d6ad5}{ucb\_cstr\_nlen}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keywordtype}{size\_t}\ max\_len);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00021}00021\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00022}\doxymbox{\hyperlink{cstring_8h_a452d54d8aa5c92be7f38770a89403b93}{00022}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{cstring_8h_a452d54d8aa5c92be7f38770a89403b93}{ucb\_cstr\_dup}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00023}\doxymbox{\hyperlink{cstring_8h_a414c7df2b718091d96e9d37147995a16}{00023}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{char}*\ \doxymbox{\hyperlink{cstring_8h_a414c7df2b718091d96e9d37147995a16}{ucb\_cstr\_ndup}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keywordtype}{size\_t}\ max\_len);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00024}00024\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00025}\doxymbox{\hyperlink{cstring_8h_af7aaf2dcf21ac6efb99f5d4e85e9bb21}{00025}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_af7aaf2dcf21ac6efb99f5d4e85e9bb21}{ucb\_cstr\_comp}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ b);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00026}\doxymbox{\hyperlink{cstring_8h_aa4fcfbaf8de84745c44e7b9d44d9436c}{00026}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_aa4fcfbaf8de84745c44e7b9d44d9436c}{ucb\_cstr\_icomp}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ a,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ b);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00027}00027\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00028}\doxymbox{\hyperlink{cstring_8h_ae4d6bf7450bff2c19089f988eaeaa43d}{00028}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_ae4d6bf7450bff2c19089f988eaeaa43d}{ucb\_cstr\_sprintf}}(\textcolor{keywordtype}{char}*\ restrict\ buffer,\ \textcolor{keywordtype}{size\_t}\ buffer\_size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00029}00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ...);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00030}\doxymbox{\hyperlink{cstring_8h_ae18f0d20e88183511d6769a782e771e8}{00030}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_ae18f0d20e88183511d6769a782e771e8}{ucb\_cstr\_vsprintf}}(\textcolor{keywordtype}{char}*\ restrict\ buffer,\ \textcolor{keywordtype}{size\_t}\ buffer\_size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00031}00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ va\_list\ vlist);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00032}00032\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00033}\doxymbox{\hyperlink{cstring_8h_a0c3d4b4ef1777c26777fd10f85901e69}{00033}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_a0c3d4b4ef1777c26777fd10f85901e69}{ucb\_cstr\_snprintf}}(\textcolor{keywordtype}{char}*\ restrict\ buffer,\ \textcolor{keywordtype}{size\_t}\ buffer\_size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00034}00034\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ...);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00035}\doxymbox{\hyperlink{cstring_8h_a993b91f30284039a76f6c00f6c5ff4ee}{00035}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_a993b91f30284039a76f6c00f6c5ff4ee}{ucb\_cstr\_vsnprintf}}(\textcolor{keywordtype}{char}*\ restrict\ buffer,\ \textcolor{keywordtype}{size\_t}\ buffer\_size,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00036}00036\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ va\_list\ vlist);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00038}\doxymbox{\hyperlink{cstring_8h_a4612d9762e9dcd6e173ea5bb5464a5a5}{00038}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_a4612d9762e9dcd6e173ea5bb5464a5a5}{ucb\_cstr\_asprintf}}(\textcolor{keywordtype}{char}**\ restrict\ pstr,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,\ ...);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00039}\doxymbox{\hyperlink{cstring_8h_a15ab7126a4fc141852b4fb54b1489ef1}{00039}}\ \doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\_API}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{cstring_8h_a15ab7126a4fc141852b4fb54b1489ef1}{ucb\_cstr\_vasprintf}}(\textcolor{keywordtype}{char}**\ restrict\ pstr,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ restrict\ fmt,\ va\_list\ args);}
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00040}00040\ }
+\DoxyCodeLine{\Hypertarget{cstring_8h_source_l00041}00041\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_CSTRING\_H}}
+
+\end{DoxyCode}

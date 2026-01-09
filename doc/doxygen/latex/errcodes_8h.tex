@@ -1,0 +1,1166 @@
+\doxysection{include/\+ucb/\+errcodes.h File Reference}
+\hypertarget{errcodes_8h}{}\label{errcodes_8h}\index{include/ucb/errcodes.h@{include/ucb/errcodes.h}}
+
+
+Error codes.  
+
+
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356c}{ucb\+\_\+error\+\_\+code}} \{ \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6a1d603f0f4cbcd2119c5dd80cfa2ae}{UCB\+\_\+\+OK}} = 0
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf2f3fffc6909c078af156e410c998f3e}{UCB\+\_\+\+ERROR\+\_\+\+OUT\+\_\+\+OF\+\_\+\+MEMORY}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2}{UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+ARG}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2c8dbfcf65f77629d199e82a20428e86}{UCB\+\_\+\+ERROR\+\_\+\+UNHANDLED\+\_\+\+ERROR}}
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ba3d462d5e071b218b198e4238ddf9d}{UCB\+\_\+\+ERROR\+\_\+\+OUT\+\_\+\+OF\+\_\+\+BOUNDS}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caae930142e8d78e4467fc7257ac401130}{UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+UTF8}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0c2b80ffea2af4c9ce7014f524631220}{UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+CODEPOINT}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0}{UCB\+\_\+\+ERROR\+\_\+\+INTERNAL}}
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7995cff712719dd836fb868920a3831}{UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+STATE}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a8df2c3522708385b23a26971ec39b3}{UCB\+\_\+\+ERROR\+\_\+\+NOT\+\_\+\+IMPLEMENTED}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac701920534cd48112fc5655403223757}{UCB\+\_\+\+ERROR\+\_\+\+BUFFER}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caef62d7bdecb35c5d4de9dd656aa73602}{UCB\+\_\+\+ERROR\+\_\+\+LOCKED}}
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caeb266e1794601c34b29d2f6e9b8aa7ae}{UCB\+\_\+\+ERROR\+\_\+\+MAX\+\_\+\+SIZE}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca635ee0237bdef29f0578fc553150d132}{UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+ALLOC}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca444d34693430b9899a7238015f276fee}{UCB\+\_\+\+ERROR\+\_\+\+THREAD\+\_\+\+BUSY}}
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca53ee1e7d28428a09f5cfb9ac5c1135e7}{UCB\+\_\+\+ERROR\+\_\+\+MUTEX\+\_\+\+LOCKED}}
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9d048dee09a8720aa2b7c4d9cab1daf8}{UCB\+\_\+\+ERRSYS\+\_\+\+UNKNOWN}} = 999
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca659da0eb2e391c598768e510d86f7f19}{UCB\+\_\+\+ERRSYS\+\_\+\+NOERROR}} = 1000
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfa646b28b0564ac960fcb4f262d3d6}{UCB\+\_\+\+ERRSYS\+\_\+\+EPERM}} = 1001
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8e0de68ee68f792170d1ca32f6222f7f}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOENT}} = 1002
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5258775de124e914235d8961f1d0803}{UCB\+\_\+\+ERRSYS\+\_\+\+ESRCH}} = 1003
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7c6f688d86eab2bdef21dc2aa7aa5e4e}{UCB\+\_\+\+ERRSYS\+\_\+\+EINTR}} = 1004
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2b6a172bf5fea459a34661e6e58408f2}{UCB\+\_\+\+ERRSYS\+\_\+\+EIO}} = 1005
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caabe1c4c6d192a35608ea45902a76bdfc}{UCB\+\_\+\+ERRSYS\+\_\+\+ENXIO}} = 1006
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad3a28479061879f67ea627930cb5b373}{UCB\+\_\+\+ERRSYS\+\_\+\+E2\+BIG}} = 1007
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62f8fe0f4eba410597c9bca17c0fbdc8}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOEXEC}} = 1008
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac91f8bd4a0ae26cb347c6b5b934d7b9e}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADF}} = 1009
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac0f6294a2f739873a20cede1a6cc6649}{UCB\+\_\+\+ERRSYS\+\_\+\+ECHILD}} = 1010
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab60a94224402bfc5e0795341d305509c}{UCB\+\_\+\+ERRSYS\+\_\+\+EAGAIN}} = 1011
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f6ea123c7b62e841521dc2c19dffd18}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOMEM}} = 1012
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad0cc561e19730013a39cb277af527e3d}{UCB\+\_\+\+ERRSYS\+\_\+\+EACCES}} = 1013
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf758b5289d263afee42ffcc941b4aa26}{UCB\+\_\+\+ERRSYS\+\_\+\+EFAULT}} = 1014
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cafd707abbfedd99ec5deaf2daaca8a814}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTBLK}} = 1015
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad115acbe415d07cbfa4f88e20c1e8b58}{UCB\+\_\+\+ERRSYS\+\_\+\+EBUSY}} = 1016
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf3b1f439c5d95aac1674a4df3b7b9e80}{UCB\+\_\+\+ERRSYS\+\_\+\+EEXIST}} = 1017
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caac76c76870549abb33ff09f80998348b}{UCB\+\_\+\+ERRSYS\+\_\+\+EXDEV}} = 1018
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabd4f421907b713f69da1cda3e5c8a29c}{UCB\+\_\+\+ERRSYS\+\_\+\+ENODEV}} = 1019
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca671bcda7c6e4fdf30f22288149aa3f93}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTDIR}} = 1020
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf6c235705c26df4caa4c88aedae5ef8b}{UCB\+\_\+\+ERRSYS\+\_\+\+EISDIR}} = 1021
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad302d2c0ec8330b68b643d4bc800f6c1}{UCB\+\_\+\+ERRSYS\+\_\+\+EINVAL}} = 1022
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca78e175edfdb310650dbc4b136981bc69}{UCB\+\_\+\+ERRSYS\+\_\+\+ENFILE}} = 1023
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae9820aadb962741bd781bb622b36109c}{UCB\+\_\+\+ERRSYS\+\_\+\+EMFILE}} = 1024
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6552c7f59735160859754400e6d57854}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTTY}} = 1025
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03680baf8b15b390a32bc1d437a39fc0}{UCB\+\_\+\+ERRSYS\+\_\+\+ETXTBSY}} = 1026
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa5b24e94a246b8edc5f811d95e78be5d}{UCB\+\_\+\+ERRSYS\+\_\+\+EFBIG}} = 1027
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4d87067d718f62be53746f4965c50bed}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOSPC}} = 1028
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca51b15832b4d05312283f51ccf8be819d}{UCB\+\_\+\+ERRSYS\+\_\+\+ESPIPE}} = 1029
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2251cd67095e83c2ec61a7238517ddfe}{UCB\+\_\+\+ERRSYS\+\_\+\+EROFS}} = 1030
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca059697512adc0c15c7ef24f12bdbf50d}{UCB\+\_\+\+ERRSYS\+\_\+\+EMLINK}} = 1031
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabdf8c8d23be705f854a5bd642c2eee5a}{UCB\+\_\+\+ERRSYS\+\_\+\+EPIPE}} = 1032
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca31eef2c7a1975bc34531817e289376a0}{UCB\+\_\+\+ERRSYS\+\_\+\+EDOM}} = 1033
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad822d0aa8c5c646b6c99aa1eedcd44b5}{UCB\+\_\+\+ERRSYS\+\_\+\+ERANGE}} = 1034
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae8338d2ba872553efea7efa8159c17f3}{UCB\+\_\+\+ERRSYS\+\_\+\+EDEADLK}} = 1035
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacb4133ab8451c6d19ffea63cafedb4df}{UCB\+\_\+\+ERRSYS\+\_\+\+ENAMETOOLONG}} = 1036
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca184d9b11f25eaaedd72e788855b618e8}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOLCK}} = 1037
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2558e715e2e36530501dc53418ad30a8}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOSYS}} = 1038
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf190802068c96f81ecf55ece3ac07610}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTEMPTY}} = 1039
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca295175aaae6e02c2a10df8f7c77764e4}{UCB\+\_\+\+ERRSYS\+\_\+\+ELOOP}} = 1040
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b5df86649554722a24b0b73728cda73}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOMSG}} = 1042
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fbf1041ebc7edceaa1e0d527c1b140a}{UCB\+\_\+\+ERRSYS\+\_\+\+EIDRM}} = 1043
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa4d6e090569a8ab3a3e774410dd1b27}{UCB\+\_\+\+ERRSYS\+\_\+\+ECHRNG}} = 1044
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab87c24cd9e7e86e0f8dd245722e3910c}{UCB\+\_\+\+ERRSYS\+\_\+\+EL2\+NSYNC}} = 1045
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ab805c3732a27510840ad9c26cd310c}{UCB\+\_\+\+ERRSYS\+\_\+\+EL3\+HLT}} = 1046
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37592db868d338b513535320a91c6ecb}{UCB\+\_\+\+ERRSYS\+\_\+\+EL3\+RST}} = 1047
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7dbfa83947ab577327aeed003f8b5ea}{UCB\+\_\+\+ERRSYS\+\_\+\+ELNRNG}} = 1048
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1672923d51cb4b089c6c2507032d2a8d}{UCB\+\_\+\+ERRSYS\+\_\+\+EUNATCH}} = 1049
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5919a15a5162741600cfb151fe7089d}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOCSI}} = 1050
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa65ba591a3ef5ecd8c200d68ab2b1903}{UCB\+\_\+\+ERRSYS\+\_\+\+EL2\+HLT}} = 1051
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca52dea9d9c3eeb496b95768f972151746}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADE}} = 1052
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa02bbb7a513f7b658b711c16048443fe}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADR}} = 1053
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa2b163fd1aa38a171aeed0e92301e7d8}{UCB\+\_\+\+ERRSYS\+\_\+\+EXFULL}} = 1054
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fc42996cb57964359fb754f268dda0b}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOANO}} = 1055
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ec69d1f0d1506bd201506ea1cbe7ac0}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADRQC}} = 1056
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca269695acdba7ca5dbefb1d41ba689c43}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADSLT}} = 1057
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b573f5546bdd82f6fd19ae9d81302f}{UCB\+\_\+\+ERRSYS\+\_\+\+EBFONT}} = 1059
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca435fd74fc4eb9ad19033f17b8e657e47}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOSTR}} = 1060
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37836c169665d234c22b43062ccdcd7e}{UCB\+\_\+\+ERRSYS\+\_\+\+ENODATA}} = 1061
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca43b72404a07861a9088bc20692831f69}{UCB\+\_\+\+ERRSYS\+\_\+\+ETIME}} = 1062
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03cc3298c57f1e11bad0821f38a4ad0d}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOSR}} = 1063
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c9e55db513cb93a1265e37e79e2ef8e}{UCB\+\_\+\+ERRSYS\+\_\+\+ENONET}} = 1064
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca84a138b27b37b0417b4d641c57c872f6}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOPKG}} = 1065
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caec577110bd48f42356fe7312d634d278}{UCB\+\_\+\+ERRSYS\+\_\+\+EREMOTE}} = 1066
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac8928b939b6800dc2c1260d88d19f9b9}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOLINK}} = 1067
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b0b9903391016b6b01abfc80432f30e}{UCB\+\_\+\+ERRSYS\+\_\+\+EADV}} = 1068
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca930be135d7d2509d6c2cbb4659859739}{UCB\+\_\+\+ERRSYS\+\_\+\+ESRMNT}} = 1069
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5717442c2806bb5cf5b118e720bcc94b}{UCB\+\_\+\+ERRSYS\+\_\+\+ECOMM}} = 1070
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d3be7c886b3456681208c14f31f0bb2}{UCB\+\_\+\+ERRSYS\+\_\+\+EPROTO}} = 1071
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1cb23e6c06dfabc127a91e19db505bb2}{UCB\+\_\+\+ERRSYS\+\_\+\+EMULTIHOP}} = 1072
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac633b3ef8e259eb58f52cd34251748ff}{UCB\+\_\+\+ERRSYS\+\_\+\+EDOTDOT}} = 1073
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa12a6afa6b37228f93a3619705c49780}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADMSG}} = 1074
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3ecfd4f35792c86d233cbce969999a3c}{UCB\+\_\+\+ERRSYS\+\_\+\+EOVERFLOW}} = 1075
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a54879bedba937504b4dc30cb98dced}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTUNIQ}} = 1076
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac3bb80e26cc6fb1242c42058f83ae52f}{UCB\+\_\+\+ERRSYS\+\_\+\+EBADFD}} = 1077
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1f9ae460514eeaffe47498af397ae327}{UCB\+\_\+\+ERRSYS\+\_\+\+EREMCHG}} = 1078
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca82e8e89f6fc1ffe71c2aceeb8f04757c}{UCB\+\_\+\+ERRSYS\+\_\+\+ELIBACC}} = 1079
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b8f48b562d4eda82cc33186bad6b14}{UCB\+\_\+\+ERRSYS\+\_\+\+ELIBBAD}} = 1080
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacf6d5e8afe051ec9a46a8ddbd78829d8}{UCB\+\_\+\+ERRSYS\+\_\+\+ELIBSCN}} = 1081
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca64912826e8fa733aab7c822841e4d24d}{UCB\+\_\+\+ERRSYS\+\_\+\+ELIBMAX}} = 1082
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62d28374ef4c708fbc42e9f8b7f03e6f}{UCB\+\_\+\+ERRSYS\+\_\+\+ELIBEXEC}} = 1083
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf1ec49280164895d2fad74344b15bac7}{UCB\+\_\+\+ERRSYS\+\_\+\+EILSEQ}} = 1084
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6aeebe3ac595d9290515ffa5a15900a}{UCB\+\_\+\+ERRSYS\+\_\+\+ERESTART}} = 1085
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca804180e1b758b4883a7e0446b0b912a5}{UCB\+\_\+\+ERRSYS\+\_\+\+ESTRPIPE}} = 1086
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae85bc107c0b8554e3063ef5db2dee92c}{UCB\+\_\+\+ERRSYS\+\_\+\+EUSERS}} = 1087
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa37d0cb75476db95cd1b078353dfafad}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTSOCK}} = 1088
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa0cfd4513bcc99d1899cd5d2d9f2fba1}{UCB\+\_\+\+ERRSYS\+\_\+\+EDESTADDRREQ}} = 1089
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0fa830da3f7ef2ddd2bf47ee8ca38586}{UCB\+\_\+\+ERRSYS\+\_\+\+EMSGSIZE}} = 1090
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c3efdc029fd7940dc06ca241be98877}{UCB\+\_\+\+ERRSYS\+\_\+\+EPROTOTYPE}} = 1091
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6aa1388bb32a729dc329b83402db51c6}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOPROTOOPT}} = 1092
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9bfaef64fe3c55e8df9b48e98472879}{UCB\+\_\+\+ERRSYS\+\_\+\+EPROTONOSUPPORT}} = 1093
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7f59fe65c5f516177b02b0ba06b5407a}{UCB\+\_\+\+ERRSYS\+\_\+\+ESOCKTNOSUPPORT}} = 1094
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8b231dae4a82c31beca0a5f91654b85a}{UCB\+\_\+\+ERRSYS\+\_\+\+EOPNOTSUPP}} = 1095
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac844a413b9c3c191d94276f85610fccc}{UCB\+\_\+\+ERRSYS\+\_\+\+EPFNOSUPPORT}} = 1096
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca345bcda5e7b408cd92b797cbc534c4c0}{UCB\+\_\+\+ERRSYS\+\_\+\+EAFNOSUPPORT}} = 1097
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cace6e209311b6ccbcbbba0605f2aa595b}{UCB\+\_\+\+ERRSYS\+\_\+\+EADDRINUSE}} = 1098
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadcd11a3c4d4d341d7ee938a2026ad446}{UCB\+\_\+\+ERRSYS\+\_\+\+EADDRNOTAVAIL}} = 1099
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa45f1a7c70b6ed6f55c14b1e93db8992}{UCB\+\_\+\+ERRSYS\+\_\+\+ENETDOWN}} = 1100
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf02f673fdbd28c7bf8c58940500e3bb0}{UCB\+\_\+\+ERRSYS\+\_\+\+ENETUNREACH}} = 1101
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabc373b1c36a1da63b425089495ed3e1a}{UCB\+\_\+\+ERRSYS\+\_\+\+ENETRESET}} = 1102
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca465242fd659cb73fe8616d679085db80}{UCB\+\_\+\+ERRSYS\+\_\+\+ECONNABORTED}} = 1103
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae19fc352c1253256d93d0836acd85222}{UCB\+\_\+\+ERRSYS\+\_\+\+ECONNRESET}} = 1104
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca89025681703c84b302eb18e00c32cbb4}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOBUFS}} = 1105
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadc269e0aa1ca3cf4d0751e11929fdac4}{UCB\+\_\+\+ERRSYS\+\_\+\+EISCONN}} = 1106
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caedf17155be3d0a0759eb31f1374dd64b}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTCONN}} = 1107
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca061bc6b7d67ca615b7500cab04533a76}{UCB\+\_\+\+ERRSYS\+\_\+\+ESHUTDOWN}} = 1108
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6a238bc472c4a016989532d291f3d1ad}{UCB\+\_\+\+ERRSYS\+\_\+\+ETOOMANYREFS}} = 1109
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1a605d5d836c3436747a21e0bc83f467}{UCB\+\_\+\+ERRSYS\+\_\+\+ETIMEDOUT}} = 1110
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b1b891b9295f78dca7a3949c93be3f1}{UCB\+\_\+\+ERRSYS\+\_\+\+ECONNREFUSED}} = 1111
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ceb5410745dd2e4d7ef310f20e43a22}{UCB\+\_\+\+ERRSYS\+\_\+\+EHOSTDOWN}} = 1112
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca347c344c3c2c265cabd021c196b54ee6}{UCB\+\_\+\+ERRSYS\+\_\+\+EHOSTUNREACH}} = 1113
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f94d081effaa7d1e5aeaaee9c8e9b19}{UCB\+\_\+\+ERRSYS\+\_\+\+EALREADY}} = 1114
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa00e25399f7bdf5dc244f333e63284f}{UCB\+\_\+\+ERRSYS\+\_\+\+EINPROGRESS}} = 1115
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca65ea96eda7e2776f6886fdb399633588}{UCB\+\_\+\+ERRSYS\+\_\+\+ESTALE}} = 1116
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9570291762d99a4611d98fea2b386dc}{UCB\+\_\+\+ERRSYS\+\_\+\+EUCLEAN}} = 1117
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4b0497738f0d4987be32a53685416c08}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTNAM}} = 1118
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca18b236b217a5cce124dc94648571d75a}{UCB\+\_\+\+ERRSYS\+\_\+\+ENAVAIL}} = 1119
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d064e6cebe6d5aa14adf87761d5bec7}{UCB\+\_\+\+ERRSYS\+\_\+\+EISNAM}} = 1120
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca05f806cb4ff15f360e70588041121c78}{UCB\+\_\+\+ERRSYS\+\_\+\+EREMOTEIO}} = 1121
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2016428b020b5b1503c9291f2c2e9a38}{UCB\+\_\+\+ERRSYS\+\_\+\+EDQUOT}} = 1122
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca181feab183ba330eb726437e773c8fdd}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOMEDIUM}} = 1123
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cade33fa6ff51d4c79b4fa9cd2ac9c86d2}{UCB\+\_\+\+ERRSYS\+\_\+\+EMEDIUMTYPE}} = 1124
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8c14597f2b55348cf42bef2e54c52821}{UCB\+\_\+\+ERRSYS\+\_\+\+ECANCELED}} = 1125
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabeddd476a6b22e658d6407c8e885f481}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOKEY}} = 1126
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad52fef46d91b4a02d6ffb73936209ec1}{UCB\+\_\+\+ERRSYS\+\_\+\+EKEYEXPIRED}} = 1127
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca69a682796be563b4c18734665c7864ba}{UCB\+\_\+\+ERRSYS\+\_\+\+EKEYREVOKED}} = 1128
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6bd06764ae2635ff40713a6df7c9a660}{UCB\+\_\+\+ERRSYS\+\_\+\+EKEYREJECTED}} = 1129
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca979a8bd563cddb3beeb39401ab1d4d2d}{UCB\+\_\+\+ERRSYS\+\_\+\+EOWNERDEAD}} = 1130
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac7a0864df142c4efacef7b0f6a5d185c}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTRECOVERABLE}} = 1131
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacbccdf60cc8383bd5458c559dd7a5f4e}{UCB\+\_\+\+ERRSYS\+\_\+\+ERFKILL}} = 1132
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca296fc9ecdbc6dceeec30fda8fa930e4a}{UCB\+\_\+\+ERRSYS\+\_\+\+EHWPOISON}} = 1133
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca793badc3c59216bf69ce5e99298ffa27}{UCB\+\_\+\+ERRSYS\+\_\+\+ENOTSUP}} = 1134
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3c8b6b9cd8da4186549003f32f4a4bb6}{UCB\+\_\+\+ERRSYS\+\_\+\+STRUNCATE}} = 1200
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa8e74a4c801036344bb56e2503e8aac9}{UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+GENERIC}} = 2000
+, \newline
+\doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa08d4a0b9389797e6e85998dc03e3293}{UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+INVALID\+\_\+\+HANDLE}} = 2001
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3fcde46962a2e2817c9d7cf8c783f317}{UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+CURRENT\+\_\+\+DIRECTORY}} = 2002
+, \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfc5d3485c3b1c450a2877d6d383a3d}{UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+ERROR\+\_\+\+DIRECTORY}} = 2003
+ \}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Error codes. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier:\+ MIT 
+\end{DoxyItemize}
+
+Definition in file \doxymbox{\hyperlink{errcodes_8h_source}{errcodes.\+h}}.
+
+
+
+\label{doc-enum-members}
+\Hypertarget{errcodes_8h_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356c}\index{errcodes.h@{errcodes.h}!ucb\_error\_code@{ucb\_error\_code}}
+\index{ucb\_error\_code@{ucb\_error\_code}!errcodes.h@{errcodes.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_code}{ucb\_error\_code}}
+{\footnotesize\ttfamily \label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356c} 
+enum \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356c}{ucb\+\_\+error\+\_\+code}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_OK@{UCB\_OK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_OK@{UCB\_OK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6a1d603f0f4cbcd2119c5dd80cfa2ae}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6a1d603f0f4cbcd2119c5dd80cfa2ae} 
+UCB\+\_\+\+OK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_OUT\_OF\_MEMORY@{UCB\_ERROR\_OUT\_OF\_MEMORY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_OUT\_OF\_MEMORY@{UCB\_ERROR\_OUT\_OF\_MEMORY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf2f3fffc6909c078af156e410c998f3e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf2f3fffc6909c078af156e410c998f3e} 
+UCB\+\_\+\+ERROR\+\_\+\+OUT\+\_\+\+OF\+\_\+\+MEMORY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INVALID\_ARG@{UCB\_ERROR\_INVALID\_ARG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INVALID\_ARG@{UCB\_ERROR\_INVALID\_ARG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2} 
+UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+ARG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_UNHANDLED\_ERROR@{UCB\_ERROR\_UNHANDLED\_ERROR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_UNHANDLED\_ERROR@{UCB\_ERROR\_UNHANDLED\_ERROR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2c8dbfcf65f77629d199e82a20428e86}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2c8dbfcf65f77629d199e82a20428e86} 
+UCB\+\_\+\+ERROR\+\_\+\+UNHANDLED\+\_\+\+ERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_OUT\_OF\_BOUNDS@{UCB\_ERROR\_OUT\_OF\_BOUNDS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_OUT\_OF\_BOUNDS@{UCB\_ERROR\_OUT\_OF\_BOUNDS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ba3d462d5e071b218b198e4238ddf9d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ba3d462d5e071b218b198e4238ddf9d} 
+UCB\+\_\+\+ERROR\+\_\+\+OUT\+\_\+\+OF\+\_\+\+BOUNDS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INVALID\_UTF8@{UCB\_ERROR\_INVALID\_UTF8}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INVALID\_UTF8@{UCB\_ERROR\_INVALID\_UTF8}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caae930142e8d78e4467fc7257ac401130}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caae930142e8d78e4467fc7257ac401130} 
+UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+UTF8&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INVALID\_CODEPOINT@{UCB\_ERROR\_INVALID\_CODEPOINT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INVALID\_CODEPOINT@{UCB\_ERROR\_INVALID\_CODEPOINT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0c2b80ffea2af4c9ce7014f524631220}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0c2b80ffea2af4c9ce7014f524631220} 
+UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+CODEPOINT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INTERNAL@{UCB\_ERROR\_INTERNAL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INTERNAL@{UCB\_ERROR\_INTERNAL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0} 
+UCB\+\_\+\+ERROR\+\_\+\+INTERNAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INVALID\_STATE@{UCB\_ERROR\_INVALID\_STATE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INVALID\_STATE@{UCB\_ERROR\_INVALID\_STATE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7995cff712719dd836fb868920a3831}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7995cff712719dd836fb868920a3831} 
+UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+STATE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_NOT\_IMPLEMENTED@{UCB\_ERROR\_NOT\_IMPLEMENTED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_NOT\_IMPLEMENTED@{UCB\_ERROR\_NOT\_IMPLEMENTED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a8df2c3522708385b23a26971ec39b3}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a8df2c3522708385b23a26971ec39b3} 
+UCB\+\_\+\+ERROR\+\_\+\+NOT\+\_\+\+IMPLEMENTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_BUFFER@{UCB\_ERROR\_BUFFER}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_BUFFER@{UCB\_ERROR\_BUFFER}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac701920534cd48112fc5655403223757}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac701920534cd48112fc5655403223757} 
+UCB\+\_\+\+ERROR\+\_\+\+BUFFER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_LOCKED@{UCB\_ERROR\_LOCKED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_LOCKED@{UCB\_ERROR\_LOCKED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caef62d7bdecb35c5d4de9dd656aa73602}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caef62d7bdecb35c5d4de9dd656aa73602} 
+UCB\+\_\+\+ERROR\+\_\+\+LOCKED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_MAX\_SIZE@{UCB\_ERROR\_MAX\_SIZE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_MAX\_SIZE@{UCB\_ERROR\_MAX\_SIZE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caeb266e1794601c34b29d2f6e9b8aa7ae}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caeb266e1794601c34b29d2f6e9b8aa7ae} 
+UCB\+\_\+\+ERROR\+\_\+\+MAX\+\_\+\+SIZE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_INVALID\_ALLOC@{UCB\_ERROR\_INVALID\_ALLOC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_INVALID\_ALLOC@{UCB\_ERROR\_INVALID\_ALLOC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca635ee0237bdef29f0578fc553150d132}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca635ee0237bdef29f0578fc553150d132} 
+UCB\+\_\+\+ERROR\+\_\+\+INVALID\+\_\+\+ALLOC&FATAL ERROR:\+ Attempt to free memory that was not allocated by ucb. May also catch double free\textquotesingle{}s. This is only enabled in debug builds. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_THREAD\_BUSY@{UCB\_ERROR\_THREAD\_BUSY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_THREAD\_BUSY@{UCB\_ERROR\_THREAD\_BUSY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca444d34693430b9899a7238015f276fee}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca444d34693430b9899a7238015f276fee} 
+UCB\+\_\+\+ERROR\+\_\+\+THREAD\+\_\+\+BUSY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERROR\_MUTEX\_LOCKED@{UCB\_ERROR\_MUTEX\_LOCKED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERROR\_MUTEX\_LOCKED@{UCB\_ERROR\_MUTEX\_LOCKED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca53ee1e7d28428a09f5cfb9ac5c1135e7}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca53ee1e7d28428a09f5cfb9ac5c1135e7} 
+UCB\+\_\+\+ERROR\+\_\+\+MUTEX\+\_\+\+LOCKED&Mutex is locked by another thread A fatal error if releasing a mutex, as this is undefined behavior. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_UNKNOWN@{UCB\_ERRSYS\_UNKNOWN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_UNKNOWN@{UCB\_ERRSYS\_UNKNOWN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9d048dee09a8720aa2b7c4d9cab1daf8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9d048dee09a8720aa2b7c4d9cab1daf8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+UNKNOWN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_NOERROR@{UCB\_ERRSYS\_NOERROR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_NOERROR@{UCB\_ERRSYS\_NOERROR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca659da0eb2e391c598768e510d86f7f19}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca659da0eb2e391c598768e510d86f7f19} 
+UCB\+\_\+\+ERRSYS\+\_\+\+NOERROR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPERM@{UCB\_ERRSYS\_EPERM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPERM@{UCB\_ERRSYS\_EPERM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfa646b28b0564ac960fcb4f262d3d6}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfa646b28b0564ac960fcb4f262d3d6} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPERM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOENT@{UCB\_ERRSYS\_ENOENT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOENT@{UCB\_ERRSYS\_ENOENT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8e0de68ee68f792170d1ca32f6222f7f}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8e0de68ee68f792170d1ca32f6222f7f} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOENT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESRCH@{UCB\_ERRSYS\_ESRCH}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESRCH@{UCB\_ERRSYS\_ESRCH}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5258775de124e914235d8961f1d0803}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5258775de124e914235d8961f1d0803} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESRCH&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EINTR@{UCB\_ERRSYS\_EINTR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EINTR@{UCB\_ERRSYS\_EINTR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7c6f688d86eab2bdef21dc2aa7aa5e4e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7c6f688d86eab2bdef21dc2aa7aa5e4e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EINTR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EIO@{UCB\_ERRSYS\_EIO}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EIO@{UCB\_ERRSYS\_EIO}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2b6a172bf5fea459a34661e6e58408f2}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2b6a172bf5fea459a34661e6e58408f2} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EIO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENXIO@{UCB\_ERRSYS\_ENXIO}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENXIO@{UCB\_ERRSYS\_ENXIO}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caabe1c4c6d192a35608ea45902a76bdfc}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caabe1c4c6d192a35608ea45902a76bdfc} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENXIO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_E2BIG@{UCB\_ERRSYS\_E2BIG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_E2BIG@{UCB\_ERRSYS\_E2BIG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad3a28479061879f67ea627930cb5b373}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad3a28479061879f67ea627930cb5b373} 
+UCB\+\_\+\+ERRSYS\+\_\+\+E2\+BIG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOEXEC@{UCB\_ERRSYS\_ENOEXEC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOEXEC@{UCB\_ERRSYS\_ENOEXEC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62f8fe0f4eba410597c9bca17c0fbdc8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62f8fe0f4eba410597c9bca17c0fbdc8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOEXEC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADF@{UCB\_ERRSYS\_EBADF}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADF@{UCB\_ERRSYS\_EBADF}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac91f8bd4a0ae26cb347c6b5b934d7b9e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac91f8bd4a0ae26cb347c6b5b934d7b9e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECHILD@{UCB\_ERRSYS\_ECHILD}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECHILD@{UCB\_ERRSYS\_ECHILD}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac0f6294a2f739873a20cede1a6cc6649}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac0f6294a2f739873a20cede1a6cc6649} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECHILD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EAGAIN@{UCB\_ERRSYS\_EAGAIN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EAGAIN@{UCB\_ERRSYS\_EAGAIN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab60a94224402bfc5e0795341d305509c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab60a94224402bfc5e0795341d305509c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EAGAIN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOMEM@{UCB\_ERRSYS\_ENOMEM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOMEM@{UCB\_ERRSYS\_ENOMEM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f6ea123c7b62e841521dc2c19dffd18}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f6ea123c7b62e841521dc2c19dffd18} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOMEM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EACCES@{UCB\_ERRSYS\_EACCES}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EACCES@{UCB\_ERRSYS\_EACCES}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad0cc561e19730013a39cb277af527e3d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad0cc561e19730013a39cb277af527e3d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EACCES&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EFAULT@{UCB\_ERRSYS\_EFAULT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EFAULT@{UCB\_ERRSYS\_EFAULT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf758b5289d263afee42ffcc941b4aa26}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf758b5289d263afee42ffcc941b4aa26} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EFAULT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTBLK@{UCB\_ERRSYS\_ENOTBLK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTBLK@{UCB\_ERRSYS\_ENOTBLK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cafd707abbfedd99ec5deaf2daaca8a814}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cafd707abbfedd99ec5deaf2daaca8a814} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTBLK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBUSY@{UCB\_ERRSYS\_EBUSY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBUSY@{UCB\_ERRSYS\_EBUSY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad115acbe415d07cbfa4f88e20c1e8b58}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad115acbe415d07cbfa4f88e20c1e8b58} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBUSY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EEXIST@{UCB\_ERRSYS\_EEXIST}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EEXIST@{UCB\_ERRSYS\_EEXIST}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf3b1f439c5d95aac1674a4df3b7b9e80}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf3b1f439c5d95aac1674a4df3b7b9e80} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EEXIST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EXDEV@{UCB\_ERRSYS\_EXDEV}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EXDEV@{UCB\_ERRSYS\_EXDEV}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caac76c76870549abb33ff09f80998348b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caac76c76870549abb33ff09f80998348b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EXDEV&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENODEV@{UCB\_ERRSYS\_ENODEV}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENODEV@{UCB\_ERRSYS\_ENODEV}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabd4f421907b713f69da1cda3e5c8a29c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabd4f421907b713f69da1cda3e5c8a29c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENODEV&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTDIR@{UCB\_ERRSYS\_ENOTDIR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTDIR@{UCB\_ERRSYS\_ENOTDIR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca671bcda7c6e4fdf30f22288149aa3f93}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca671bcda7c6e4fdf30f22288149aa3f93} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTDIR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EISDIR@{UCB\_ERRSYS\_EISDIR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EISDIR@{UCB\_ERRSYS\_EISDIR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf6c235705c26df4caa4c88aedae5ef8b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf6c235705c26df4caa4c88aedae5ef8b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EISDIR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EINVAL@{UCB\_ERRSYS\_EINVAL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EINVAL@{UCB\_ERRSYS\_EINVAL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad302d2c0ec8330b68b643d4bc800f6c1}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad302d2c0ec8330b68b643d4bc800f6c1} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EINVAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENFILE@{UCB\_ERRSYS\_ENFILE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENFILE@{UCB\_ERRSYS\_ENFILE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca78e175edfdb310650dbc4b136981bc69}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca78e175edfdb310650dbc4b136981bc69} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENFILE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EMFILE@{UCB\_ERRSYS\_EMFILE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EMFILE@{UCB\_ERRSYS\_EMFILE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae9820aadb962741bd781bb622b36109c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae9820aadb962741bd781bb622b36109c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EMFILE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTTY@{UCB\_ERRSYS\_ENOTTY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTTY@{UCB\_ERRSYS\_ENOTTY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6552c7f59735160859754400e6d57854}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6552c7f59735160859754400e6d57854} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTTY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ETXTBSY@{UCB\_ERRSYS\_ETXTBSY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ETXTBSY@{UCB\_ERRSYS\_ETXTBSY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03680baf8b15b390a32bc1d437a39fc0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03680baf8b15b390a32bc1d437a39fc0} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ETXTBSY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EFBIG@{UCB\_ERRSYS\_EFBIG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EFBIG@{UCB\_ERRSYS\_EFBIG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa5b24e94a246b8edc5f811d95e78be5d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa5b24e94a246b8edc5f811d95e78be5d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EFBIG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOSPC@{UCB\_ERRSYS\_ENOSPC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOSPC@{UCB\_ERRSYS\_ENOSPC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4d87067d718f62be53746f4965c50bed}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4d87067d718f62be53746f4965c50bed} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOSPC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESPIPE@{UCB\_ERRSYS\_ESPIPE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESPIPE@{UCB\_ERRSYS\_ESPIPE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca51b15832b4d05312283f51ccf8be819d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca51b15832b4d05312283f51ccf8be819d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESPIPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EROFS@{UCB\_ERRSYS\_EROFS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EROFS@{UCB\_ERRSYS\_EROFS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2251cd67095e83c2ec61a7238517ddfe}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2251cd67095e83c2ec61a7238517ddfe} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EROFS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EMLINK@{UCB\_ERRSYS\_EMLINK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EMLINK@{UCB\_ERRSYS\_EMLINK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca059697512adc0c15c7ef24f12bdbf50d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca059697512adc0c15c7ef24f12bdbf50d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EMLINK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPIPE@{UCB\_ERRSYS\_EPIPE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPIPE@{UCB\_ERRSYS\_EPIPE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabdf8c8d23be705f854a5bd642c2eee5a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabdf8c8d23be705f854a5bd642c2eee5a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPIPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EDOM@{UCB\_ERRSYS\_EDOM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EDOM@{UCB\_ERRSYS\_EDOM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca31eef2c7a1975bc34531817e289376a0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca31eef2c7a1975bc34531817e289376a0} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EDOM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ERANGE@{UCB\_ERRSYS\_ERANGE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ERANGE@{UCB\_ERRSYS\_ERANGE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad822d0aa8c5c646b6c99aa1eedcd44b5}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad822d0aa8c5c646b6c99aa1eedcd44b5} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ERANGE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EDEADLK@{UCB\_ERRSYS\_EDEADLK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EDEADLK@{UCB\_ERRSYS\_EDEADLK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae8338d2ba872553efea7efa8159c17f3}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae8338d2ba872553efea7efa8159c17f3} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EDEADLK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENAMETOOLONG@{UCB\_ERRSYS\_ENAMETOOLONG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENAMETOOLONG@{UCB\_ERRSYS\_ENAMETOOLONG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacb4133ab8451c6d19ffea63cafedb4df}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacb4133ab8451c6d19ffea63cafedb4df} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENAMETOOLONG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOLCK@{UCB\_ERRSYS\_ENOLCK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOLCK@{UCB\_ERRSYS\_ENOLCK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca184d9b11f25eaaedd72e788855b618e8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca184d9b11f25eaaedd72e788855b618e8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOLCK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOSYS@{UCB\_ERRSYS\_ENOSYS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOSYS@{UCB\_ERRSYS\_ENOSYS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2558e715e2e36530501dc53418ad30a8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2558e715e2e36530501dc53418ad30a8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOSYS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTEMPTY@{UCB\_ERRSYS\_ENOTEMPTY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTEMPTY@{UCB\_ERRSYS\_ENOTEMPTY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf190802068c96f81ecf55ece3ac07610}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf190802068c96f81ecf55ece3ac07610} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTEMPTY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELOOP@{UCB\_ERRSYS\_ELOOP}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELOOP@{UCB\_ERRSYS\_ELOOP}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca295175aaae6e02c2a10df8f7c77764e4}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca295175aaae6e02c2a10df8f7c77764e4} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELOOP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOMSG@{UCB\_ERRSYS\_ENOMSG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOMSG@{UCB\_ERRSYS\_ENOMSG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b5df86649554722a24b0b73728cda73}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b5df86649554722a24b0b73728cda73} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOMSG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EIDRM@{UCB\_ERRSYS\_EIDRM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EIDRM@{UCB\_ERRSYS\_EIDRM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fbf1041ebc7edceaa1e0d527c1b140a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fbf1041ebc7edceaa1e0d527c1b140a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EIDRM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECHRNG@{UCB\_ERRSYS\_ECHRNG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECHRNG@{UCB\_ERRSYS\_ECHRNG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa4d6e090569a8ab3a3e774410dd1b27}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa4d6e090569a8ab3a3e774410dd1b27} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECHRNG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EL2NSYNC@{UCB\_ERRSYS\_EL2NSYNC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EL2NSYNC@{UCB\_ERRSYS\_EL2NSYNC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab87c24cd9e7e86e0f8dd245722e3910c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cab87c24cd9e7e86e0f8dd245722e3910c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EL2\+NSYNC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EL3HLT@{UCB\_ERRSYS\_EL3HLT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EL3HLT@{UCB\_ERRSYS\_EL3HLT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ab805c3732a27510840ad9c26cd310c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ab805c3732a27510840ad9c26cd310c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EL3\+HLT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EL3RST@{UCB\_ERRSYS\_EL3RST}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EL3RST@{UCB\_ERRSYS\_EL3RST}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37592db868d338b513535320a91c6ecb}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37592db868d338b513535320a91c6ecb} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EL3\+RST&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELNRNG@{UCB\_ERRSYS\_ELNRNG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELNRNG@{UCB\_ERRSYS\_ELNRNG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7dbfa83947ab577327aeed003f8b5ea}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa7dbfa83947ab577327aeed003f8b5ea} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELNRNG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EUNATCH@{UCB\_ERRSYS\_EUNATCH}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EUNATCH@{UCB\_ERRSYS\_EUNATCH}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1672923d51cb4b089c6c2507032d2a8d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1672923d51cb4b089c6c2507032d2a8d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EUNATCH&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOCSI@{UCB\_ERRSYS\_ENOCSI}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOCSI@{UCB\_ERRSYS\_ENOCSI}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5919a15a5162741600cfb151fe7089d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae5919a15a5162741600cfb151fe7089d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOCSI&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EL2HLT@{UCB\_ERRSYS\_EL2HLT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EL2HLT@{UCB\_ERRSYS\_EL2HLT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa65ba591a3ef5ecd8c200d68ab2b1903}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa65ba591a3ef5ecd8c200d68ab2b1903} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EL2\+HLT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADE@{UCB\_ERRSYS\_EBADE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADE@{UCB\_ERRSYS\_EBADE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca52dea9d9c3eeb496b95768f972151746}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca52dea9d9c3eeb496b95768f972151746} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADR@{UCB\_ERRSYS\_EBADR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADR@{UCB\_ERRSYS\_EBADR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa02bbb7a513f7b658b711c16048443fe}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa02bbb7a513f7b658b711c16048443fe} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EXFULL@{UCB\_ERRSYS\_EXFULL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EXFULL@{UCB\_ERRSYS\_EXFULL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa2b163fd1aa38a171aeed0e92301e7d8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa2b163fd1aa38a171aeed0e92301e7d8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EXFULL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOANO@{UCB\_ERRSYS\_ENOANO}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOANO@{UCB\_ERRSYS\_ENOANO}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fc42996cb57964359fb754f268dda0b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2fc42996cb57964359fb754f268dda0b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOANO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADRQC@{UCB\_ERRSYS\_EBADRQC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADRQC@{UCB\_ERRSYS\_EBADRQC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ec69d1f0d1506bd201506ea1cbe7ac0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4ec69d1f0d1506bd201506ea1cbe7ac0} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADRQC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADSLT@{UCB\_ERRSYS\_EBADSLT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADSLT@{UCB\_ERRSYS\_EBADSLT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca269695acdba7ca5dbefb1d41ba689c43}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca269695acdba7ca5dbefb1d41ba689c43} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADSLT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBFONT@{UCB\_ERRSYS\_EBFONT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBFONT@{UCB\_ERRSYS\_EBFONT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b573f5546bdd82f6fd19ae9d81302f}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b573f5546bdd82f6fd19ae9d81302f} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBFONT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOSTR@{UCB\_ERRSYS\_ENOSTR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOSTR@{UCB\_ERRSYS\_ENOSTR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca435fd74fc4eb9ad19033f17b8e657e47}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca435fd74fc4eb9ad19033f17b8e657e47} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOSTR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENODATA@{UCB\_ERRSYS\_ENODATA}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENODATA@{UCB\_ERRSYS\_ENODATA}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37836c169665d234c22b43062ccdcd7e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca37836c169665d234c22b43062ccdcd7e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENODATA&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ETIME@{UCB\_ERRSYS\_ETIME}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ETIME@{UCB\_ERRSYS\_ETIME}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca43b72404a07861a9088bc20692831f69}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca43b72404a07861a9088bc20692831f69} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ETIME&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOSR@{UCB\_ERRSYS\_ENOSR}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOSR@{UCB\_ERRSYS\_ENOSR}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03cc3298c57f1e11bad0821f38a4ad0d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca03cc3298c57f1e11bad0821f38a4ad0d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOSR&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENONET@{UCB\_ERRSYS\_ENONET}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENONET@{UCB\_ERRSYS\_ENONET}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c9e55db513cb93a1265e37e79e2ef8e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c9e55db513cb93a1265e37e79e2ef8e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENONET&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOPKG@{UCB\_ERRSYS\_ENOPKG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOPKG@{UCB\_ERRSYS\_ENOPKG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca84a138b27b37b0417b4d641c57c872f6}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca84a138b27b37b0417b4d641c57c872f6} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOPKG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EREMOTE@{UCB\_ERRSYS\_EREMOTE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EREMOTE@{UCB\_ERRSYS\_EREMOTE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caec577110bd48f42356fe7312d634d278}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caec577110bd48f42356fe7312d634d278} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EREMOTE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOLINK@{UCB\_ERRSYS\_ENOLINK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOLINK@{UCB\_ERRSYS\_ENOLINK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac8928b939b6800dc2c1260d88d19f9b9}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac8928b939b6800dc2c1260d88d19f9b9} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOLINK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EADV@{UCB\_ERRSYS\_EADV}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EADV@{UCB\_ERRSYS\_EADV}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b0b9903391016b6b01abfc80432f30e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b0b9903391016b6b01abfc80432f30e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EADV&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESRMNT@{UCB\_ERRSYS\_ESRMNT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESRMNT@{UCB\_ERRSYS\_ESRMNT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca930be135d7d2509d6c2cbb4659859739}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca930be135d7d2509d6c2cbb4659859739} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESRMNT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECOMM@{UCB\_ERRSYS\_ECOMM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECOMM@{UCB\_ERRSYS\_ECOMM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5717442c2806bb5cf5b118e720bcc94b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5717442c2806bb5cf5b118e720bcc94b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECOMM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPROTO@{UCB\_ERRSYS\_EPROTO}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPROTO@{UCB\_ERRSYS\_EPROTO}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d3be7c886b3456681208c14f31f0bb2}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d3be7c886b3456681208c14f31f0bb2} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPROTO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EMULTIHOP@{UCB\_ERRSYS\_EMULTIHOP}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EMULTIHOP@{UCB\_ERRSYS\_EMULTIHOP}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1cb23e6c06dfabc127a91e19db505bb2}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1cb23e6c06dfabc127a91e19db505bb2} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EMULTIHOP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EDOTDOT@{UCB\_ERRSYS\_EDOTDOT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EDOTDOT@{UCB\_ERRSYS\_EDOTDOT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac633b3ef8e259eb58f52cd34251748ff}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac633b3ef8e259eb58f52cd34251748ff} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EDOTDOT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADMSG@{UCB\_ERRSYS\_EBADMSG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADMSG@{UCB\_ERRSYS\_EBADMSG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa12a6afa6b37228f93a3619705c49780}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa12a6afa6b37228f93a3619705c49780} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADMSG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EOVERFLOW@{UCB\_ERRSYS\_EOVERFLOW}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EOVERFLOW@{UCB\_ERRSYS\_EOVERFLOW}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3ecfd4f35792c86d233cbce969999a3c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3ecfd4f35792c86d233cbce969999a3c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EOVERFLOW&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTUNIQ@{UCB\_ERRSYS\_ENOTUNIQ}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTUNIQ@{UCB\_ERRSYS\_ENOTUNIQ}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a54879bedba937504b4dc30cb98dced}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4a54879bedba937504b4dc30cb98dced} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTUNIQ&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EBADFD@{UCB\_ERRSYS\_EBADFD}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EBADFD@{UCB\_ERRSYS\_EBADFD}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac3bb80e26cc6fb1242c42058f83ae52f}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac3bb80e26cc6fb1242c42058f83ae52f} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EBADFD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EREMCHG@{UCB\_ERRSYS\_EREMCHG}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EREMCHG@{UCB\_ERRSYS\_EREMCHG}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1f9ae460514eeaffe47498af397ae327}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1f9ae460514eeaffe47498af397ae327} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EREMCHG&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELIBACC@{UCB\_ERRSYS\_ELIBACC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELIBACC@{UCB\_ERRSYS\_ELIBACC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca82e8e89f6fc1ffe71c2aceeb8f04757c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca82e8e89f6fc1ffe71c2aceeb8f04757c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELIBACC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELIBBAD@{UCB\_ERRSYS\_ELIBBAD}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELIBBAD@{UCB\_ERRSYS\_ELIBBAD}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b8f48b562d4eda82cc33186bad6b14}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca15b8f48b562d4eda82cc33186bad6b14} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELIBBAD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELIBSCN@{UCB\_ERRSYS\_ELIBSCN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELIBSCN@{UCB\_ERRSYS\_ELIBSCN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacf6d5e8afe051ec9a46a8ddbd78829d8}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacf6d5e8afe051ec9a46a8ddbd78829d8} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELIBSCN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELIBMAX@{UCB\_ERRSYS\_ELIBMAX}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELIBMAX@{UCB\_ERRSYS\_ELIBMAX}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca64912826e8fa733aab7c822841e4d24d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca64912826e8fa733aab7c822841e4d24d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELIBMAX&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ELIBEXEC@{UCB\_ERRSYS\_ELIBEXEC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ELIBEXEC@{UCB\_ERRSYS\_ELIBEXEC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62d28374ef4c708fbc42e9f8b7f03e6f}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca62d28374ef4c708fbc42e9f8b7f03e6f} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ELIBEXEC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EILSEQ@{UCB\_ERRSYS\_EILSEQ}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EILSEQ@{UCB\_ERRSYS\_EILSEQ}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf1ec49280164895d2fad74344b15bac7}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf1ec49280164895d2fad74344b15bac7} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EILSEQ&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ERESTART@{UCB\_ERRSYS\_ERESTART}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ERESTART@{UCB\_ERRSYS\_ERESTART}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6aeebe3ac595d9290515ffa5a15900a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac6aeebe3ac595d9290515ffa5a15900a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ERESTART&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESTRPIPE@{UCB\_ERRSYS\_ESTRPIPE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESTRPIPE@{UCB\_ERRSYS\_ESTRPIPE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca804180e1b758b4883a7e0446b0b912a5}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca804180e1b758b4883a7e0446b0b912a5} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESTRPIPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EUSERS@{UCB\_ERRSYS\_EUSERS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EUSERS@{UCB\_ERRSYS\_EUSERS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae85bc107c0b8554e3063ef5db2dee92c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae85bc107c0b8554e3063ef5db2dee92c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EUSERS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTSOCK@{UCB\_ERRSYS\_ENOTSOCK}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTSOCK@{UCB\_ERRSYS\_ENOTSOCK}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa37d0cb75476db95cd1b078353dfafad}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa37d0cb75476db95cd1b078353dfafad} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTSOCK&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EDESTADDRREQ@{UCB\_ERRSYS\_EDESTADDRREQ}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EDESTADDRREQ@{UCB\_ERRSYS\_EDESTADDRREQ}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa0cfd4513bcc99d1899cd5d2d9f2fba1}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa0cfd4513bcc99d1899cd5d2d9f2fba1} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EDESTADDRREQ&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EMSGSIZE@{UCB\_ERRSYS\_EMSGSIZE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EMSGSIZE@{UCB\_ERRSYS\_EMSGSIZE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0fa830da3f7ef2ddd2bf47ee8ca38586}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca0fa830da3f7ef2ddd2bf47ee8ca38586} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EMSGSIZE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPROTOTYPE@{UCB\_ERRSYS\_EPROTOTYPE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPROTOTYPE@{UCB\_ERRSYS\_EPROTOTYPE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c3efdc029fd7940dc06ca241be98877}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9c3efdc029fd7940dc06ca241be98877} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPROTOTYPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOPROTOOPT@{UCB\_ERRSYS\_ENOPROTOOPT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOPROTOOPT@{UCB\_ERRSYS\_ENOPROTOOPT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6aa1388bb32a729dc329b83402db51c6}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6aa1388bb32a729dc329b83402db51c6} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOPROTOOPT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPROTONOSUPPORT@{UCB\_ERRSYS\_EPROTONOSUPPORT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPROTONOSUPPORT@{UCB\_ERRSYS\_EPROTONOSUPPORT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9bfaef64fe3c55e8df9b48e98472879}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9bfaef64fe3c55e8df9b48e98472879} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPROTONOSUPPORT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESOCKTNOSUPPORT@{UCB\_ERRSYS\_ESOCKTNOSUPPORT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESOCKTNOSUPPORT@{UCB\_ERRSYS\_ESOCKTNOSUPPORT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7f59fe65c5f516177b02b0ba06b5407a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7f59fe65c5f516177b02b0ba06b5407a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESOCKTNOSUPPORT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EOPNOTSUPP@{UCB\_ERRSYS\_EOPNOTSUPP}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EOPNOTSUPP@{UCB\_ERRSYS\_EOPNOTSUPP}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8b231dae4a82c31beca0a5f91654b85a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8b231dae4a82c31beca0a5f91654b85a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EOPNOTSUPP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EPFNOSUPPORT@{UCB\_ERRSYS\_EPFNOSUPPORT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EPFNOSUPPORT@{UCB\_ERRSYS\_EPFNOSUPPORT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac844a413b9c3c191d94276f85610fccc}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac844a413b9c3c191d94276f85610fccc} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EPFNOSUPPORT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EAFNOSUPPORT@{UCB\_ERRSYS\_EAFNOSUPPORT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EAFNOSUPPORT@{UCB\_ERRSYS\_EAFNOSUPPORT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca345bcda5e7b408cd92b797cbc534c4c0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca345bcda5e7b408cd92b797cbc534c4c0} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EAFNOSUPPORT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EADDRINUSE@{UCB\_ERRSYS\_EADDRINUSE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EADDRINUSE@{UCB\_ERRSYS\_EADDRINUSE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cace6e209311b6ccbcbbba0605f2aa595b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cace6e209311b6ccbcbbba0605f2aa595b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EADDRINUSE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EADDRNOTAVAIL@{UCB\_ERRSYS\_EADDRNOTAVAIL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EADDRNOTAVAIL@{UCB\_ERRSYS\_EADDRNOTAVAIL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadcd11a3c4d4d341d7ee938a2026ad446}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadcd11a3c4d4d341d7ee938a2026ad446} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EADDRNOTAVAIL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENETDOWN@{UCB\_ERRSYS\_ENETDOWN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENETDOWN@{UCB\_ERRSYS\_ENETDOWN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa45f1a7c70b6ed6f55c14b1e93db8992}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa45f1a7c70b6ed6f55c14b1e93db8992} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENETDOWN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENETUNREACH@{UCB\_ERRSYS\_ENETUNREACH}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENETUNREACH@{UCB\_ERRSYS\_ENETUNREACH}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf02f673fdbd28c7bf8c58940500e3bb0}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caf02f673fdbd28c7bf8c58940500e3bb0} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENETUNREACH&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENETRESET@{UCB\_ERRSYS\_ENETRESET}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENETRESET@{UCB\_ERRSYS\_ENETRESET}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabc373b1c36a1da63b425089495ed3e1a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabc373b1c36a1da63b425089495ed3e1a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENETRESET&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECONNABORTED@{UCB\_ERRSYS\_ECONNABORTED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECONNABORTED@{UCB\_ERRSYS\_ECONNABORTED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca465242fd659cb73fe8616d679085db80}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca465242fd659cb73fe8616d679085db80} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECONNABORTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECONNRESET@{UCB\_ERRSYS\_ECONNRESET}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECONNRESET@{UCB\_ERRSYS\_ECONNRESET}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae19fc352c1253256d93d0836acd85222}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cae19fc352c1253256d93d0836acd85222} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECONNRESET&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOBUFS@{UCB\_ERRSYS\_ENOBUFS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOBUFS@{UCB\_ERRSYS\_ENOBUFS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca89025681703c84b302eb18e00c32cbb4}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca89025681703c84b302eb18e00c32cbb4} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOBUFS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EISCONN@{UCB\_ERRSYS\_EISCONN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EISCONN@{UCB\_ERRSYS\_EISCONN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadc269e0aa1ca3cf4d0751e11929fdac4}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cadc269e0aa1ca3cf4d0751e11929fdac4} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EISCONN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTCONN@{UCB\_ERRSYS\_ENOTCONN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTCONN@{UCB\_ERRSYS\_ENOTCONN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caedf17155be3d0a0759eb31f1374dd64b}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caedf17155be3d0a0759eb31f1374dd64b} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTCONN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESHUTDOWN@{UCB\_ERRSYS\_ESHUTDOWN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESHUTDOWN@{UCB\_ERRSYS\_ESHUTDOWN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca061bc6b7d67ca615b7500cab04533a76}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca061bc6b7d67ca615b7500cab04533a76} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESHUTDOWN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ETOOMANYREFS@{UCB\_ERRSYS\_ETOOMANYREFS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ETOOMANYREFS@{UCB\_ERRSYS\_ETOOMANYREFS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6a238bc472c4a016989532d291f3d1ad}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6a238bc472c4a016989532d291f3d1ad} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ETOOMANYREFS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ETIMEDOUT@{UCB\_ERRSYS\_ETIMEDOUT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ETIMEDOUT@{UCB\_ERRSYS\_ETIMEDOUT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1a605d5d836c3436747a21e0bc83f467}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca1a605d5d836c3436747a21e0bc83f467} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ETIMEDOUT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECONNREFUSED@{UCB\_ERRSYS\_ECONNREFUSED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECONNREFUSED@{UCB\_ERRSYS\_ECONNREFUSED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b1b891b9295f78dca7a3949c93be3f1}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9b1b891b9295f78dca7a3949c93be3f1} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECONNREFUSED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EHOSTDOWN@{UCB\_ERRSYS\_EHOSTDOWN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EHOSTDOWN@{UCB\_ERRSYS\_EHOSTDOWN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ceb5410745dd2e4d7ef310f20e43a22}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2ceb5410745dd2e4d7ef310f20e43a22} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EHOSTDOWN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EHOSTUNREACH@{UCB\_ERRSYS\_EHOSTUNREACH}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EHOSTUNREACH@{UCB\_ERRSYS\_EHOSTUNREACH}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca347c344c3c2c265cabd021c196b54ee6}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca347c344c3c2c265cabd021c196b54ee6} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EHOSTUNREACH&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EALREADY@{UCB\_ERRSYS\_EALREADY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EALREADY@{UCB\_ERRSYS\_EALREADY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f94d081effaa7d1e5aeaaee9c8e9b19}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4f94d081effaa7d1e5aeaaee9c8e9b19} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EALREADY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EINPROGRESS@{UCB\_ERRSYS\_EINPROGRESS}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EINPROGRESS@{UCB\_ERRSYS\_EINPROGRESS}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa00e25399f7bdf5dc244f333e63284f}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caaa00e25399f7bdf5dc244f333e63284f} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EINPROGRESS&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ESTALE@{UCB\_ERRSYS\_ESTALE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ESTALE@{UCB\_ERRSYS\_ESTALE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca65ea96eda7e2776f6886fdb399633588}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca65ea96eda7e2776f6886fdb399633588} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ESTALE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EUCLEAN@{UCB\_ERRSYS\_EUCLEAN}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EUCLEAN@{UCB\_ERRSYS\_EUCLEAN}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9570291762d99a4611d98fea2b386dc}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad9570291762d99a4611d98fea2b386dc} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EUCLEAN&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTNAM@{UCB\_ERRSYS\_ENOTNAM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTNAM@{UCB\_ERRSYS\_ENOTNAM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4b0497738f0d4987be32a53685416c08}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca4b0497738f0d4987be32a53685416c08} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTNAM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENAVAIL@{UCB\_ERRSYS\_ENAVAIL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENAVAIL@{UCB\_ERRSYS\_ENAVAIL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca18b236b217a5cce124dc94648571d75a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca18b236b217a5cce124dc94648571d75a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENAVAIL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EISNAM@{UCB\_ERRSYS\_EISNAM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EISNAM@{UCB\_ERRSYS\_EISNAM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d064e6cebe6d5aa14adf87761d5bec7}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca5d064e6cebe6d5aa14adf87761d5bec7} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EISNAM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EREMOTEIO@{UCB\_ERRSYS\_EREMOTEIO}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EREMOTEIO@{UCB\_ERRSYS\_EREMOTEIO}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca05f806cb4ff15f360e70588041121c78}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca05f806cb4ff15f360e70588041121c78} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EREMOTEIO&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EDQUOT@{UCB\_ERRSYS\_EDQUOT}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EDQUOT@{UCB\_ERRSYS\_EDQUOT}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2016428b020b5b1503c9291f2c2e9a38}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca2016428b020b5b1503c9291f2c2e9a38} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EDQUOT&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOMEDIUM@{UCB\_ERRSYS\_ENOMEDIUM}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOMEDIUM@{UCB\_ERRSYS\_ENOMEDIUM}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca181feab183ba330eb726437e773c8fdd}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca181feab183ba330eb726437e773c8fdd} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOMEDIUM&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EMEDIUMTYPE@{UCB\_ERRSYS\_EMEDIUMTYPE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EMEDIUMTYPE@{UCB\_ERRSYS\_EMEDIUMTYPE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cade33fa6ff51d4c79b4fa9cd2ac9c86d2}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cade33fa6ff51d4c79b4fa9cd2ac9c86d2} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EMEDIUMTYPE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ECANCELED@{UCB\_ERRSYS\_ECANCELED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ECANCELED@{UCB\_ERRSYS\_ECANCELED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8c14597f2b55348cf42bef2e54c52821}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca8c14597f2b55348cf42bef2e54c52821} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ECANCELED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOKEY@{UCB\_ERRSYS\_ENOKEY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOKEY@{UCB\_ERRSYS\_ENOKEY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabeddd476a6b22e658d6407c8e885f481}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cabeddd476a6b22e658d6407c8e885f481} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOKEY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EKEYEXPIRED@{UCB\_ERRSYS\_EKEYEXPIRED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EKEYEXPIRED@{UCB\_ERRSYS\_EKEYEXPIRED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad52fef46d91b4a02d6ffb73936209ec1}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cad52fef46d91b4a02d6ffb73936209ec1} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EKEYEXPIRED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EKEYREVOKED@{UCB\_ERRSYS\_EKEYREVOKED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EKEYREVOKED@{UCB\_ERRSYS\_EKEYREVOKED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca69a682796be563b4c18734665c7864ba}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca69a682796be563b4c18734665c7864ba} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EKEYREVOKED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EKEYREJECTED@{UCB\_ERRSYS\_EKEYREJECTED}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EKEYREJECTED@{UCB\_ERRSYS\_EKEYREJECTED}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6bd06764ae2635ff40713a6df7c9a660}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca6bd06764ae2635ff40713a6df7c9a660} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EKEYREJECTED&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EOWNERDEAD@{UCB\_ERRSYS\_EOWNERDEAD}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EOWNERDEAD@{UCB\_ERRSYS\_EOWNERDEAD}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca979a8bd563cddb3beeb39401ab1d4d2d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca979a8bd563cddb3beeb39401ab1d4d2d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EOWNERDEAD&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTRECOVERABLE@{UCB\_ERRSYS\_ENOTRECOVERABLE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTRECOVERABLE@{UCB\_ERRSYS\_ENOTRECOVERABLE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac7a0864df142c4efacef7b0f6a5d185c}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cac7a0864df142c4efacef7b0f6a5d185c} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTRECOVERABLE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ERFKILL@{UCB\_ERRSYS\_ERFKILL}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ERFKILL@{UCB\_ERRSYS\_ERFKILL}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacbccdf60cc8383bd5458c559dd7a5f4e}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356cacbccdf60cc8383bd5458c559dd7a5f4e} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ERFKILL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_EHWPOISON@{UCB\_ERRSYS\_EHWPOISON}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_EHWPOISON@{UCB\_ERRSYS\_EHWPOISON}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca296fc9ecdbc6dceeec30fda8fa930e4a}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca296fc9ecdbc6dceeec30fda8fa930e4a} 
+UCB\+\_\+\+ERRSYS\+\_\+\+EHWPOISON&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_ENOTSUP@{UCB\_ERRSYS\_ENOTSUP}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_ENOTSUP@{UCB\_ERRSYS\_ENOTSUP}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca793badc3c59216bf69ce5e99298ffa27}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca793badc3c59216bf69ce5e99298ffa27} 
+UCB\+\_\+\+ERRSYS\+\_\+\+ENOTSUP&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_STRUNCATE@{UCB\_ERRSYS\_STRUNCATE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_STRUNCATE@{UCB\_ERRSYS\_STRUNCATE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3c8b6b9cd8da4186549003f32f4a4bb6}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3c8b6b9cd8da4186549003f32f4a4bb6} 
+UCB\+\_\+\+ERRSYS\+\_\+\+STRUNCATE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_WIN\_GENERIC@{UCB\_ERRSYS\_WIN\_GENERIC}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_WIN\_GENERIC@{UCB\_ERRSYS\_WIN\_GENERIC}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa8e74a4c801036344bb56e2503e8aac9}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa8e74a4c801036344bb56e2503e8aac9} 
+UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+GENERIC&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_WIN\_INVALID\_HANDLE@{UCB\_ERRSYS\_WIN\_INVALID\_HANDLE}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_WIN\_INVALID\_HANDLE@{UCB\_ERRSYS\_WIN\_INVALID\_HANDLE}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa08d4a0b9389797e6e85998dc03e3293}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356caa08d4a0b9389797e6e85998dc03e3293} 
+UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+INVALID\+\_\+\+HANDLE&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_WIN\_CURRENT\_DIRECTORY@{UCB\_ERRSYS\_WIN\_CURRENT\_DIRECTORY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_WIN\_CURRENT\_DIRECTORY@{UCB\_ERRSYS\_WIN\_CURRENT\_DIRECTORY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3fcde46962a2e2817c9d7cf8c783f317}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca3fcde46962a2e2817c9d7cf8c783f317} 
+UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+CURRENT\+\_\+\+DIRECTORY&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRSYS\_WIN\_ERROR\_DIRECTORY@{UCB\_ERRSYS\_WIN\_ERROR\_DIRECTORY}!errcodes.h@{errcodes.h}}
+\index{errcodes.h@{errcodes.h}!UCB\_ERRSYS\_WIN\_ERROR\_DIRECTORY@{UCB\_ERRSYS\_WIN\_ERROR\_DIRECTORY}}
+}\Hypertarget{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfc5d3485c3b1c450a2877d6d383a3d}\label{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca9cfc5d3485c3b1c450a2877d6d383a3d} 
+UCB\+\_\+\+ERRSYS\+\_\+\+WIN\+\_\+\+ERROR\+\_\+\+DIRECTORY&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \doxymbox{\hyperlink{errcodes_8h_source_l00013}{13}} of file \doxymbox{\hyperlink{errcodes_8h_source}{errcodes.\+h}}.
+

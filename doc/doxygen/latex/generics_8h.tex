@@ -1,0 +1,303 @@
+\doxysection{include/\+ucb/\+generics.h File Reference}
+\hypertarget{generics_8h}{}\label{generics_8h}\index{include/ucb/generics.h@{include/ucb/generics.h}}
+
+
+Helper macros for generic implementations.  
+
+
+{\ttfamily \+\#include $<$inttypes.\+h$>$}\newline
+{\ttfamily \+\#include $<$limits.\+h$>$}\newline
+{\ttfamily \+\#include $<$stddef.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdint.\+h$>$}\newline
+{\ttfamily \+\#include $<$wchar.\+h$>$}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_aaa5cde109733e7ae5987959a45bb08b6}{UCB\+\_\+\+CHAR\+\_\+\+IS\+\_\+\+UNSIGNED}}~1
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_aaaea84e5988c023b2eb31b92689642bb}{UCB\+\_\+\+CHAR\+\_\+\+DUPLICATE}}~0
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_aac3cf496a264bbd32e06a7bb6fcf0059}{UCB\+\_\+\+TYPE}}(a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_accd52a316ed0c54f5d4d3ce6a90ee872}{UCB\+\_\+\+FMT}}(a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_a003f09e29dc94b3d2e354e4a2d81f980}{UCB\+\_\+\+FMTS}}(a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_a35ea4c72aedc3177586c58dec5525117}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+1}}(NAME,  a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+2}}(NAME,  a,  b)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+3}}(NAME,  a,  b,  c)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+SIGNED\+\_\+1}}(NAME,  a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_a679a0b09c60b8851934ffc6275602ccd}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+1}}(NAME,  a)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+2}}(NAME,  a,  b)
+\item 
+\+\#define \doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+3}}(NAME,  a,  b,  c)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Helper macros for generic implementations. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier:\+ MIT 
+\end{DoxyItemize}
+
+Definition in file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+
+
+\label{doc-define-members}
+\Hypertarget{generics_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{generics_8h_aaaea84e5988c023b2eb31b92689642bb}\index{generics.h@{generics.h}!UCB\_CHAR\_DUPLICATE@{UCB\_CHAR\_DUPLICATE}}
+\index{UCB\_CHAR\_DUPLICATE@{UCB\_CHAR\_DUPLICATE}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_CHAR\_DUPLICATE}{UCB\_CHAR\_DUPLICATE}}
+{\footnotesize\ttfamily \label{generics_8h_aaaea84e5988c023b2eb31b92689642bb} 
+\+\#define UCB\+\_\+\+CHAR\+\_\+\+DUPLICATE~0}
+
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00035}{35}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_aaa5cde109733e7ae5987959a45bb08b6}\index{generics.h@{generics.h}!UCB\_CHAR\_IS\_UNSIGNED@{UCB\_CHAR\_IS\_UNSIGNED}}
+\index{UCB\_CHAR\_IS\_UNSIGNED@{UCB\_CHAR\_IS\_UNSIGNED}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_CHAR\_IS\_UNSIGNED}{UCB\_CHAR\_IS\_UNSIGNED}}
+{\footnotesize\ttfamily \label{generics_8h_aaa5cde109733e7ae5987959a45bb08b6} 
+\+\#define UCB\+\_\+\+CHAR\+\_\+\+IS\+\_\+\+UNSIGNED~1}
+
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00024}{24}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_accd52a316ed0c54f5d4d3ce6a90ee872}\index{generics.h@{generics.h}!UCB\_FMT@{UCB\_FMT}}
+\index{UCB\_FMT@{UCB\_FMT}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_FMT}{UCB\_FMT}}
+{\footnotesize\ttfamily \label{generics_8h_accd52a316ed0c54f5d4d3ce6a90ee872} 
+\+\#define UCB\+\_\+\+FMT(\begin{DoxyParamCaption}\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}\%hhi"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}\%hhi"{}},\ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}\%hhu"{}},\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ \textcolor{stringliteral}{"{}\%hi"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}:\ \textcolor{stringliteral}{"{}\%hu"{}},\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ \textcolor{stringliteral}{"{}\%i"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}:\ \textcolor{stringliteral}{"{}\%u"{}},\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}\%li"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}\%lu"{}},\ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}\%lli"{}},\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}\%llu"{}},\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ \textcolor{stringliteral}{"{}\%g"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ \textcolor{stringliteral}{"{}\%g"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}*:\ \textcolor{stringliteral}{"{}\%p"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*:\ \textcolor{stringliteral}{"{}\%s"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{wchar\_t}*:\ \textcolor{stringliteral}{"{}\%ls"{}})}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00098}{98}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_a003f09e29dc94b3d2e354e4a2d81f980}\index{generics.h@{generics.h}!UCB\_FMTS@{UCB\_FMTS}}
+\index{UCB\_FMTS@{UCB\_FMTS}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_FMTS}{UCB\_FMTS}}
+{\footnotesize\ttfamily \label{generics_8h_a003f09e29dc94b3d2e354e4a2d81f980} 
+\+\#define UCB\+\_\+\+FMTS(\begin{DoxyParamCaption}\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}\%c"{}},\ \textcolor{keywordtype}{wchar\_t}:\ \textcolor{stringliteral}{"{}\%lc"{}},\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}\%c"{}},\ \textcolor{keywordtype}{char}*:\ \textcolor{stringliteral}{"{}\%s"{}},\ \textcolor{keywordtype}{wchar\_t}*:\ \textcolor{stringliteral}{"{}\%ls"{}})}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00118}{118}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_a35ea4c72aedc3177586c58dec5525117}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_1@{UCB\_GENERIC\_FUNC\_1}}
+\index{UCB\_GENERIC\_FUNC\_1@{UCB\_GENERIC\_FUNC\_1}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_1}{UCB\_GENERIC\_FUNC\_1}}
+{\footnotesize\ttfamily \label{generics_8h_a35ea4c72aedc3177586c58dec5525117} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+1(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhu,\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}:\ NAME\#\#\_hu,\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_llu,\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00121}{121}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_a28276a73a429a3a4dac745db734ba2b1}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_2@{UCB\_GENERIC\_FUNC\_2}}
+\index{UCB\_GENERIC\_FUNC\_2@{UCB\_GENERIC\_FUNC\_2}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_2}{UCB\_GENERIC\_FUNC\_2}}
+{\footnotesize\ttfamily \label{generics_8h_a28276a73a429a3a4dac745db734ba2b1} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+2(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a)\ +\ (b),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhu,\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}:\ NAME\#\#\_hu,\ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_llu,\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a,\ b)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00136}{136}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_3@{UCB\_GENERIC\_FUNC\_3}}
+\index{UCB\_GENERIC\_FUNC\_3@{UCB\_GENERIC\_FUNC\_3}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_3}{UCB\_GENERIC\_FUNC\_3}}
+{\footnotesize\ttfamily \label{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+3(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{c}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a)\ +\ (b)\ +\ (c),\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhu,\ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}:\ NAME\#\#\_hu,\ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_llu,\ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a,\ b,\ c)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00151}{151}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_a679a0b09c60b8851934ffc6275602ccd}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_FLOAT\_1@{UCB\_GENERIC\_FUNC\_FLOAT\_1}}
+\index{UCB\_GENERIC\_FUNC\_FLOAT\_1@{UCB\_GENERIC\_FUNC\_FLOAT\_1}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_FLOAT\_1}{UCB\_GENERIC\_FUNC\_FLOAT\_1}}
+{\footnotesize\ttfamily \label{generics_8h_a679a0b09c60b8851934ffc6275602ccd} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+1(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00199}{199}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_FLOAT\_2@{UCB\_GENERIC\_FUNC\_FLOAT\_2}}
+\index{UCB\_GENERIC\_FUNC\_FLOAT\_2@{UCB\_GENERIC\_FUNC\_FLOAT\_2}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_FLOAT\_2}{UCB\_GENERIC\_FUNC\_FLOAT\_2}}
+{\footnotesize\ttfamily \label{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+2(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{, }\item[{}]{b}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a)\ +\ (b),\ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a,\ b)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00200}{200}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_af131124af956a773cd64177a2324bfc2}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_FLOAT\_3@{UCB\_GENERIC\_FUNC\_FLOAT\_3}}
+\index{UCB\_GENERIC\_FUNC\_FLOAT\_3@{UCB\_GENERIC\_FUNC\_FLOAT\_3}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_FLOAT\_3}{UCB\_GENERIC\_FUNC\_FLOAT\_3}}
+{\footnotesize\ttfamily \label{generics_8h_af131124af956a773cd64177a2324bfc2} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+FLOAT\+\_\+3(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{, }\item[{}]{b}{, }\item[{}]{c}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a)\ +\ (b)\ +\ (c),\ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a,\ b,\ c)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00202}{202}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_adcc28f591c0933f92cb39859c2a0084d}\index{generics.h@{generics.h}!UCB\_GENERIC\_FUNC\_SIGNED\_1@{UCB\_GENERIC\_FUNC\_SIGNED\_1}}
+\index{UCB\_GENERIC\_FUNC\_SIGNED\_1@{UCB\_GENERIC\_FUNC\_SIGNED\_1}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_GENERIC\_FUNC\_SIGNED\_1}{UCB\_GENERIC\_FUNC\_SIGNED\_1}}
+{\footnotesize\ttfamily \label{generics_8h_adcc28f591c0933f92cb39859c2a0084d} 
+\+\#define UCB\+\_\+\+GENERIC\+\_\+\+FUNC\+\_\+\+SIGNED\+\_\+1(\begin{DoxyParamCaption}\item[{}]{NAME}{, }\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char}:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ NAME\#\#\_d)(a)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00188}{188}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+
+\Hypertarget{generics_8h_aac3cf496a264bbd32e06a7bb6fcf0059}\index{generics.h@{generics.h}!UCB\_TYPE@{UCB\_TYPE}}
+\index{UCB\_TYPE@{UCB\_TYPE}!generics.h@{generics.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_TYPE}{UCB\_TYPE}}
+{\footnotesize\ttfamily \label{generics_8h_aac3cf496a264bbd32e06a7bb6fcf0059} 
+\+\#define UCB\+\_\+\+TYPE(\begin{DoxyParamCaption}\item[{}]{a}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}char"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}signed\ char"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}:\ \textcolor{stringliteral}{"{}unsigned\ char"{}},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{short}:\ \textcolor{stringliteral}{"{}short"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short}:\ \textcolor{stringliteral}{"{}unsigned\ short"{}},\ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}:\ \textcolor{stringliteral}{"{}int"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int}:\ \textcolor{stringliteral}{"{}unsigned\ int"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}long"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}unsigned\ long"{}},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}long\ long"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long}:\ \textcolor{stringliteral}{"{}unsigned\ long\ long"{}},\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{float}:\ \textcolor{stringliteral}{"{}float"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{double}:\ \textcolor{stringliteral}{"{}double"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{double}:\ \textcolor{stringliteral}{"{}ldouble"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{void}*:\ \textcolor{stringliteral}{"{}pointer"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*:\ \textcolor{stringliteral}{"{}string"{}},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{wchar\_t}*:\ \textcolor{stringliteral}{"{}wstring"{}})}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{generics_8h_source_l00058}{58}} of file \doxymbox{\hyperlink{generics_8h_source}{generics.\+h}}.
+

@@ -1,0 +1,66 @@
+\doxysection{debug.\+h}
+\hypertarget{debug_8h_source}{}\label{debug_8h_source}\index{include/ucb/debug.h@{include/ucb/debug.h}}
+\doxymbox{\hyperlink{debug_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00010}00010\ \textcolor{preprocessor}{\#ifndef\ UCB\_DEBUG\_H}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00011}00011\ \textcolor{preprocessor}{\#define\ UCB\_DEBUG\_H}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00013}00013\ \textcolor{preprocessor}{\#ifndef\ NDEBUG\ }\textcolor{comment}{//\ Debug\ mode}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00014}00014\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00015}00015\ \textcolor{preprocessor}{\#include\ "{}\doxymbox{\hyperlink{error_8h}{error.h}}"{}}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00016}00016\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <errno.h>}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00018}00018\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00019}00019\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00020}00020\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00021}\doxymbox{\hyperlink{debug_8h_a594d5c80a15a9f248fa3af1c48700b1b}{00021}}\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT(expr,\ code,\ msg)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00022}00022\ \textcolor{preprocessor}{\ \ \ \ do\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00023}00023\ \textcolor{preprocessor}{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00024}00024\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00025}00025\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00026}00026\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ ucb\_fatal\_format(code,\ "{}\%s:\ Assertion\ failure\ -\/\ \%s"{},\ \_\_func\_\_,\ msg);\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00027}00027\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ abort();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00028}00028\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00029}00029\ \textcolor{preprocessor}{\ \ \ \ \}\ while\ (0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00030}00030\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00031}\doxymbox{\hyperlink{debug_8h_aa25ef4036ded5b1ae5141264c8772522}{00031}}\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_INTERNAL(expr,\ msg)\ UCB\_ASSERT(expr,\ UCB\_ERROR\_INTERNAL,\ msg)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00032}\doxymbox{\hyperlink{debug_8h_a33ae73648e982e47355359b939b21e71}{00032}}\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_STATUS(status,\ msg)\ UCB\_ASSERT(status\ ==\ 0,\ ucb\_err\_wrap\_errno(status),\ msg)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00033}\doxymbox{\hyperlink{debug_8h_ac0897f314c8b590881e3df9ea5ed5920}{00033}}\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_ERRNO(status,\ msg)\ \ UCB\_ASSERT(status\ ==\ 0,\ ucb\_err\_wrap\_errno(errno),\ msg)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00034}00034\ \textcolor{preprocessor}{\#ifdef\ \_WIN32}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00035}00035\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_WIN32(status,\ msg)\ UCB\_ASSERT(status\ ==\ 0,\ ucb\_err\_wrap\_win32(status),\ msg)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00036}00036\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00038}\doxymbox{\hyperlink{debug_8h_a4b6b7abfc69c613f4a0a10e98c6f4904}{00038}}\ \textcolor{preprocessor}{\#define\ UCB\_WARN(code,\ fmt,\ ...)\ ucb\_warn\_format(code,\ "{}\%s:\ "{}\ fmt,\ \_\_func\_\_,\ \#\#\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00039}00039\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00040}\doxymbox{\hyperlink{debug_8h_a215d698c9dda6c75cc075c370c8c928a}{00040}}\ \textcolor{preprocessor}{\#define\ UCB\_PRINT(fmt,\ ...)\ fprintf(stderr,\ fmt,\ \#\#\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00041}00041\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00042}00042\ \textcolor{preprocessor}{\#ifdef\ UCB\_DEVEL}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00043}00043\ \textcolor{comment}{//\ Internal\ debugging\ enabled}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00044}00044\ \textcolor{preprocessor}{\#define\ UCB\_DPRINT(fmt,\ ...)\ fprintf(stderr,\ fmt,\ \#\#\_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00045}00045\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00046}00046\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00047}00047\ \textcolor{preprocessor}{\#else\ }\textcolor{comment}{//\ Release\ mode}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00048}00048\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00049}00049\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT(expr,\ code,\ msg)\ \ \ \ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00050}00050\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_INTERNAL(expr,\ msg)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00051}00051\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_STATUS(status,\ msg)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00052}00052\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_ERRNO(status,\ msg)\ \ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00053}00053\ \textcolor{preprocessor}{\#ifdef\ \_WIN32}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00054}00054\ \textcolor{preprocessor}{\#define\ UCB\_ASSERT\_WIN32(status,\ msg)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00055}00055\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00056}00056\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00057}00057\ \textcolor{preprocessor}{\#define\ UCB\_WARN(code,\ fmt,\ ...)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00058}00058\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00059}00059\ \textcolor{preprocessor}{\#define\ UCB\_PRINT(fmt,\ ...)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00060}00060\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00061}00061\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ NDEBUG}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00062}00062\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00063}00063\ \textcolor{preprocessor}{\#ifndef\ UCB\_DPRINT}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00064}\doxymbox{\hyperlink{debug_8h_a574817267706bfd6dee9a8b53cb70bdc}{00064}}\ \textcolor{preprocessor}{\#define\ UCB\_DPRINT(fmt,\ ...)\ ((void)0)}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00065}00065\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00066}00066\ }
+\DoxyCodeLine{\Hypertarget{debug_8h_source_l00067}00067\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_DEBUG\_H}}
+
+\end{DoxyCode}

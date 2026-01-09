@@ -1,0 +1,608 @@
+\doxysection{include/\+ucb/\+error.h File Reference}
+\hypertarget{error_8h}{}\label{error_8h}\index{include/ucb/error.h@{include/ucb/error.h}}
+
+
+Error handling.  
+
+
+{\ttfamily \+\#include "{}defines.\+h"{}}\newline
+{\ttfamily \+\#include "{}errcodes.\+h"{}}\newline
+{\ttfamily \+\#include "{}export.\+h"{}}\newline
+{\ttfamily \+\#include "{}types.\+h"{}}\newline
+{\ttfamily \+\#include $<$stdarg.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdbool.\+h$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_ae84f3055b261fa858e25ac7784904526}{UCB\+\_\+\+VERIFY}}(expr,  code,  msg)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_ab8288882b313bee629489fd1fe41a93a}{UCB\+\_\+\+VERIFY\+\_\+\+RET}}(expr,  code,  msg,  ret)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a6400bde0a8673a9efea8ce02cd80a8a6}{UCB\+\_\+\+VERIFY\+\_\+\+ARGS}}(expr)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a042a82c4165511bf4d54d0cfb7d94bfa}{UCB\+\_\+\+VERIFY\+\_\+\+ARGS\+\_\+\+RET}}(expr,  ret)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a4675514e9347c46ad47a8f2145e7c004}{UCB\+\_\+\+VERIFY\+\_\+\+ERRNO}}(status,  msg)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a1474301300e905943081aa97acc7932c}{ucb\+\_\+fatal\+\_\+format}}(code,  fmt, ...)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_ab6a0d1062b35cafa5bc120b058d44aff}{ucb\+\_\+fatal\+\_\+literal}}(code,  msg)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a90c9d238429b033653498446e3ec7456}{ucb\+\_\+user\+\_\+format}}(code,  fmt, ...)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a654f8fa42ebffb6e3465e010a8ab4a81}{ucb\+\_\+user\+\_\+literal}}(code,  msg)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a045ed1301cd14a710d959367418c8a3c}{ucb\+\_\+warn\+\_\+format}}(code,  fmt, ...)
+\item 
+\+\#define \doxymbox{\hyperlink{error_8h_a722942778ed3073d9d1771e6d4c362d5}{ucb\+\_\+warn\+\_\+literal}}(code,  msg)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef enum \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} \doxymbox{\hyperlink{error_8h_a016cb98fa19cc3e7d47fb64db16e8be9}{ucb\+\_\+errlvl}}
+\item 
+typedef struct ucb\+\_\+error \doxymbox{\hyperlink{error_8h_a66b27234e2db06ee47a8f1f4995270ad}{ucb\+\_\+error}}
+\item 
+typedef void(\texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}}) (\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl, const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}error)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} \{ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}{UCB\+\_\+\+ERRLVL\+\_\+\+FATAL}}
+, \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{UCB\+\_\+\+ERRLVL\+\_\+\+USER}}
+, \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}{UCB\+\_\+\+ERRLVL\+\_\+\+WARNING}}
+ \}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_abf471dc214c10359314a5d2cc383ab06}{ucb\+\_\+error\+\_\+lvlstr}} (\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl)
+\begin{DoxyCompactList}\small\item\em Get a string representation of the error level. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_a8a8236e3844181bbc6bed792fd76caa6}{ucb\+\_\+error\+\_\+codestr}} (\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code)
+\begin{DoxyCompactList}\small\item\em Get a string representation of the error code. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_a427979c86b0eb47e2916e9e5e4868db9}{ucb\+\_\+error\+\_\+copy}} (const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}err)
+\begin{DoxyCompactList}\small\item\em Copy an error so it can be stored. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_a9993b6c80ab589d7c45c41edc3266fc1}{ucb\+\_\+error\+\_\+free}} (\doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}err)
+\begin{DoxyCompactList}\small\item\em Free an error Can only be called on errors returned by ucb\+\_\+error\+\_\+copy or manual allocation with ucb memory functions. Then is\+\_\+static must be false. Do not use with errors from reports or returned from functions. This method will report a user error if either err is UCB\+\_\+\+NULL or err-\/\texorpdfstring{$>$}{>}is\+\_\+static is true. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\+\_\+error\+\_\+format}} (\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}fmt,...)
+\begin{DoxyCompactList}\small\item\em Prepares an error for reporting with formatted message. This will set a thread-\/local error object. The message will be formatted on an internal buffer, of max UCB\+\_\+\+BUFSIZE\+\_\+\+ERROR\+\_\+\+MSG-\/1 characters. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_a3adbbfd86975402f778f13e013ab8123}{ucb\+\_\+error\+\_\+formatv}} (\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}fmt, va\+\_\+list args)
+\begin{DoxyCompactList}\small\item\em Prepares an error for reporting with formatted message using va\+\_\+list. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{ucb\+\_\+error\+\_\+literal}} (\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}msg)
+\begin{DoxyCompactList}\small\item\em Prepares an error for reporting with a literal message. The literal message itself is set on the error object, so it must be valid for the lifetime of the error object. The message will not be free\textquotesingle{}d. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_aed66ef809c7b80a6ca1d566004ddfd5c}{ucb\+\_\+error\+\_\+print}} (\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl, const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}error)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_abc47f0ab6d4a74ce0e0fed55583c5fef}{ucb\+\_\+throw}} (const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}perr, \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}msg)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_add00369be730bc0dc8022f9cc0650e97}{ucb\+\_\+throw\+\_\+format}} (const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}perr, \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}fmt,...)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_a6ec9e1c6df42d3f231094d0947d233eb}{ucb\+\_\+throw\+\_\+formatv}} (const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}perr, \doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} code, const char \texorpdfstring{$\ast$}{*}fmt, va\+\_\+list args)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}} \doxymbox{\hyperlink{error_8h_a244d144e04b99a8ec2db4da0cad769e9}{ucb\+\_\+error\+\_\+set\+\_\+func}} (\doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}} func)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}} \doxymbox{\hyperlink{error_8h_a2905bd30e0f7320b491f9f53cc666af0}{ucb\+\_\+error\+\_\+get\+\_\+func}} (void)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\+\_\+error\+\_\+report}} (\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl, const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}error)
+\begin{DoxyCompactList}\small\item\em Report error. Depending on level, this will call the corresponding error function, if set. By default the error will be printed with ucb\+\_\+error\+\_\+print and return. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} \doxymbox{\hyperlink{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}{ucb\+\_\+err\+\_\+wrap\+\_\+errno}} (int err)
+\item 
+\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} \doxymbox{\hyperlink{error_8h_a56a9bcc88f7a37266e4945dbce50f37a}{ucb\+\_\+err\+\_\+get\+\_\+errno}} (void)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{error_8h_aace64e2465863dafaaf340f437b04c8f}{ucb\+\_\+report\+\_\+on\+\_\+status}} (int status, \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl, const char \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} msg, const char \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}} function)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool \doxymbox{\hyperlink{error_8h_ab61cf36a2a025f602b8ff86d1a2c0a04}{ucb\+\_\+throw\+\_\+on\+\_\+status}} (const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}perr, int status, const char \texorpdfstring{$\ast$}{*}msg)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Error handling. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier:\+ MIT
+
+\begin{DoxyRefDesc}{Todo}
+\item[\doxymbox{\hyperlink{todo__todo000001}{Todo}}]Write a more fluid documentation.\end{DoxyRefDesc}
+
+\end{DoxyItemize}
+
+UCB handles errors in the following way:\+
+\begin{DoxyItemize}
+\item Fatal errors, user errors and warnings:\+
+\begin{DoxyItemize}
+\item Are {\bfseries{reported}} to a single error handling function.
+\item By default these errors are written to stderr, but the program is {\bfseries{not}} terminated.
+\item The user can override the default error handler, with \doxylink{error_8h_a244d144e04b99a8ec2db4da0cad769e9}{ucb\+\_\+error\+\_\+set\+\_\+func}.
+\item Examples or each type:\+
+\begin{DoxyItemize}
+\item Fatal error:\+ Out of memory. Functions try to return early, but no guarantee.
+\item User error:\+ Invalid arguments or states in input. Functions return early.
+\item Warning:\+ Recoverable errors where fallbacks may be used to continue.
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Complex errors:\+
+\begin{DoxyItemize}
+\item For more complex errors, where input may lead to invalid results, arithmetic failures or similar, the function will {\bfseries{throw}} an \doxylink{structucb__error}{ucb\+\_\+error}.
+\item These functions takes a \doxylink{structucb__error}{ucb\+\_\+error} double pointer as argument and must return a type such as bool or NULL pointer which can indicate that an error has occured.
+\item The \doxylink{structucb__error}{ucb\+\_\+error} contain an \doxylink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode} and a message of the error.
+\item Errors may be ignored by not providing an \doxylink{structucb__error}{ucb\+\_\+error} pointer, but this is not recommended.
+\item Any errors thrown must be handled by the caller or propagated. The error is cleared by calling ucb\+\_\+error\+\_\+clear.
+\end{DoxyItemize}
+\item Otherwise for simple functions, like getters, any input NULL pointers may be ignored if the return type allows it.
+\item All functions must document if they behave differently than above rules. 
+\end{DoxyItemize}
+
+Definition in file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+
+
+\label{doc-define-members}
+\Hypertarget{error_8h_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{error_8h_a1474301300e905943081aa97acc7932c}\index{error.h@{error.h}!ucb\_fatal\_format@{ucb\_fatal\_format}}
+\index{ucb\_fatal\_format@{ucb\_fatal\_format}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_fatal\_format}{ucb\_fatal\_format}}
+{\footnotesize\ttfamily \label{error_8h_a1474301300e905943081aa97acc7932c} 
+\+\#define ucb\+\_\+fatal\+\_\+format(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}{UCB\_ERRLVL\_FATAL}},\ \doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\_error\_format}}(code,\ fmt,\ \_\_VA\_ARGS\_\_))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00219}{219}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_ab6a0d1062b35cafa5bc120b058d44aff}\index{error.h@{error.h}!ucb\_fatal\_literal@{ucb\_fatal\_literal}}
+\index{ucb\_fatal\_literal@{ucb\_fatal\_literal}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_fatal\_literal}{ucb\_fatal\_literal}}
+{\footnotesize\ttfamily \label{error_8h_ab6a0d1062b35cafa5bc120b058d44aff} 
+\+\#define ucb\+\_\+fatal\+\_\+literal(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}{UCB\_ERRLVL\_FATAL}},\ \doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{ucb\_error\_literal}}(code,\ msg))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00221}{221}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a90c9d238429b033653498446e3ec7456}\index{error.h@{error.h}!ucb\_user\_format@{ucb\_user\_format}}
+\index{ucb\_user\_format@{ucb\_user\_format}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_user\_format}{ucb\_user\_format}}
+{\footnotesize\ttfamily \label{error_8h_a90c9d238429b033653498446e3ec7456} 
+\+\#define ucb\+\_\+user\+\_\+format(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{UCB\_ERRLVL\_USER}},\ \doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\_error\_format}}(code,\ fmt,\ \_\_VA\_ARGS\_\_))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00223}{223}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a654f8fa42ebffb6e3465e010a8ab4a81}\index{error.h@{error.h}!ucb\_user\_literal@{ucb\_user\_literal}}
+\index{ucb\_user\_literal@{ucb\_user\_literal}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_user\_literal}{ucb\_user\_literal}}
+{\footnotesize\ttfamily \label{error_8h_a654f8fa42ebffb6e3465e010a8ab4a81} 
+\+\#define ucb\+\_\+user\+\_\+literal(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{UCB\_ERRLVL\_USER}},\ \doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{ucb\_error\_literal}}(code,\ msg))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00225}{225}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_ae84f3055b261fa858e25ac7784904526}\index{error.h@{error.h}!UCB\_VERIFY@{UCB\_VERIFY}}
+\index{UCB\_VERIFY@{UCB\_VERIFY}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_VERIFY}{UCB\_VERIFY}}
+{\footnotesize\ttfamily \label{error_8h_ae84f3055b261fa858e25ac7784904526} 
+\+\#define UCB\+\_\+\+VERIFY(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{do}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ ucb\_user\_format(code,\ \textcolor{stringliteral}{"{}\%s:\ \%s"{}},\ \_\_func\_\_,\ msg);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00164}{164}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a6400bde0a8673a9efea8ce02cd80a8a6}\index{error.h@{error.h}!UCB\_VERIFY\_ARGS@{UCB\_VERIFY\_ARGS}}
+\index{UCB\_VERIFY\_ARGS@{UCB\_VERIFY\_ARGS}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_VERIFY\_ARGS}{UCB\_VERIFY\_ARGS}}
+{\footnotesize\ttfamily \label{error_8h_a6400bde0a8673a9efea8ce02cd80a8a6} 
+\+\#define UCB\+\_\+\+VERIFY\+\_\+\+ARGS(\begin{DoxyParamCaption}\item[{}]{expr}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_ae84f3055b261fa858e25ac7784904526}{UCB\_VERIFY}}(expr,\ \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2}{UCB\_ERROR\_INVALID\_ARG}},\ \textcolor{stringliteral}{"{}Invalid\ arguments"{}})}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00184}{184}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a042a82c4165511bf4d54d0cfb7d94bfa}\index{error.h@{error.h}!UCB\_VERIFY\_ARGS\_RET@{UCB\_VERIFY\_ARGS\_RET}}
+\index{UCB\_VERIFY\_ARGS\_RET@{UCB\_VERIFY\_ARGS\_RET}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_VERIFY\_ARGS\_RET}{UCB\_VERIFY\_ARGS\_RET}}
+{\footnotesize\ttfamily \label{error_8h_a042a82c4165511bf4d54d0cfb7d94bfa} 
+\+\#define UCB\+\_\+\+VERIFY\+\_\+\+ARGS\+\_\+\+RET(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{ret}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_ab8288882b313bee629489fd1fe41a93a}{UCB\_VERIFY\_RET}}(expr,\ \doxymbox{\hyperlink{errcodes_8h_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2}{UCB\_ERROR\_INVALID\_ARG}},\ \textcolor{stringliteral}{"{}Invalid\ arguments"{}},\ ret)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00185}{185}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a4675514e9347c46ad47a8f2145e7c004}\index{error.h@{error.h}!UCB\_VERIFY\_ERRNO@{UCB\_VERIFY\_ERRNO}}
+\index{UCB\_VERIFY\_ERRNO@{UCB\_VERIFY\_ERRNO}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_VERIFY\_ERRNO}{UCB\_VERIFY\_ERRNO}}
+{\footnotesize\ttfamily \label{error_8h_a4675514e9347c46ad47a8f2145e7c004} 
+\+\#define UCB\+\_\+\+VERIFY\+\_\+\+ERRNO(\begin{DoxyParamCaption}\item[{}]{status}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_aace64e2465863dafaaf340f437b04c8f}{ucb\_report\_on\_status}}(status,\ \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}{UCB\_ERRLVL\_USER}},\ msg,\ \_\_func\_\_)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00188}{188}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_ab8288882b313bee629489fd1fe41a93a}\index{error.h@{error.h}!UCB\_VERIFY\_RET@{UCB\_VERIFY\_RET}}
+\index{UCB\_VERIFY\_RET@{UCB\_VERIFY\_RET}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{UCB\_VERIFY\_RET}{UCB\_VERIFY\_RET}}
+{\footnotesize\ttfamily \label{error_8h_ab8288882b313bee629489fd1fe41a93a} 
+\+\#define UCB\+\_\+\+VERIFY\+\_\+\+RET(\begin{DoxyParamCaption}\item[{}]{expr}{, }\item[{}]{code}{, }\item[{}]{msg}{, }\item[{}]{ret}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{do}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ if\ (!(expr))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ ucb\_user\_format(code,\ \textcolor{stringliteral}{"{}\%s:\ \%s"{}},\ \_\_func\_\_,\ msg);\ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ret;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\}\ \textcolor{keywordflow}{while}\ (0)}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00174}{174}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a045ed1301cd14a710d959367418c8a3c}\index{error.h@{error.h}!ucb\_warn\_format@{ucb\_warn\_format}}
+\index{ucb\_warn\_format@{ucb\_warn\_format}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_warn\_format}{ucb\_warn\_format}}
+{\footnotesize\ttfamily \label{error_8h_a045ed1301cd14a710d959367418c8a3c} 
+\+\#define ucb\+\_\+warn\+\_\+format(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}{UCB\_ERRLVL\_WARNING}},\ \doxymbox{\hyperlink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\_error\_format}}(code,\ fmt,\ \_\_VA\_ARGS\_\_))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00227}{227}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+\Hypertarget{error_8h_a722942778ed3073d9d1771e6d4c362d5}\index{error.h@{error.h}!ucb\_warn\_literal@{ucb\_warn\_literal}}
+\index{ucb\_warn\_literal@{ucb\_warn\_literal}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_warn\_literal}{ucb\_warn\_literal}}
+{\footnotesize\ttfamily \label{error_8h_a722942778ed3073d9d1771e6d4c362d5} 
+\+\#define ucb\+\_\+warn\+\_\+literal(\begin{DoxyParamCaption}\item[{}]{code}{, }\item[{}]{msg}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\doxymbox{\hyperlink{error_8h_a974473407c14aaf958282125343d69e0}{ucb\_error\_report}}(\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}{UCB\_ERRLVL\_WARNING}},\ \doxymbox{\hyperlink{error_8h_ad43c0326f6618edc99180f112a508dc8}{ucb\_error\_literal}}(code,\ msg))}
+
+\end{DoxyCode}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00229}{229}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{error_8h_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{error_8h_a016cb98fa19cc3e7d47fb64db16e8be9}\index{error.h@{error.h}!ucb\_errlvl@{ucb\_errlvl}}
+\index{ucb\_errlvl@{ucb\_errlvl}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_errlvl}{ucb\_errlvl}}
+{\footnotesize\ttfamily \label{error_8h_a016cb98fa19cc3e7d47fb64db16e8be9} 
+typedef enum \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}
+
+\Hypertarget{error_8h_a66b27234e2db06ee47a8f1f4995270ad}\index{error.h@{error.h}!ucb\_error@{ucb\_error}}
+\index{ucb\_error@{ucb\_error}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error}{ucb\_error}}
+{\footnotesize\ttfamily \label{error_8h_a66b27234e2db06ee47a8f1f4995270ad} 
+typedef struct ucb\+\_\+error ucb\+\_\+error}
+
+\Hypertarget{error_8h_a9c66edcacb3857ea64ab6c116609a42b}\index{error.h@{error.h}!ucb\_error\_func@{ucb\_error\_func}}
+\index{ucb\_error\_func@{ucb\_error\_func}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_func}{ucb\_error\_func}}
+{\footnotesize\ttfamily \label{error_8h_a9c66edcacb3857ea64ab6c116609a42b} 
+typedef void(\texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+func) (\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}} lvl, const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}error)}
+
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00060}{60}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+
+
+\label{doc-enum-members}
+\Hypertarget{error_8h_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{error_8h_a62b1debee81ccd1fa9fa6759593f637b}\index{error.h@{error.h}!ucb\_errlvl@{ucb\_errlvl}}
+\index{ucb\_errlvl@{ucb\_errlvl}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_errlvl}{ucb\_errlvl}}
+{\footnotesize\ttfamily \label{error_8h_a62b1debee81ccd1fa9fa6759593f637b} 
+enum \doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}
+
+\begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRLVL\_FATAL@{UCB\_ERRLVL\_FATAL}!error.h@{error.h}}
+\index{error.h@{error.h}!UCB\_ERRLVL\_FATAL@{UCB\_ERRLVL\_FATAL}}
+}\Hypertarget{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a}\label{error_8h_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a} 
+UCB\+\_\+\+ERRLVL\+\_\+\+FATAL&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRLVL\_USER@{UCB\_ERRLVL\_USER}!error.h@{error.h}}
+\index{error.h@{error.h}!UCB\_ERRLVL\_USER@{UCB\_ERRLVL\_USER}}
+}\Hypertarget{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c}\label{error_8h_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c} 
+UCB\+\_\+\+ERRLVL\+\_\+\+USER&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{UCB\_ERRLVL\_WARNING@{UCB\_ERRLVL\_WARNING}!error.h@{error.h}}
+\index{error.h@{error.h}!UCB\_ERRLVL\_WARNING@{UCB\_ERRLVL\_WARNING}}
+}\Hypertarget{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10}\label{error_8h_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10} 
+UCB\+\_\+\+ERRLVL\+\_\+\+WARNING&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+Definition at line \doxymbox{\hyperlink{error_8h_source_l00046}{46}} of file \doxymbox{\hyperlink{error_8h_source}{error.\+h}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{error_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{error_8h_a56a9bcc88f7a37266e4945dbce50f37a}\index{error.h@{error.h}!ucb\_err\_get\_errno@{ucb\_err\_get\_errno}}
+\index{ucb\_err\_get\_errno@{ucb\_err\_get\_errno}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_err\_get\_errno()}{ucb\_err\_get\_errno()}}
+{\footnotesize\ttfamily \label{error_8h_a56a9bcc88f7a37266e4945dbce50f37a} 
+\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} ucb\+\_\+err\+\_\+get\+\_\+errno (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_a892aceb846b3b50ac4ce1d7599780b3d}\index{error.h@{error.h}!ucb\_err\_wrap\_errno@{ucb\_err\_wrap\_errno}}
+\index{ucb\_err\_wrap\_errno@{ucb\_err\_wrap\_errno}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_err\_wrap\_errno()}{ucb\_err\_wrap\_errno()}}
+{\footnotesize\ttfamily \label{error_8h_a892aceb846b3b50ac4ce1d7599780b3d} 
+\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}} ucb\+\_\+err\+\_\+wrap\+\_\+errno (\begin{DoxyParamCaption}\item[{int}]{err}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_a8a8236e3844181bbc6bed792fd76caa6}\index{error.h@{error.h}!ucb\_error\_codestr@{ucb\_error\_codestr}}
+\index{ucb\_error\_codestr@{ucb\_error\_codestr}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_codestr()}{ucb\_error\_codestr()}}
+{\footnotesize\ttfamily \label{error_8h_a8a8236e3844181bbc6bed792fd76caa6} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+codestr (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{}\end{DoxyParamCaption})}
+
+
+
+Get a string representation of the error code. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em error} & the error \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string literal 
+\end{DoxyReturn}
+\Hypertarget{error_8h_a427979c86b0eb47e2916e9e5e4868db9}\index{error.h@{error.h}!ucb\_error\_copy@{ucb\_error\_copy}}
+\index{ucb\_error\_copy@{ucb\_error\_copy}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_copy()}{ucb\_error\_copy()}}
+{\footnotesize\ttfamily \label{error_8h_a427979c86b0eb47e2916e9e5e4868db9} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+copy (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}}]{err}{}\end{DoxyParamCaption})}
+
+
+
+Copy an error so it can be stored. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em err} & Error to copy \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to new error, which must be free\textquotesingle{}d with ucb\+\_\+error\+\_\+free 
+\end{DoxyReturn}
+\Hypertarget{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}\index{error.h@{error.h}!ucb\_error\_format@{ucb\_error\_format}}
+\index{ucb\_error\_format@{ucb\_error\_format}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_format()}{ucb\_error\_format()}}
+{\footnotesize\ttfamily \label{error_8h_a791ccf7c9361d86ba065c61617f3d3e8} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+format (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt}{, }\item[{}]{...}{}\end{DoxyParamCaption})}
+
+
+
+Prepares an error for reporting with formatted message. This will set a thread-\/local error object. The message will be formatted on an internal buffer, of max UCB\+\_\+\+BUFSIZE\+\_\+\+ERROR\+\_\+\+MSG-\/1 characters. 
+
+See general documentation about the lifetime of the error object.
+
+
+\begin{DoxyParams}{Parameters}
+{\em code} & the error code, must be non-\/zero. \\
+\hline
+{\em fmt} & the format string \\
+\hline
+{\em ...} & the format arguments \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pointer to the thread-\/local error object. 
+\end{DoxyReturn}
+\Hypertarget{error_8h_a3adbbfd86975402f778f13e013ab8123}\index{error.h@{error.h}!ucb\_error\_formatv@{ucb\_error\_formatv}}
+\index{ucb\_error\_formatv@{ucb\_error\_formatv}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_formatv()}{ucb\_error\_formatv()}}
+{\footnotesize\ttfamily \label{error_8h_a3adbbfd86975402f778f13e013ab8123} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+formatv (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt}{, }\item[{va\+\_\+list}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Prepares an error for reporting with formatted message using va\+\_\+list. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\+\_\+error\+\_\+format} 
+\end{DoxySeeAlso}
+\Hypertarget{error_8h_a9993b6c80ab589d7c45c41edc3266fc1}\index{error.h@{error.h}!ucb\_error\_free@{ucb\_error\_free}}
+\index{ucb\_error\_free@{ucb\_error\_free}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_free()}{ucb\_error\_free()}}
+{\footnotesize\ttfamily \label{error_8h_a9993b6c80ab589d7c45c41edc3266fc1} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+error\+\_\+free (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}}]{err}{}\end{DoxyParamCaption})}
+
+
+
+Free an error Can only be called on errors returned by ucb\+\_\+error\+\_\+copy or manual allocation with ucb memory functions. Then is\+\_\+static must be false. Do not use with errors from reports or returned from functions. This method will report a user error if either err is UCB\+\_\+\+NULL or err-\/\texorpdfstring{$>$}{>}is\+\_\+static is true. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em err} & Error to free \\
+\hline
+\end{DoxyParams}
+\Hypertarget{error_8h_a2905bd30e0f7320b491f9f53cc666af0}\index{error.h@{error.h}!ucb\_error\_get\_func@{ucb\_error\_get\_func}}
+\index{ucb\_error\_get\_func@{ucb\_error\_get\_func}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_get\_func()}{ucb\_error\_get\_func()}}
+{\footnotesize\ttfamily \label{error_8h_a2905bd30e0f7320b491f9f53cc666af0} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}} ucb\+\_\+error\+\_\+get\+\_\+func (\begin{DoxyParamCaption}\item[{void}]{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_ad43c0326f6618edc99180f112a508dc8}\index{error.h@{error.h}!ucb\_error\_literal@{ucb\_error\_literal}}
+\index{ucb\_error\_literal@{ucb\_error\_literal}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_literal()}{ucb\_error\_literal()}}
+{\footnotesize\ttfamily \label{error_8h_ad43c0326f6618edc99180f112a508dc8} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+literal (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+
+
+
+Prepares an error for reporting with a literal message. The literal message itself is set on the error object, so it must be valid for the lifetime of the error object. The message will not be free\textquotesingle{}d. 
+
+\begin{DoxySeeAlso}{See also}
+\doxylink{error_8h_a791ccf7c9361d86ba065c61617f3d3e8}{ucb\+\_\+error\+\_\+format} 
+\end{DoxySeeAlso}
+\Hypertarget{error_8h_abf471dc214c10359314a5d2cc383ab06}\index{error.h@{error.h}!ucb\_error\_lvlstr@{ucb\_error\_lvlstr}}
+\index{ucb\_error\_lvlstr@{ucb\_error\_lvlstr}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_lvlstr()}{ucb\_error\_lvlstr()}}
+{\footnotesize\ttfamily \label{error_8h_abf471dc214c10359314a5d2cc383ab06} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} const char \texorpdfstring{$\ast$}{*} ucb\+\_\+error\+\_\+lvlstr (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}]{lvl}{}\end{DoxyParamCaption})}
+
+
+
+Get a string representation of the error level. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lvl} & the level \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a string literal 
+\end{DoxyReturn}
+\Hypertarget{error_8h_aed66ef809c7b80a6ca1d566004ddfd5c}\index{error.h@{error.h}!ucb\_error\_print@{ucb\_error\_print}}
+\index{ucb\_error\_print@{ucb\_error\_print}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_print()}{ucb\_error\_print()}}
+{\footnotesize\ttfamily \label{error_8h_aed66ef809c7b80a6ca1d566004ddfd5c} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+error\+\_\+print (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}]{lvl}{, }\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}}]{error}{}\end{DoxyParamCaption})}
+
+Print error to stderr 
+\begin{DoxyParams}{Parameters}
+{\em lvl} & the level \\
+\hline
+{\em error} & the error \\
+\hline
+\end{DoxyParams}
+\Hypertarget{error_8h_a974473407c14aaf958282125343d69e0}\index{error.h@{error.h}!ucb\_error\_report@{ucb\_error\_report}}
+\index{ucb\_error\_report@{ucb\_error\_report}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_report()}{ucb\_error\_report()}}
+{\footnotesize\ttfamily \label{error_8h_a974473407c14aaf958282125343d69e0} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+error\+\_\+report (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}]{lvl}{, }\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}}]{error}{}\end{DoxyParamCaption})}
+
+
+
+Report error. Depending on level, this will call the corresponding error function, if set. By default the error will be printed with ucb\+\_\+error\+\_\+print and return. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lvl} & the error level \\
+\hline
+{\em error} & the error to report \\
+\hline
+\end{DoxyParams}
+\Hypertarget{error_8h_a244d144e04b99a8ec2db4da0cad769e9}\index{error.h@{error.h}!ucb\_error\_set\_func@{ucb\_error\_set\_func}}
+\index{ucb\_error\_set\_func@{ucb\_error\_set\_func}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_error\_set\_func()}{ucb\_error\_set\_func()}}
+{\footnotesize\ttfamily \label{error_8h_a244d144e04b99a8ec2db4da0cad769e9} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}} ucb\+\_\+error\+\_\+set\+\_\+func (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{error_8h_a9c66edcacb3857ea64ab6c116609a42b}{ucb\+\_\+error\+\_\+func}}}]{func}{}\end{DoxyParamCaption})}
+
+Set the error function that will be called for any level. The user can the override the default behavior. If no function is set, the error will be printed using ucb\+\_\+error\+\_\+print.
+
+The function may be called from a different thread.
+
+
+\begin{DoxyParams}{Parameters}
+{\em func} & error function \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+previous error function, or UCB\+\_\+\+NULL 
+\end{DoxyReturn}
+\Hypertarget{error_8h_aace64e2465863dafaaf340f437b04c8f}\index{error.h@{error.h}!ucb\_report\_on\_status@{ucb\_report\_on\_status}}
+\index{ucb\_report\_on\_status@{ucb\_report\_on\_status}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_report\_on\_status()}{ucb\_report\_on\_status()}}
+{\footnotesize\ttfamily \label{error_8h_aace64e2465863dafaaf340f437b04c8f} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+report\+\_\+on\+\_\+status (\begin{DoxyParamCaption}\item[{int}]{status}{, }\item[{\doxymbox{\hyperlink{error_8h_a62b1debee81ccd1fa9fa6759593f637b}{ucb\+\_\+errlvl}}}]{lvl}{, }\item[{const char \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{msg}{, }\item[{const char \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{UCB\+\_\+\+RESTRICT}}}]{function}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_abc47f0ab6d4a74ce0e0fed55583c5fef}\index{error.h@{error.h}!ucb\_throw@{ucb\_throw}}
+\index{ucb\_throw@{ucb\_throw}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_throw()}{ucb\_throw()}}
+{\footnotesize\ttfamily \label{error_8h_abc47f0ab6d4a74ce0e0fed55583c5fef} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+throw (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{perr}{, }\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_add00369be730bc0dc8022f9cc0650e97}\index{error.h@{error.h}!ucb\_throw\_format@{ucb\_throw\_format}}
+\index{ucb\_throw\_format@{ucb\_throw\_format}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_throw\_format()}{ucb\_throw\_format()}}
+{\footnotesize\ttfamily \label{error_8h_add00369be730bc0dc8022f9cc0650e97} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+throw\+\_\+format (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{perr}{, }\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt}{, }\item[{}]{...}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_a6ec9e1c6df42d3f231094d0947d233eb}\index{error.h@{error.h}!ucb\_throw\_formatv@{ucb\_throw\_formatv}}
+\index{ucb\_throw\_formatv@{ucb\_throw\_formatv}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_throw\_formatv()}{ucb\_throw\_formatv()}}
+{\footnotesize\ttfamily \label{error_8h_a6ec9e1c6df42d3f231094d0947d233eb} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+throw\+\_\+formatv (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{perr}{, }\item[{\doxymbox{\hyperlink{types_8h_a7b51af80e3e90400b56704878d961344}{ucb\+\_\+ecode}}}]{code}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{fmt}{, }\item[{va\+\_\+list}]{args}{}\end{DoxyParamCaption})}
+
+\Hypertarget{error_8h_ab61cf36a2a025f602b8ff86d1a2c0a04}\index{error.h@{error.h}!ucb\_throw\_on\_status@{ucb\_throw\_on\_status}}
+\index{ucb\_throw\_on\_status@{ucb\_throw\_on\_status}!error.h@{error.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_throw\_on\_status()}{ucb\_throw\_on\_status()}}
+{\footnotesize\ttfamily \label{error_8h_ab61cf36a2a025f602b8ff86d1a2c0a04} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} bool ucb\+\_\+throw\+\_\+on\+\_\+status (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__error}{ucb\+\_\+error}} \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{perr}{, }\item[{int}]{status}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{msg}{}\end{DoxyParamCaption})}
+

@@ -1,0 +1,116 @@
+\doxysection{include/\+ucb/\+btrace.h File Reference}
+\hypertarget{btrace_8h}{}\label{btrace_8h}\index{include/ucb/btrace.h@{include/ucb/btrace.h}}
+
+
+Cross-\/platform backtrace support.  
+
+
+{\ttfamily \+\#include "{}export.\+h"{}}\newline
+{\ttfamily \+\#include $<$stddef.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdio.\+h$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct ucb\+\_\+btrace \doxymbox{\hyperlink{btrace_8h_a094923a35ef0468578a247d81949f6c8}{ucb\+\_\+btrace}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{btrace_8h_a5cce1cf120099024d0a5f12cb0c0d8ec}{ucb\+\_\+btrace\+\_\+new}} ()
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_aa4451cfc51ae9a5fd6944692ae3b6d4e}{ucb\+\_\+btrace\+\_\+init}} (\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_a0c6031077dc2b2404189f7aef9d89fc8}{ucb\+\_\+btrace\+\_\+release}} (\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_adfdd591ca7deaec11d6998d21473ddbe}{ucb\+\_\+btrace\+\_\+free}} (\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{btrace_8h_a5864028e11e8a8b56fc271170642b2c3}{ucb\+\_\+btrace\+\_\+clone}} (const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_ac74fd41bb8180702d5cff26107e4e221}{ucb\+\_\+btrace\+\_\+copy}} (\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}dst, const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}src)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_a4bde60e8aafec58ca9eb8de048c14c59}{ucb\+\_\+btrace\+\_\+capture}} (\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt)
+\item 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void \doxymbox{\hyperlink{btrace_8h_a554243c1b93661cca84224978d70e155}{ucb\+\_\+btrace\+\_\+print}} (const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}bt, FILE \texorpdfstring{$\ast$}{*}stream, int indent)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Cross-\/platform backtrace support. 
+
+This file is part of the UCB project
+\begin{DoxyItemize}
+\item SPDX-\/\+File\+Copyright\+Text:\+ © 2026 Åke Svedin \href{mailto:ake@svedin.org}{\texttt{ake@svedin.\+org}}
+\item SPDX-\/\+License-\/\+Identifier:\+ MIT 
+\end{DoxyItemize}
+
+Definition in file \doxymbox{\hyperlink{btrace_8h_source}{btrace.\+h}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{btrace_8h_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{btrace_8h_a094923a35ef0468578a247d81949f6c8}\index{btrace.h@{btrace.h}!ucb\_btrace@{ucb\_btrace}}
+\index{ucb\_btrace@{ucb\_btrace}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace}{ucb\_btrace}}
+{\footnotesize\ttfamily \label{btrace_8h_a094923a35ef0468578a247d81949f6c8} 
+typedef struct ucb\+\_\+btrace ucb\+\_\+btrace}
+
+
+
+\label{doc-func-members}
+\Hypertarget{btrace_8h_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{btrace_8h_a4bde60e8aafec58ca9eb8de048c14c59}\index{btrace.h@{btrace.h}!ucb\_btrace\_capture@{ucb\_btrace\_capture}}
+\index{ucb\_btrace\_capture@{ucb\_btrace\_capture}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_capture()}{ucb\_btrace\_capture()}}
+{\footnotesize\ttfamily \label{btrace_8h_a4bde60e8aafec58ca9eb8de048c14c59} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+capture (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_a5864028e11e8a8b56fc271170642b2c3}\index{btrace.h@{btrace.h}!ucb\_btrace\_clone@{ucb\_btrace\_clone}}
+\index{ucb\_btrace\_clone@{ucb\_btrace\_clone}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_clone()}{ucb\_btrace\_clone()}}
+{\footnotesize\ttfamily \label{btrace_8h_a5864028e11e8a8b56fc271170642b2c3} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*} ucb\+\_\+btrace\+\_\+clone (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_ac74fd41bb8180702d5cff26107e4e221}\index{btrace.h@{btrace.h}!ucb\_btrace\_copy@{ucb\_btrace\_copy}}
+\index{ucb\_btrace\_copy@{ucb\_btrace\_copy}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_copy()}{ucb\_btrace\_copy()}}
+{\footnotesize\ttfamily \label{btrace_8h_ac74fd41bb8180702d5cff26107e4e221} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+copy (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{dst}{, }\item[{const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{src}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_adfdd591ca7deaec11d6998d21473ddbe}\index{btrace.h@{btrace.h}!ucb\_btrace\_free@{ucb\_btrace\_free}}
+\index{ucb\_btrace\_free@{ucb\_btrace\_free}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_free()}{ucb\_btrace\_free()}}
+{\footnotesize\ttfamily \label{btrace_8h_adfdd591ca7deaec11d6998d21473ddbe} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+free (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_aa4451cfc51ae9a5fd6944692ae3b6d4e}\index{btrace.h@{btrace.h}!ucb\_btrace\_init@{ucb\_btrace\_init}}
+\index{ucb\_btrace\_init@{ucb\_btrace\_init}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_init()}{ucb\_btrace\_init()}}
+{\footnotesize\ttfamily \label{btrace_8h_aa4451cfc51ae9a5fd6944692ae3b6d4e} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+init (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_a5cce1cf120099024d0a5f12cb0c0d8ec}\index{btrace.h@{btrace.h}!ucb\_btrace\_new@{ucb\_btrace\_new}}
+\index{ucb\_btrace\_new@{ucb\_btrace\_new}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_new()}{ucb\_btrace\_new()}}
+{\footnotesize\ttfamily \label{btrace_8h_a5cce1cf120099024d0a5f12cb0c0d8ec} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*} ucb\+\_\+btrace\+\_\+new (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_a554243c1b93661cca84224978d70e155}\index{btrace.h@{btrace.h}!ucb\_btrace\_print@{ucb\_btrace\_print}}
+\index{ucb\_btrace\_print@{ucb\_btrace\_print}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_print()}{ucb\_btrace\_print()}}
+{\footnotesize\ttfamily \label{btrace_8h_a554243c1b93661cca84224978d70e155} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+print (\begin{DoxyParamCaption}\item[{const \doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{stream}{, }\item[{int}]{indent}{}\end{DoxyParamCaption})}
+
+\Hypertarget{btrace_8h_a0c6031077dc2b2404189f7aef9d89fc8}\index{btrace.h@{btrace.h}!ucb\_btrace\_release@{ucb\_btrace\_release}}
+\index{ucb\_btrace\_release@{ucb\_btrace\_release}!btrace.h@{btrace.h}}
+\doxysubsubsection{\texorpdfstring{ucb\_btrace\_release()}{ucb\_btrace\_release()}}
+{\footnotesize\ttfamily \label{btrace_8h_a0c6031077dc2b2404189f7aef9d89fc8} 
+\doxymbox{\hyperlink{export_8h_aa35e683f9335fd89ba4db703556be2c6}{UCB\+\_\+\+API}} void ucb\+\_\+btrace\+\_\+release (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{structucb__btrace}{ucb\+\_\+btrace}} \texorpdfstring{$\ast$}{*}}]{bt}{}\end{DoxyParamCaption})}
+

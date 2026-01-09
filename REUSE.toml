@@ -11,8 +11,10 @@ SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 # Documentation files, treat as Creative Commons Zero
-path = ["**/*.md"]
-precedence = "aggregate"
+path = ["**/*.md", "doc/**"]
+# Must override as the documentation itself can contain information about SPDX commenting
+# which reuse may mark as "invalid SPDX License Expressions"
+precedence = "override"
 SPDX-FileType = "Documentation"
 SPDX-FileCopyrightText = "None"
 SPDX-License-Identifier = "CC0-1.0"

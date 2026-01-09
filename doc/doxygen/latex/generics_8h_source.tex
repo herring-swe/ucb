@@ -1,0 +1,206 @@
+\doxysection{generics.\+h}
+\hypertarget{generics_8h_source}{}\label{generics_8h_source}\index{include/ucb/generics.h@{include/ucb/generics.h}}
+\doxymbox{\hyperlink{generics_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00010}00010\ \textcolor{preprocessor}{\#ifndef\ UCB\_GENERICS\_H}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00011}00011\ \textcolor{preprocessor}{\#define\ UCB\_GENERICS\_H}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00013}00013\ \textcolor{preprocessor}{\#ifndef\ \_\_cplusplus}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00014}00014\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00015}00015\ \textcolor{preprocessor}{\#include\ <inttypes.h>}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00016}00016\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00017}00017\ \textcolor{preprocessor}{\#include\ <stddef.h>}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00018}00018\ \textcolor{preprocessor}{\#include\ <stdint.h>}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00019}00019\ \textcolor{preprocessor}{\#include\ <wchar.h>}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00020}00020\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00021}00021\ \textcolor{preprocessor}{\#if\ CHAR\_MIN\ <\ 0}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00022}00022\ \textcolor{preprocessor}{\#define\ UCB\_CHAR\_IS\_SIGNED\ 1}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00023}00023\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00024}\doxymbox{\hyperlink{generics_8h_aaa5cde109733e7ae5987959a45bb08b6}{00024}}\ \textcolor{preprocessor}{\#define\ UCB\_CHAR\_IS\_UNSIGNED\ 1}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00025}00025\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00026}00026\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00027}00027\ \textcolor{comment}{/*}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00028}00028\ \textcolor{comment}{\ *\ See}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00029}00029\ \textcolor{comment}{\ *\ https://developercommunity.visualstudio.com/t/\_Generic-\/char-\/signed-\/char-\/unsigned-\/cha/1228885?preview=true}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00030}00030\ \textcolor{comment}{\ *\ Seem\ to\ compile\ just\ fine\ without\ warnings.\ Intellisense\ needs\ the\ fix.}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00031}00031\ \textcolor{comment}{\ */}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00032}00032\ \textcolor{preprocessor}{\#if\ defined(\_MSC\_VER)\ \&\&\ defined(\_\_INTELLISENSE\_\_)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00033}00033\ \textcolor{preprocessor}{\#define\ UCB\_CHAR\_DUPLICATE\ 1}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00034}00034\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00035}\doxymbox{\hyperlink{generics_8h_aaaea84e5988c023b2eb31b92689642bb}{00035}}\ \textcolor{preprocessor}{\#define\ UCB\_CHAR\_DUPLICATE\ 0}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00036}00036\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00037}00037\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00038}00038\ \textcolor{preprocessor}{\#if\ UCB\_CHAR\_DUPLICATE}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00039}00039\ \textcolor{preprocessor}{\#define\ UCB\_TYPE(a)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00040}00040\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00041}00041\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ "{}signed\ char"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00042}00042\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ "{}unsigned\ char"{},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00043}00043\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ "{}short"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00044}00044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ "{}unsigned\ short"{},\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00045}00045\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ "{}int"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00046}00046\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ "{}unsigned\ int"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00047}00047\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ "{}long"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00048}00048\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ "{}unsigned\ long"{},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00049}00049\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ "{}long\ long"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00050}00050\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ "{}unsigned\ long\ long"{},\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00051}00051\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ "{}float"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00052}00052\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ "{}double"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00053}00053\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ double:\ "{}ldouble"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00054}00054\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ void*:\ "{}pointer"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00055}00055\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char*:\ "{}string"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00056}00056\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ wchar\_t*:\ "{}wstring"{})}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00057}00057\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00058}\doxymbox{\hyperlink{generics_8h_aac3cf496a264bbd32e06a7bb6fcf0059}{00058}}\ \textcolor{preprocessor}{\#define\ UCB\_TYPE(a)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00059}00059\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00060}00060\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ "{}char"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00061}00061\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ "{}signed\ char"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00062}00062\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ "{}unsigned\ char"{},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00063}00063\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ "{}short"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00064}00064\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ "{}unsigned\ short"{},\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00065}00065\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ "{}int"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00066}00066\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ "{}unsigned\ int"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00067}00067\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ "{}long"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00068}00068\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ "{}unsigned\ long"{},\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00069}00069\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ "{}long\ long"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00070}00070\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ "{}unsigned\ long\ long"{},\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00071}00071\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ "{}float"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00072}00072\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ "{}double"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00073}00073\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ double:\ "{}ldouble"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00074}00074\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ void*:\ "{}pointer"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00075}00075\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char*:\ "{}string"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00076}00076\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ wchar\_t*:\ "{}wstring"{})}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00077}00077\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00078}00078\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00079}00079\ \textcolor{preprocessor}{\#if\ UCB\_CHAR\_DUPLICATE}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00080}00080\ \textcolor{preprocessor}{\#define\ UCB\_FMT(a)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00081}00081\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00082}00082\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ "{}\%hhi"{},\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00083}00083\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ "{}\%hhu"{},\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00084}00084\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ "{}\%hi"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00085}00085\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ "{}\%hu"{},\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00086}00086\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ "{}\%i"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00087}00087\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ "{}\%u"{},\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00088}00088\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ "{}\%li"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00089}00089\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ "{}\%lu"{},\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00090}00090\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ "{}\%lli"{},\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00091}00091\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ "{}\%llu"{},\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00092}00092\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ "{}\%g"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00093}00093\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ "{}\%g"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00094}00094\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ void*:\ "{}\%p"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00095}00095\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char*:\ "{}\%s"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00096}00096\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ wchar\_t*:\ "{}\%ls"{})}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00097}00097\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00098}\doxymbox{\hyperlink{generics_8h_accd52a316ed0c54f5d4d3ce6a90ee872}{00098}}\ \textcolor{preprocessor}{\#define\ UCB\_FMT(a)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00099}00099\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00100}00100\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ "{}\%hhi"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00101}00101\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ "{}\%hhi"{},\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00102}00102\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ "{}\%hhu"{},\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00103}00103\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ "{}\%hi"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00104}00104\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ "{}\%hu"{},\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00105}00105\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ "{}\%i"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00106}00106\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ "{}\%u"{},\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00107}00107\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ "{}\%li"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00108}00108\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ "{}\%lu"{},\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00109}00109\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ "{}\%lli"{},\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00110}00110\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ "{}\%llu"{},\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00111}00111\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ "{}\%g"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00112}00112\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ "{}\%g"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00113}00113\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ void*:\ "{}\%p"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00114}00114\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char*:\ "{}\%s"{},\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00115}00115\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ wchar\_t*:\ "{}\%ls"{})}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00116}00116\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00117}00117\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00118}\doxymbox{\hyperlink{generics_8h_a003f09e29dc94b3d2e354e4a2d81f980}{00118}}\ \textcolor{preprocessor}{\#define\ UCB\_FMTS(a)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00119}00119\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ char:\ "{}\%c"{},\ wchar\_t:\ "{}\%lc"{},\ unsigned\ char:\ "{}\%c"{},\ char*:\ "{}\%s"{},\ wchar\_t*:\ "{}\%ls"{})}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00120}00120\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00121}\doxymbox{\hyperlink{generics_8h_a35ea4c72aedc3177586c58dec5525117}{00121}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_1(NAME,\ a)\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00122}00122\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00123}00123\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00124}00124\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ NAME\#\#\_hhu,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00125}00125\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00126}00126\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ NAME\#\#\_hu,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00127}00127\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00128}00128\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00129}00129\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00130}00130\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00131}00131\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00132}00132\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ NAME\#\#\_llu,\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00133}00133\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00134}00134\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00135}00135\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00136}\doxymbox{\hyperlink{generics_8h_a28276a73a429a3a4dac745db734ba2b1}{00136}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_2(NAME,\ a,\ b)\ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00137}00137\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a)\ +\ (b),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00138}00138\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00139}00139\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ NAME\#\#\_hhu,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00140}00140\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00141}00141\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ NAME\#\#\_hu,\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00142}00142\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00143}00143\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00144}00144\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00145}00145\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00146}00146\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00147}00147\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ NAME\#\#\_llu,\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00148}00148\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00149}00149\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a,\ b)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00150}00150\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00151}\doxymbox{\hyperlink{generics_8h_ab8ff4010c52f7532a0b9768e3cca0e8c}{00151}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_3(NAME,\ a,\ b,\ c)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00152}00152\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a)\ +\ (b)\ +\ (c),\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00153}00153\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00154}00154\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ char:\ NAME\#\#\_hhu,\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00155}00155\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00156}00156\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ short:\ NAME\#\#\_hu,\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00157}00157\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00158}00158\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ int:\ NAME\#\#\_u,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00159}00159\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00160}00160\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long:\ NAME\#\#\_lu,\ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00161}00161\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00162}00162\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ unsigned\ long\ long:\ NAME\#\#\_llu,\ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00163}00163\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00164}00164\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a,\ b,\ c)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00165}00165\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00166}00166\ \textcolor{preprocessor}{\#if\ UCB\_CHAR\_DUPLICATE}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00167}00167\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_SIGNED\_1(NAME,\ a)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00168}00168\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00169}00169\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00170}00170\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00171}00171\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00172}00172\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00173}00173\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00174}00174\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00175}00175\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00176}00176\ \textcolor{preprocessor}{\#elif\ UCB\_CHAR\_IS\_SIGNED}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00177}00177\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_SIGNED\_1(NAME,\ a)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00178}00178\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00179}00179\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00180}00180\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00181}00181\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00182}00182\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00183}00183\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00184}00184\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00185}00185\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00186}00186\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00187}00187\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00188}\doxymbox{\hyperlink{generics_8h_adcc28f591c0933f92cb39859c2a0084d}{00188}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_SIGNED\_1(NAME,\ a)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00189}00189\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a),\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00190}00190\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ signed\ char:\ NAME\#\#\_hhi,\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00191}00191\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ short:\ NAME\#\#\_hi,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00192}00192\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ int:\ NAME\#\#\_i,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00193}00193\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long:\ NAME\#\#\_li,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00194}00194\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ long\ long:\ NAME\#\#\_lli,\ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00195}00195\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ float:\ NAME\#\#\_f,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00196}00196\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ double:\ NAME\#\#\_d)(a)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00197}00197\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00198}00198\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00199}\doxymbox{\hyperlink{generics_8h_a679a0b09c60b8851934ffc6275602ccd}{00199}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_FLOAT\_1(NAME,\ a)\ \_Generic((a),\ float:\ NAME\#\#\_f,\ double:\ NAME\#\#\_d)(a)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00200}\doxymbox{\hyperlink{generics_8h_a2012eeb2dc795a29c52ef3924dc8e255}{00200}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_FLOAT\_2(NAME,\ a,\ b)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00201}00201\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a)\ +\ (b),\ float:\ NAME\#\#\_f,\ double:\ NAME\#\#\_d)(a,\ b)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00202}\doxymbox{\hyperlink{generics_8h_af131124af956a773cd64177a2324bfc2}{00202}}\ \textcolor{preprocessor}{\#define\ UCB\_GENERIC\_FUNC\_FLOAT\_3(NAME,\ a,\ b,\ c)\ \(\backslash\)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00203}00203\ \textcolor{preprocessor}{\ \ \ \ \_Generic((a)\ +\ (b)\ +\ (c),\ float:\ NAME\#\#\_f,\ double:\ NAME\#\#\_d)(a,\ b,\ c)}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00204}00204\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00205}00205\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ \_\_cplusplus}}
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00206}00206\ }
+\DoxyCodeLine{\Hypertarget{generics_8h_source_l00207}00207\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_GENERICS\_H}}
+
+\end{DoxyCode}

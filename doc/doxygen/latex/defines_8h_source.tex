@@ -1,0 +1,56 @@
+\doxysection{defines.\+h}
+\hypertarget{defines_8h_source}{}\label{defines_8h_source}\index{include/ucb/defines.h@{include/ucb/defines.h}}
+\doxymbox{\hyperlink{defines_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00009}00009\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00010}00010\ \textcolor{preprocessor}{\#ifndef\ UCB\_DEFINES\_H}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00011}00011\ \textcolor{preprocessor}{\#define\ UCB\_DEFINES\_H}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00012}00012\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00013}\doxymbox{\hyperlink{defines_8h_a01fab4efba72995da04e4a369d4f7e23}{00013}}\ \textcolor{preprocessor}{\#define\ UCB\_UNUSED(x)\ (void)(x)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00014}00014\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00015}00015\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00016}00016\ \textcolor{preprocessor}{\#define\ UCB\_RESTRICT\ \_\_restrict}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00017}00017\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00018}\doxymbox{\hyperlink{defines_8h_a1143291db8ef11b48f62e3eae00ced92}{00018}}\ \textcolor{preprocessor}{\#define\ UCB\_RESTRICT\ \_\_restrict\_\_}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00019}00019\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00020}00020\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00021}00021\ \textcolor{comment}{//\ clang-\/format\ off}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00022}00022\ \textcolor{preprocessor}{\#ifdef\ \_\_cplusplus}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00023}00023\ \textcolor{preprocessor}{\ \ \ \ \#define\ UCB\_NULL\ nullptr}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00024}00024\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00025}00025\ \textcolor{preprocessor}{\ \ \ \ \#if\ defined(\_\_STDC\_VERSION\_\_)\ \&\&\ \_\_STDC\_VERSION\_\_\ >=\ 202311L}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00026}00026\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ C23\ or\ later}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00027}00027\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#define\ UCB\_NULL\ nullptr\ \ \ \ }}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00028}00028\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#define\ UCB\_NORETURN\ [[\ noreturn\ ]]}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00029}00029\ \textcolor{preprocessor}{\ \ \ \ \#else}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00030}\doxymbox{\hyperlink{defines_8h_a723a75ddd054b2bb8fc40bfb6b91d64d}{00030}}\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#define\ UCB\_NULL\ ((void*)0)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00031}00031\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#if\ defined(\_\_GNUC\_\_)\ ||\ defined(\_\_clang\_\_)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00032}00032\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_NORETURN\ \_\_attribute\_\_((noreturn))}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00033}00033\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_LIKELY(x)\ \_\_builtin\_expect(!!(x),\ 1)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00034}00034\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_UNLIKELY(x)\ \_\_builtin\_expect(!!(x),\ 0)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00035}00035\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#elif\ defined(\_WIN32)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00036}00036\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_NORETURN\ \_Noreturn}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00037}00037\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_LIKELY(x)\ (x)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00038}00038\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ UCB\_UNLIKELY(x)\ (x)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00039}00039\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00040}00040\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00041}00041\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#ifdef\ UCB\_FORWARD\_DECLARE}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00042}00042\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ nullptr\ ((void*)0)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00043}00043\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \#define\ void*\ nullptr\_t;}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00044}00044\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00045}00045\ \textcolor{preprocessor}{\ \ \ \ \#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00046}00046\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00047}00047\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00048}00048\ \textcolor{preprocessor}{\#if\ defined(\_\_GNUC\_\_)\ ||\ defined(\_\_clang\_\_)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00049}00049\ \textcolor{preprocessor}{\ \ \ \ \#define\ UCB\_LIKELY(x)\ \_\_builtin\_expect(!!(x),\ 1)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00050}00050\ \textcolor{preprocessor}{\ \ \ \ \#define\ UCB\_UNLIKELY(x)\ \_\_builtin\_expect(!!(x),\ 0)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00051}00051\ \textcolor{preprocessor}{\#elif\ defined(\_WIN32)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00052}00052\ \textcolor{preprocessor}{\ \ \ \ \#define\ UCB\_LIKELY(x)\ (x)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00053}00053\ \textcolor{preprocessor}{\ \ \ \ \#define\ UCB\_UNLIKELY(x)\ (x)}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00054}00054\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00055}00055\ \textcolor{comment}{//\ clang-\/format\ on}}
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00056}00056\ }
+\DoxyCodeLine{\Hypertarget{defines_8h_source_l00057}00057\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ UCB\_DEFINES\_H}}
+
+\end{DoxyCode}
