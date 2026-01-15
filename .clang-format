@@ -22,6 +22,7 @@ AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
 AlignEscapedNewlines: Left
 
+BreakTemplateDeclarations: true
 BreakBeforeBraces: Custom
 BraceWrapping:
     AfterClass:      true

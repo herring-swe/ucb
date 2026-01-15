@@ -19,11 +19,11 @@ ucb_target_public_headers(ucb FILES
     ucb/debug.h
     ucb/defines.h
     ucb/error.h
-    ucb/math.h
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h
     ucb/string.h
+    ucb/tgfunc.h
     ucb/threads.h
     ucb/time.h
     ucb/ucb.h

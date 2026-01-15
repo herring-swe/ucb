@@ -1,10 +1,10 @@
 /**
  * @file test_types.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief types C tests implementation
  */
 
@@ -13,7 +13,7 @@
 #include "ucb/cstring.h"
 #include "ucb/defines.h"
 #include "ucb/diag.h"
-#include "ucb/math.h"
+#include "ucb/tgfunc.h"
 
 #include <stddef.h>
 #include <stdint.h>

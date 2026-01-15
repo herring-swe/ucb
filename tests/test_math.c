@@ -1,17 +1,17 @@
 /**
  * @file test_math.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief math C test implementation
  */
 
 #include "test_math.h"
 
 #include "ucb/diag.h"
-#include "ucb/math.h"
+#include "ucb/tgfunc.h"
 
 #include <stddef.h>
 #include <stdint.h>

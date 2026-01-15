@@ -3,13 +3,16 @@
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Helper macros for generic implementations
  */
 
 #ifndef UCB_GENERICS_H
 #define UCB_GENERICS_H
 
+/*
+ * C only, allow inclusion in C++ but contain nothing
+ */
 #ifndef __cplusplus
 
 #include <inttypes.h>
