@@ -61,7 +61,6 @@ typedef void (*ucb_error_func)(ucb_errlvl lvl, const ucb_error* error);
 
 /**
  * @brief Get a string representation of the error level.
- *
  * @param lvl the level
  * @return a string literal
  */
@@ -69,8 +68,7 @@ UCB_API const char* ucb_error_lvlstr(ucb_errlvl lvl);
 
 /**
  * @brief Get a string representation of the error code.
- *
- * @param error the error
+ * @param code the error
  * @return A string literal
  */
 UCB_API const char* ucb_error_codestr(ucb_ecode code);
@@ -87,6 +85,7 @@ UCB_API const char* ucb_error_codestr(ucb_ecode code);
 UCB_API ucb_error* ucb_error_copy(const ucb_error* err);
 /**
  * @brief Free an error
+ *
  * Can only be called on errors returned by ucb_error_copy or manual
  * allocation with ucb memory functions. Then is_static must be false.
  * Do not use with errors from reports or returned from functions.
@@ -97,6 +96,7 @@ UCB_API void ucb_error_free(ucb_error* err);
 
 /**
  * @brief Prepares an error for reporting with formatted message.
+ *
  * This will set a thread-local error object.
  * The message will be formatted on an internal buffer, of max
  * UCB_BUFSIZE_ERROR_MSG-1 characters.
@@ -116,6 +116,7 @@ UCB_API const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...);
 UCB_API const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args);
 /**
  * @brief Prepares an error for reporting with a literal message.
+ *
  * The literal message itself is set on the error object, so it must be valid for the
  * lifetime of the error object. The message will not be free'd.
  * @see ucb_error_format
@@ -123,7 +124,7 @@ UCB_API const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_l
 UCB_API const ucb_error* ucb_error_literal(ucb_ecode code, const char* msg);
 
 /**
- * Print error to stderr
+ * @brief Print error to stderr
  * @param lvl the level
  * @param error the error
  */
@@ -140,7 +141,8 @@ UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
 #define UCB_IS_THROWN(err) ((err) && (err)->code != 0)
 
 /**
- * Clear an error previously thrown error from a function
+ * @brief Clear an error previously thrown error from a function
+ *
  * The error will be free'd and the pointer set to UCB_NULL.
  * @param perr pointer to error to clear
  */
@@ -186,9 +188,10 @@ UCB_API void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const cha
 #endif
 
 /**
- * Set the error function that will be called for any level.
- * The user can the override the default behavior.
- * If no function is set, the error will be printed using ucb_error_print.
+ * @brief Set the global error function
+ *
+ * The function will be called for any error level. @see ucb_error_func.
+ * If no function is set, the error will be printed using @ref ucb_error_print.
  *
  * The function may be called from a different thread.
  *
@@ -200,6 +203,7 @@ UCB_API ucb_error_func ucb_error_get_func(void);
 
 /**
  * @brief Report error.
+ *
  * Depending on level, this will call the corresponding error function, if set.
  * By default the error will be printed with ucb_error_print and return.
  *
@@ -244,7 +248,8 @@ UCB_API bool ucb_throw_on_status(const ucb_error** perr, int status, const char*
 UCB_API ucb_ecode ucb_err_wrap_win32(uint32_t err);
 UCB_API ucb_ecode ucb_err_get_win32(void);
 /**
- * Format a message from Windows error code into UTF-8
+ * @brief Format a message from Windows error code into UTF-8
+ * 
  * Must be free'd with ucb_free
  */
 UCB_API char* ucb_err_msg_win32(uint32_t err);

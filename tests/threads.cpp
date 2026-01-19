@@ -1,10 +1,10 @@
 /**
  * @file threads.cpp
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief threads tests
  */
 
@@ -33,7 +33,7 @@ struct ThreadFixture
 
     ThreadFixture()
     {
-        mutex = ucb_mutex_new(UCB_MUTEX_DEFAULT);
+        mutex = ucb_mutex_new();
         th    = nullptr;
     }
 
@@ -57,7 +57,7 @@ struct StressArgs
     int iters;
 };
 
-static void worker_func(void* arg)
+static int worker_func(void* arg)
 {
     FuncArg* fa = static_cast<FuncArg*>(arg);
     REQUIRE(fa->value == 42);
@@ -67,34 +67,36 @@ static void worker_func(void* arg)
     ucb_mutex_lock(st->mutex);
     st->results.push_back(fa->value);
     ucb_mutex_unlock(st->mutex);
+    return 0;
 }
 
-static void exit_func(void* exit_arg, void* func_arg)
+static void callback_func(void* arg, int status)
 {
-    FuncArg* fa = static_cast<FuncArg*>(func_arg);
+    FuncArg* fa = static_cast<FuncArg*>(arg);
     REQUIRE(fa->value == 42);
-    FuncArg* fa_exit = static_cast<FuncArg*>(exit_arg);
-    REQUIRE(fa_exit->value == 99);
-    ThreadFixture* st = fa_exit->state;
+    REQUIRE(status == 0);
+    ThreadFixture* st = fa->state;
 
     ucb_mutex_lock(st->mutex);
-    st->results.push_back(fa_exit->value * 100); // Mark exit values
+    st->results.push_back(99 * 100); // Mark exit values
     ucb_mutex_unlock(st->mutex);
 }
 
-static void stress_worker(void* arg)
+static int stress_worker(void* arg)
 {
     StressArgs* sa = static_cast<StressArgs*>(arg);
     for (int i = 0; i < sa->iters; i++)
     {
         sa->counter->fetch_add(1);
     }
+    return 0;
 }
 
-static void dummy_worker(void* arg)
+static int dummy_worker(void* arg)
 {
     UCB_UNUSED(arg);
     ucb_sleep_ms(100);
+    return 0;
 }
 
 // --- Tests ---
@@ -103,14 +105,17 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
     FuncArg fa      = {this, 42};
     FuncArg fa_exit = {this, 99};
 
+    ucb_task task = {0};
+    task.func     = worker_func;
+    task.arg      = reinterpret_cast<void*>(&fa);
+
     SUBCASE("Create/Free")
     {
         REQUIRE(th == nullptr);
-        th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+        th = ucb_thread_new();
         REQUIRE_FALSE(ucb_thread_is_running(th));
-        ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
-        ucb_thread_set_exit_func(th, exit_func, reinterpret_cast<void*>(&fa_exit));
-        REQUIRE(ucb_thread_start(th) == true);
+        task.callback = callback_func;
+        REQUIRE(ucb_thread_start(th, task) == true);
         REQUIRE(ucb_thread_is_running(th));
         REQUIRE(ucb_thread_is_joinable(th));
         ucb_thread_join(th);
@@ -123,25 +128,32 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
 
     SUBCASE("Detached Thread")
     {
-        th = ucb_thread_new(UCB_THREAD_FLAG_DETACHED);
-        ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
-        REQUIRE(ucb_thread_start(th) == true);
-        REQUIRE(ucb_thread_is_running(th));
-        // Cannot join detached threads
-        REQUIRE_FALSE(ucb_thread_is_joinable(th));
-        std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Yield
-        REQUIRE_FALSE(ucb_thread_is_running(th));                   // Detached threads auto-cleanup
+        ucb_thread* dth = ucb_thread_new_detached();
+        REQUIRE_FALSE(ucb_thread_is_joinable(dth));
+        REQUIRE_FALSE(ucb_thread_is_running(dth));
+        REQUIRE(ucb_thread_start(dth, task) == true);
+        // Cannot touch dth after start
+        // Wait for thread to finish
+        int max_wait = 50; // timeout in ms
+        while (counter.load() != 1 && --max_wait >= 0)
+        {
+            ucb_sleep_ms(1);
+        }
+        // We require the thread to finish in short time
+        REQUIRE(max_wait >= 0);
+        REQUIRE(counter.load() == 1);
+        REQUIRE(results.size() == 1); // Worker only (no exit)
+        REQUIRE(results[0] == 42);
     }
 
     SUBCASE("Stack Size")
     {
         size_t original_stack = ucb_thread_get_current_stack_size();
 
-        th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+        th = ucb_thread_new();
         ucb_thread_set_stack_size(th, original_stack * 2);
-        ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
         REQUIRE(ucb_thread_get_stack_size(th) >= original_stack * 2);
-        REQUIRE(ucb_thread_start(th) == true);
+        REQUIRE(ucb_thread_start(th, task) == true);
         ucb_thread_join(th);
     }
 }
@@ -150,21 +162,23 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread priorities")
 {
     FuncArg fa = {this, 42};
 
+    ucb_task task = {0};
+    task.func     = worker_func;
+    task.arg      = reinterpret_cast<void*>(&fa);
+
     SUBCASE("Default Priority")
     {
-        th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+        th = ucb_thread_new();
         ucb_thread_set_priority(th, UCB_THREAD_PRIO_DEFAULT);
-        ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
-        REQUIRE(ucb_thread_start(th) == true);
+        REQUIRE(ucb_thread_start(th, task) == true);
         ucb_thread_join(th);
     }
 
     SUBCASE("Custom Priority")
     {
-        th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+        th = ucb_thread_new();
         ucb_thread_set_priority(th, UCB_THREAD_PRIO_HIGH);
-        ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
-        REQUIRE(ucb_thread_start(th) == true);
+        REQUIRE(ucb_thread_start(th, task) == true);
         ucb_thread_join(th);
     }
 }
@@ -176,12 +190,15 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread names")
 
     FuncArg fa = {this, 42};
 
-    th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+    ucb_task task = {0};
+    task.func     = worker_func;
+    task.arg      = reinterpret_cast<void*>(&fa);
+
+    th = ucb_thread_new();
     ucb_thread_set_name(th, in_name.c_str());
     out_name = ucb_thread_get_name(th);
     REQUIRE(out_name == in_name);
-    ucb_thread_set_func(th, worker_func, reinterpret_cast<void*>(&fa));
-    REQUIRE(ucb_thread_start(th) == true);
+    REQUIRE(ucb_thread_start(th, task) == true);
     ucb_thread_join(th);
     // Name verification requires platform-specific APIs (omitted for brevity)
 }
@@ -200,11 +217,14 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
     };
     StressArgs args{&shared_counter, N_ITERS};
 
+    ucb_task task = {0};
+    task.func     = stress_worker;
+    task.arg      = reinterpret_cast<void*>(&args);
+
     for (int i = 0; i < N_THREADS; i++)
     {
-        ucb_thread* t = ucb_thread_new(UCB_THREAD_FLAG_JOINABLE);
-        ucb_thread_set_func(t, stress_worker, reinterpret_cast<void*>(&args));
-        REQUIRE(ucb_thread_start(t) == true);
+        ucb_thread* t = ucb_thread_new();
+        REQUIRE(ucb_thread_start(t, task) == true);
         threads.push_back(t);
     }
 
@@ -223,11 +243,10 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
 
     SUBCASE("Null Arguments")
     {
-        REQUIRE(ucb_thread_new(UCB_THREAD_FLAG_JOINABLE | UCB_THREAD_FLAG_DETACHED) == nullptr);
         ucb_thread_set_name(nullptr, "fail");
         ucb_thread_set_priority(nullptr, UCB_THREAD_PRIO_HIGH);
 
-        REQUIRE(num_error == 3);
+        REQUIRE(num_error == 2);
         for (int i = 0; i < num_error; i++)
         {
             REQUIRE(errors[i].lvl == UCB_ERRLVL_USER);
@@ -237,24 +256,23 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
 
     SUBCASE("Start")
     {
-        th = ucb_thread_new(UCB_THREAD_FLAG_JOINABLE);
-        // No function set
-        REQUIRE(ucb_thread_start(th) == false);
-        ucb_thread_set_func(th, dummy_worker, nullptr);
+        th = ucb_thread_new();
 
-        REQUIRE(ucb_thread_start(th) == true);
-        REQUIRE(ucb_thread_start(th) == false); // Already running
+        ucb_task task = {0};
+        task.func     = dummy_worker;
+
+        REQUIRE(ucb_thread_start(th, task) == true);
+        REQUIRE(ucb_thread_start(th, task) == false); // Already running
         ucb_thread_join(th);
 
-        REQUIRE(num_error == 2);
-        REQUIRE(errors[0].code == UCB_ERROR_INVALID_STATE);
-        REQUIRE(errors[1].code == UCB_ERROR_THREAD_BUSY);
+        REQUIRE(num_error == 1);
+        REQUIRE(errors[0].code == UCB_ERROR_THREAD_BUSY);
         ucb_thread_free(th);
     }
 
     SUBCASE("Invalid Priority")
     {
-        th = ucb_thread_new(UCB_THREAD_FLAG_DEFAULT);
+        th = ucb_thread_new();
         ucb_thread_set_priority(th, UCB_THREAD_PRIO_MIN - 1);
         REQUIRE(ucb_thread_get_priority(th) == UCB_THREAD_PRIO_DEFAULT);
         ucb_thread_set_priority(th, UCB_THREAD_PRIO_MAX + 1);
@@ -273,11 +291,14 @@ TEST_CASE("benchmark threads" * doctest::test_suite("benchmark") * doctest::skip
     const int N = 1000;
     auto start  = std::chrono::high_resolution_clock::now();
 
+    ucb_task task = {0};
+    task.func     = [](void*) { return 0; };
+    task.arg      = nullptr;
+
     for (int i = 0; i < N; i++)
     {
-        ucb_thread* th = ucb_thread_new(UCB_THREAD_FLAG_JOINABLE);
-        ucb_thread_set_func(th, [](void*) {}, nullptr);
-        ucb_thread_start(th);
+        ucb_thread* th = ucb_thread_new();
+        ucb_thread_start(th, task);
         ucb_thread_join(th);
         ucb_thread_free(th);
     }

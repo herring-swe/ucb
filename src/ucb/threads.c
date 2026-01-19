@@ -1,10 +1,10 @@
 /**
  * @file threads.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Cross-platform threading implementation
  */
 
@@ -43,9 +43,10 @@
 #endif
 
 /**
- * TODO:
- * - Add support for thread pools
+ * By default will create a joinable thread.
  */
+#define UCB_THREAD_FLAG_JOINABLE 0x01
+#define UCB_THREAD_FLAG_DETACHED 0x02
 
 struct ucb_thread
 {
@@ -54,16 +55,14 @@ struct ucb_thread
 #else
     pthread_t handle;
 #endif
-    ucb_thread_func_t func;
-    void* arg;
-    ucb_thread_exit_func_t exit_func;
-    void* exit_arg;
+    ucb_task task;
     char* name;
     size_t stack_size;
     int flags;
     int priority;
     ucb_pid id;
     bool running;
+    int status[2]; // First is existence (int bool), second is the status
 };
 
 size_t ucb_thread_get_current_stack_size(void)
@@ -148,6 +147,7 @@ static void set_thread_name(ucb_thread* th)
 #ifdef _WIN32
     wchar_t wname[64];
     int code = MultiByteToWideChar(CP_UTF8, 0, th->name, -1, wname, 64);
+    UCB_UNUSED(code);
     UCB_ASSERT_WIN32(code == 0 ? GetLastError() : ERROR_SUCCESS,
                      "Could not convert thread name to UTF-16");
     HRESULT hr = SetThreadDescription(th->handle, wname);
@@ -158,6 +158,67 @@ static void set_thread_name(ucb_thread* th)
     UCB_UNUSED(code);
     UCB_ASSERT_ERRNO(code, "Failed to set thread name");
 #endif
+}
+
+static void ucb_thread_free_impl(ucb_thread* th)
+{
+    if (th->name)
+        ucb_free(th->name);
+    ucb_free(th);
+}
+
+#if defined(_WIN32)
+static unsigned __stdcall win_thread_wrapper(void* arg)
+{
+    ucb_thread* th = (ucb_thread*)arg;
+    th->id         = ucb_thread_id();
+    if (th->name)
+        set_thread_name(th);
+    if (th->priority != UCB_THREAD_PRIO_DEFAULT)
+        set_thread_prio_win32(th);
+
+    th->status[1] = ucb_task_run(&th->task);
+    th->status[0] = 1;
+    th->running   = false;
+
+    if (th->flags & UCB_THREAD_FLAG_DETACHED)
+        ucb_thread_free_impl(th);
+    return 0;
+}
+#else
+static void* posix_thread_wrapper(void* arg)
+{
+    ucb_thread* th = (ucb_thread*)arg;
+    th->id         = ucb_thread_id();
+    if (th->name)
+        set_thread_name(th);
+
+    th->status[1] = ucb_task_run(&th->task);
+    th->status[0] = 1;
+    th->running   = false;
+
+    if (th->flags & UCB_THREAD_FLAG_DETACHED)
+        ucb_thread_free_impl(th);
+    return NULL;
+}
+#endif
+
+static inline ucb_thread* ucb_thread_new_flags(int flags)
+{
+    ucb_thread* th = ucb_calloc_type(1, ucb_thread);
+    if (th)
+    {
+        th->flags     = flags;
+        th->running   = false;
+        th->status[0] = 0;
+        th->id        = UCB_PID_INVALID;
+#ifdef _WIN32
+        th->handle = INVALID_HANDLE_VALUE;
+#else
+        th->handle = 0;
+#endif
+    }
+    return th;
 }
 
 ucb_pid ucb_thread_id(void)
@@ -171,75 +232,35 @@ ucb_pid ucb_thread_id(void)
 #endif
 }
 
-#if defined(_WIN32)
-static unsigned __stdcall win_thread_wrapper(void* arg)
+void ucb_thread_yield(void)
 {
-    ucb_thread* th = (ucb_thread*)arg;
-    th->id         = ucb_thread_id();
-    if (th->name)
-        set_thread_name(th);
-    if (th->priority != UCB_THREAD_PRIO_DEFAULT)
-        set_thread_prio_win32(th);
-
-    th->func(th->arg);
-    th->running = false;
-    if (th->exit_func)
-    {
-        th->exit_func(th->exit_arg, th->arg);
-    }
-    return 0;
-}
-#else
-static void* posix_thread_wrapper(void* arg)
-{
-    ucb_thread* th = (ucb_thread*)arg;
-    th->id         = ucb_thread_id();
-    if (th->name)
-        set_thread_name(th);
-
-    th->func(th->arg);
-    th->running = false;
-    if (th->exit_func)
-    {
-        th->exit_func(th->exit_arg, th->arg);
-    }
-    return NULL;
-}
-#endif
-
-ucb_thread* ucb_thread_new(int flags)
-{
-    UCB_VERIFY_RET(!((flags & UCB_THREAD_FLAG_JOINABLE) && (flags & UCB_THREAD_FLAG_DETACHED)),
-                   UCB_ERROR_INVALID_ARG,
-                   "Only one of UCB_THREAD_FLAG_JOINABLE or UCB_THREAD_FLAG_DETACHED may be set",
-                   UCB_NULL);
-
-    ucb_thread* th = ucb_calloc_type(1, ucb_thread);
-    if (th)
-    {
-        if (!(flags & UCB_THREAD_FLAG_DETACHED))
-            flags |= UCB_THREAD_FLAG_JOINABLE;
-        th->flags   = flags;
-        th->running = false;
 #ifdef _WIN32
-        th->handle = INVALID_HANDLE_VALUE;
+    SwitchToThread();
+#else
+    sched_yield();
 #endif
-    }
-    return th;
+}
+
+ucb_thread* ucb_thread_new()
+{
+    return ucb_thread_new_flags(UCB_THREAD_FLAG_JOINABLE);
+}
+
+ucb_thread* ucb_thread_new_detached()
+{
+    return ucb_thread_new_flags(UCB_THREAD_FLAG_DETACHED);
 }
 
 void ucb_thread_free(ucb_thread* th)
 {
-    if (!th)
-        return;
-    if (th->running && (th->flags & UCB_THREAD_FLAG_JOINABLE))
-    {
-        ucb_thread_join(th);
-    }
-    if (th->name)
-        ucb_free(th->name);
+    UCB_VERIFY_ARGS(th);
+    UCB_VERIFY(!th->running || (th->flags & UCB_THREAD_FLAG_JOINABLE), UCB_ERROR_INVALID_ARG,
+               "Thread is running and not joinable");
 
-    ucb_free(th);
+    if (th->flags & UCB_THREAD_FLAG_JOINABLE)
+        ucb_thread_join(th);
+
+    ucb_thread_free_impl(th);
 }
 
 void ucb_thread_set_name(ucb_thread* thread, const char* name)
@@ -298,31 +319,18 @@ bool ucb_thread_is_joinable(const ucb_thread* th)
     return th && (th->flags & UCB_THREAD_FLAG_JOINABLE);
 }
 
-void ucb_thread_set_func(ucb_thread* th, ucb_thread_func_t func, void* arg)
-{
-    UCB_VERIFY_ARGS(th && !th->running);
-    th->func = func;
-    th->arg  = arg;
-}
-
-void ucb_thread_set_exit_func(ucb_thread* th, ucb_thread_exit_func_t func, void* arg)
-{
-    UCB_VERIFY_ARGS(th && !th->running);
-    th->exit_func = func;
-    th->exit_arg  = arg;
-}
-
 ucb_pid ucb_thread_get_id(ucb_thread* th)
 {
-    return th ? th->id : 0;
+    return th ? th->id : UCB_PID_INVALID;
 }
 
-bool ucb_thread_start(ucb_thread* th)
+bool ucb_thread_start(ucb_thread* th, ucb_task task)
 {
-    // TODO: Nedds error checking
-    UCB_VERIFY_ARGS_RET(th, false);
+    // TODO: Needs error checking
+    UCB_VERIFY_ARGS_RET(th && task.func, false);
     UCB_VERIFY_RET(!th->running, UCB_ERROR_THREAD_BUSY, "Thread is already running", false);
-    UCB_VERIFY_RET(th->func, UCB_ERROR_INVALID_STATE, "Thread function is not set", false);
+    if (!ucb_task_validate(&task))
+        return false;
 
     if (th->stack_size == 0)
     {
@@ -330,9 +338,11 @@ bool ucb_thread_start(ucb_thread* th)
     }
     // UCB_DPRINT_INT("ucb_thread_start: stack_size = %zu\n", th->stack_size, "thread size");
 
-    th->running = true;
+    th->task      = task;
+    th->running   = true;
+    th->status[0] = 0;
+    th->id        = UCB_PID_INVALID;
 #if defined(_WIN32)
-
     unsigned threadaddr;
     int stack_size = (int)th->stack_size;
     th->handle = (HANDLE)_beginthreadex(NULL, stack_size, win_thread_wrapper, th, 0, &threadaddr);
@@ -344,7 +354,7 @@ bool ucb_thread_start(ucb_thread* th)
     if (th->flags & UCB_THREAD_FLAG_DETACHED)
     {
         CloseHandle(th->handle);
-        th->handle = UCB_NULL;
+        th->handle = INVALID_HANDLE_VALUE;
     }
 #else
     pthread_attr_t attr;
@@ -371,18 +381,33 @@ void ucb_thread_join(ucb_thread* th)
 {
     UCB_VERIFY_ARGS(th && (th->flags & UCB_THREAD_FLAG_JOINABLE));
 
-    // TODO: Nedds error checking
-
-    if (!th->running)
-        return;
 #if defined(_WIN32)
-    WaitForSingleObject(th->handle, INFINITE);
-    CloseHandle(th->handle);
-    th->handle = UCB_NULL;
+    if (th->handle != INVALID_HANDLE_VALUE)
+    {
+        DWORD ret = WaitForSingleObject(th->handle, INFINITE);
+        if (ret != 0)
+        {
+            if (ret == WAIT_FAILED)
+                UCB_VERIFY_WIN32(GetLastError(), "WaitForSingleObject failed");
+            else
+                UCB_VERIFY(false, UCB_ERRSYS_UNKNOWN,
+                           "WaitForSingleObject failed with unknown error");
+            // failover?
+        }
+        CloseHandle(th->handle);
+        th->handle = INVALID_HANDLE_VALUE;
+    }
 #else
-    int ret = pthread_join(th->handle, NULL);
-    if (ret != 0)
-        return;
+    if (th->handle != 0)
+    {
+        int ret = pthread_join(th->handle, NULL);
+        if (ret != 0)
+        {
+            UCB_VERIFY_ERRNO(ret, "pthread_join failed");
+            // failover?
+        }
+        th->handle = 0;
+    }
 #endif
     th->running = false;
 }
@@ -390,4 +415,14 @@ void ucb_thread_join(ucb_thread* th)
 bool ucb_thread_is_running(ucb_thread* th)
 {
     return th && th->running;
+}
+
+bool ucb_thread_get_task_status(const ucb_thread* th, int* status)
+{
+    UCB_VERIFY_ARGS_RET(th && (th->flags & UCB_THREAD_FLAG_JOINABLE), false);
+
+    if (!th->status[0])
+        return false;
+    *status = th->status[1];
+    return true;
 }

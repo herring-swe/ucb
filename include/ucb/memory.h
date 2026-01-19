@@ -1,10 +1,10 @@
 /**
  * @file memory.h
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Memory allocation routines
  *
  * Many of these are designed to return the allocation memory directly.
@@ -75,6 +75,14 @@ UCB_API void ucb_free(void* ptr);
 /* -------------------------------------------------------------------------- */
 
 #ifndef NDEBUG
+
+/**
+ * @defgroup MemDebug Memory debugging functions
+ * 
+ * @see memory.h
+ * @{
+ */
+
 UCB_API void* ucb_malloc_debug(size_t size, const char* file, int line);
 UCB_API void* ucb_calloc_debug(size_t num, size_t size, const char* file, int line);
 UCB_API void* ucb_realloc_debug(void* ptr, size_t size, const char* file, int line);
@@ -82,8 +90,14 @@ UCB_API void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, c
                                  int line);
 UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
 
-#ifndef UCB_MEMORY_IMPL
 /**
+ * @}
+ */
+
+#ifndef UCB_MEMORY_IMPL
+
+/**
+ * @cond INTERNAL
  * Override memory functions to include file and line information
  * Only for debug builds, see memdbh.h
  */
@@ -93,7 +107,12 @@ UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
 #define ucb_realloc2(ptr, num, free) ucb_realloc2_debug((ptr), (num), (free), __FILE__, __LINE__)
 #define ucb_free(ptr)                ucb_free_debug((ptr), __FILE__, __LINE__)
 
+/**
+ * @endcond
+ */
+
 #endif // UCB_MEMORY_IMPL
+
 #endif // NDEBUG
 
 /* -------------------------------------------------------------------------- */

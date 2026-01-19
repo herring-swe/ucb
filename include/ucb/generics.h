@@ -38,6 +38,8 @@
 #define UCB_CHAR_DUPLICATE 0
 #endif
 
+/** @cond INTERNAL */
+
 #if UCB_CHAR_DUPLICATE
 #define UCB_TYPE(a)                               \
     _Generic((a),                                 \
@@ -204,6 +206,8 @@
     _Generic((a) + (b), float: NAME##_f, double: NAME##_d)(a, b)
 #define UCB_GENERIC_FUNC_FLOAT_3(NAME, a, b, c) \
     _Generic((a) + (b) + (c), float: NAME##_f, double: NAME##_d)(a, b, c)
+
+/** @endcond */
 
 #endif // __cplusplus
 

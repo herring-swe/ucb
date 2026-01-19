@@ -1,15 +1,17 @@
 /**
  * @file mutex_private.h
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Private mutex type
  */
 
 #ifndef UCB_MUTEX_PRIVATE_H
 #define UCB_MUTEX_PRIVATE_H
+
+#include "ucb/mutex.h"
 
 #include "ucb/types.h"
 
@@ -30,7 +32,11 @@ struct ucb_mutex
 #else
     pthread_mutex_t handle;
 #endif
-    int flags;
+    bool recursive;
 };
+
+void ucb_mutex_init(ucb_mutex* mutex);
+void ucb_mutex_init_recursive(ucb_mutex* mutex);
+void ucb_mutex_release(ucb_mutex* mutex);
 
 #endif // UCB_MUTEX_PRIVATE_H

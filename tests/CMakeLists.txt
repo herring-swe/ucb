@@ -31,9 +31,9 @@ ucb_add_executable(ucb_tests LANGUAGE CXX)
 
 ucb_target_sources(ucb_tests PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
-    test_math.h
-    test_types.h
     common.h
+    test_tgfunc.h
+    test_types.h
 )
 
 ucb_target_sources(ucb_tests PRIVATE
@@ -42,14 +42,17 @@ ucb_target_sources(ucb_tests PRIVATE
     # Actual tests
     btrace.cpp
     buffer.cpp
-    math.cpp
+    common.cpp
+    container.cpp
     memory.cpp
+    tgfunc.cpp
+    threadpool.cpp
+    threads.cpp
     types.cpp
     unicode.cpp
-    threads.cpp
 
     # Pure C tests
-    test_math.c
+    test_tgfunc.c
     test_types.c
 
     ${NORM_TEST_FILE}

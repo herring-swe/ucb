@@ -15,6 +15,7 @@ ucb_target_public_headers(ucb FILES
     ucb/btrace.h
     ucb/buffer.h
     ucb/bufutil.h
+    ucb/cond.h
     ucb/cstring.h
     ucb/debug.h
     ucb/defines.h
@@ -23,19 +24,27 @@ ucb_target_public_headers(ucb FILES
     ucb/memory.h
     ucb/mutex.h
     ucb/string.h
+    ucb/task.h
     ucb/tgfunc.h
+    ucb/threadpool.h
     ucb/threads.h
     ucb/time.h
     ucb/ucb.h
     ucb/unicode.h
+
+    ucb/container/pqueue.h
 )
 
 ucb_target_sources(ucb PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     ucb/buffer_private.h
+    ucb/cond_private.h
     ucb/mutex_private.h
     ucb/string_private.h
     ucb/sys_private.h
+
+    ucb/container/common_private.h
+    ucb/container/pqueue_private.h
 
     FILE_SET generated_data TYPE HEADERS BASE_DIRS "${UNICODE_DATA_DIR}" FILES
     ${UNICODE_HEADERS}
@@ -46,6 +55,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/buffer_private.c
     ucb/buffer.c
     ucb/bufutil.c
+    ucb/cond.c
     ucb/cstring.c
     ucb/error_enum.c
     ucb/error_errno.c
@@ -55,10 +65,14 @@ ucb_target_sources(ucb PRIVATE
     ucb/mutex.c
     ucb/string.c
     ucb/sys_private.c
+    ucb/task.c
+    ucb/threadpool.c
     ucb/threads.c
     ucb/time.c
     ucb/ucb.c
     ucb/unicode.c
+
+    ucb/container/pqueue.c
 )
 
 if(WIN32)

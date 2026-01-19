@@ -1,10 +1,10 @@
 /**
  * @file memdbg.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Memory debugging functions implementation
  */
 
@@ -17,7 +17,6 @@
 #include "ucb/btrace.h"
 #include "ucb/config.h"
 #include "ucb/error.h"
-#include "ucb/math.h"
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
 #include "ucb/mutex_private.h"
@@ -75,6 +74,8 @@ static ucb_mutex s_mutex = {0};
 
 // Global setting
 static bool s_tracking_enabled = false;
+
+#define UCB_MAX(a, b) ((a) > (b) ? (a) : (b))
 
 /* -------------------------------------------------------------------------- */
 /*                              Standalone Utils                              */
@@ -205,9 +206,9 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             report->leaks = leaks;
         }
 
-        report->peak_alloc       = ucb_max(report->peak_alloc, tp->peak_alloc);
-        report->peak_size        = ucb_max(report->peak_size, tp->peak_size);
-        report->peak_alloc_block = ucb_max(report->peak_alloc_block, tp->peak_alloc_block);
+        report->peak_alloc       = UCB_MAX(report->peak_alloc, tp->peak_alloc);
+        report->peak_size        = UCB_MAX(report->peak_size, tp->peak_size);
+        report->peak_alloc_block = UCB_MAX(report->peak_alloc_block, tp->peak_alloc_block);
         report->total_alloc += tp->total_alloc;
         report->total_size += tp->total_size;
 
@@ -267,7 +268,7 @@ void ucb_mem_tracking_enable(void)
     if (s_tracking_enabled)
         return;
 
-    ucb_mutex_init(&s_mutex, UCB_MUTEX_DEFAULT);
+    ucb_mutex_init(&s_mutex);
     ucb_mutex_lock(&s_mutex);
     s_tracking_enabled = true;
 
@@ -411,7 +412,7 @@ void ucb_mem_tracking_pop(void)
 
     tp_up->peak_alloc += tp->peak_alloc;
     tp_up->peak_size += tp->peak_size;
-    tp_up->peak_alloc_block = ucb_max(tp_up->peak_alloc_block, tp->peak_alloc_block);
+    tp_up->peak_alloc_block = UCB_MAX(tp_up->peak_alloc_block, tp->peak_alloc_block);
 
     free(tp);
     s_trace_points[s_trace_level] = UCB_NULL;
@@ -484,9 +485,9 @@ static inline void* register_alloc(ucb_alloc_meta* entry)
     tp->total_alloc++;
     tp->total_size += entry->size;
 
-    tp->peak_alloc       = ucb_max(tp->current_alloc, tp->peak_alloc);
-    tp->peak_size        = ucb_max(tp->current_size, tp->peak_size);
-    tp->peak_alloc_block = ucb_max(entry->size, tp->peak_alloc_block);
+    tp->peak_alloc       = UCB_MAX(tp->current_alloc, tp->peak_alloc);
+    tp->peak_size        = UCB_MAX(tp->current_size, tp->peak_size);
+    tp->peak_alloc_block = UCB_MAX(entry->size, tp->peak_alloc_block);
 
     ucb_mutex_unlock(&s_mutex);
 
@@ -571,11 +572,9 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
     if (entry->magic != ALLOC_MAGIC)
     {
         ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
-                         "Invalid allocation, possible memory corruption at %p\n."
-                         "Current realloc of %zu bytes called from: %s:%d\n"
-                         "NOTE, the following info may be incorrect:\n"
-                         "Originally %zu bytes allocated at %s:%s",
-                         ptr, size, file, line, entry->size, entry->file, entry->line);
+                         "Invalid allocation, possible memory corruption at %p\n"
+                         "Current realloc of %zu bytes called from: %s:%d",
+                         ptr, size, file, line);
         // If allowed to continue, reallocate and register
         if (size > 0)
         {
@@ -669,11 +668,9 @@ void ucb_free_debug(void* ptr, const char* file, int line)
     else
     {
         ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
-                         "Invalid allocation, possible memory corruption at %p\n."
-                         "Current free called from: %s:%d\n"
-                         "NOTE, the following info may be incorrect:\n"
-                         "Originally %zu bytes allocated at %s:%s",
-                         ptr, file, line, entry->size, entry->file, entry->line);
+                         "Invalid allocation, possible memory corruption at %p\n"
+                         "Current free called from: %s:%d",
+                         ptr, file, line);
         // In this case, rather leak than free possibly invalid memory.
     }
 }

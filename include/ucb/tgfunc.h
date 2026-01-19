@@ -19,6 +19,8 @@
 #define UCB_EPSILON_FLT FLT_EPSILON
 #define UCB_EPSILON_DBL DBL_EPSILON
 
+/** @cond INTERNAL */
+
 #define UCB_MATH_FUNCS_IMPL(TNAME, TYPE)                                                         \
     static inline TYPE ucb_min_##TNAME(const TYPE a, const TYPE b)                               \
     {                                                                                            \
@@ -116,115 +118,132 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 #undef UCB_MATH_FUNCS_SIGNED_IMPL
 #undef UCB_MATH_FUNCS_FLOAT_IMPL
 
+/** @endcond */
+
 #ifndef __cplusplus
 
 /**
  * @brief Get smallest value
- * @return min of a and b
+ * 
  * Works for all primitives
+ * @return min of a and b
  */
 #define ucb_min(a, b) UCB_GENERIC_FUNC_2(ucb_min, a, b)
 
 /**
  * @brief Get largest value
- * @return max of a and b
+ * 
  * Works for all primitives
+ * @return max of a and b
  */
 #define ucb_max(a, b) UCB_GENERIC_FUNC_2(ucb_max, a, b)
 
 /**
  * @brief Clamp val between min and max
- * @return val if val is between min and max, otherwise min or max
+ * 
  * Works for all primitives
+ * @return val if val is between min and max, otherwise min or max
  */
 #define ucb_clamp(val, min, max) UCB_GENERIC_FUNC_3(ucb_clamp, val, min, max)
 
 /**
  * @brief Check if val is between min and max
- * @return bool true if val is between min and max
+ * 
  * Works for all primitives
+ * @return bool true if val is between min and max
  */
 #define ucb_in_range(val, min, max) UCB_GENERIC_FUNC_3(ucb_in_range, val, min, max)
 
 /**
  * @brief Swap value of two variables
+ * 
+ * Works for all primitives
  * @param a address of first value
  * @param b address of second value
- * Works for all primitives
  */
 #define ucb_swap(a, b) UCB_GENERIC_FUNC_2(ucb_swap, a, b)
 
 /**
  * @brief Return sign of val
- * @return int -1, 0 or 1
+ * 
  * Works for signed primitives
+ * @return int -1, 0 or 1
  */
 #define ucb_sign(val) UCB_GENERIC_FUNC_SIGNED_1(ucb_sign, val)
 
 /**
  * @brief Get absolute value
- * @return val or -val if val < 0
+ * 
  * Works for signed primitives
+ * @return val or -val if val < 0
  */
 #define ucb_abs(val) UCB_GENERIC_FUNC_SIGNED_1(ucb_abs, val)
 
 /**
  * @brief Check if two values are equal within epsilon
- * @return bool true if a and b are equal within epsilon
+ * 
  * Works for floating point primitives
+ * @return bool true if a and b are equal within epsilon
  */
 #define ucb_equal_eps(a, b, eps) UCB_GENERIC_FUNC_FLOAT_3(ucb_equal_eps, a, b, eps)
 
 /**
  * @brief Check if two values are equal within the smallest epsilon for that type
- * @return bool true if a and b are equal within epsilon
+ * 
  * Works for floating point primitives
+ * @return bool true if a and b are equal within epsilon
  */
 #define ucb_equal(a, b) UCB_GENERIC_FUNC_FLOAT_2(ucb_equal, a, b)
 
 /**
  * @brief Compare two values within epsilon
- * @return int 0 if equal, -1 if a < b, 1 if a > b
+ * 
  * Works for floating point primitives
+ * @return int 0 if equal, -1 if a < b, 1 if a > b
  */
 #define ucb_comp_eps(a, b, eps) UCB_GENERIC_FUNC_FLOAT_3(ucb_comp_eps, a, b, eps)
 
 /**
  * @brief Compare two values within the smallest epsilon for that type
- * @return int 0 if equal, -1 if a < b, 1 if a > b
+ * 
  * Works for floating point primitives
+ * @return int 0 if equal, -1 if a < b, 1 if a > b
  */
 #define ucb_comp(a, b) UCB_GENERIC_FUNC_FLOAT_2(ucb_comp, a, b)
 
 /**
  * @brief Approximate equality for floating point values
- * @return bool true if a and b are approximately equal
+ * 
  * Approximate equality is defined as a and b being within epsilon * max(|a|, |b|)
  * Works for floating point primitives
+ * @return bool true if a and b are approximately equal
  */
 #define ucb_approx_equal_eps(a, b, eps) UCB_GENERIC_FUNC_FLOAT_3(ucb_approx_equal_eps, a, b, eps)
 
 /**
  * @brief Approximate equality for floating point values using the smallest epsilon for that type
+ * 
+ * Works for floating point primitives
  * @return bool true if a and b are approximately equal
  * @see ucb_approx_equal_eps
- * Works for floating point primitives
  */
 #define ucb_approx_equal(a, b) UCB_GENERIC_FUNC_FLOAT_2(ucb_approx_equal, a, b)
 
 /**
  * @brief Approximate comparison for floating point values
+ * 
+ * Works for floating point primitives
  * @return int 0 if a and b are approximately equal, -1 if a < b, 1 if a > b
  * @see ucb_approx_equal_eps
- * Works for floating point primitives
  */
 #define ucb_approx_comp_eps(a, b, eps) UCB_GENERIC_FUNC_FLOAT_3(ucb_approx_comp_eps, a, b, eps)
 
 /**
  * @brief Approximate comparison for floating point values using the smallest epsilon for that type
+ * 
+ * Works for floating point primitives
  * @return int 0 if a and b are approximately equal, -1 if a < b, 1 if a > b
  * @see ucb_approx_equal_eps
- * Works for floating point primitives
  */
 #define ucb_approx_comp(a, b) UCB_GENERIC_FUNC_FLOAT_2(ucb_approx_comp, a, b)
 
@@ -233,7 +252,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
  * @param T The type of the values to swap
  * @param a The first value
  * @param b The second value
- * @note This macro is not type safe,
+ * @note This macro is not type safe
  */
 #define UCB_SWAP(T, a, b) \
     do                    \

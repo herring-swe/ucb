@@ -10,11 +10,11 @@
 
 #include "doctest.h"
 
-#include "test_math.h"
+#include "test_tgfunc.h"
 
 #include <cstdio>
 
-TEST_CASE("math")
+TEST_CASE("tgfunc")
 {
-    CHECK(test_math() == 0);
+    CHECK(test_tgfunc() == 0);
 }

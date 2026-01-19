@@ -1,11 +1,11 @@
 /**
- * @file test_math.h
- * 
+ * @file test_tgfunc.h
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
- * @brief math C tests header
+ *
+ * @brief tgfunc C tests header
  */
 
 #ifndef TESTS_TEST_MATH_H
@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-int test_math(void);
+int test_tgfunc(void);
 
 #ifdef __cplusplus
 }

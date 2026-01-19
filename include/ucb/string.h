@@ -44,11 +44,11 @@ static const uint32_t UCB_STR_NO_VERIFY = 0x02;
 struct ucb_str;
 typedef struct ucb_str ucb_str_t;
 
-typedef struct
+typedef struct ucb_str_result
 {
     ucb_ecode error;
     ucb_str_t* str;
-} ucb_str_result_t;
+} ucb_str_result;
 
 UCB_API ucb_str_t* ucb_str_new(const char* cstr, size_t len, uint32_t flags);
 UCB_API void ucb_str_free(ucb_str_t* str);

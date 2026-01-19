@@ -1,10 +1,10 @@
 /**
  * @file mutex.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Cross-platform mutex implementation
  */
 
@@ -12,48 +12,22 @@
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
 
-#include "ucb/mutex.h"
+#include "mutex_private.h"
 
 #include "ucb/error.h"
 #include "ucb/memory.h"
 #include "ucb/threads.h"
 
-#if defined(_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#else
-#include <pthread.h>
-#include <unistd.h>
-#endif
-
-struct ucb_mutex
-{
-#if defined(_WIN32)
-    CRITICAL_SECTION handle;
-    ucb_pid owner;
-    int count;
-#else
-    pthread_mutex_t handle;
-#endif
-    int flags;
-};
-
 // TODO Check return codes from system calls
 
-ucb_mutex* ucb_mutex_new(int flags)
-{
-    ucb_mutex* mutex = ucb_malloc_type(1, ucb_mutex);
-    if (!mutex)
-        return UCB_NULL;
-    ucb_mutex_init(mutex, flags);
-    return mutex;
-}
+#define MTX_STANDARD  false
+#define MTX_RECURSIVE true
 
-void ucb_mutex_init(ucb_mutex* mutex, int flags)
+static void ucb_mutex_init_common(ucb_mutex* mutex, bool recursive)
 {
     UCB_VERIFY_ARGS(mutex);
 
-    mutex->flags = flags;
+    mutex->recursive = recursive;
 #if defined(_WIN32)
     mutex->owner = UCB_PID_INVALID;
     mutex->count = 0;
@@ -61,7 +35,7 @@ void ucb_mutex_init(ucb_mutex* mutex, int flags)
 #else
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
-    if (mutex->flags & UCB_MUTEX_RECURSIVE)
+    if (mutex->recursive)
     {
         pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     }
@@ -70,6 +44,34 @@ void ucb_mutex_init(ucb_mutex* mutex, int flags)
         pthread_mutexattr_destroy(&attr);
     }
 #endif
+}
+
+ucb_mutex* ucb_mutex_new()
+{
+    ucb_mutex* mutex = ucb_malloc_type(1, ucb_mutex);
+    if (!mutex)
+        return UCB_NULL;
+    ucb_mutex_init_common(mutex, MTX_STANDARD);
+    return mutex;
+}
+
+ucb_mutex* ucb_mutex_new_recursive()
+{
+    ucb_mutex* mutex = ucb_malloc_type(1, ucb_mutex);
+    if (!mutex)
+        return UCB_NULL;
+    ucb_mutex_init_common(mutex, MTX_RECURSIVE);
+    return mutex;
+}
+
+void ucb_mutex_init(ucb_mutex* mutex)
+{
+    ucb_mutex_init_common(mutex, MTX_STANDARD);
+}
+
+void ucb_mutex_init_recursive(ucb_mutex* mutex)
+{
+    ucb_mutex_init_common(mutex, MTX_RECURSIVE);
 }
 
 void ucb_mutex_release(ucb_mutex* mutex)
@@ -93,12 +95,17 @@ void ucb_mutex_free(ucb_mutex* mutex)
     ucb_free(mutex);
 }
 
+bool ucb_mutex_is_recursive(const ucb_mutex* mutex)
+{
+    return mutex && mutex->recursive;
+}
+
 void ucb_mutex_lock(ucb_mutex* mutex)
 {
     UCB_VERIFY_ARGS(mutex);
 
 #if defined(_WIN32)
-    if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
+    if (mutex->recursive && mutex->owner == ucb_thread_id())
     {
         mutex->count++;
         return;
@@ -116,7 +123,7 @@ bool ucb_mutex_trylock(ucb_mutex* mutex)
     UCB_VERIFY_ARGS_RET(mutex, false);
 
 #if defined(_WIN32)
-    if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
+    if (mutex->recursive && mutex->owner == ucb_thread_id())
     {
         mutex->count++;
         return true;
@@ -139,7 +146,7 @@ void ucb_mutex_unlock(ucb_mutex* mutex)
     UCB_VERIFY_ARGS(mutex);
 
 #if defined(_WIN32)
-    if (mutex->flags & UCB_MUTEX_RECURSIVE && mutex->owner == ucb_thread_id())
+    if (mutex->recursive && mutex->owner == ucb_thread_id())
     {
         mutex->count--;
         if (mutex->count > 0)

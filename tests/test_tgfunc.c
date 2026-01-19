@@ -1,14 +1,14 @@
 /**
- * @file test_math.c
+ * @file test_tgfunc.c
  *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
  *
- * @brief math C test implementation
+ * @brief tgfunc C test implementation
  */
 
-#include "test_math.h"
+#include "test_tgfunc.h"
 
 #include "ucb/diag.h"
 #include "ucb/tgfunc.h"
@@ -168,7 +168,7 @@
         }                                                           \
     } while (0)
 
-int test_math(void)
+int test_tgfunc(void)
 {
     UCB_DIAG_PUSH()
     UCB_DIAG_IGN_DBL_PROM()
