@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['setup_0',['VSCode setup',['../md_doc_2markdown_2VSCode.html',1,'']]]
+  ['debugging_0',['Debugging',['../md_doc_2markdown_2_v_s_code.html#autotoc_md11',1,'']]]
 ];

@@ -1,0 +1,25 @@
+var task_8h =
+[
+    [ "ucb_task", "structucb__task.html", "structucb__task" ],
+    [ "UCB_TASK_PRIO_HIGH", "task_8h.html#a8f2a91f9c2bdb22baed1d50327885abf", null ],
+    [ "UCB_TASK_PRIO_HIGHEST", "task_8h.html#ae1bd2048e500ac9e6442a2bbd1e09a28", null ],
+    [ "UCB_TASK_PRIO_LOW", "task_8h.html#ace55e70ce36c96a9c4fa210d71eff872", null ],
+    [ "UCB_TASK_PRIO_LOWEST", "task_8h.html#ae31bd8d502406ca85f34d85a09e433d9", null ],
+    [ "UCB_TASK_PRIO_NORMAL", "task_8h.html#a52f5d0319819bbccf498c07b3a968969", null ],
+    [ "ucb_task", "task_8h.html#a7714a83c8d425f48c643156979380c78", null ],
+    [ "ucb_task_callback", "task_8h.html#ad1bc2313f6696cf07e2fb4a459f005c8", null ],
+    [ "ucb_task_func", "task_8h.html#ad0843c58290e22aed4831789427373dd", null ],
+    [ "ucb_task_clone", "task_8h.html#a64b224115f3553f6162804e1b23523d2", null ],
+    [ "ucb_task_cmp_prio", "task_8h.html#ab803fbccdcc66994ed8e2e351de26847", null ],
+    [ "ucb_task_copy", "task_8h.html#abbf358bf99bc56eafb23351d316aed89", null ],
+    [ "ucb_task_free", "task_8h.html#a2b9dc4a1ebd56f252bc95e2ac6d8f768", null ],
+    [ "ucb_task_init", "task_8h.html#a4a93fbd3fc5ceb8ea1032c06062ec567", null ],
+    [ "ucb_task_make", "task_8h.html#a61a0a237d2e4e9256a4f9814c0ba7147", null ],
+    [ "ucb_task_new", "task_8h.html#afc1e03e88327a526ea2cc975858d46b3", null ],
+    [ "ucb_task_release", "task_8h.html#a98aa3d743960530278d116b328b36117", null ],
+    [ "ucb_task_run", "task_8h.html#a97674c84d339db0e722e91db32065210", null ],
+    [ "ucb_task_set_callback", "task_8h.html#a96155b4297e22600f60b4977355926d0", null ],
+    [ "ucb_task_set_func", "task_8h.html#aaad49bcfd73d15f5f4875dff9d786a35", null ],
+    [ "ucb_task_set_priority", "task_8h.html#a772957d8cf99d11cd8bc80e96de2a6e8", null ],
+    [ "ucb_task_validate", "task_8h.html#a20a552e048fda2650e0e61f695f31d4f", null ]
+];

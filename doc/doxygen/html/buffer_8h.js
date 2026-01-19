@@ -16,6 +16,7 @@ var buffer_8h =
     [ "ucb_buffer_fit", "buffer_8h.html#adde319842ffe71520a83af3ae423ddda", null ],
     [ "ucb_buffer_free", "buffer_8h.html#ac317b52c7f21efda1a3e8d4d9bdca649", null ],
     [ "ucb_buffer_grow", "buffer_8h.html#a3893c1a8d52e9a1936de071c86f2fc5d", null ],
+    [ "ucb_buffer_grow_double", "buffer_8h.html#a7b37758186fec6435299a4a15eb4ee89", null ],
     [ "ucb_buffer_init_heap", "buffer_8h.html#ace8139e7f3657b31f42ca3488f90cce3", null ],
     [ "ucb_buffer_init_static", "buffer_8h.html#a400d188e4d5874ce0e1767c61ddf703f", null ],
     [ "ucb_buffer_new_heap", "buffer_8h.html#a1efac518cbe3f96d8e7e3ed9755dbb58", null ],

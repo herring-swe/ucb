@@ -1,5 +1,5 @@
 var examples =
 [
-    [ "Unsafe", "Unsafe-example.html", null ],
-    [ "Safe", "Safe-example.html", null ]
+    [ "Unsafe", "_unsafe-example.html", null ],
+    [ "Safe", "_safe-example.html", null ]
 ];
