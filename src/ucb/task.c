@@ -55,9 +55,8 @@ void ucb_task_free(ucb_task* task)
 
 bool ucb_task_validate(const ucb_task* task)
 {
-    UCB_VERIFY_RET(task->priority >= UCB_TASK_PRIO_LOWEST &&
-                       task->priority <= UCB_TASK_PRIO_HIGHEST,
-                   UCB_ERROR_INVALID_ARG, "Invalid task priority", false);
+    UCB_VERIFY(task->priority >= UCB_TASK_PRIO_LOWEST && task->priority <= UCB_TASK_PRIO_HIGHEST,
+               UCB_ERROR_INVALID_ARG, "Invalid task priority");
     return true;
 }
 
@@ -112,7 +111,7 @@ void ucb_task_set_priority(ucb_task* task, int priority)
 
 int ucb_task_run(ucb_task* task)
 {
-    UCB_VERIFY_ARGS_RET(task && task->func, INT_MAX);
+    UCB_VERIFY_ARGS(task && task->func);
     int status = task->func(task->arg);
     if (task->callback)
     {

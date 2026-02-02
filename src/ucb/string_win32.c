@@ -1,10 +1,10 @@
 /**
  * @file string_win32.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief String type windows specific implementation
  */
 
@@ -15,7 +15,7 @@
 #include "ucb/defines.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
-#include "ucb/string_private.h"
+#include "ucb/string.h"
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -24,9 +24,9 @@
 
 #include <stdlib.h>
 
-ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** perr)
+ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** perr)
 {
-    UCB_VERIFY_ARGS_RET(wstr, UCB_NULL);
+    UCB_VERIFY_ARGS(wstr);
 
     // Check string length if needed, once
     // Include NULL character in query and the output will also include it
@@ -35,7 +35,7 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error*
     {
         // Special case, empty string
         if (wstr[0] == L'\0')
-            return ucb_str_new("", 0, UCB_STR_DEFAULT);
+            return ucb_str_new_empty();
 
         wlen       = wcslen(wstr);
         query_wlen = (int)wlen + 1;
@@ -50,7 +50,7 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error*
         WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstr, query_wlen, NULL, 0, NULL, NULL);
     if (ret == 0)
     {
-        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
+        ucb_throw_win32(perr, GetLastError(), UCB_NULL);
         return UCB_NULL;
     }
     str_size = (size_t)ret;
@@ -64,17 +64,19 @@ ucb_str_t* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error*
                               (int)str_size, NULL, NULL);
     if (ret == 0)
     {
-        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
+        ucb_throw_win32(perr, GetLastError(), UCB_NULL);
         ucb_free(buffer);
         return UCB_NULL;
     }
 
-    return ucb_str_new(buffer, str_size - 1, UCB_STR_NO_VERIFY);
+    ucb_str* str = ucb_str_new_empty();
+    ucb_str_adopt(str, buffer, str_size - 1, str_size);
+    return str;
 }
 
-wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, const ucb_error** perr)
+wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, const ucb_error** perr)
 {
-    UCB_VERIFY_ARGS_RET(str, UCB_NULL);
+    UCB_VERIFY_ARGS(str);
 
     if (wlen_out)
         *wlen_out = 0;
@@ -89,7 +91,7 @@ wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, const ucb_erro
     int ret = MultiByteToWideChar(CP_UTF8, 0, str->data, (int)str->size + 1, NULL, 0);
     if (ret == 0)
     {
-        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
+        ucb_throw_win32(perr, GetLastError(), UCB_NULL);
         return UCB_NULL;
     }
     size_t wstr_size = (size_t)ret;
@@ -100,7 +102,7 @@ wchar_t* ucb_str_to_wchar(const ucb_str_t* str, size_t* wlen_out, const ucb_erro
     ret = MultiByteToWideChar(CP_UTF8, 0, str->data, (int)str->size + 1, wstr, (int)wstr_size);
     if (ret == 0)
     {
-        ucb_throw_on_win32(perr, GetLastError(), UCB_NULL);
+        ucb_throw_win32(perr, GetLastError(), UCB_NULL);
         ucb_free(wstr);
         return UCB_NULL;
     }

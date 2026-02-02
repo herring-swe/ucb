@@ -16,6 +16,13 @@
 #define UCB_PID_INVALID 0
 
 /**
+ * @brief Used to indicate no position in a string.
+ *
+ * Each function may specify if this value holds a special meaning.
+ */
+#define UCB_NPOS (SIZE_MAX - 1)
+
+/**
  * Default error type.
  * Always 0 for no error (UCB_OK).
  */

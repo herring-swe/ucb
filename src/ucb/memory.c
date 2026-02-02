@@ -1,10 +1,10 @@
 /**
  * @file memory.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Memory allocation routines implementation
  */
 
@@ -31,8 +31,7 @@ void* ucb_malloc(size_t size)
         mem = malloc(size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
-                         "ucb_malloc: Failed to allocate %zu bytes of memory", size);
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate %zu bytes of memory", size);
     }
     return mem;
 }
@@ -45,9 +44,8 @@ void* ucb_calloc(size_t num, size_t size)
         mem = calloc(num, size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
-                         "ucb_calloc: Failed to allocate %zu * %zu = %zu bytes of memory", num,
-                         size);
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate %zu * %zu = %zu bytes of memory",
+                  num, size);
     }
     return mem;
 }
@@ -65,8 +63,7 @@ void* ucb_realloc2(void* ptr, size_t size, bool free_on_failure)
         mem = realloc(ptr, size);
         if (UCB_LIKELY(mem))
             return mem;
-        ucb_fatal_format(UCB_ERROR_OUT_OF_MEMORY,
-                         "ucb_realloc2: Failed to allocate %zu bytes of memory", size);
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate %zu bytes of memory", size);
         // Avoid unintentional leak
         if (free_on_failure && ptr)
             free(ptr);
@@ -91,7 +88,7 @@ void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void* UCB_RES
                   size_t src_size)
 {
 #if defined(__STDC_LIB_EXT1__) || defined(_WIN32)
-    UCB_VERIFY_ERRNO(memcpy_s(dest, dest_size, src, src_size), "Failed to copy memory");
+    UCB_REPORT_ERRNO(memcpy_s(dest, dest_size, src, src_size), "Failed to copy memory");
 #else
     UCB_VERIFY(dest && src, UCB_ERRSYS_EINVAL, "Invalid arguments");
     UCB_VERIFY(dest_size >= src_size, UCB_ERRSYS_ERANGE, "Destination buffer too small");

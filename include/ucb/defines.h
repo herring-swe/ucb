@@ -12,12 +12,6 @@
 
 #define UCB_UNUSED(x) (void)(x)
 
-#ifdef _MSC_VER
-#define UCB_RESTRICT __restrict
-#else
-#define UCB_RESTRICT __restrict__
-#endif
-
 // clang-format off
 #ifdef __cplusplus
     #define UCB_NULL nullptr
@@ -25,15 +19,12 @@
     #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
         // C23 or later
         #define UCB_NULL nullptr    
-        #define UCB_NORETURN [[ noreturn ]]
     #else
         #define UCB_NULL ((void*)0)
         #if defined(__GNUC__) || defined(__clang__)
-            #define UCB_NORETURN __attribute__((noreturn))
             #define UCB_LIKELY(x) __builtin_expect(!!(x), 1)
             #define UCB_UNLIKELY(x) __builtin_expect(!!(x), 0)
         #elif defined(_WIN32)
-            #define UCB_NORETURN _Noreturn
             #define UCB_LIKELY(x) (x)
             #define UCB_UNLIKELY(x) (x)
         #endif

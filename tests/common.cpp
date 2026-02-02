@@ -17,18 +17,22 @@
 
 static thread_local TestFailureFixture* s_fixture = nullptr;
 
+jmp_buf FailureSetJump;
+
 /**
  * Catches errors without failing so we can validate invalid arguments etc
  */
 
 TestFailureFixture::TestFailureFixture() : m_prev_func(ucb_error_set_func(error_collect))
 {
-    s_fixture = this;
-    num_error = 0;
+    s_fixture  = this;
+    num_error  = 0;
+    num_aborts = 0;
 }
 
 TestFailureFixture::~TestFailureFixture()
 {
+    // std::signal(SIGABRT, SIG_DFL);
     ucb_error_set_func(m_prev_func);
     s_fixture = nullptr;
 }
@@ -39,4 +43,17 @@ void TestFailureFixture::error_collect(ucb_errlvl lvl, const ucb_error* e)
     ucb_error_print(lvl, e);
     s_fixture->errors.push_back({lvl, e->code});
     s_fixture->num_error++;
+}
+
+void TestFailureFixture::abort_handler(int)
+{
+    std::cerr << "Caught abort" << std::endl;
+    if (!s_fixture)
+    {
+        std::cerr << "No fixture set" << std::endl;
+        std::abort();
+        return;
+    }
+    s_fixture->num_aborts++;
+    longjmp(FailureSetJump, 1);
 }

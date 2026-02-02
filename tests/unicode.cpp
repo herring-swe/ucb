@@ -1,10 +1,10 @@
 /**
  * @file unicode.cpp
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief unicode tests
  */
 
@@ -103,8 +103,8 @@ static inline void hexstr_to_utf8(const char* input, char** output)
         ucb_buffer_push(&buf, &cp, sizeof(uint32_t));
     }
 
-    size_t count = buf.used / sizeof(uint32_t);
-    buf.used     = 0; // reset buffer
+    size_t count = buf.size / sizeof(uint32_t);
+    buf.size     = 0; // reset buffer
     ucb_uc_encode_codepoints(&buf, reinterpret_cast<uint32_t*>(buf.data), count, nullptr);
     ucb_buffer_push(&buf, "\0", 1);
     ucb_buffer_transfer(&buf, reinterpret_cast<void**>(output), nullptr, nullptr, nullptr);
@@ -124,31 +124,63 @@ static std::string hexstr_to_utf8(std::string& cp_str)
     return result;
 }
 
+static inline bool check_with_null(const char* input, size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        if (input[i] == '\0')
+            return true;
+    }
+    return false;
+}
+
+static void print_null(const char* input, size_t len)
+{
+    for (size_t i = 0; i < len; i++)
+    {
+        if (input[i] == '\0')
+            printf("\\0");
+        else
+            printf("%c", input[i]);
+    }
+    printf("\n");
+}
+
 static inline void test_basics(const char* input, size_t len, size_t num_cp, size_t num_chars)
 {
-    size_t check_len;
-    printf("%s\n", input);
-    REQUIRE(ucb_uc_validate(input, &check_len));
-    CHECK(len == check_len);
-    CHECK(len == strlen(input));
-    CHECK(ucb_uc_num_cp(input) == num_cp);
-    CHECK(ucb_uc_num_chars(input) == num_chars);
+    bool with_null = check_with_null(input, len);
+
+    if (with_null)
+        print_null(input, len);
+    else
+        printf("%s\n", input);
+    if (!with_null)
+        CHECK(len == strlen(input));
+    REQUIRE(ucb_uc_validate(input, len, UCB_NULL));
+    CHECK(ucb_uc_num_cp(input, len) == num_cp);
+    if (!with_null)
+        CHECK(ucb_uc_num_cp(input, UCB_NPOS) == num_cp);
+    CHECK(ucb_uc_num_chars(input, len) == num_chars);
 }
 
 static inline void test_grapheme(const char* input, size_t len, size_t num_cp, size_t num_chars,
                                  size_t num_fail_chars)
 {
-    size_t check_len;
-    printf("%s\n", input);
-    REQUIRE(ucb_uc_validate(input, &check_len));
-    CHECK(len == check_len);
-    CHECK(len == strlen(input));
-    CHECK(ucb_uc_num_cp(input) == num_cp);
+    bool with_null = check_with_null(input, len);
+
+    if (with_null)
+        print_null(input, len);
+    else
+        printf("%s\n", input);
+    if (!with_null)
+        CHECK(len == strlen(input));
+    REQUIRE(ucb_uc_validate(input, len, UCB_NULL));
+    CHECK(ucb_uc_num_cp(input, len) == num_cp);
 
     // This should not fail with grapheme clusters
-    CHECK(ucb_uc_num_chars(input) != num_chars);
+    CHECK(ucb_uc_num_chars(input, len) != num_chars);
     // This is the wrong report
-    CHECK(ucb_uc_num_chars(input) == num_fail_chars);
+    CHECK(ucb_uc_num_chars(input, len) == num_fail_chars);
 }
 
 static inline void test_mapping(const char* input, const char* lower, const char* upper,
@@ -165,7 +197,8 @@ static inline void test_mapping(const char* input, const char* lower, const char
 
     for (int i = 0; i < 5; i++)
     {
-        REQUIRE(ucb_uc_validate(strings[i], &len));
+        len = strlen(strings[i]);
+        REQUIRE(ucb_uc_validate(strings[i], len, UCB_NULL));
         REQUIRE(len == strlen(strings[i]));
 
         if (func[i] == nullptr)
@@ -294,6 +327,7 @@ TEST_CASE("unicode basics")
     test_basics("A\u0300\u0316", 5, 3, 1);    // 'A' + combining grave + combining inverted breve
     test_basics("\xF0\x9F\x98\x80", 4, 1, 1); // Grinning face emoji (U+1F600)
     test_basics("A\u0301B\u0302", 6, 4, 2);   // 'A' + acute, 'B' + circumflex
+    test_basics("a\0b\0c", 5, 5, 5);          // String with embedded nulls
 
     UCB_MEMTRACK_POP();
 }
@@ -337,14 +371,14 @@ TEST_CASE("unicode normalization")
 {
     UCB_MEMTRACK_PUSH();
 
-    test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_UC_NORM_NFD);
-    test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_UC_NORM_NFC);
+    test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_NORM_NFD);
+    test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_NORM_NFC);
 
     test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
               "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_UC_NORM_NFD);
+              UCB_NORM_NFD);
     test_norm_hex(
         "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏ",
         "41 325 61 325 42 307 62 307 42 323 62 323 42 331 62 331 43 327 301 63 327 301 44 307 64 "
@@ -355,7 +389,7 @@ TEST_CASE("unicode normalization")
         "323 4c 323 304 6c 323 304 4c 331 6c 331 4c 32d 6c 32d 4d 301 6d 301 4d 307 6d 307 4d "
         "323 6d 323 4e 307 6e 307 4e 323 6e 323 4e 331 6e 331 4e 32d 6e 32d 4f 303 301 6f 303 "
         "301 4f 303 308 6f 303 308",
-        UCB_UC_NORM_NFKD);
+        UCB_NORM_NFKD);
     test_norm_hex(
         "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏ",
         "1e00 1e01 1e02 1e03 1e04 1e05 1e06 1e07 1e08 1e09 1e0a 1e0b 1e0c 1e0d 1e0e 1e0f 1e10 1e11 "
@@ -363,42 +397,42 @@ TEST_CASE("unicode normalization")
         "1e24 1e25 1e26 1e27 1e28 1e29 1e2a 1e2b 1e2c 1e2d 1e2e 1e2f 1e30 1e31 1e32 1e33 1e34 1e35 "
         "1e36 1e37 1e38 1e39 1e3a 1e3b 1e3c 1e3d 1e3e 1e3f 1e40 1e41 1e42 1e43 1e44 1e45 1e46 1e47 "
         "1e48 1e49 1e4a 1e4b 1e4c 1e4d 1e4e 1e4f",
-        UCB_UC_NORM_NFC);
+        UCB_NORM_NFC);
 
     test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
               "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_UC_NORM_NFD);
+              UCB_NORM_NFD);
     test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
               "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_UC_NORM_NFKD);
+              UCB_NORM_NFKD);
     test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
               "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_UC_NORM_NFC);
+              UCB_NORM_NFC);
     test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
               "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
               "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_UC_NORM_NFKC);
+              UCB_NORM_NFKC);
 
     // Hangul + Latin tests
-    test_norm("가각 Héllö", "가각 Héllö", UCB_UC_NORM_NFD);
-    test_norm("가각 Héllö", "가각 Héllö", UCB_UC_NORM_NFC);
+    test_norm("가각 Héllö", "가각 Héllö", UCB_NORM_NFD);
+    test_norm("가각 Héllö", "가각 Héllö", UCB_NORM_NFC);
 
     // Hangul + Latin + Combining Marks + Ligatures
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
-              UCB_UC_NORM_NFD);
+              UCB_NORM_NFD);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
-              UCB_UC_NORM_NFC);
+              UCB_NORM_NFC);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
-              UCB_UC_NORM_NFKC);
+              UCB_NORM_NFKC);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
-              UCB_UC_NORM_NFKD);
+              UCB_NORM_NFKD);
 
     UCB_MEMTRACK_POP();
 }
@@ -484,51 +518,51 @@ TEST_CASE("unicode official normalization test")
 
         // NFD
         form = "NFD = toNFD(INPUT)";
-        test_norm(test.input.c_str(), test.nfd.c_str(), UCB_UC_NORM_NFD);
+        test_norm(test.input.c_str(), test.nfd.c_str(), UCB_NORM_NFD);
         form = "NFD = toNFD(NFC)";
-        test_norm(test.nfc.c_str(), test.nfd.c_str(), UCB_UC_NORM_NFD);
+        test_norm(test.nfc.c_str(), test.nfd.c_str(), UCB_NORM_NFD);
         form = "NFD = toNFD(NFD)";
-        test_norm(test.nfd.c_str(), test.nfd.c_str(), UCB_UC_NORM_NFD);
+        test_norm(test.nfd.c_str(), test.nfd.c_str(), UCB_NORM_NFD);
         form = "NFKD = toNFD(NFKC)";
-        test_norm(test.nfkc.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFD);
+        test_norm(test.nfkc.c_str(), test.nfkd.c_str(), UCB_NORM_NFD);
         form = "NFKD = toNFD(NFKD)";
-        test_norm(test.nfkd.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFD);
+        test_norm(test.nfkd.c_str(), test.nfkd.c_str(), UCB_NORM_NFD);
 
         // NFC
         form = "NFC = toNFC(INPUT)";
-        test_norm(test.input.c_str(), test.nfc.c_str(), UCB_UC_NORM_NFC);
+        test_norm(test.input.c_str(), test.nfc.c_str(), UCB_NORM_NFC);
         form = "NFC = toNFC(NFC)";
-        test_norm(test.nfc.c_str(), test.nfc.c_str(), UCB_UC_NORM_NFC);
+        test_norm(test.nfc.c_str(), test.nfc.c_str(), UCB_NORM_NFC);
         form = "NFC = toNFC(NFD)";
-        test_norm(test.nfd.c_str(), test.nfc.c_str(), UCB_UC_NORM_NFC);
+        test_norm(test.nfd.c_str(), test.nfc.c_str(), UCB_NORM_NFC);
         form = "NFKC = toNFC(NFKC)";
-        test_norm(test.nfkc.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFC);
+        test_norm(test.nfkc.c_str(), test.nfkc.c_str(), UCB_NORM_NFC);
         form = "NFKC = toNFC(NFKD)";
-        test_norm(test.nfkd.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFC);
+        test_norm(test.nfkd.c_str(), test.nfkc.c_str(), UCB_NORM_NFC);
 
         // NFKD
         form = "NFKD = toNFKD(INPUT)";
-        test_norm(test.input.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFKD);
+        test_norm(test.input.c_str(), test.nfkd.c_str(), UCB_NORM_NFKD);
         form = "NFKD = toNFKD(NFC)";
-        test_norm(test.nfc.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFKD);
+        test_norm(test.nfc.c_str(), test.nfkd.c_str(), UCB_NORM_NFKD);
         form = "NFKD = toNFKD(NFD)";
-        test_norm(test.nfd.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFKD);
+        test_norm(test.nfd.c_str(), test.nfkd.c_str(), UCB_NORM_NFKD);
         form = "NFKD = toNFKD(NFKC)";
-        test_norm(test.nfkc.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFKD);
+        test_norm(test.nfkc.c_str(), test.nfkd.c_str(), UCB_NORM_NFKD);
         form = "NFKD = toNFKD(NFKD)";
-        test_norm(test.nfkd.c_str(), test.nfkd.c_str(), UCB_UC_NORM_NFKD);
+        test_norm(test.nfkd.c_str(), test.nfkd.c_str(), UCB_NORM_NFKD);
 
         // NFKC
         form = "NFKC = toNFKC(INPUT)";
-        test_norm(test.input.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFKC);
+        test_norm(test.input.c_str(), test.nfkc.c_str(), UCB_NORM_NFKC);
         form = "NFKC = toNFKC(NFC)";
-        test_norm(test.nfc.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFKC);
+        test_norm(test.nfc.c_str(), test.nfkc.c_str(), UCB_NORM_NFKC);
         form = "NFKC = toNFKC(NFD)";
-        test_norm(test.nfd.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFKC);
+        test_norm(test.nfd.c_str(), test.nfkc.c_str(), UCB_NORM_NFKC);
         form = "NFKC = toNFKC(NFKC)";
-        test_norm(test.nfkc.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFKC);
+        test_norm(test.nfkc.c_str(), test.nfkc.c_str(), UCB_NORM_NFKC);
         form = "NFKC = toNFKC(NFKD)";
-        test_norm(test.nfkd.c_str(), test.nfkc.c_str(), UCB_UC_NORM_NFKC);
+        test_norm(test.nfkd.c_str(), test.nfkc.c_str(), UCB_NORM_NFKC);
     }
 
     std::cout << "Number of tests definitions: " << tests.size() << std::endl;
@@ -570,32 +604,32 @@ TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest
         for (const auto& test : tests)
         {
             // NFD
-            passed += test_norm_bench(test.input, test.nfd, UCB_UC_NORM_NFD);
-            passed += test_norm_bench(test.nfc, test.nfd, UCB_UC_NORM_NFD);
-            passed += test_norm_bench(test.nfd, test.nfd, UCB_UC_NORM_NFD);
-            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_UC_NORM_NFD);
-            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_UC_NORM_NFD);
+            passed += test_norm_bench(test.input, test.nfd, UCB_NORM_NFD);
+            passed += test_norm_bench(test.nfc, test.nfd, UCB_NORM_NFD);
+            passed += test_norm_bench(test.nfd, test.nfd, UCB_NORM_NFD);
+            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_NORM_NFD);
+            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_NORM_NFD);
 
             // NFC
-            passed += test_norm_bench(test.input, test.nfc, UCB_UC_NORM_NFC);
-            passed += test_norm_bench(test.nfc, test.nfc, UCB_UC_NORM_NFC);
-            passed += test_norm_bench(test.nfd, test.nfc, UCB_UC_NORM_NFC);
-            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_UC_NORM_NFC);
-            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_UC_NORM_NFC);
+            passed += test_norm_bench(test.input, test.nfc, UCB_NORM_NFC);
+            passed += test_norm_bench(test.nfc, test.nfc, UCB_NORM_NFC);
+            passed += test_norm_bench(test.nfd, test.nfc, UCB_NORM_NFC);
+            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_NORM_NFC);
+            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_NORM_NFC);
 
             // NFKD
-            passed += test_norm_bench(test.input, test.nfkd, UCB_UC_NORM_NFKD);
-            passed += test_norm_bench(test.nfc, test.nfkd, UCB_UC_NORM_NFKD);
-            passed += test_norm_bench(test.nfd, test.nfkd, UCB_UC_NORM_NFKD);
-            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_UC_NORM_NFKD);
-            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_UC_NORM_NFKD);
+            passed += test_norm_bench(test.input, test.nfkd, UCB_NORM_NFKD);
+            passed += test_norm_bench(test.nfc, test.nfkd, UCB_NORM_NFKD);
+            passed += test_norm_bench(test.nfd, test.nfkd, UCB_NORM_NFKD);
+            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_NORM_NFKD);
+            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_NORM_NFKD);
 
             // NFKC
-            passed += test_norm_bench(test.input, test.nfkc, UCB_UC_NORM_NFKC);
-            passed += test_norm_bench(test.nfc, test.nfkc, UCB_UC_NORM_NFKC);
-            passed += test_norm_bench(test.nfd, test.nfkc, UCB_UC_NORM_NFKC);
-            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_UC_NORM_NFKC);
-            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_UC_NORM_NFKC);
+            passed += test_norm_bench(test.input, test.nfkc, UCB_NORM_NFKC);
+            passed += test_norm_bench(test.nfc, test.nfkc, UCB_NORM_NFKC);
+            passed += test_norm_bench(test.nfd, test.nfkc, UCB_NORM_NFKC);
+            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_NORM_NFKC);
+            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_NORM_NFKC);
         }
     }
 

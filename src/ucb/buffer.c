@@ -1,10 +1,10 @@
 /**
  * @file buffer.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief General buffer interface implementation
  */
 
@@ -33,11 +33,11 @@ ucb_buffer* ucb_buffer_new_static(void* data, size_t size)
 
 bool ucb_buffer_init_static(ucb_buffer* buf, void* data, size_t size)
 {
-    UCB_VERIFY_ARGS_RET(buf && data && size > 0, false);
+    UCB_VERIFY_ARGS(buf && data && size > 0);
 
     memset(buf, 0, sizeof(ucb_buffer));
     buf->data     = (char*)data;
-    buf->capacity = size;
+    buf->alloc = size;
     return true;
 }
 
@@ -61,7 +61,7 @@ static bool ucb_buffer_resize_heap(ucb_buffer* buf, size_t new_capacity)
         return false;
 
     buf->data     = tmp;
-    buf->capacity = new_capacity;
+    buf->alloc = new_capacity;
     return true;
 }
 
@@ -77,15 +77,15 @@ static bool ucb_buffer_transfer_heap(ucb_buffer* buf, void** out_data, size_t* o
     UCB_UNUSED(perr);
     *out_data = buf->data;
     if (out_used)
-        *out_used = buf->used;
+        *out_used = buf->size;
     if (out_capacity)
-        *out_capacity = buf->capacity;
+        *out_capacity = buf->alloc;
     return true;
 }
 
 bool ucb_buffer_init_heap(ucb_buffer* buf, size_t initial_capacity)
 {
-    UCB_VERIFY_ARGS_RET(buf && initial_capacity > 0, false);
+    UCB_VERIFY_ARGS(buf && initial_capacity > 0);
 
     memset(buf, 0, sizeof(ucb_buffer));
 
@@ -93,8 +93,8 @@ bool ucb_buffer_init_heap(ucb_buffer* buf, size_t initial_capacity)
     if (!buf->data)
         return false;
 
-    buf->capacity       = initial_capacity;
-    buf->used           = 0;
+    buf->alloc       = initial_capacity;
+    buf->size           = 0;
     buf->_impl_resize   = ucb_buffer_resize_heap;
     buf->_impl_free     = ucb_buffer_free_heap;
     buf->_impl_transfer = ucb_buffer_transfer_heap;
@@ -135,9 +135,8 @@ bool ucb_buffer_can_transfer(ucb_buffer* buf)
 bool ucb_buffer_transfer(ucb_buffer* buf, void** out_data, size_t* out_size, size_t* out_capacity,
                          const ucb_error** perr)
 {
-    UCB_VERIFY_ARGS_RET(buf && out_data, false);
-    UCB_VERIFY_RET(buf->_impl_transfer, UCB_ERROR_BUFFER, "Buffer does not support transfer",
-                   false);
+    UCB_VERIFY_ARGS(buf && out_data);
+    UCB_VERIFY(buf->_impl_transfer, UCB_ERROR_BUFFER, "Buffer does not support transfer");
 
     bool success = buf->_impl_transfer(buf, out_data, out_size, out_capacity, perr);
     if (success)
@@ -154,39 +153,39 @@ bool ucb_buffer_can_resize(ucb_buffer* buf)
 
 bool ucb_buffer_resize(ucb_buffer* buf, size_t new_capacity)
 {
-    UCB_VERIFY_ARGS_RET(buf, false);
-    UCB_VERIFY_RET(buf->_impl_resize, UCB_ERROR_BUFFER, "Buffer does not support resize", false);
+    UCB_VERIFY_ARGS(buf);
+    UCB_VERIFY(buf->_impl_resize, UCB_ERROR_BUFFER, "Buffer does not support resize");
 
-    bool success = buf->capacity == new_capacity || buf->_impl_resize(buf, new_capacity);
+    bool success = buf->alloc == new_capacity || buf->_impl_resize(buf, new_capacity);
     if (success)
     {
-        assert(buf->capacity == new_capacity);
-        if (buf->used > buf->capacity)
-            buf->used = buf->capacity;
+        assert(buf->alloc == new_capacity);
+        if (buf->size > buf->alloc)
+            buf->size = buf->alloc;
     }
     return success;
 }
 
 bool ucb_buffer_grow(ucb_buffer* buf, size_t inc_capacity)
 {
-    UCB_VERIFY_ARGS_RET(buf, false);
+    UCB_VERIFY_ARGS(buf);
     if (buf->grow_func)
-        inc_capacity = buf->grow_func(buf, inc_capacity) - buf->capacity;
-    return ucb_buffer_resize(buf, buf->capacity + inc_capacity);
+        inc_capacity = buf->grow_func(buf, inc_capacity) - buf->alloc;
+    return ucb_buffer_resize(buf, buf->alloc + inc_capacity);
 }
 
 bool ucb_buffer_ensure(ucb_buffer* buf, size_t size)
 {
-    UCB_VERIFY_ARGS_RET(buf, false);
-    if (buf->used + size <= buf->capacity)
+    UCB_VERIFY_ARGS(buf);
+    if (buf->size + size <= buf->alloc)
         return true;
-    return ucb_buffer_grow(buf, buf->used + size - buf->capacity);
+    return ucb_buffer_grow(buf, buf->size + size - buf->alloc);
 }
 
 void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_t offset)
 {
     UCB_VERIFY_ARGS(buf && out_data);
-    UCB_VERIFY(offset + size > buf->used, UCB_ERROR_OUT_OF_BOUNDS, "Read out of bounds");
+    UCB_VERIFY(offset + size > buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Read out of bounds");
 
     if (size > 0)
     {
@@ -196,17 +195,17 @@ void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_t offset
 
 bool ucb_buffer_push(ucb_buffer* buf, const void* data, size_t size)
 {
-    UCB_VERIFY_ARGS_RET(buf && data, false);
+    UCB_VERIFY_ARGS(buf && data);
     if (size > 0)
     {
-        if (buf->used + size > buf->capacity)
+        if (buf->size + size > buf->alloc)
         {
-            if (!ucb_buffer_grow(buf, buf->used + size - buf->capacity))
+            if (!ucb_buffer_grow(buf, buf->size + size - buf->alloc))
                 return false;
         }
 
-        memcpy(buf->data + buf->used, data, size);
-        buf->used += size;
+        memcpy(buf->data + buf->size, data, size);
+        buf->size += size;
     }
     return true;
 }
@@ -222,23 +221,23 @@ int ucb_buffer_push_format(ucb_buffer* buf, const char* fmt, ...)
 
 int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
 {
-    UCB_VERIFY_ARGS_RET(buf && fmt, false);
+    UCB_VERIFY_ARGS(buf && fmt);
     int size = vsnprintf(UCB_NULL, 0, fmt, args);
     if (size < 0)
     {
-        UCB_VERIFY_ERRNO(errno, "Failed to format string for buffer");
+        UCB_REPORT_ERRNO(errno, "Failed to format string for buffer");
     }
     else if (size == 0)
     {
         ucb_buffer_ensure(buf, 1);
-        buf->data[buf->used++] = '\0';
+        buf->data[buf->size++] = '\0';
     }
     if (size > 0)
     {
         if (!ucb_buffer_ensure(buf, size + 1))
             return -1;
-        vsnprintf((char*)buf->data + buf->used, size + 1, fmt, args);
-        buf->used += size + 1;
+        vsnprintf((char*)buf->data + buf->size, size + 1, fmt, args);
+        buf->size += size + 1;
     }
     return size;
 }
@@ -246,28 +245,28 @@ int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
 void ucb_buffer_pop(ucb_buffer* buf, void* out_data, size_t size)
 {
     UCB_VERIFY_ARGS(buf && out_data);
-    UCB_VERIFY(size <= buf->used, UCB_ERROR_OUT_OF_BOUNDS, "Not enough data in buffer");
+    UCB_VERIFY(size <= buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Not enough data in buffer");
 
     if (size > 0)
     {
         if (out_data)
-            memcpy(out_data, buf->data + buf->used - size, size);
-        buf->used -= size;
+            memcpy(out_data, buf->data + buf->size - size, size);
+        buf->size -= size;
     }
 }
 
 void ucb_buffer_clear(ucb_buffer* buf)
 {
     UCB_VERIFY_ARGS(buf);
-    buf->used = 0;
+    buf->size = 0;
 }
 
 bool ucb_buffer_fit(ucb_buffer* buf)
 {
-    UCB_VERIFY_ARGS_RET(buf, false);
-    if (buf->used == buf->capacity)
+    UCB_VERIFY_ARGS(buf);
+    if (buf->size == buf->alloc)
         return true;
-    return ucb_buffer_resize(buf, buf->used);
+    return ucb_buffer_resize(buf, buf->size);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -280,7 +279,7 @@ ucb_ecode ucb_buffer_view_init(ucb_buffer_view* view, ucb_buffer* buf, size_t of
     if (!view || !buf)
         return UCB_ERROR_INVALID_ARG;
 
-    if (offset < buf->used)
+    if (offset < buf->size)
         return UCB_ERROR_INVALID_ARG;
 
     // TODO Should register view with buffer
@@ -312,7 +311,7 @@ bool ucb_buffer_view_is_full(ucb_buffer_view* view)
     if (!view || !view->buf)
         return true;
 
-    size_t capacity = (view->buf->capacity - view->offset) / view->element_size;
+    size_t capacity = (view->buf->alloc - view->offset) / view->element_size;
     return view->count >= capacity;
 }
 
@@ -353,7 +352,7 @@ size_t ucb_buffer_view_get_capacity(ucb_buffer_view* view)
     if (!view || !view->buf)
         return 0;
 
-    return (view->buf->capacity - view->offset) / view->element_size;
+    return (view->buf->alloc - view->offset) / view->element_size;
 }
 
 ucb_ecode ucb_buffer_view_grow(ucb_buffer_view* view, size_t inc_count)
@@ -371,7 +370,7 @@ ucb_ecode ucb_buffer_view_ensure(ucb_buffer_view* view, size_t count)
 
     // Take offset into consideration
     size_t bytes_total = (count + view->count) * view->element_size;
-    size_t bytes_free  = view->buf->capacity - view->offset;
+    size_t bytes_free  = view->buf->alloc - view->offset;
     if (bytes_free < bytes_total)
         return ucb_buffer_grow(view->buf, bytes_total - bytes_free);
 
@@ -385,7 +384,7 @@ ucb_ecode ucb_buffer_view_push(ucb_buffer_view* view, const void* data, size_t c
 
     size_t bytes_used = view->count * view->element_size;
     size_t bytes_need = count * view->element_size;
-    size_t bytes_free = view->buf->capacity - view->offset;
+    size_t bytes_free = view->buf->alloc - view->offset;
     if (bytes_free < bytes_used + bytes_need)
     {
         ucb_ecode err = ucb_buffer_grow(view->buf, bytes_used + bytes_need - bytes_free);

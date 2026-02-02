@@ -1,10 +1,10 @@
 /**
  * @file cstring.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Cross-platform C string functions implementation
  */
 
@@ -119,10 +119,10 @@ int ucb_cstr_snprintf(char* restrict buffer, size_t count, const char* restrict 
 
 int ucb_cstr_vsnprintf(char* buffer, size_t count, const char* fmt, va_list vlist)
 {
-    UCB_VERIFY_ARGS_RET(fmt && (buffer ? count > 0 : count == 0), -1);
+    UCB_VERIFY_ARGS(fmt && (buffer ? count > 0 : count == 0));
     int ret = vsnprintf(buffer, count, fmt, vlist);
     if (ret < 0)
-        UCB_VERIFY_ERRNO(errno, "Failed call to vsnprintf");
+        UCB_REPORT_ERRNO(errno, "Failed call to vsnprintf");
     return ret;
 }
 

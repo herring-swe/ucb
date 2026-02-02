@@ -1,10 +1,10 @@
 /**
  * @file error_win32.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Error handling windows implementation
  */
 
@@ -17,7 +17,7 @@
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
 #include "ucb/memory.h"
-#include "ucb/string_private.h"
+#include "ucb/string.h"
 
 #if _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -191,7 +191,7 @@ char* ucb_err_msg_win32(uint32_t err)
         return UCB_NULL;
     }
     // FIXME: Make low-level
-    ucb_str_t* str = ucb_str_from_wchar(wstr, wcslen(wstr), UCB_NULL);
+    ucb_str* str = ucb_str_from_wchar(wstr, wcslen(wstr), UCB_NULL);
     LocalFree(wstr);
 
     char* data = UCB_NULL;
@@ -203,26 +203,28 @@ char* ucb_err_msg_win32(uint32_t err)
     return data;
 }
 
-bool ucb_report_on_win32(uint32_t status, ucb_errlvl lvl, const char* msg, const char* function)
+bool ucb_report_win32(uint32_t status, const char* UCB_RESTRICT msg, const char* UCB_RESTRICT function)
 {
     if (status == 0)
         return false;
     if (msg)
     {
-        ucb_error_report(lvl, ucb_error_format(ucb_err_wrap_win32(status), "%s: %s", function, msg));
+        ucb_error_report(UCB_ERRLVL_SYSTEM,
+                         ucb_error_format(ucb_err_wrap_win32(status), "%s: %s", function, msg));
     }
     else
     {
         char* errmsg = ucb_err_msg_win32(status);
-        ucb_error_report(lvl, ucb_error_format(ucb_err_wrap_win32(status), "%s: Unexpected error - %s",
-                                            function, errmsg ? errmsg : "Unknown error"));
+        ucb_error_report(UCB_ERRLVL_SYSTEM,
+                         ucb_error_format(ucb_err_wrap_win32(status), "%s: Unexpected error - %s",
+                                          function, errmsg ? errmsg : "Unknown error"));
         if (errmsg)
             ucb_free(errmsg);
     }
     return true;
 }
 
-bool ucb_throw_on_win32(const ucb_error** perr, uint32_t status, const char* msg)
+bool ucb_throw_win32(const ucb_error** perr, uint32_t status, const char* msg)
 {
     if (status == 0)
         return false;

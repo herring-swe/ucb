@@ -106,7 +106,7 @@ static void set_thread_prio_win32(ucb_thread* th)
     int prio = map_prio(th->priority, THREAD_PRIORITY_LOWEST, THREAD_PRIORITY_HIGHEST);
     if (!SetThreadPriority(th->handle, prio))
     {
-        UCB_WARN(UCB_ERRSYS_UNKNOWN, "Failed to set priority for thread");
+        UCB_WARN("Failed to set priority for thread");
     }
 }
 
@@ -136,7 +136,7 @@ static void set_thread_prio_posix(ucb_thread* th, pthread_attr_t* attr)
 
     if (!success)
     {
-        UCB_WARN(UCB_ERRSYS_UNKNOWN, "Failed to set priority for thread");
+        UCB_WARN("Failed to set priority for thread");
     }
 }
 
@@ -327,8 +327,8 @@ ucb_pid ucb_thread_get_id(ucb_thread* th)
 bool ucb_thread_start(ucb_thread* th, ucb_task task)
 {
     // TODO: Needs error checking
-    UCB_VERIFY_ARGS_RET(th && task.func, false);
-    UCB_VERIFY_RET(!th->running, UCB_ERROR_THREAD_BUSY, "Thread is already running", false);
+    UCB_VERIFY_ARGS(th && task.func);
+    UCB_VERIFY(!th->running, UCB_ERROR_THREAD_BUSY, "Thread is already running");
     if (!ucb_task_validate(&task))
         return false;
 
@@ -388,7 +388,7 @@ void ucb_thread_join(ucb_thread* th)
         if (ret != 0)
         {
             if (ret == WAIT_FAILED)
-                UCB_VERIFY_WIN32(GetLastError(), "WaitForSingleObject failed");
+                UCB_REPORT_WIN32(GetLastError(), "WaitForSingleObject failed");
             else
                 UCB_VERIFY(false, UCB_ERRSYS_UNKNOWN,
                            "WaitForSingleObject failed with unknown error");
@@ -403,7 +403,7 @@ void ucb_thread_join(ucb_thread* th)
         int ret = pthread_join(th->handle, NULL);
         if (ret != 0)
         {
-            UCB_VERIFY_ERRNO(ret, "pthread_join failed");
+            UCB_REPORT_ERRNO(ret, "pthread_join failed");
             // failover?
         }
         th->handle = 0;
@@ -419,7 +419,7 @@ bool ucb_thread_is_running(ucb_thread* th)
 
 bool ucb_thread_get_task_status(const ucb_thread* th, int* status)
 {
-    UCB_VERIFY_ARGS_RET(th && (th->flags & UCB_THREAD_FLAG_JOINABLE), false);
+    UCB_VERIFY_ARGS(th && (th->flags & UCB_THREAD_FLAG_JOINABLE));
 
     if (!th->status[0])
         return false;

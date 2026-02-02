@@ -33,8 +33,8 @@ struct ucb_pqueue
     ucb_mutex* mutex; // NULL if not thread-safe
 };
 
-void ucb_pqueue_init(ucb_pqueue* pqueue, ucb_pqueue_args args);
-void ucb_pqueue_init_mt(ucb_pqueue* pqueue, ucb_pqueue_args args);
+bool ucb_pqueue_init(ucb_pqueue* pqueue, ucb_pqueue_args args);
+bool ucb_pqueue_init_mt(ucb_pqueue* pqueue, ucb_pqueue_args args);
 void ucb_pqueue_release(ucb_pqueue* pqueue);
 
 #endif // UCB_PQUEUE_PRIVATE_H

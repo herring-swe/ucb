@@ -39,7 +39,7 @@ static void ucb_mutex_init_common(ucb_mutex* mutex, bool recursive)
     {
         pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     }
-    if (UCB_VERIFY_ERRNO(pthread_mutex_init(&mutex->handle, &attr), "Failed to initialize mutex"))
+    if (UCB_REPORT_ERRNO(pthread_mutex_init(&mutex->handle, &attr), "Failed to initialize mutex"))
     {
         pthread_mutexattr_destroy(&attr);
     }
@@ -83,7 +83,7 @@ void ucb_mutex_release(ucb_mutex* mutex)
                "Mutex locked during release");
     DeleteCriticalSection(&mutex->handle);
 #else
-    UCB_VERIFY_ERRNO(pthread_mutex_destroy(&mutex->handle), "Failed to destroy mutex");
+    UCB_REPORT_ERRNO(pthread_mutex_destroy(&mutex->handle), "Failed to destroy mutex");
 #endif
 }
 
@@ -114,13 +114,13 @@ void ucb_mutex_lock(ucb_mutex* mutex)
     mutex->owner = ucb_thread_id();
     mutex->count = 1;
 #else
-    UCB_VERIFY_ERRNO(pthread_mutex_lock(&mutex->handle), "Failed to lock mutex");
+    UCB_REPORT_ERRNO(pthread_mutex_lock(&mutex->handle), "Failed to lock mutex");
 #endif
 }
 
 bool ucb_mutex_trylock(ucb_mutex* mutex)
 {
-    UCB_VERIFY_ARGS_RET(mutex, false);
+    UCB_VERIFY_ARGS(mutex);
 
 #if defined(_WIN32)
     if (mutex->recursive && mutex->owner == ucb_thread_id())
@@ -136,7 +136,7 @@ bool ucb_mutex_trylock(ucb_mutex* mutex)
     }
     return false;
 #else
-    UCB_VERIFY_ERRNO(pthread_mutex_trylock(&mutex->handle) == 0, "Failed to lock mutex");
+    UCB_REPORT_ERRNO(pthread_mutex_trylock(&mutex->handle) == 0, "Failed to lock mutex");
     return true;
 #endif
 }
@@ -156,6 +156,6 @@ void ucb_mutex_unlock(ucb_mutex* mutex)
     mutex->count = 0;
     mutex->owner = UCB_PID_INVALID;
 #else
-    UCB_VERIFY_ERRNO(pthread_mutex_unlock(&mutex->handle), "Failed to unlock mutex");
+    UCB_REPORT_ERRNO(pthread_mutex_unlock(&mutex->handle), "Failed to unlock mutex");
 #endif
 }

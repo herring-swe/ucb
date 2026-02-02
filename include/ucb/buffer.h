@@ -3,7 +3,7 @@
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief General buffer interface
  */
 
@@ -68,6 +68,9 @@ typedef bool (*ucb_buffer_transfer_func)(ucb_buffer* buf, void** out_data, size_
 typedef size_t (*ucb_buffer_grow_func)(ucb_buffer* buf, size_t size_needed);
 
 /**
+ * @struct ucb_buffer
+ * @brief Byte buffer type
+ *
  * A byte buffer for storing sequential data.
  * It can have multiple implementations.
  *
@@ -84,38 +87,46 @@ typedef size_t (*ucb_buffer_grow_func)(ucb_buffer* buf, size_t size_needed);
  * to the current memory. For this reason, it is recommended to
  * only use offsets.
  *
- * @example Unsafe usage:
+ * Unsafe usage:
+ * @code
  * ucb_buffer* buf = ucb_buffer_new_heap(1024);
  * char* data = buf->data;
  * ucb_buffer_resize(buf, 2048);
  * data[0] = 'a'; // This is now invalid.
+ * @endcode
  *
- * @example Safe usage:
+ * Safe usage:
+ * @code
  * ucb_buffer* buf = ucb_buffer_new_heap(1024);
  * size_t offset = 0;
  * ucb_buffer_resize(buf, 2048);
  * buf->data[offset] = 'a';
+ * @endcode
  */
 struct ucb_buffer
 {
-    char* data;                     // Memory
-    size_t used;                    // Number used bytes in memory
-    size_t capacity;                // Number of bytes allocated
-    ucb_buffer_grow_func grow_func; // If UCB_NULL, always allocate requested size as-is.
+    char* data;                     ///< Memory
+    size_t size;                    ///< Number used bytes in memory
+    size_t alloc;                   ///< Number of bytes allocated
+    ucb_buffer_grow_func grow_func; ///< If UCB_NULL, always allocate requested size as-is.
 
     // Implementation specific data must never be called by user
-    void* _impl;                             // Reserved for implementation specific data.
-    ucb_buffer_resize_func _impl_resize;     // If UCB_NULL, resize not allowed.
-    ucb_buffer_free_func _impl_free;         // If UCB_NULL, free not needed (static buffer).
-    ucb_buffer_transfer_func _impl_transfer; // If UCB_NULL, release not allowed.
+    void* _impl;                             ///< Reserved for implementation specific data.
+    ucb_buffer_resize_func _impl_resize;     ///< If UCB_NULL, resize not allowed.
+    ucb_buffer_free_func _impl_free;         ///< If UCB_NULL, free not needed (static buffer).
+    ucb_buffer_transfer_func _impl_transfer; ///< If UCB_NULL, release not allowed.
 };
 
+/**
+ * @struct ucb_buffer_view
+ * @brief A view into a buffer.
+ */
 typedef struct ucb_buffer_view
 {
     ucb_buffer* buf;
-    size_t offset;       // Start offset in bytes to parent buf
-    size_t element_size; // Element size in bytes
-    size_t count;        // Number of elements
+    size_t offset;       ///< Start offset in bytes to parent buf
+    size_t element_size; ///< Element size in bytes
+    size_t count;        ///< Number of elements
 } ucb_buffer_view;
 
 /* -------------------------------------------------------------------------- */
@@ -205,6 +216,7 @@ UCB_API bool ucb_buffer_resize(ucb_buffer* buf, size_t new_capacity);
  * It may use a user-defined grow function if one is set, otherwise
  * size will be added to the current size.
  * Calls ucb_buffer_resize to do the actual resize.
+ * @param buf the buffer
  * @param inc_capacity number of bytes to grow from current capacity
  * @return true on success
  * @see ucb_buffer_grow_func
@@ -216,6 +228,7 @@ UCB_API bool ucb_buffer_grow(ucb_buffer* buf, size_t inc_capacity);
  * Ensure that a certain amount of bytes are available as free space in the buffer.
  * If the buffer capacity is too small, it will be grown to accomodate the request.
  * Calls ucb_buffer_grow if needed
+ * @param buf the buffer
  * @param size size to ensure
  * @return true on success
  * @see ucb_buffer_grow
@@ -224,6 +237,7 @@ UCB_API bool ucb_buffer_ensure(ucb_buffer* buf, size_t size);
 
 /**
  * Read from the buffer at a given offset.
+ * @param buf the buffer
  * @param out_data pointer to data that will be set
  * @param size number of bytes to read
  * @param offset offset to read from
@@ -233,6 +247,7 @@ UCB_API void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_
 /**
  * Push data to the end of the buffer, growing the buffer if needed.
  * Calls ucb_buffer_grow if needed
+ * @param buf the buffer
  * @param data data to push, must be at least size bytes
  * @param size number of bytes to push
  * @return true on success, false if buffer is full and cannot grow
@@ -241,6 +256,8 @@ UCB_API bool ucb_buffer_push(ucb_buffer* buf, const void* data, size_t size);
 
 /**
  * Formats and appends string to buffer. The buffer may grow as needed.
+ *
+ * @param buf the buffer
  * @param fmt a format string
  * @param ... arguments to format
  * @return length of string written, excluding null terminator, or -1 on failure
@@ -249,6 +266,7 @@ UCB_API int ucb_buffer_push_format(ucb_buffer* buf, const char* fmt, ...);
 
 /**
  * Formats and appends string to buffer. The buffer may grow as needed.
+ * @param buf the buffer
  * @param fmt a format string
  * @param args arguments to format
  * @return length of string written, excluding null terminator, or -1 on failure
@@ -258,6 +276,7 @@ UCB_API int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list ar
 /**
  * Copies the last size data from the buffer and reduce the buffers used size.
  * Does not shrink the buffers capacity or modify it's data
+ * @param buf the buffer
  * @param out_data pointer to data that will be set
  * @param size number of bytes to read
  */
@@ -279,8 +298,8 @@ UCB_API bool ucb_buffer_fit(ucb_buffer* buf);
 
 static inline size_t ucb_buffer_grow_double(ucb_buffer* buf, size_t size_needed)
 {
-    size_t cap = buf->capacity * 2;
-    while (size_needed > cap - buf->used)
+    size_t cap = buf->alloc * 2;
+    while (size_needed > cap - buf->size)
         cap *= 2;
     return cap;
 }

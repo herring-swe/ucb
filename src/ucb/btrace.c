@@ -1,10 +1,10 @@
 /**
  * @file btrace.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Cross-platform backtrace implementation
  */
 
@@ -34,8 +34,8 @@
 #ifdef _WIN32
 static size_t grow_25(ucb_buffer* buf, size_t size_needed)
 {
-    size_t cap = (buf->capacity * 125) / 100;
-    while (size_needed > cap - buf->used)
+    size_t cap = (buf->alloc * 125) / 100;
+    while (size_needed > cap - buf->size)
         cap = (cap * 125) / 100;
     return cap;
 }
@@ -193,7 +193,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
             goto cleanup;
         }
         buf.grow_func = grow_25;
-        buf.used      = array_size;
+        buf.size      = array_size;
 
         for (int i = 0; i < frames; ++i)
         {
@@ -201,7 +201,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
             int slen = format_line(&buf, callstack[i], process, symbol);
             if (slen < 0)
             {
-                UCB_WARN(UCB_ERRSYS_UNKNOWN, "Failed to format line for backtrace");
+                UCB_WARN("Failed to format line for backtrace");
                 frames = i;
                 if (!frames)
                     ucb_buffer_release(&buf);
@@ -211,7 +211,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
         if (buf.data)
         {
             ucb_buffer_fit(&buf);
-            UCB_DPRINT("Backtrace buffer initial: %zu, final: %zu\n", total_size, buf.capacity);
+            UCB_DPRINT("Backtrace buffer initial: %zu, final: %zu\n", total_size, buf.alloc);
             ucb_buffer_transfer(&buf, &(void*)strs, &total_size, UCB_NULL, UCB_NULL);
             ucb_buffer_release(&buf);
 
@@ -253,7 +253,7 @@ cleanup:
     if (frames <= 1 || !strs)
     {
         frames = 0;
-        UCB_WARN(UCB_ERRSYS_UNKNOWN, "Failed to get backtrace");
+        UCB_WARN("Failed to get backtrace");
     }
 
     bt->count = frames;

@@ -88,7 +88,7 @@ static void ucb_threadpool_start_impl(ucb_threadpool* pool)
             .arg  = pool,
         };
 
-        pool->stop = false;
+        pool->stop    = false;
         pool->running = true;
         for (size_t i = 0; i < pool->num_threads; i++)
         {
@@ -99,7 +99,7 @@ static void ucb_threadpool_start_impl(ucb_threadpool* pool)
 
 ucb_threadpool* ucb_threadpool_new(size_t num_threads)
 {
-    UCB_VERIFY_ARGS_RET(num_threads > 0, UCB_NULL);
+    UCB_VERIFY_ARGS(num_threads > 0);
 
     ucb_threadpool* pool = ucb_malloc_type(1, ucb_threadpool);
     if (pool)
@@ -178,8 +178,8 @@ void ucb_threadpool_set_default_callback(ucb_threadpool* pool, ucb_task_callback
 
 bool ucb_threadpool_add_task(ucb_threadpool* pool, const ucb_task* task)
 {
-    UCB_VERIFY_ARGS_RET(pool && task, false);
-    UCB_VERIFY_RET(task->func, UCB_ERROR_INVALID_ARG, "Task function must be set", false);
+    UCB_VERIFY_ARGS(pool && task);
+    UCB_VERIFY(task->func, UCB_ERROR_INVALID_ARG, "Task function must be set");
 
     ucb_mutex_lock(&pool->lock);
 
@@ -213,7 +213,7 @@ void ucb_threadpool_start(ucb_threadpool* pool)
 
 size_t ucb_threadpool_num_running(ucb_threadpool* pool)
 {
-    UCB_VERIFY_ARGS_RET(pool, 0);
+    UCB_VERIFY_ARGS(pool);
     ucb_mutex_lock(&pool->lock);
     size_t ret = pool->num_running;
     ucb_mutex_unlock(&pool->lock);
@@ -222,7 +222,7 @@ size_t ucb_threadpool_num_running(ucb_threadpool* pool)
 
 size_t ucb_threadpool_num_queued(ucb_threadpool* pool)
 {
-    UCB_VERIFY_ARGS_RET(pool, 0);
+    UCB_VERIFY_ARGS(pool);
     ucb_mutex_lock(&pool->lock);
     size_t ret = ucb_pqueue_size(&pool->tasks);
     ucb_mutex_unlock(&pool->lock);

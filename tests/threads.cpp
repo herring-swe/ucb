@@ -243,9 +243,10 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
 
     SUBCASE("Null Arguments")
     {
-        ucb_thread_set_name(nullptr, "fail");
-        ucb_thread_set_priority(nullptr, UCB_THREAD_PRIO_HIGH);
+        CHECK_ABORTS(ucb_thread_set_name(nullptr, "fail"));
+        CHECK_ABORTS(ucb_thread_set_priority(nullptr, UCB_THREAD_PRIO_HIGH));
 
+        REQUIRE(num_aborts == 2);
         REQUIRE(num_error == 2);
         for (int i = 0; i < num_error; i++)
         {
@@ -262,9 +263,10 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
         task.func     = dummy_worker;
 
         REQUIRE(ucb_thread_start(th, task) == true);
-        REQUIRE(ucb_thread_start(th, task) == false); // Already running
+        CHECK_ABORTS(ucb_thread_start(th, task)); // Already running
         ucb_thread_join(th);
 
+        REQUIRE(num_aborts == 1);
         REQUIRE(num_error == 1);
         REQUIRE(errors[0].code == UCB_ERROR_THREAD_BUSY);
         ucb_thread_free(th);
@@ -273,11 +275,12 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
     SUBCASE("Invalid Priority")
     {
         th = ucb_thread_new();
-        ucb_thread_set_priority(th, UCB_THREAD_PRIO_MIN - 1);
+        CHECK_ABORTS(ucb_thread_set_priority(th, UCB_THREAD_PRIO_MIN - 1));
         REQUIRE(ucb_thread_get_priority(th) == UCB_THREAD_PRIO_DEFAULT);
-        ucb_thread_set_priority(th, UCB_THREAD_PRIO_MAX + 1);
+        CHECK_ABORTS(ucb_thread_set_priority(th, UCB_THREAD_PRIO_MAX + 1));
         REQUIRE(ucb_thread_get_priority(th) == UCB_THREAD_PRIO_DEFAULT);
 
+        REQUIRE(num_aborts == 2);
         REQUIRE(num_error == 2);
         REQUIRE(errors[0].code == UCB_ERROR_INVALID_ARG);
         REQUIRE(errors[1].code == UCB_ERROR_INVALID_ARG);

@@ -30,6 +30,7 @@ ucb_target_public_headers(ucb FILES
     ucb/threads.h
     ucb/time.h
     ucb/ucb.h
+    ucb/unicode_enum.h
     ucb/unicode.h
 
     ucb/container/pqueue.h
@@ -40,7 +41,6 @@ ucb_target_sources(ucb PRIVATE
     ucb/buffer_private.h
     ucb/cond_private.h
     ucb/mutex_private.h
-    ucb/string_private.h
     ucb/sys_private.h
 
     ucb/container/common_private.h
@@ -70,6 +70,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/threads.c
     ucb/time.c
     ucb/ucb.c
+    ucb/unicode_enum.c
     ucb/unicode.c
 
     ucb/container/pqueue.c

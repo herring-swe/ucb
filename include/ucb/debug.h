@@ -23,7 +23,7 @@
     {                                                                            \
         if (!(expr))                                                             \
         {                                                                        \
-            ucb_fatal_format(code, "%s: Assertion failure - %s", __func__, msg); \
+            ucb_report_fatal(code, "%s: Assertion failure - %s", __func__, msg); \
             abort();                                                             \
         }                                                                        \
     } while (0)
@@ -34,8 +34,6 @@
 #ifdef _WIN32
 #define UCB_ASSERT_WIN32(status, msg) UCB_ASSERT(status == 0, ucb_err_wrap_win32(status), msg)
 #endif
-
-#define UCB_WARN(code, fmt, ...) ucb_warn_format(code, "%s: " fmt, __func__, ##__VA_ARGS__)
 
 #define UCB_PRINT(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
 
@@ -53,8 +51,6 @@
 #ifdef _WIN32
 #define UCB_ASSERT_WIN32(status, msg) ((void)0)
 #endif
-
-#define UCB_WARN(code, fmt, ...) ((void)0)
 
 #define UCB_PRINT(fmt, ...) ((void)0)
 

@@ -1,10 +1,10 @@
 /**
  * @file error_errno.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Error handling errno implementation
  */
 
@@ -12,7 +12,6 @@
 
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
-#include "ucb/string_private.h"
 
 #include <errno.h>
 #include <string.h>
@@ -579,26 +578,25 @@ ucb_ecode ucb_err_get_errno(void)
     return ucb_err_wrap_errno(errno);
 }
 
-bool ucb_report_on_status(int status, ucb_errlvl lvl, const char* restrict msg,
-                          const char* restrict function)
+bool ucb_report_errno(int status, const char* UCB_RESTRICT msg, const char* UCB_RESTRICT function)
 {
     if (status == 0)
         return false;
     if (msg)
     {
-        ucb_error_report(lvl,
+        ucb_error_report(UCB_ERRLVL_SYSTEM,
                          ucb_error_format(ucb_err_wrap_errno(status), "%s: %s", function, msg));
     }
     else
     {
-        ucb_error_report(lvl,
+        ucb_error_report(UCB_ERRLVL_SYSTEM,
                          ucb_error_format(ucb_err_wrap_errno(status), "%s: Unexpected error - %s",
                                           function, strerror(status)));
     }
     return true;
 }
 
-bool ucb_throw_on_status(const ucb_error** perr, int status, const char* msg)
+bool ucb_throw_errno(const ucb_error** perr, int status, const char* msg)
 {
     if (status == 0)
         return false;

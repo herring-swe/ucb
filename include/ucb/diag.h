@@ -3,9 +3,9 @@
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Cross-compiler diagnostic macros
- * 
+ *
  * Supports GCC, Clang and MSVC.
  * Diagnostic macros are added as needed.
  * @remark Features are only supposed to work on the intended compiler versions:
@@ -24,7 +24,8 @@
 #define UCB_DIAG_POP()                     UCB_PRAGMA_CLANG_DIAG(pop)
 #define UCB_DIAG_IGN(w)                    UCB_PRAGMA_CLANG_DIAG(ignored w)
 #define UCB_DIAG_CLANG_IGN(w)              UCB_DIAG_IGN(w)
-#define UCB_DIAG_IGN_ALIGN_CAST()          UCB_DIAG_IGN("-Wcast-align")
+#define UCB_DIAG_IGN_CAST_ALIGN()          UCB_DIAG_IGN("-Wcast-align")
+#define UCB_DIAG_IGN_CAST_QUAL()           UCB_DIAG_IGN("-Wcast-qual")
 #define UCB_DIAG_IGN_DBL_PROM()            UCB_DIAG_IGN("-Wdouble-promotion")
 #define UCB_DIAG_IGN_FORMAT_NONLITERAL()   UCB_DIAG_IGN("-Wformat-nonliteral")
 #define UCB_DIAG_IGN_IMPL_INT_FLOAT()      UCB_DIAG_IGN("-Wimplicit-int-float-conversion")
@@ -43,7 +44,8 @@
 #define UCB_DIAG_POP()                   UCB_PRAGMA_GCC_DIAG(pop)
 #define UCB_DIAG_IGN(w)                  UCB_PRAGMA_GCC_DIAG(ignored w)
 #define UCB_DIAG_GCC_IGN(w)              UCB_DIAG_IGN(w)
-#define UCB_DIAG_IGN_ALIGN_CAST()        UCB_DIAG_IGN("-Wcast-align")
+#define UCB_DIAG_IGN_CAST_ALIGN()        UCB_DIAG_IGN("-Wcast-align")
+#define UCB_DIAG_IGN_CAST_QUAL()         UCB_DIAG_IGN("-Wcast-qual")
 #define UCB_DIAG_IGN_FORMAT_NONLITERAL() UCB_DIAG_IGN("-Wformat-nonliteral")
 #define UCB_DIAG_IGN_PADDED()            UCB_DIAG_IGN("-Wpadded")
 #define UCB_DIAG_IGN_UNUSED_FUNCTION()   UCB_DIAG_IGN("-Wunused-function")
@@ -76,8 +78,12 @@
 #define UCB_DIAG_MSVC_IGN(w)
 #endif
 
-#ifndef UCB_DIAG_IGN_ALIGN_CAST
-#define UCB_DIAG_IGN_ALIGN_CAST()
+#ifndef UCB_DIAG_IGN_CAST_ALIGN
+#define UCB_DIAG_IGN_CAST_ALIGN()
+#endif
+
+#ifndef UCB_DIAG_IGN_CAST_QUAL
+#define UCB_DIAG_IGN_CAST_QUAL()
 #endif
 
 #ifndef UCB_DIAG_IGN_DBL_PROM

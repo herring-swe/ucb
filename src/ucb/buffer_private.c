@@ -40,7 +40,7 @@ static bool ucb_buffer_resize_malloc(ucb_buffer* buf, size_t new_capacity)
         return false;
 
     buf->data     = tmp;
-    buf->capacity = new_capacity;
+    buf->alloc = new_capacity;
     return true;
 }
 
@@ -60,15 +60,15 @@ static bool ucb_buffer_transfer_malloc(ucb_buffer* buf, void** out_data, size_t*
     UCB_UNUSED(perr);
     *out_data = buf->data;
     if (out_used)
-        *out_used = buf->used;
+        *out_used = buf->size;
     if (out_capacity)
-        *out_capacity = buf->capacity;
+        *out_capacity = buf->alloc;
     return true;
 }
 
 bool ucb_buffer_init_malloc(ucb_buffer* buf, size_t initial_capacity)
 {
-    UCB_VERIFY_ARGS_RET(buf && initial_capacity > 0, false);
+    UCB_VERIFY_ARGS(buf && initial_capacity > 0);
 
     memset(buf, 0, sizeof(ucb_buffer));
 
@@ -76,8 +76,8 @@ bool ucb_buffer_init_malloc(ucb_buffer* buf, size_t initial_capacity)
     if (!buf->data)
         return false;
 
-    buf->capacity       = initial_capacity;
-    buf->used           = 0;
+    buf->alloc       = initial_capacity;
+    buf->size           = 0;
     buf->_impl_resize   = ucb_buffer_resize_malloc;
     buf->_impl_free     = ucb_buffer_free_malloc;
     buf->_impl_transfer = ucb_buffer_transfer_malloc;

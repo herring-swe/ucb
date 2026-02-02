@@ -36,7 +36,7 @@
 #define PQUEUE_INITIAL_NUM_BUCKETS_INITIAL 16
 #define PQUEUE_BUCKETS_GROW_FACTOR         2
 
-static void ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt)
+static bool ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt)
 {
     UCB_VERIFY_ARGS(pq);
     if (args.data_clone && !args.data_free)
@@ -44,18 +44,17 @@ static void ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt
         UCB_VERIFY(false, UCB_ERROR_INVALID_ARG, "clone_func requires free_func to be set");
     }
 
-    pq->data_clone = args.data_clone;
-    pq->data_free  = args.data_free;
-
     pq->buckets = ucb_malloc_type(PQUEUE_INITIAL_NUM_BUCKETS_INITIAL, ucb_pqueue_bucket);
-    if (!pq->buckets)
+    if (pq->buckets)
     {
-        ucb_fatal_literal(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate buckets");
-        return;
+        pq->data_clone = args.data_clone;
+        pq->data_free  = args.data_free;
+
+        pq->num_buckets   = 0;
+        pq->alloc_buckets = PQUEUE_INITIAL_NUM_BUCKETS_INITIAL;
+        pq->mutex         = mt ? ucb_mutex_new() : UCB_NULL;
     }
-    pq->num_buckets   = 0;
-    pq->alloc_buckets = PQUEUE_INITIAL_NUM_BUCKETS_INITIAL;
-    pq->mutex         = mt ? ucb_mutex_new() : UCB_NULL;
+    return pq->buckets != UCB_NULL;
 }
 
 /**
@@ -182,27 +181,33 @@ static ucb_fwdlist_node* ucb_pqueue_pop_node(ucb_pqueue* pq)
 ucb_pqueue* ucb_pqueue_new(ucb_pqueue_args args)
 {
     ucb_pqueue* pq = ucb_malloc_type(1, ucb_pqueue);
-    if (pq)
-        ucb_pqueue_init_common(pq, args, UCB_CONTAINER_ST);
+    if (pq && !ucb_pqueue_init_common(pq, args, UCB_CONTAINER_ST))
+    {
+        ucb_free(pq);
+        pq = UCB_NULL;
+    }
     return pq;
 }
 
 ucb_pqueue* ucb_pqueue_new_mt(ucb_pqueue_args args)
 {
     ucb_pqueue* pq = ucb_malloc_type(1, ucb_pqueue);
-    if (pq)
-        ucb_pqueue_init_common(pq, args, UCB_CONTAINER_MT);
+    if (pq && !ucb_pqueue_init_common(pq, args, UCB_CONTAINER_MT))
+    {
+        ucb_free(pq);
+        pq = UCB_NULL;
+    }
     return pq;
 }
 
-void ucb_pqueue_init(ucb_pqueue* pq, ucb_pqueue_args args)
+bool ucb_pqueue_init(ucb_pqueue* pq, ucb_pqueue_args args)
 {
-    ucb_pqueue_init_common(pq, args, UCB_CONTAINER_ST);
+    return ucb_pqueue_init_common(pq, args, UCB_CONTAINER_ST);
 }
 
-void ucb_pqueue_init_mt(ucb_pqueue* pq, ucb_pqueue_args args)
+bool ucb_pqueue_init_mt(ucb_pqueue* pq, ucb_pqueue_args args)
 {
-    ucb_pqueue_init_common(pq, args, UCB_CONTAINER_MT);
+    return ucb_pqueue_init_common(pq, args, UCB_CONTAINER_MT);
 }
 
 void ucb_pqueue_release(ucb_pqueue* pq)
@@ -211,7 +216,7 @@ void ucb_pqueue_release(ucb_pqueue* pq)
 
     if (pq->mutex)
         ucb_mutex_free(pq->mutex);
-        
+
     ucb_free(pq->buckets);
     pq->alloc_buckets = 0;
 
@@ -269,7 +274,7 @@ void ucb_pqueue_fit(ucb_pqueue* pq)
 
 size_t ucb_pqueue_push(ucb_pqueue* pq, void* data, int prio)
 {
-    UCB_VERIFY_ARGS_RET(pq && data, SIZE_MAX);
+    UCB_VERIFY_ARGS(pq && data);
 
     ucb_fwdlist_node* node;
     node       = ucb_malloc_type(1, ucb_fwdlist_node);
@@ -293,7 +298,7 @@ size_t ucb_pqueue_push(ucb_pqueue* pq, void* data, int prio)
 
 void* ucb_pqueue_pop(ucb_pqueue* pq)
 {
-    UCB_VERIFY_ARGS_RET(pq, UCB_NULL);
+    UCB_VERIFY_ARGS(pq);
 
     void* data             = UCB_NULL;
     ucb_fwdlist_node* node = ucb_pqueue_pop_node(pq);
@@ -308,7 +313,7 @@ void* ucb_pqueue_pop(ucb_pqueue* pq)
 
 const void* ucb_pqueue_peek(const ucb_pqueue* pq)
 {
-    UCB_VERIFY_ARGS_RET(pq, UCB_NULL);
+    UCB_VERIFY_ARGS(pq);
     void* data = UCB_NULL;
     LOCK_MUTEX(pq);
     if (pq->num_buckets)
@@ -321,7 +326,7 @@ const void* ucb_pqueue_peek(const ucb_pqueue* pq)
 
 size_t ucb_pqueue_size(const ucb_pqueue* pq)
 {
-    UCB_VERIFY_ARGS_RET(pq, 0);
+    UCB_VERIFY_ARGS(pq);
     size_t ret = 0;
     LOCK_MUTEX(pq);
     for (size_t i = 0; i < pq->num_buckets; i++)
@@ -334,7 +339,7 @@ size_t ucb_pqueue_size(const ucb_pqueue* pq)
 
 bool ucb_pqueue_empty(ucb_pqueue* pq)
 {
-    UCB_VERIFY_ARGS_RET(pq, false);
+    UCB_VERIFY_ARGS(pq);
     bool ret = false;
     LOCK_MUTEX(pq);
     ret = pq->num_buckets == 0;

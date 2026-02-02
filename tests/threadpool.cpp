@@ -260,9 +260,10 @@ TEST_CASE_FIXTURE(TestFailureFixture, "threadpool error handling")
 {
     SUBCASE("Null Arguments")
     {
-        REQUIRE(ucb_threadpool_new(0) == nullptr);
-        REQUIRE(ucb_threadpool_add_task(nullptr, nullptr) == false);
+        CHECK_ABORTS(ucb_threadpool_new(0));
+        CHECK_ABORTS(ucb_threadpool_add_task(nullptr, nullptr));
 
+        REQUIRE(num_aborts == 2);
         REQUIRE(num_error == 2);
         for (int i = 0; i < num_error; i++)
         {
@@ -275,10 +276,11 @@ TEST_CASE_FIXTURE(TestFailureFixture, "threadpool error handling")
     {
         ucb_task invalid_task = {0};
         ucb_threadpool* pool  = ucb_threadpool_new(1);
-        REQUIRE(ucb_threadpool_add_task(pool, &invalid_task) == false);
+        CHECK_ABORTS(ucb_threadpool_add_task(pool, &invalid_task));
         ucb_threadpool_free(pool);
 
         REQUIRE(num_error == 1);
+        REQUIRE(num_aborts == 1);
         REQUIRE(errors[0].lvl == UCB_ERRLVL_USER);
         REQUIRE(errors[0].code == UCB_ERROR_INVALID_ARG);
     }

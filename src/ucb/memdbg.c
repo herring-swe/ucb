@@ -196,8 +196,7 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             if (!report)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_fatal_literal(UCB_ERROR_OUT_OF_MEMORY,
-                                  "Failed to allocate memory for memory report");
+                UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate memory for memory report");
                 from_level = -1;
                 goto cleanup;
             }
@@ -218,8 +217,7 @@ static int gen_tracepoint_report(int from_level, bool leaks)
             if (!cur)
             {
                 ucb_mutex_unlock(&s_mutex);
-                ucb_fatal_literal(UCB_ERROR_OUT_OF_MEMORY,
-                                  "Failed to allocate memory for memory report");
+                UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate memory for memory report");
                 from_level = -1;
                 goto cleanup;
             }
@@ -571,10 +569,10 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
     ucb_alloc_meta* entry = ((ucb_alloc_meta*)ptr) - 1;
     if (entry->magic != ALLOC_MAGIC)
     {
-        ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
-                         "Invalid allocation, possible memory corruption at %p\n"
-                         "Current realloc of %zu bytes called from: %s:%d",
-                         ptr, size, file, line);
+        UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
+                  "Invalid allocation, possible memory corruption at %p\n"
+                  "Current realloc of %zu bytes called from: %s:%d",
+                  ptr, size, file, line);
         // If allowed to continue, reallocate and register
         if (size > 0)
         {
@@ -667,10 +665,10 @@ void ucb_free_debug(void* ptr, const char* file, int line)
     }
     else
     {
-        ucb_fatal_format(UCB_ERROR_INVALID_ALLOC,
-                         "Invalid allocation, possible memory corruption at %p\n"
-                         "Current free called from: %s:%d",
-                         ptr, file, line);
+        UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
+                  "Invalid allocation, possible memory corruption at %p\n"
+                  "Current free called from: %s:%d",
+                  ptr, file, line);
         // In this case, rather leak than free possibly invalid memory.
     }
 }

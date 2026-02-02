@@ -13,6 +13,7 @@
 enum ucb_error_code
 {
     UCB_OK = 0,                  //
+    UCB_ERROR_WARNING,           // Used for warnings only
     UCB_ERROR_OUT_OF_MEMORY,     // Out of memory
     UCB_ERROR_INVALID_ARG,       // Invalid argument
     UCB_ERROR_UNHANDLED_ERROR,   // Previous error set but not handled by caller

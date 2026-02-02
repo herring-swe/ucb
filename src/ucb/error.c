@@ -1,10 +1,10 @@
 /**
  * @file error.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Error handling implementation
  */
 
@@ -16,6 +16,8 @@
 #include "ucb/memory.h"
 #include "ucb/threads.h"
 #include "ucb/types.h"
+
+#include "mutex_private.h"
 
 #include <assert.h>
 #include <stdarg.h>
@@ -32,6 +34,10 @@ static UCB_THREAD_LOCAL struct ucb_error s_err = {
     .msg       = UCB_NULL,
     .is_static = true,
 };
+
+// FIXME: Rework mutex to be SRW and public
+static ucb_mutex s_mutex = {0};
+static int s_init_mutex  = 0;
 
 static ucb_error* ucb_error_get(void)
 {
@@ -52,10 +58,8 @@ static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
     {
         if (*perr)
         {
-            ucb_user_literal(
-                UCB_ERROR_UNHANDLED_ERROR,
-                "ucb_error_prepare_throw: Found unhandled error when preparing a new error. All "
-                "errors returned from functions must be free'd with ucb_error_free().");
+            UCB_WARN("Found unhandled error when preparing a new error. All errors returned from "
+                     "functions must be free'd with ucb_error_free().");
             ucb_error_clear(perr);
         }
         err   = ucb_calloc_type(1, ucb_error);
@@ -63,6 +67,18 @@ static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
         return err;
     }
     return err;
+}
+
+ucb_error_func ucb_error_set_func(ucb_error_func func)
+{
+    ucb_error_func prev = s_ucb_errfunc;
+    s_ucb_errfunc       = func;
+    return prev;
+}
+
+ucb_error_func ucb_error_get_func(void)
+{
+    return s_ucb_errfunc;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -74,10 +90,10 @@ ucb_error* ucb_error_copy(const ucb_error* err)
     ucb_error* ret = UCB_NULL;
     if (err)
     {
-        ret            = ucb_malloc_type(1, ucb_error);
-        ret->code      = err->code;
-        ret->msg       = ucb_cstr_dup(err->msg);
-        ret->is_static = false;
+        ret       = ucb_calloc_type(1, ucb_error);
+        ret->code = err->code;
+        ret->msg  = ucb_cstr_dup(err->msg);
+        // ret->is_static = false; // Const value set by calloc.
     }
     return ret;
 }
@@ -91,9 +107,7 @@ void ucb_error_free(ucb_error* err)
     }
     else
     {
-        const ucb_error* err2 = ucb_error_literal(
-            UCB_ERROR_INVALID_ARG, "ucb_err_release called with invalid error object");
-        ucb_error_report(UCB_ERRLVL_USER, err2);
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "Invalid error object");
     }
 }
 
@@ -114,14 +128,6 @@ const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args
     err->msg       = s_buf;
     // Will truncate if too long, including null terminator.
     ucb_cstr_vsnprintf(s_buf, UCB_BUFSIZE_ERROR_MSG, fmt, args);
-    return err;
-}
-
-const ucb_error* ucb_error_literal(ucb_ecode code, const char* msg)
-{
-    ucb_error* err = ucb_error_get();
-    err->code      = code;
-    err->msg       = msg;
     return err;
 }
 
@@ -180,22 +186,45 @@ void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const char* fmt, 
 /*                              Reporting errors                              */
 /* -------------------------------------------------------------------------- */
 
-ucb_error_func ucb_error_set_func(ucb_error_func func)
-{
-    ucb_error_func prev = s_ucb_errfunc;
-    s_ucb_errfunc       = func;
-    return prev;
-}
-
-ucb_error_func ucb_error_get_func(void)
-{
-    return s_ucb_errfunc;
-}
-
 void ucb_error_report(ucb_errlvl lvl, const ucb_error* err)
 {
     if (s_ucb_errfunc)
+    {
         s_ucb_errfunc(lvl, err);
+    }
     else
+    {
+        if (!s_init_mutex)
+            ucb_mutex_init(&s_mutex);
+        ucb_mutex_lock(&s_mutex);
         ucb_error_print(lvl, err);
+        if (lvl != UCB_ERRLVL_WARNING && lvl != UCB_ERRLVL_USER)
+            abort();
+        ucb_mutex_unlock(&s_mutex);
+    }
+}
+
+void ucb_report_fatal(ucb_ecode code, const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    ucb_error_report(UCB_ERRLVL_FATAL, ucb_error_formatv(code, fmt, args));
+    va_end(args);
+}
+
+void ucb_report_user(ucb_ecode code, const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    ucb_error_report(UCB_ERRLVL_USER, ucb_error_formatv(code, fmt, args));
+    va_end(args);
+    abort();
+}
+
+void ucb_report_warning(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    ucb_error_report(UCB_ERRLVL_WARNING, ucb_error_formatv(UCB_ERROR_WARNING, fmt, args));
+    va_end(args);
 }

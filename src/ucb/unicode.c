@@ -1,10 +1,10 @@
 /**
  * @file unicode.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Unicode support implementation
  */
 
@@ -29,6 +29,24 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+/* -------------------------------------------------------------------------- */
+/*                                   Macros                                   */
+/* -------------------------------------------------------------------------- */
+
+#define FOR_EACH_CODEPOINT(cp, str, len)                              \
+    const unsigned char* _iter = (const unsigned char*)(str);         \
+    const unsigned char* _last = (const unsigned char*)_iter + (len); \
+    (cp)                       = ucb_uc_next_valid(&_iter);           \
+    for (; _iter <= _last; (cp) = ucb_uc_next_valid(&_iter))
+
+#define FOR_EACH_CODEPOINT_CHECK_RET() \
+    UCB_VERIFY(_iter - 1 == _last, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8")
+
+#define CODEPOINT_BYTE_POS(str) (size_t)(_iter - (const unsigned char*)(str))
+
+#define UCB_MAX(a, b)  ((a) > (b) ? (a) : (b))
+#define UCB_COMP(a, b) (((a) > (b)) ? 1 : ((a) < (b)) ? -1 : 0)
 
 /* -------------------------------------------------------------------------- */
 /*                               Property lookup                              */
@@ -108,7 +126,7 @@ static inline ucb_cp ucb_uc_fetch4(const unsigned char* bytes)
  * @param iter pointer to current position, will increment to next valid position
  * @return ucb_cp, might be NULL
  */
-static inline ucb_cp ucb_uc_next_valid(const unsigned char** iter)
+static ucb_cp ucb_uc_next_valid(const unsigned char** iter)
 {
     const unsigned char* bytes = *iter;
     ucb_cp cp;
@@ -145,27 +163,25 @@ ucb_cp ucb_uc_iter_utf8(const unsigned char** iter)
 //     return (size_t)(iter - (const unsigned char*)src);
 // }
 
-bool ucb_uc_validate(const char* str, size_t* size)
-{
-    UCB_VERIFY_ARGS_RET(str, false);
-
-    size_t s = strlen(str);
-    if (size)
-        *size = s;
-    return ucb_uc_validate_buf(str, s);
-}
-
 // NOTE:
 // See implementation notes here:
 // https://unicode.org/mail-arch/unicode-ml/y2003-m02/att-0467/01-The_Algorithm_to_Valide_an_UTF-8_String
-bool ucb_uc_validate_buf(const char* str, size_t size)
+bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr)
 {
-    UCB_VERIFY_ARGS_RET(str, false);
+    UCB_VERIFY_ARGS(str);
+
+    if (len == UCB_NPOS)
+        len = strlen(str);
 
     const unsigned char* bytes = (const unsigned char*)str;
+
+    bool success  = false;
+    size_t errpos = SIZE_MAX;
+
     ucb_cp cp;
     size_t i = 0;
-    while (i < size)
+
+    while (i < len)
     {
         unsigned char c = bytes[i];
         if (c < 0x80) // < 0xxx xxxx
@@ -175,76 +191,83 @@ bool ucb_uc_validate_buf(const char* str, size_t size)
         }
         else if ((c & 0xE0u) == 0xC0u) // 110x xxxx, 2 bytes
         {
-            if (i + 1 >= size || (bytes[i + 1] & 0xC0u) != 0x80u)
-                return false;
+            if (i + 1 >= len || (bytes[i + 1] & 0xC0u) != 0x80u)
+            {
+                errpos = i;
+                break;
+            }
             cp = ucb_uc_fetch2(bytes + i);
             if (cp < 0x80u) // Overlong
-                return false;
+            {
+                errpos = i;
+                break;
+            }
             i += 2;
         }
         else if ((c & 0xF0u) == 0xE0u) // 1110 xxxx, 3 bytes
         {
-            if (i + 2 >= size || (bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u)
-                return false;
+            if (i + 2 >= len || (bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u)
+            {
+                errpos = i;
+                break;
+            }
             cp = ucb_uc_fetch3(bytes + i);
             if (cp < 0x800u) // Overlong
-                return false;
+            {
+                errpos = i;
+                break;
+            }
             if (cp >= 0xD800u && cp <= 0xDFFFu) // Surrogate
-                return false;
+            {
+                errpos = i;
+                break;
+            }
             i += 3;
         }
         else if ((c & 0xF8u) == 0xF0u) // 1111 xxxx, 4 bytes
         {
-            if (i + 3 >= size || (bytes[i + 1] & 0xC0u) != 0x80u ||
+            if (i + 3 >= len || (bytes[i + 1] & 0xC0u) != 0x80u ||
                 (bytes[i + 2] & 0xC0u) != 0x80u || (bytes[i + 3] & 0xC0u) != 0x80u)
-                return false;
+            {
+                errpos = i;
+                break;
+            }
             cp = ucb_uc_fetch4(bytes + i);
             if (cp < 0x10000u || cp > 0x10FFFFu) // Out of range
-                return false;
+            {
+                errpos = i;
+                break;
+            }
             i += 4;
         }
         else
-            return false;
+        {
+            errpos = i;
+            break;
+        }
     }
-    return true;
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                    Enum                                    */
-/* -------------------------------------------------------------------------- */
-
-const char* ucb_uc_norm_form_to_str(ucb_norm_form form)
-{
-    switch (form)
+    if (i == len)
     {
-    case UCB_UC_NORM_NFC:
-        return "NFC";
-    case UCB_UC_NORM_NFD:
-        return "NFD";
-    case UCB_UC_NORM_NFKC:
-        return "NFKC";
-    case UCB_UC_NORM_NFKD:
-        return "NFKD";
-    case UCB_UC_NORM_INVALID:
-        break;
-    default:
-        break;
+        success = true;
     }
-    return "";
-}
-
-ucb_norm_form ucb_uc_norm_form_from_str(const char* str)
-{
-    if (ucb_cstr_icomp(str, "NFC") == 0)
-        return UCB_UC_NORM_NFC;
-    else if (ucb_cstr_icomp(str, "NFD") == 0)
-        return UCB_UC_NORM_NFD;
-    else if (ucb_cstr_icomp(str, "NFKC") == 0)
-        return UCB_UC_NORM_NFKC;
-    else if (ucb_cstr_icomp(str, "NFKD") == 0)
-        return UCB_UC_NORM_NFKD;
     else
-        return UCB_UC_NORM_INVALID;
+    {
+        if (i == 0 || errpos != UCB_NPOS)
+        {
+            if (perr)
+                ucb_throw_format(perr, UCB_ERROR_INVALID_UTF8,
+                                 "Invalid UTF-8 sequence at position %zu", errpos);
+        }
+        else
+        {
+            // We only break with errpos, so this mean string was too short.
+            if (perr)
+                ucb_throw_format(perr, UCB_ERROR_INVALID_UTF8,
+                                 "Invalid UTF-8 sequence at end of string. Expected %zu more bytes",
+                                 i - len);
+        }
+    }
+    return success;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -316,34 +339,97 @@ bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t 
 /*                                 Characters                                 */
 /* -------------------------------------------------------------------------- */
 
-size_t ucb_uc_num_cp(const char* str)
+size_t ucb_uc_num_cp(const char* str, size_t len)
 {
     size_t num = 0;
-
-    const unsigned char* iter = (const unsigned char*)str;
-    while (ucb_uc_next_valid(&iter))
+    if (str)
     {
-        num++;
+        if (len == UCB_NPOS)
+            len = strlen(str);
+
+        ucb_cp cp;
+        FOR_EACH_CODEPOINT(cp, str, len)
+        {
+            num++;
+        }
+        FOR_EACH_CODEPOINT_CHECK_RET();
     }
     return num;
 }
 
-size_t ucb_uc_num_chars(const char* str)
+size_t ucb_uc_num_chars(const char* str, size_t len)
 {
     // Simple implementation before implementing grapheme clusters
     size_t num = 0;
-    ucb_cp cp;
-    const ucb_uc_prop* prop;
 
-    const unsigned char* iter = (const unsigned char*)str;
-    while ((cp = ucb_uc_next_valid(&iter)))
+    if (str)
     {
-        prop = ucb_uc_get_prop(cp);
-        if (UCB_UC_IS_MARK(prop->category))
-            continue;
-        num++;
+        ucb_cp cp;
+        const ucb_uc_prop* prop;
+
+        FOR_EACH_CODEPOINT(cp, str, len)
+        {
+            prop = ucb_uc_get_prop(cp);
+            UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
+            if (!UCB_UC_IS_MARK(prop->category))
+                num++;
+        }
+        FOR_EACH_CODEPOINT_CHECK_RET();
     }
     return num;
+}
+
+size_t ucb_uc_next_char(const char* str, size_t len, size_t from_byte)
+{
+    UCB_VERIFY_ARGS(str);
+
+    if (from_byte >= len)
+        return UCB_NPOS;
+
+    const unsigned char* iter = (const unsigned char*)str + from_byte;
+    const unsigned char* last = (const unsigned char*)str + len;
+
+    // Skip to the next base character (or end of string)
+    while (iter < last)
+    {
+        uint32_t cp             = ucb_uc_next_valid(&iter);
+        const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
+        UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
+
+        if (!UCB_UC_IS_MARK(prop->category))
+            return (size_t)(iter - (const unsigned char*)str);
+    }
+    return UCB_NPOS; // End of string
+}
+
+size_t ucb_uc_char_index(const char* str, size_t len, size_t index)
+{
+    // Simple implementation before implementing grapheme clusters
+    size_t num = 0;
+
+    if (str && index > 0)
+    {
+        ucb_cp cp;
+        const ucb_uc_prop* prop;
+
+        FOR_EACH_CODEPOINT(cp, str, len)
+        {
+            prop = ucb_uc_get_prop(cp);
+            if (!prop)
+            {
+                // Invalid UTF-8
+                break;
+            }
+            if (!UCB_UC_IS_MARK(prop->category))
+            {
+                num++;
+                if (num == index)
+                    return CODEPOINT_BYTE_POS(str);
+            }
+        }
+        FOR_EACH_CODEPOINT_CHECK_RET();
+    }
+    return len;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -476,9 +562,8 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
                                      ucb_buffer* dstbuf, const ucb_error** perr)
 {
     ucb_uc_result ret = {0};
-    UCB_VERIFY_ARGS_RET(str, ret);
+    UCB_VERIFY_ARGS(str);
 
-    const unsigned char* iter = (const unsigned char*)str;
     ucb_cp cp;
     bool own_buffer = false;
     casemap_ctx_t ctx;
@@ -501,10 +586,8 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
         return ret;
     }
 
-    while ((cp = ucb_uc_next_valid(&iter)))
+    FOR_EACH_CODEPOINT(cp, str, size)
     {
-        if (!cp)
-            break;
         ctx.buf[0] = cp;
 
         if (!ucb_uc_case_map_cp(&ctx, perr))
@@ -514,6 +597,7 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
         if (!ucb_uc_encode_codepoints(dstbuf, ctx.buf, ctx.out_len, perr))
             return ret;
     }
+
     if (!ucb_buffer_push(dstbuf, "\0", 1))
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed push null terminator");
@@ -529,9 +613,9 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
     }
     else
     {
-        ret.data = ucb_malloc_type(dstbuf->used, char);
-        ret.size = dstbuf->used - 1;
-        memcpy(ret.data, dstbuf->data, dstbuf->used);
+        ret.data = ucb_malloc_type(dstbuf->size, char);
+        ret.size = dstbuf->size - 1;
+        memcpy(ret.data, dstbuf->data, dstbuf->size);
     }
     return ret;
 }
@@ -666,7 +750,7 @@ static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
 
 static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, const ucb_error** perr)
 {
-    uint8_t ccc                   = 0;
+    uint8_t ccc                 = 0;
     const ucb_uc_prop* prop     = ucb_uc_get_prop(cp);
     const ucb_uc_decomp* decomp = UCB_NULL;
     if (prop)
@@ -785,12 +869,12 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
     return count;
 }
 
-static bool normalize(norm_ctx_t* ctx, const char* str, bool must_decomp, const ucb_error** perr)
+static bool normalize(norm_ctx_t* ctx, const char* str, size_t size, bool must_decomp,
+                      const ucb_error** perr)
 {
     ucb_cp cp;
-    const unsigned char* iter = (const unsigned char*)str;
 
-    while ((cp = ucb_uc_next_valid(&iter)))
+    FOR_EACH_CODEPOINT(cp, str, size)
     {
         if (is_hangul_syllable(cp))
         {
@@ -817,7 +901,7 @@ static bool normalize(norm_ctx_t* ctx, const char* str, bool must_decomp, const 
     if (ctx->flags & UC_FLAGS_COMPOSE)
     {
         ucb_cp* cps  = (ucb_cp*)ctx->cp.data;
-        size_t count = ctx->cp.used / sizeof(ucb_cp);
+        size_t count = ctx->cp.size / sizeof(ucb_cp);
 
         count = norm_compose(cps, count);
 
@@ -829,15 +913,15 @@ static bool normalize(norm_ctx_t* ctx, const char* str, bool must_decomp, const 
     return ucb_buffer_push(&ctx->cp, "\0", 1);
 }
 
-static size_t ucb_uc_check_norm(const char* str, bool* is_latin1, bool* must_decomp)
+static size_t ucb_uc_check_norm(const char* str, size_t size, bool* is_latin1, bool* must_decomp)
 {
     size_t num = 0;
 
     bool check_latin1 = true;
     bool check_decomp = must_decomp ? false : true;
     ucb_cp cp;
-    const unsigned char* iter = (const unsigned char*)str;
-    while ((cp = ucb_uc_next_valid(&iter)))
+
+    FOR_EACH_CODEPOINT(cp, str, size)
     {
         num++;
         if (cp > 0x7F)
@@ -854,6 +938,8 @@ static size_t ucb_uc_check_norm(const char* str, bool* is_latin1, bool* must_dec
             }
         }
     }
+    FOR_EACH_CODEPOINT_CHECK_RET();
+
     if (is_latin1)
         *is_latin1 = check_latin1;
     if (must_decomp)
@@ -872,27 +958,27 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
 
     switch (form)
     {
-    case UCB_UC_NORM_NFD:
+    case UCB_NORM_NFD:
         break;
-    case UCB_UC_NORM_NFKD:
+    case UCB_NORM_NFKD:
         ctx.flags |= UC_FLAGS_COMPAT;
         break;
-    case UCB_UC_NORM_NFC:
+    case UCB_NORM_NFC:
         ctx.flags |= UC_FLAGS_COMPOSE;
         break;
-    case UCB_UC_NORM_NFKC:
+    case UCB_NORM_NFKC:
         ctx.flags |= UC_FLAGS_COMPAT | UC_FLAGS_COMPOSE;
         break;
-    case UCB_UC_NORM_INVALID:
+    case UCB_NORM_INVALID:
     default:
-        UCB_VERIFY_ARGS_RET(true, ret);
+        UCB_VERIFY_ARGS(false);
     }
 
-    UCB_VERIFY_ARGS_RET(str, ret);
+    UCB_VERIFY_ARGS(str);
 
     // Find out how many codepoints we deal with and do fast checks
     bool is_latin1 = false;
-    size_t numcp   = ucb_uc_check_norm(str, &is_latin1, must_decomp ? NULL : &must_decomp);
+    size_t numcp   = ucb_uc_check_norm(str, size, &is_latin1, must_decomp ? NULL : &must_decomp);
 
     // FIXME: Implement quick check according to:
     // https://unicode.org/reports/tr15/#Detecting_Normalization_Forms
@@ -914,7 +1000,7 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
     }
     ctx.cp.grow_func = ucb_buffer_grow_double;
 
-    if (!normalize(&ctx, str, must_decomp, perr))
+    if (!normalize(&ctx, str, size, must_decomp, perr))
         return ret;
 
     ucb_buffer_fit(&ctx.cp);
@@ -922,4 +1008,68 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
     ucb_buffer_release(&ctx.cp);
     ret.size -= 1; // Do not count null-terminator
     return ret;
+}
+
+int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2)
+{
+    UCB_VERIFY_ARGS(str1 && str2);
+
+    // Early out if the strings are identical, or if one is empty
+    if (str1 == str2)
+    {
+        UCB_VERIFY_ARGS(len1 == len2);
+        return 0;
+    }
+    else if (len1 == 0 || len2 == 0)
+    {
+        // Regular sign comparison from size_t to int
+        return UCB_COMP(len1, len2);
+    }
+
+    const unsigned char* p1   = (const unsigned char*)str1;
+    const unsigned char* p2   = (const unsigned char*)str2;
+    const unsigned char* end1 = p1 + len1;
+    const unsigned char* end2 = p2 + len2;
+
+    casemap_ctx_t ctx1;
+    ctx1.last_cp   = UCB_UC_NO_VALUE;
+    ctx1.last_prop = UCB_NULL;
+    ctx1.op        = UCB_UC_CASE_FOLD;
+
+    casemap_ctx_t ctx2;
+    ctx2.last_cp   = UCB_UC_NO_VALUE;
+    ctx2.last_prop = UCB_NULL;
+    ctx2.op        = UCB_UC_CASE_FOLD;
+
+    ucb_error* err = UCB_NULL;
+
+    while (p1 < end1 && p2 < end2)
+    {
+        // Decode the next codepoint from each string
+        ctx1.buf[0] = ucb_uc_next_valid(&p1);
+        ctx2.buf[0] = ucb_uc_next_valid(&p2);
+
+        // Case-fold both codepoints
+        if (!ucb_uc_case_map_cp(&ctx1, &err))
+        {
+            UCB_REPORT_ERROR(err);
+        }
+        if (!ucb_uc_case_map_cp(&ctx2, &err))
+        {
+            UCB_REPORT_ERROR(err);
+        }
+
+        // Compare the folded sequences
+        for (size_t i = 0; i < UCB_MAX(ctx1.out_len, ctx2.out_len); i++)
+        {
+            ucb_cp f1 = (i < ctx1.out_len) ? ctx1.buf[i] : 0;
+            ucb_cp f2 = (i < ctx2.out_len) ? ctx2.buf[i] : 0;
+            if (f1 != f2)
+                return UCB_COMP(f1, f2);
+        }
+    }
+
+    // If we get here, one or both strings ended
+    // Longer string is "greater"
+    return UCB_COMP(len1, len2);
 }

@@ -24,8 +24,7 @@ const char* ucb_error_lvlstr(ucb_errlvl lvl)
     default:
         break;
     }
-    UCB_WARN(UCB_ERROR_INVALID_ARG, "No match for error level %d", lvl);
-    return "UNKNOWN LEVEL";
+    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error level %d", lvl);
 }
 
 const char* ucb_error_codestr(ucb_ecode code)
@@ -68,6 +67,5 @@ const char* ucb_error_codestr(ucb_ecode code)
     default:
         break;
     }
-    UCB_WARN(UCB_ERROR_INVALID_ARG, "No match for error");
-    return "ERROR_UNKNOWN";
+    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error");
 }
