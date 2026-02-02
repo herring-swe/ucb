@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['offset_0',['offset',['../structucb__buffer__view.html#aadb6d6eb83e646653a1402032e45dcab',1,'ucb_buffer_view']]]
+  ['implementation_0',['Unicode implementation',['../md_doc_2markdown_2_unicode.html',1,'']]],
+  ['is_5fstatic_1',['is_static',['../structucb__error.html#a12552234cdd403e4de886b5343ff5fe0',1,'ucb_error']]]
 ];

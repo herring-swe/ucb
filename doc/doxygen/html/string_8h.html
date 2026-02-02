@@ -95,8 +95,12 @@ $(function(){initNavTree('string_8h.html','',''); });
 
 <p>String type and related functions.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="export_8h_source.html">export.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="defines_8h_source.html">defines.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="diag_8h_source.html">diag.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="error_8h_source.html">error.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="export_8h_source.html">export.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="types_8h_source.html">types.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="unicode__enum_8h_source.html">unicode_enum.h</a>&quot;</code><br />
 <code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
@@ -105,35 +109,118 @@ $(function(){initNavTree('string_8h.html','',''); });
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:ucb_5Fstr_5Fresult" id="r_ucb_5Fstr_5Fresult"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structucb__str__result.html">ucb_str_result</a></td></tr>
+<tr class="memitem:ucb_5Fstr" id="r_ucb_5Fstr"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structucb__str.html">ucb_str</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a UTF-8 string type.  <a href="structucb__str.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ac8d174e80a7d6a63832376910e740a6f" id="r_ac8d174e80a7d6a63832376910e740a6f"><td class="memItemLeft">typedef struct ucb_str&#160;</td><td class="memItemRight"><a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a></td></tr>
-<tr class="memitem:a06b86a2ff0fa261a58e5107f5c771c8d" id="r_a06b86a2ff0fa261a58e5107f5c771c8d"><td class="memItemLeft">typedef struct ucb_str_result&#160;</td><td class="memItemRight"><a class="el" href="#a06b86a2ff0fa261a58e5107f5c771c8d">ucb_str_result</a></td></tr>
+<tr class="memitem:aacbe55869f7bc156bec18bf0844b49e9" id="r_aacbe55869f7bc156bec18bf0844b49e9"><td class="memItemLeft">typedef struct ucb_str&#160;</td><td class="memItemRight"><a class="el" href="#aacbe55869f7bc156bec18bf0844b49e9">ucb_str</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab5aa73b9a6508f611a91a5ca8e0fddba" id="r_ab5aa73b9a6508f611a91a5ca8e0fddba"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ab5aa73b9a6508f611a91a5ca8e0fddba">ucb_str_new</a> (const char *cstr, size_t len, uint32_t flags)</td></tr>
-<tr class="memitem:ab54acb38d1971456bdc6f40795e6e2ac" id="r_ab54acb38d1971456bdc6f40795e6e2ac"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#ab54acb38d1971456bdc6f40795e6e2ac">ucb_str_free</a> (<a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:ad7674f6ea9670945d321f16cfb2d8d6b" id="r_ad7674f6ea9670945d321f16cfb2d8d6b"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#ad7674f6ea9670945d321f16cfb2d8d6b">ucb_str_is_shallow</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:ad72259dc739c65efdf303a5cef11789d" id="r_ad72259dc739c65efdf303a5cef11789d"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char *&#160;</td><td class="memItemRight"><a class="el" href="#ad72259dc739c65efdf303a5cef11789d">ucb_str_cstr</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:a792c6c2d96feef43a52b52faf7a242d7" id="r_a792c6c2d96feef43a52b52faf7a242d7"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a792c6c2d96feef43a52b52faf7a242d7">ucb_str_size</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:a33f40b6e671f4c5c79937dc4c56b7c9c" id="r_a33f40b6e671f4c5c79937dc4c56b7c9c"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a33f40b6e671f4c5c79937dc4c56b7c9c">ucb_str_len</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:a80c01cedcfd4ef8ba707abf9c94f92ec" id="r_a80c01cedcfd4ef8ba707abf9c94f92ec"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a80c01cedcfd4ef8ba707abf9c94f92ec">ucb_str_num_chars</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:af06c0a108ebd326ddf8c4a85ca26395b" id="r_af06c0a108ebd326ddf8c4a85ca26395b"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#af06c0a108ebd326ddf8c4a85ca26395b">ucb_str_copy</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str)</td></tr>
-<tr class="memitem:ad077b90342665985e82d03dbfbc362df" id="r_ad077b90342665985e82d03dbfbc362df"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ad077b90342665985e82d03dbfbc362df">ucb_str_concat</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str1, const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str2)</td></tr>
-<tr class="memitem:a81ea1e25563bdf35ea8563672edccbbd" id="r_a81ea1e25563bdf35ea8563672edccbbd"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a81ea1e25563bdf35ea8563672edccbbd">ucb_str_substr</a> (const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *str, size_t index, size_t count, int flags)</td></tr>
-<tr class="memdesc:a81ea1e25563bdf35ea8563672edccbbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a substring from a string.  <br /></td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a07e33f5cf4a4f1067bf295d4fd122963" id="r_a07e33f5cf4a4f1067bf295d4fd122963"><td class="memItemLeft">static const uint32_t&#160;</td><td class="memItemRight"><a class="el" href="#a07e33f5cf4a4f1067bf295d4fd122963">UCB_STR_DEFAULT</a> = 0x00</td></tr>
-<tr class="memdesc:a07e33f5cf4a4f1067bf295d4fd122963"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default string flag, guaranteed to be 0.  <br /></td></tr>
-<tr class="memitem:ad33160897d8379af05ba9da031deef75" id="r_ad33160897d8379af05ba9da031deef75"><td class="memItemLeft">static const uint32_t&#160;</td><td class="memItemRight"><a class="el" href="#ad33160897d8379af05ba9da031deef75">UCB_STR_SHALLOW</a> = 0x01</td></tr>
-<tr class="memdesc:ad33160897d8379af05ba9da031deef75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shallow copy flag When used, any new string will not own the underlying data. The new strings still needs to be free'd with ucb_str_free.  <br /></td></tr>
-<tr class="memitem:a9d513779307a9a0beb5beb11a734ef19" id="r_a9d513779307a9a0beb5beb11a734ef19"><td class="memItemLeft">static const uint32_t&#160;</td><td class="memItemRight"><a class="el" href="#a9d513779307a9a0beb5beb11a734ef19">UCB_STR_NO_VERIFY</a> = 0x02</td></tr>
-<tr class="memdesc:a9d513779307a9a0beb5beb11a734ef19"><td class="mdescLeft">&#160;</td><td class="mdescRight">No verification flag When used, the string will not be verified to be valid UTF-8.  <br /></td></tr>
+<tr id="func-members-0" class="groupHeader"><td colspan="2"><div class="groupHeader">Construction</div></td></tr>
+<tr class="memitem:ac350523821fbc359689c736411aa9cef" id="r_ac350523821fbc359689c736411aa9cef"><td class="memItemLeft">static <a class="el" href="structucb__str.html">ucb_str</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac350523821fbc359689c736411aa9cef">ucb_str_make</a> ()</td></tr>
+<tr class="memdesc:ac350523821fbc359689c736411aa9cef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper function for stack initialization of an empty string.  <br /></td></tr>
+<tr class="memitem:a6ecceb5eb2c3f58acd322b098731b2c4" id="r_a6ecceb5eb2c3f58acd322b098731b2c4"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a6ecceb5eb2c3f58acd322b098731b2c4">ucb_str_new</a> (const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:a6ecceb5eb2c3f58acd322b098731b2c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a new owned string from a C string.  <br /></td></tr>
+<tr class="memitem:a61d5ac32ed971720cf88eb02aa6a03c9" id="r_a61d5ac32ed971720cf88eb02aa6a03c9"><td class="memItemLeft">static <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a61d5ac32ed971720cf88eb02aa6a03c9">ucb_str_new_c</a> (const char *cstr)</td></tr>
+<tr class="memitem:a16b98498822d43fa6621691203a57980" id="r_a16b98498822d43fa6621691203a57980"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a16b98498822d43fa6621691203a57980">ucb_str_new_wrap</a> (const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:a16b98498822d43fa6621691203a57980"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a wrapped string from a C string without copying data.  <br /></td></tr>
+<tr class="memitem:aa71eecc030736543043361c92587f26f" id="r_aa71eecc030736543043361c92587f26f"><td class="memItemLeft">static <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#aa71eecc030736543043361c92587f26f">ucb_str_new_wrap_c</a> (const char *cstr)</td></tr>
+<tr class="memitem:a76a730ce6cb9ad6e1116527d654a17cf" id="r_a76a730ce6cb9ad6e1116527d654a17cf"><td class="memItemLeft">static <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a76a730ce6cb9ad6e1116527d654a17cf">ucb_str_new_empty</a> (void)</td></tr>
+<tr class="memdesc:a76a730ce6cb9ad6e1116527d654a17cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize an empty wrapped string around "" string literal.  <br /></td></tr>
+<tr class="memitem:a89da1099f185062e9e9845fc3dd9460f" id="r_a89da1099f185062e9e9845fc3dd9460f"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a89da1099f185062e9e9845fc3dd9460f">ucb_str_clone</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *src)</td></tr>
+<tr class="memdesc:a89da1099f185062e9e9845fc3dd9460f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a string as a copy of another string.  <br /></td></tr>
+<tr class="memitem:a72d8cef4b17d49254aee40b824eff2b0" id="r_a72d8cef4b17d49254aee40b824eff2b0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a72d8cef4b17d49254aee40b824eff2b0">ucb_str_init</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:a72d8cef4b17d49254aee40b824eff2b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an owned string from a C string.  <br /></td></tr>
+<tr class="memitem:a7eee0dfe9f87c4e25cda08bc0e2d22f8" id="r_a7eee0dfe9f87c4e25cda08bc0e2d22f8"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a7eee0dfe9f87c4e25cda08bc0e2d22f8">ucb_str_init_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr)</td></tr>
+<tr class="memitem:ab0231ad0f78e314aa45ebaf170f22bcd" id="r_ab0231ad0f78e314aa45ebaf170f22bcd"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#ab0231ad0f78e314aa45ebaf170f22bcd">ucb_str_init_wrap</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:ab0231ad0f78e314aa45ebaf170f22bcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a wrapped string around a C string.  <br /></td></tr>
+<tr class="memitem:a2c51aa291488d7017214639805fae030" id="r_a2c51aa291488d7017214639805fae030"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a2c51aa291488d7017214639805fae030">ucb_str_init_wrap_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr)</td></tr>
+<tr class="memitem:a01c95c40f6f80b2097ee95deb395c657" id="r_a01c95c40f6f80b2097ee95deb395c657"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a01c95c40f6f80b2097ee95deb395c657">ucb_str_init_empty</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a01c95c40f6f80b2097ee95deb395c657"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an empty wrapped string around "" string literal.  <br /></td></tr>
+<tr id="func-members-1" class="groupHeader"><td colspan="2"><div class="groupHeader">Destruction</div></td></tr>
+<tr class="memitem:a67ec0191bbe9606141d6cbdb390095b3" id="r_a67ec0191bbe9606141d6cbdb390095b3"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3">ucb_str_release</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a67ec0191bbe9606141d6cbdb390095b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a string.  <br /></td></tr>
+<tr class="memitem:a94ea2dfcdcb2050165e9e4ca111e36e5" id="r_a94ea2dfcdcb2050165e9e4ca111e36e5"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a94ea2dfcdcb2050165e9e4ca111e36e5">ucb_str_free</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a94ea2dfcdcb2050165e9e4ca111e36e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free a string.  <br /></td></tr>
+<tr id="func-members-2" class="groupHeader"><td colspan="2"><div class="groupHeader">Assignment and data update</div></td></tr>
+<tr><td colspan="2" class="ititle"><div class="groupText"><p>Applies on initialized strings. Includes copy, but not clone. </p>
+</div></td></tr>
+<tr class="memitem:a9e7e0ef4bfba9cc09ba06d1c7894eaa0" id="r_a9e7e0ef4bfba9cc09ba06d1c7894eaa0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a9e7e0ef4bfba9cc09ba06d1c7894eaa0">ucb_str_copy</a> (<a class="el" href="structucb__str.html">ucb_str</a> *dst, const <a class="el" href="structucb__str.html">ucb_str</a> *src)</td></tr>
+<tr class="memdesc:a9e7e0ef4bfba9cc09ba06d1c7894eaa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy a string.  <br /></td></tr>
+<tr class="memitem:a27c9e3389f7c74ae03dfd49cb5319da8" id="r_a27c9e3389f7c74ae03dfd49cb5319da8"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a27c9e3389f7c74ae03dfd49cb5319da8">ucb_str_assign</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:a27c9e3389f7c74ae03dfd49cb5319da8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Assign a C string.  <br /></td></tr>
+<tr class="memitem:aca0d1c88c998e13d13b309dbac18d265" id="r_aca0d1c88c998e13d13b309dbac18d265"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#aca0d1c88c998e13d13b309dbac18d265">ucb_str_assign_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr)</td></tr>
+<tr class="memitem:a8f3fd6b3eee427524cf6559e959eddea" id="r_a8f3fd6b3eee427524cf6559e959eddea"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a8f3fd6b3eee427524cf6559e959eddea">ucb_str_detach</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a8f3fd6b3eee427524cf6559e959eddea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates own copy of the underlying string, null-terminated.  <br /></td></tr>
+<tr class="memitem:a6f6c827a123672bfc66aad95700f0e93" id="r_a6f6c827a123672bfc66aad95700f0e93"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a6f6c827a123672bfc66aad95700f0e93">ucb_str_fit</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a6f6c827a123672bfc66aad95700f0e93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shrink data allocation to fit the string.  <br /></td></tr>
+<tr class="memitem:abadb65e5b7f54ecd0a068b603b196aed" id="r_abadb65e5b7f54ecd0a068b603b196aed"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#abadb65e5b7f54ecd0a068b603b196aed">ucb_str_reserve</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, size_t size)</td></tr>
+<tr class="memdesc:abadb65e5b7f54ecd0a068b603b196aed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensure at least <code class="param">size</code> bytes of free space in string.  <br /></td></tr>
+<tr class="memitem:a5ace535fc05e7f5a1579982e95d04738" id="r_a5ace535fc05e7f5a1579982e95d04738"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a5ace535fc05e7f5a1579982e95d04738">ucb_str_wrap</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr, size_t len)</td></tr>
+<tr class="memdesc:a5ace535fc05e7f5a1579982e95d04738"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrap a C string pointer.  <br /></td></tr>
+<tr class="memitem:af2517cae10cd3d50e14b5e792bef7741" id="r_af2517cae10cd3d50e14b5e792bef7741"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af2517cae10cd3d50e14b5e792bef7741">ucb_str_wrap_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr)</td></tr>
+<tr class="memitem:acf959206fe4efce9233487575dcf1e9e" id="r_acf959206fe4efce9233487575dcf1e9e"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#acf959206fe4efce9233487575dcf1e9e">ucb_str_adopt</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, char *data, size_t len, size_t alloc)</td></tr>
+<tr class="memdesc:acf959206fe4efce9233487575dcf1e9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adopt memory as a string.  <br /></td></tr>
+<tr class="memitem:a68efa3f60c9df51bdd33c7df3b947d4e" id="r_a68efa3f60c9df51bdd33c7df3b947d4e"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a68efa3f60c9df51bdd33c7df3b947d4e">ucb_str_adopt_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, char *cstr)</td></tr>
+<tr class="memdesc:a68efa3f60c9df51bdd33c7df3b947d4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adopt a null-terminated C string.  <br /></td></tr>
+<tr class="memitem:a62a7db0fa6ff9b99a6725ce8c4f5f07d" id="r_a62a7db0fa6ff9b99a6725ce8c4f5f07d"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a62a7db0fa6ff9b99a6725ce8c4f5f07d">ucb_str_abandon</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, char **data, size_t *len, size_t *alloc)</td></tr>
+<tr class="memdesc:a62a7db0fa6ff9b99a6725ce8c4f5f07d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abandon managed data and return the underlying string.  <br /></td></tr>
+<tr class="memitem:ae9a65563055b53842aa3479d976f5f03" id="r_ae9a65563055b53842aa3479d976f5f03"><td class="memItemLeft">static char *&#160;</td><td class="memItemRight"><a class="el" href="#ae9a65563055b53842aa3479d976f5f03">ucb_str_abandon_c</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:ae9a65563055b53842aa3479d976f5f03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abandon managed data and return the underlying string.  <br /></td></tr>
+<tr id="func-members-3" class="groupHeader"><td colspan="2"><div class="groupHeader">Querying</div></td></tr>
+<tr class="memitem:a7113f0c7faed282f7677672190eb2500" id="r_a7113f0c7faed282f7677672190eb2500"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a7113f0c7faed282f7677672190eb2500">ucb_str_is_owned</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a7113f0c7faed282f7677672190eb2500"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the underlying data is owned by <code class="param">str</code>.  <br /></td></tr>
+<tr class="memitem:acd30abc2952a45b891affb119a960567" id="r_acd30abc2952a45b891affb119a960567"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#acd30abc2952a45b891affb119a960567">ucb_str_is_empty</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:acd30abc2952a45b891affb119a960567"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the string is empty.  <br /></td></tr>
+<tr class="memitem:ad53ac769440233e415b21e93fa880685" id="r_ad53ac769440233e415b21e93fa880685"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#ad53ac769440233e415b21e93fa880685">ucb_str_capacity</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:ad53ac769440233e415b21e93fa880685"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the allocated size of the underlying data.  <br /></td></tr>
+<tr class="memitem:a2a408e07ba4e0f996970d24e663ecedd" id="r_a2a408e07ba4e0f996970d24e663ecedd"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a2a408e07ba4e0f996970d24e663ecedd">ucb_str_used</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a2a408e07ba4e0f996970d24e663ecedd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the used capacity of the underlying data.  <br /></td></tr>
+<tr class="memitem:a7202715ddd4919b3d874df5e33e2c3aa" id="r_a7202715ddd4919b3d874df5e33e2c3aa"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a7202715ddd4919b3d874df5e33e2c3aa">ucb_str_avail</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a7202715ddd4919b3d874df5e33e2c3aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the free capacity of the underlying data.  <br /></td></tr>
+<tr class="memitem:acbd099e07c6bd91b84d4fa2b3eddc6a9" id="r_acbd099e07c6bd91b84d4fa2b3eddc6a9"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char *&#160;</td><td class="memItemRight"><a class="el" href="#acbd099e07c6bd91b84d4fa2b3eddc6a9">ucb_str_cstr</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:acbd099e07c6bd91b84d4fa2b3eddc6a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a pointer to the underlying C string.  <br /></td></tr>
+<tr class="memitem:a8c09d46f48693cdcc7808cac856b218e" id="r_a8c09d46f48693cdcc7808cac856b218e"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a8c09d46f48693cdcc7808cac856b218e">ucb_str_len</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a8c09d46f48693cdcc7808cac856b218e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the length of the underlying string.  <br /></td></tr>
+<tr class="memitem:a577f8ce38d4b787caed37ed0bc66f717" id="r_a577f8ce38d4b787caed37ed0bc66f717"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#a577f8ce38d4b787caed37ed0bc66f717">ucb_str_num_char</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a577f8ce38d4b787caed37ed0bc66f717"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of perceived characters in the string.  <br /></td></tr>
+<tr id="func-members-4" class="groupHeader"><td colspan="2"><div class="groupHeader">Comparison and lookup</div></td></tr>
+<tr><td colspan="2" class="ititle"><div class="groupText"><p>Strings should be in same normalization form before comparison.</p>
+<p>Casefolding will be used for case-insensitive comparison. For best-performance, when comparing strings more than once, casefold them first and compare with case sensitive comparison.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a42fcf536c16813644ff30765c0827893">ucb_str_normalize()</a> and <a class="el" href="#abfe2921e0963ba6a2fb45219e02d497c">ucb_str_casefold()</a> </dd></dl>
+</div></td></tr>
+<tr class="memitem:ac196059e40ff1cada599d7692a95659b" id="r_ac196059e40ff1cada599d7692a95659b"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#ac196059e40ff1cada599d7692a95659b">ucb_str_equal</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str1, const <a class="el" href="structucb__str.html">ucb_str</a> *str2)</td></tr>
+<tr class="memitem:a06b0de5c63c0cf0329389befb44c0d73" id="r_a06b0de5c63c0cf0329389befb44c0d73"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> int&#160;</td><td class="memItemRight"><a class="el" href="#a06b0de5c63c0cf0329389befb44c0d73">ucb_str_comp</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str1, const <a class="el" href="structucb__str.html">ucb_str</a> *str2)</td></tr>
+<tr class="memitem:ac922a2619b2ee667c0544402d5ec66d0" id="r_ac922a2619b2ee667c0544402d5ec66d0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> int&#160;</td><td class="memItemRight"><a class="el" href="#ac922a2619b2ee667c0544402d5ec66d0">ucb_str_icomp</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str1, const <a class="el" href="structucb__str.html">ucb_str</a> *str2)</td></tr>
+<tr class="memitem:ab6b60b2101c255975f3fee858b08743b" id="r_ab6b60b2101c255975f3fee858b08743b"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#ab6b60b2101c255975f3fee858b08743b">ucb_str_startswith</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, const <a class="el" href="structucb__str.html">ucb_str</a> *prefix)</td></tr>
+<tr class="memitem:a60e5ce08ec6debe0bb8eb64600f88cce" id="r_a60e5ce08ec6debe0bb8eb64600f88cce"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a60e5ce08ec6debe0bb8eb64600f88cce">ucb_str_endswith</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, const <a class="el" href="structucb__str.html">ucb_str</a> *suffix)</td></tr>
+<tr class="memitem:ad44e33721d5e38d76015e2a80cfd4859" id="r_ad44e33721d5e38d76015e2a80cfd4859"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#ad44e33721d5e38d76015e2a80cfd4859">ucb_str_find</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, const <a class="el" href="structucb__str.html">ucb_str</a> *substr, size_t pos)</td></tr>
+<tr class="memitem:af017d8212efc2149812c8d462cec2273" id="r_af017d8212efc2149812c8d462cec2273"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t&#160;</td><td class="memItemRight"><a class="el" href="#af017d8212efc2149812c8d462cec2273">ucb_str_next_char</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, size_t from_byte)</td></tr>
+<tr class="memdesc:af017d8212efc2149812c8d462cec2273"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the next character position.  <br /></td></tr>
+<tr id="func-members-5" class="groupHeader"><td colspan="2"><div class="groupHeader">Modification</div></td></tr>
+<tr><td colspan="2" class="ititle"><div class="groupText"><p>All of the functions in this group will detach the string if it's a wrapped string. </p>
+</div></td></tr>
+<tr class="memitem:a8787e563f9587f4bba025ff9fa818ab4" id="r_a8787e563f9587f4bba025ff9fa818ab4"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a8787e563f9587f4bba025ff9fa818ab4">ucb_str_clear</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memdesc:a8787e563f9587f4bba025ff9fa818ab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the string.  <br /></td></tr>
+<tr class="memitem:a980d6a8ea494b8d87aea6244a9bc0054" id="r_a980d6a8ea494b8d87aea6244a9bc0054"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a980d6a8ea494b8d87aea6244a9bc0054">ucb_str_append</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const <a class="el" href="structucb__str.html">ucb_str</a> *append)</td></tr>
+<tr class="memdesc:a980d6a8ea494b8d87aea6244a9bc0054"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append another string to the end of this string.  <br /></td></tr>
+<tr class="memitem:a6353171c091835cd937ad48ff4f65bb3" id="r_a6353171c091835cd937ad48ff4f65bb3"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a6353171c091835cd937ad48ff4f65bb3">ucb_str_append_cp</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const <a class="el" href="types_8h.html#a33c961b70199dd9385abb856804bafee">ucb_cp</a> *cp, size_t num_cp, const <a class="el" href="structucb__error.html">ucb_error</a> **perr)</td></tr>
+<tr class="memitem:ad85ad8f3784bd1213ca502b7bf4c5183" id="r_ad85ad8f3784bd1213ca502b7bf4c5183"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#ad85ad8f3784bd1213ca502b7bf4c5183">ucb_str_append_utf8</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, const char *cstr, size_t len)</td></tr>
+<tr class="memitem:ae0664466af7606360c4792d6f7740d69" id="r_ae0664466af7606360c4792d6f7740d69"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#ae0664466af7606360c4792d6f7740d69">ucb_str_insert</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, size_t index, const <a class="el" href="structucb__str.html">ucb_str</a> *insert)</td></tr>
+<tr class="memdesc:ae0664466af7606360c4792d6f7740d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Insert a string into another string at a specific character index.  <br /></td></tr>
+<tr class="memitem:a43ac3e7388c3d96bf42bd6cadcb983ff" id="r_a43ac3e7388c3d96bf42bd6cadcb983ff"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a43ac3e7388c3d96bf42bd6cadcb983ff">ucb_str_insert_cp</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, size_t index, const <a class="el" href="types_8h.html#a33c961b70199dd9385abb856804bafee">ucb_cp</a> *cp, size_t num_cp, const <a class="el" href="structucb__error.html">ucb_error</a> **perr)</td></tr>
+<tr class="memitem:a1e5f4218972c5b8e04ad1a9fca015c4a" id="r_a1e5f4218972c5b8e04ad1a9fca015c4a"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a1e5f4218972c5b8e04ad1a9fca015c4a">ucb_str_insert_utf8</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, size_t index, const char *cstr, size_t len)</td></tr>
+<tr class="memitem:a42e3759df1358520970e61fc85ebbff0" id="r_a42e3759df1358520970e61fc85ebbff0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a42e3759df1358520970e61fc85ebbff0">ucb_str_concat</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str1, const <a class="el" href="structucb__str.html">ucb_str</a> *str2)</td></tr>
+<tr class="memitem:a613bd29a1affedb744659746d93dbd25" id="r_a613bd29a1affedb744659746d93dbd25"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a613bd29a1affedb744659746d93dbd25">ucb_str_substr</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, size_t index, size_t count)</td></tr>
+<tr class="memdesc:a613bd29a1affedb744659746d93dbd25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a substring from a string.  <br /></td></tr>
+<tr class="memitem:a12443c45170db07ee4e5aee5ce169584" id="r_a12443c45170db07ee4e5aee5ce169584"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a12443c45170db07ee4e5aee5ce169584">ucb_str_substr_wrapped</a> (const <a class="el" href="structucb__str.html">ucb_str</a> *str, size_t index, size_t count)</td></tr>
+<tr class="memitem:a9fea8bb412211ea5584bdbca2e4b8923" id="r_a9fea8bb412211ea5584bdbca2e4b8923"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a9fea8bb412211ea5584bdbca2e4b8923">ucb_str_to_lower</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memitem:abefc99e8377888819a1252fd8d5c730d" id="r_abefc99e8377888819a1252fd8d5c730d"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#abefc99e8377888819a1252fd8d5c730d">ucb_str_to_upper</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memitem:a1aa858521126349932faa91a3ab60822" id="r_a1aa858521126349932faa91a3ab60822"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a1aa858521126349932faa91a3ab60822">ucb_str_to_title</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memitem:abfe2921e0963ba6a2fb45219e02d497c" id="r_abfe2921e0963ba6a2fb45219e02d497c"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#abfe2921e0963ba6a2fb45219e02d497c">ucb_str_casefold</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str)</td></tr>
+<tr class="memitem:a42fcf536c16813644ff30765c0827893" id="r_a42fcf536c16813644ff30765c0827893"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a42fcf536c16813644ff30765c0827893">ucb_str_normalize</a> (<a class="el" href="structucb__str.html">ucb_str</a> *str, <a class="el" href="unicode__enum_8h.html#a30a7771c4928301494f503be6accca66">ucb_norm_form</a> form)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>String type and related functions. </p>
@@ -144,160 +231,121 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
-<a id="a06b86a2ff0fa261a58e5107f5c771c8d" name="a06b86a2ff0fa261a58e5107f5c771c8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06b86a2ff0fa261a58e5107f5c771c8d">&#9670;&#160;</a></span>ucb_str_result</h2>
+<a id="aacbe55869f7bc156bec18bf0844b49e9" name="aacbe55869f7bc156bec18bf0844b49e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacbe55869f7bc156bec18bf0844b49e9">&#9670;&#160;</a></span>ucb_str</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef struct ucb_str_result ucb_str_result</td>
+          <td class="memname">typedef struct ucb_str ucb_str</td>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac8d174e80a7d6a63832376910e740a6f" name="ac8d174e80a7d6a63832376910e740a6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8d174e80a7d6a63832376910e740a6f">&#9670;&#160;</a></span>ucb_str_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct ucb_str <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00045">45</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
-<a id="ad077b90342665985e82d03dbfbc362df" name="ad077b90342665985e82d03dbfbc362df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad077b90342665985e82d03dbfbc362df">&#9670;&#160;</a></span>ucb_str_concat()</h2>
+<a id="a62a7db0fa6ff9b99a6725ce8c4f5f07d" name="a62a7db0fa6ff9b99a6725ce8c4f5f07d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62a7db0fa6ff9b99a6725ce8c4f5f07d">&#9670;&#160;</a></span>ucb_str_abandon()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> * ucb_str_concat </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_abandon </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str2</em></span>&#160;)</td>
+          <td class="paramtype">char **</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af06c0a108ebd326ddf8c4a85ca26395b" name="af06c0a108ebd326ddf8c4a85ca26395b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af06c0a108ebd326ddf8c4a85ca26395b">&#9670;&#160;</a></span>ucb_str_copy()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> * ucb_str_copy </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">size_t *</td>          <td class="paramname"><span class="paramname"><em>len</em></span>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad72259dc739c65efdf303a5cef11789d" name="ad72259dc739c65efdf303a5cef11789d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad72259dc739c65efdf303a5cef11789d">&#9670;&#160;</a></span>ucb_str_cstr()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char * ucb_str_cstr </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">size_t *</td>          <td class="paramname"><span class="paramname"><em>alloc</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Get the underlying NULL-terminated C string. Do not manipulate this string. </p><dl class="params"><dt>Parameters</dt><dd>
+
+<p>Abandon managed data and return the underlying string. </p>
+<p>The string data is no longer managed by <code class="param">str</code> and must be managed by the caller.</p>
+<p><code class="param">str</code> will be zeroed (same as calling <a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3" title="ucb_str_release()">ucb_str_release()</a>). If <code class="param">str</code> is heap allocated it must be followed by <a class="el" href="#a94ea2dfcdcb2050165e9e4ca111e36e5" title="ucb_str_free()">ucb_str_free()</a>. It can be Reinitialized with any <a class="el" href="#a72d8cef4b17d49254aee40b824eff2b0" title="ucb_str_init">ucb_str_init</a> function.</p>
+<dl class="section note"><dt>Note</dt><dd>This call will abandon the string, owned or not. Take a note of the return value.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">str</td><td>ucb string </td></tr>
+    <tr><td class="paramname">str</td><td>the string </td></tr>
+    <tr><td class="paramname">data</td><td>output pointer to string data </td></tr>
+    <tr><td class="paramname">len</td><td>optional output pointer to C string length </td></tr>
+    <tr><td class="paramname">alloc</td><td>optional output pointer to C string allocated size </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>read-only pointer to the underlying C string or UCB_NULL </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the string was owned (caller must free) </dd>
+<dd>
+false if the string was wrapped </dd></dl>
 
 </div>
 </div>
-<a id="ab54acb38d1971456bdc6f40795e6e2ac" name="ab54acb38d1971456bdc6f40795e6e2ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab54acb38d1971456bdc6f40795e6e2ac">&#9670;&#160;</a></span>ucb_str_free()</h2>
+<a id="ae9a65563055b53842aa3479d976f5f03" name="ae9a65563055b53842aa3479d976f5f03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9a65563055b53842aa3479d976f5f03">&#9670;&#160;</a></span>ucb_str_abandon_c()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_free </td>
+          <td class="memname">char * ucb_str_abandon_c </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>Abandon managed data and return the underlying string. </p>
+<p>Convenience function for <a class="el" href="#a62a7db0fa6ff9b99a6725ce8c4f5f07d" title="ucb_str_abandon()">ucb_str_abandon()</a> when only the string is needed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>the string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>char* the underlying string </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00449">449</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 
 </div>
 </div>
-<a id="ad7674f6ea9670945d321f16cfb2d8d6b" name="ad7674f6ea9670945d321f16cfb2d8d6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7674f6ea9670945d321f16cfb2d8d6b">&#9670;&#160;</a></span>ucb_str_is_shallow()</h2>
+<a id="acf959206fe4efce9233487575dcf1e9e" name="acf959206fe4efce9233487575dcf1e9e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf959206fe4efce9233487575dcf1e9e">&#9670;&#160;</a></span>ucb_str_adopt()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_is_shallow </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_adopt </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
-          <td></td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
         </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a33f40b6e671f4c5c79937dc4c56b7c9c" name="a33f40b6e671f4c5c79937dc4c56b7c9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33f40b6e671f4c5c79937dc4c56b7c9c">&#9670;&#160;</a></span>ucb_str_len()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_len </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramkey"></td>
           <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab5aa73b9a6508f611a91a5ca8e0fddba" name="ab5aa73b9a6508f611a91a5ca8e0fddba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5aa73b9a6508f611a91a5ca8e0fddba">&#9670;&#160;</a></span>ucb_str_new()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> * ucb_str_new </td>
-          <td>(</td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>data</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -307,23 +355,270 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint32_t</td>          <td class="paramname"><span class="paramname"><em>flags</em></span>&#160;)</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>alloc</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adopt memory as a string. </p>
+<p>Release current data and take ownership of <code class="param">data</code>, which will be freed when <a class="el" href="#a94ea2dfcdcb2050165e9e4ca111e36e5" title="ucb_str_free()">ucb_str_free()</a> or <a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3" title="ucb_str_release()">ucb_str_release()</a> is called.</p>
+<p>The <code class="param">data</code> must be allocated with ucb functions. The caller must not manipulate <code class="param">data</code> after this call.</p>
+<p>If <code class="param">len</code> is zero, the string must be null-terminated and will be measured. If <code class="param">len</code> is non-zero, the string may contain multiple null characters.</p>
+<p>If <code class="param">alloc</code> is zero, the allocation size is assumed to be <code class="param">len</code> bytes.</p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo</a></b></dt><dd>Add pointer verification in &lt;<a class="el" href="memdbg_8h.html" title="Memory debugging functions.">ucb/memdbg.h</a>&gt; for debug builds</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to update </td></tr>
+    <tr><td class="paramname">data</td><td>string data to adopt </td></tr>
+    <tr><td class="paramname">len</td><td>0 or length of string excluding null-terminator </td></tr>
+    <tr><td class="paramname">alloc</td><td>0 or size of allocation </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a68efa3f60c9df51bdd33c7df3b947d4e" name="a68efa3f60c9df51bdd33c7df3b947d4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68efa3f60c9df51bdd33c7df3b947d4e">&#9670;&#160;</a></span>ucb_str_adopt_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_adopt_c </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adopt a null-terminated C string. </p>
+<p>For when the memory allocated for the C string fits the string + null-terminator.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#acf959206fe4efce9233487575dcf1e9e" title="Adopt memory as a string.">ucb_str_adopt()</a> </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to update </td></tr>
+    <tr><td class="paramname">cstr</td><td>a null-terminated C string </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a980d6a8ea494b8d87aea6244a9bc0054" name="a980d6a8ea494b8d87aea6244a9bc0054"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a980d6a8ea494b8d87aea6244a9bc0054">&#9670;&#160;</a></span>ucb_str_append()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_append </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>append</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Append another string to the end of this string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to append to </td></tr>
+    <tr><td class="paramname">append</td><td>string to append </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6353171c091835cd937ad48ff4f65bb3" name="a6353171c091835cd937ad48ff4f65bb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6353171c091835cd937ad48ff4f65bb3">&#9670;&#160;</a></span>ucb_str_append_cp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_append_cp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="types_8h.html#a33c961b70199dd9385abb856804bafee">ucb_cp</a> *</td>          <td class="paramname"><span class="paramname"><em>cp</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>num_cp</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> **</td>          <td class="paramname"><span class="paramname"><em>perr</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a80c01cedcfd4ef8ba707abf9c94f92ec" name="a80c01cedcfd4ef8ba707abf9c94f92ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80c01cedcfd4ef8ba707abf9c94f92ec">&#9670;&#160;</a></span>ucb_str_num_chars()</h2>
+<a id="ad85ad8f3784bd1213ca502b7bf4c5183" name="ad85ad8f3784bd1213ca502b7bf4c5183"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad85ad8f3784bd1213ca502b7bf4c5183">&#9670;&#160;</a></span>ucb_str_append_utf8()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_num_chars </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_append_utf8 </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27c9e3389f7c74ae03dfd49cb5319da8" name="a27c9e3389f7c74ae03dfd49cb5319da8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27c9e3389f7c74ae03dfd49cb5319da8">&#9670;&#160;</a></span>ucb_str_assign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_assign </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Assign a C string. </p>
+<p>Behaves as if calling <a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3" title="ucb_str_release()">ucb_str_release()</a> followed by <a class="el" href="#a72d8cef4b17d49254aee40b824eff2b0" title="ucb_str_init()">ucb_str_init()</a>. </p>
+
+</div>
+</div>
+<a id="aca0d1c88c998e13d13b309dbac18d265" name="aca0d1c88c998e13d13b309dbac18d265"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca0d1c88c998e13d13b309dbac18d265">&#9670;&#160;</a></span>ucb_str_assign_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ucb_str_assign_c </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00330">330</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="a7202715ddd4919b3d874df5e33e2c3aa" name="a7202715ddd4919b3d874df5e33e2c3aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7202715ddd4919b3d874df5e33e2c3aa">&#9670;&#160;</a></span>ucb_str_avail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_avail </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the free capacity of the underlying data. </p>
+<p>This excludes any eventual null-terminator </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>size in bytes </dd></dl>
+
+</div>
+</div>
+<a id="ad53ac769440233e415b21e93fa880685" name="ad53ac769440233e415b21e93fa880685"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad53ac769440233e415b21e93fa880685">&#9670;&#160;</a></span>ucb_str_capacity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_capacity </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the allocated size of the underlying data. </p>
+<p>This returns 0 for wrapped strings. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>size in bytes </dd></dl>
+
+</div>
+</div>
+<a id="abfe2921e0963ba6a2fb45219e02d497c" name="abfe2921e0963ba6a2fb45219e02d497c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfe2921e0963ba6a2fb45219e02d497c">&#9670;&#160;</a></span>ucb_str_casefold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_casefold </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -331,33 +626,506 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a792c6c2d96feef43a52b52faf7a242d7" name="a792c6c2d96feef43a52b52faf7a242d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a792c6c2d96feef43a52b52faf7a242d7">&#9670;&#160;</a></span>ucb_str_size()</h2>
+<a id="a8787e563f9587f4bba025ff9fa818ab4" name="a8787e563f9587f4bba025ff9fa818ab4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8787e563f9587f4bba025ff9fa818ab4">&#9670;&#160;</a></span>ucb_str_clear()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_size </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_clear </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Clear the string. </p>
+<p>Set the string to empty without modifying the allocation. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to update </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a89da1099f185062e9e9845fc3dd9460f" name="a89da1099f185062e9e9845fc3dd9460f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89da1099f185062e9e9845fc3dd9460f">&#9670;&#160;</a></span>ucb_str_clone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_clone </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>src</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allocate and initialize a string as a copy of another string. </p>
+<p>The returned string will always own its data. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src</td><td>string to clone </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to new <a class="el" href="structucb__str.html" title="Represents a UTF-8 string type.">ucb_str</a> or UCB_NULL on error. </dd></dl>
+
+</div>
+</div>
+<a id="a06b0de5c63c0cf0329389befb44c0d73" name="a06b0de5c63c0cf0329389befb44c0d73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06b0de5c63c0cf0329389befb44c0d73">&#9670;&#160;</a></span>ucb_str_comp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> int ucb_str_comp </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str2</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a81ea1e25563bdf35ea8563672edccbbd" name="a81ea1e25563bdf35ea8563672edccbbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81ea1e25563bdf35ea8563672edccbbd">&#9670;&#160;</a></span>ucb_str_substr()</h2>
+<a id="a42e3759df1358520970e61fc85ebbff0" name="a42e3759df1358520970e61fc85ebbff0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e3759df1358520970e61fc85ebbff0">&#9670;&#160;</a></span>ucb_str_concat()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> * ucb_str_substr </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_concat </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="#ac8d174e80a7d6a63832376910e740a6f">ucb_str_t</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e7e0ef4bfba9cc09ba06d1c7894eaa0" name="a9e7e0ef4bfba9cc09ba06d1c7894eaa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e7e0ef4bfba9cc09ba06d1c7894eaa0">&#9670;&#160;</a></span>ucb_str_copy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>dst</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>src</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copy a string. </p>
+<p><code class="param">dst</code> will release any current data and initialize itself to a copy the string from <code class="param">src</code>. <code class="param">dst</code> will always be an owned string. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dst</td><td>destination string </td></tr>
+    <tr><td class="paramname">src</td><td>source string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on allocation error </dd></dl>
+
+</div>
+</div>
+<a id="acbd099e07c6bd91b84d4fa2b3eddc6a9" name="acbd099e07c6bd91b84d4fa2b3eddc6a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbd099e07c6bd91b84d4fa2b3eddc6a9">&#9670;&#160;</a></span>ucb_str_cstr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char * ucb_str_cstr </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a pointer to the underlying C string. </p>
+<dl class="section note"><dt>Note</dt><dd>Do not manipulate this string. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>const pointer to the underlying C string </dd></dl>
+
+</div>
+</div>
+<a id="a8f3fd6b3eee427524cf6559e959eddea" name="a8f3fd6b3eee427524cf6559e959eddea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f3fd6b3eee427524cf6559e959eddea">&#9670;&#160;</a></span>ucb_str_detach()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_detach </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates own copy of the underlying string, null-terminated. </p>
+<p>If <code class="param">str</code> is an owned string, this call is a no-op If <code class="param">str</code> is a wrapped string, a new allocation will be made, and the string will be owned and null-terminated.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to detach </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the string was modified </dd>
+<dd>
+false if the string is already owned or on out of memory </dd></dl>
+
+</div>
+</div>
+<a id="a60e5ce08ec6debe0bb8eb64600f88cce" name="a60e5ce08ec6debe0bb8eb64600f88cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60e5ce08ec6debe0bb8eb64600f88cce">&#9670;&#160;</a></span>ucb_str_endswith()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_endswith </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>suffix</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac196059e40ff1cada599d7692a95659b" name="ac196059e40ff1cada599d7692a95659b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac196059e40ff1cada599d7692a95659b">&#9670;&#160;</a></span>ucb_str_equal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_equal </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad44e33721d5e38d76015e2a80cfd4859" name="ad44e33721d5e38d76015e2a80cfd4859"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad44e33721d5e38d76015e2a80cfd4859">&#9670;&#160;</a></span>ucb_str_find()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_find </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>substr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>pos</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6f6c827a123672bfc66aad95700f0e93" name="a6f6c827a123672bfc66aad95700f0e93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f6c827a123672bfc66aad95700f0e93">&#9670;&#160;</a></span>ucb_str_fit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_fit </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Shrink data allocation to fit the string. </p>
+<p>If the current capacity is larger than the string length, the allocation will keep shrink to length + 1 and set the null-terminator.</p>
+<p>This is a no-op for wrapped strings or if the allocation is already fitted. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to shrink </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the string was modified </dd></dl>
+
+</div>
+</div>
+<a id="a94ea2dfcdcb2050165e9e4ca111e36e5" name="a94ea2dfcdcb2050165e9e4ca111e36e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94ea2dfcdcb2050165e9e4ca111e36e5">&#9670;&#160;</a></span>ucb_str_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Free a string. </p>
+<p>The string must have been allocated with <a class="el" href="#a6ecceb5eb2c3f58acd322b098731b2c4" title="ucb_str_new()">ucb_str_new()</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to free </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac922a2619b2ee667c0544402d5ec66d0" name="ac922a2619b2ee667c0544402d5ec66d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac922a2619b2ee667c0544402d5ec66d0">&#9670;&#160;</a></span>ucb_str_icomp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> int ucb_str_icomp </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a72d8cef4b17d49254aee40b824eff2b0" name="a72d8cef4b17d49254aee40b824eff2b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72d8cef4b17d49254aee40b824eff2b0">&#9670;&#160;</a></span>ucb_str_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize an owned string from a C string. </p>
+<p>If <code class="param">cstr</code> is UCB_NULL, it is treated as the empty string and <code class="param">len</code> will be ignored.</p>
+<p>If <code class="param">len</code> is zero, the string must be null-terminated and will be measured. If <code class="param">len</code> is non-zero, the string may contain multiple null characters.</p>
+<p>str must always be released with <a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3" title="ucb_str_release()">ucb_str_release()</a>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>It doesn't perform any verifications on <code class="param">str</code> data, which may lead to leaks if the string is already initialized. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to initialize </td></tr>
+    <tr><td class="paramname">cstr</td><td>a C string or literal or UCB_NULL </td></tr>
+    <tr><td class="paramname">len</td><td>0 or length of string excluding null-terminator </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on allocation error </dd></dl>
+
+</div>
+</div>
+<a id="a7eee0dfe9f87c4e25cda08bc0e2d22f8" name="a7eee0dfe9f87c4e25cda08bc0e2d22f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7eee0dfe9f87c4e25cda08bc0e2d22f8">&#9670;&#160;</a></span>ucb_str_init_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ucb_str_init_c </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00252">252</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="a01c95c40f6f80b2097ee95deb395c657" name="a01c95c40f6f80b2097ee95deb395c657"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01c95c40f6f80b2097ee95deb395c657">&#9670;&#160;</a></span>ucb_str_init_empty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ucb_str_init_empty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initialize an empty wrapped string around "" string literal. </p>
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00275">275</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="ab0231ad0f78e314aa45ebaf170f22bcd" name="ab0231ad0f78e314aa45ebaf170f22bcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0231ad0f78e314aa45ebaf170f22bcd">&#9670;&#160;</a></span>ucb_str_init_wrap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_init_wrap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialize a wrapped string around a C string. </p>
+<p>Otherwise behaves same as same as <a class="el" href="#a72d8cef4b17d49254aee40b824eff2b0" title="ucb_str_init()">ucb_str_init()</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to initialize </td></tr>
+    <tr><td class="paramname">cstr</td><td>a C string or literal or UCB_NULL </td></tr>
+    <tr><td class="paramname">len</td><td>0 or length of string excluding null-terminator </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2c51aa291488d7017214639805fae030" name="a2c51aa291488d7017214639805fae030"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c51aa291488d7017214639805fae030">&#9670;&#160;</a></span>ucb_str_init_wrap_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ucb_str_init_wrap_c </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00267">267</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="ae0664466af7606360c4792d6f7740d69" name="ae0664466af7606360c4792d6f7740d69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0664466af7606360c4792d6f7740d69">&#9670;&#160;</a></span>ucb_str_insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -367,33 +1135,174 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>count</em></span>, </td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>insert</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Insert a string into another string at a specific character index. </p>
+<dl class="section note"><dt>Note</dt><dd>Insert at character index, not byte index </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to insert into </td></tr>
+    <tr><td class="paramname">index</td><td>character index to insert at </td></tr>
+    <tr><td class="paramname">insert</td><td>string to insert </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a43ac3e7388c3d96bf42bd6cadcb983ff" name="a43ac3e7388c3d96bf42bd6cadcb983ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43ac3e7388c3d96bf42bd6cadcb983ff">&#9670;&#160;</a></span>ucb_str_insert_cp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_insert_cp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>flags</em></span>&#160;)</td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="types_8h.html#a33c961b70199dd9385abb856804bafee">ucb_cp</a> *</td>          <td class="paramname"><span class="paramname"><em>cp</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>num_cp</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> **</td>          <td class="paramname"><span class="paramname"><em>perr</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Create a substring from a string. </p>
+</div>
+</div>
+<a id="a1e5f4218972c5b8e04ad1a9fca015c4a" name="a1e5f4218972c5b8e04ad1a9fca015c4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e5f4218972c5b8e04ad1a9fca015c4a">&#9670;&#160;</a></span>ucb_str_insert_utf8()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_insert_utf8 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd30abc2952a45b891affb119a960567" name="acd30abc2952a45b891affb119a960567"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd30abc2952a45b891affb119a960567">&#9670;&#160;</a></span>ucb_str_is_empty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_is_empty </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the string is empty. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">str</td><td>string to copy from </td></tr>
-    <tr><td class="paramname">index</td><td>start index of character byte </td></tr>
-    <tr><td class="paramname">count</td><td>number of character bytes to copy </td></tr>
-    <tr><td class="paramname">flags</td><td>could be UCB_STR_DEFAULT (0) or UCB_STR_SHALLOW. If set to UCB_STR_SHALLOW the returned string will be a shallow string. </td></tr>
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>ucb_str_t* </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the string is empty </dd></dl>
 
 </div>
 </div>
-<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">Variable Documentation</h2>
-<a id="a07e33f5cf4a4f1067bf295d4fd122963" name="a07e33f5cf4a4f1067bf295d4fd122963"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07e33f5cf4a4f1067bf295d4fd122963">&#9670;&#160;</a></span>UCB_STR_DEFAULT</h2>
+<a id="a7113f0c7faed282f7677672190eb2500" name="a7113f0c7faed282f7677672190eb2500"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7113f0c7faed282f7677672190eb2500">&#9670;&#160;</a></span>ucb_str_is_owned()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_is_owned </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the underlying data is owned by <code class="param">str</code>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if str is an owned string </dd>
+<dd>
+false if str is a wrapped string </dd></dl>
+
+</div>
+</div>
+<a id="a8c09d46f48693cdcc7808cac856b218e" name="a8c09d46f48693cdcc7808cac856b218e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c09d46f48693cdcc7808cac856b218e">&#9670;&#160;</a></span>ucb_str_len()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_len </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the length of the underlying string. </p>
+<p>This is the number of bytes in the UTF-8 encoded string. If properly null-terminated strings with no embedded null characters, this is same as strlen.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>length in bytes </dd></dl>
+
+</div>
+</div>
+<a id="ac350523821fbc359689c736411aa9cef" name="ac350523821fbc359689c736411aa9cef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac350523821fbc359689c736411aa9cef">&#9670;&#160;</a></span>ucb_str_make()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -402,24 +1311,62 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const uint32_t UCB_STR_DEFAULT = 0x00</td>
+          <td class="memname"><a class="el" href="structucb__str.html">ucb_str</a> ucb_str_make </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>The default string flag, guaranteed to be 0. </p>
+<p>Helper function for stack initialization of an empty string. </p>
+<dl class="section return"><dt>Returns</dt><dd>an empty string </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00026">26</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00169">169</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 
 </div>
 </div>
-<a id="a9d513779307a9a0beb5beb11a734ef19" name="a9d513779307a9a0beb5beb11a734ef19"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d513779307a9a0beb5beb11a734ef19">&#9670;&#160;</a></span>UCB_STR_NO_VERIFY</h2>
+<a id="a6ecceb5eb2c3f58acd322b098731b2c4" name="a6ecceb5eb2c3f58acd322b098731b2c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ecceb5eb2c3f58acd322b098731b2c4">&#9670;&#160;</a></span>ucb_str_new()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_new </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allocate and initialize a new owned string from a C string. </p>
+<p>If <code class="param">cstr</code> is UCB_NULL, it is treated as the empty string and <code class="param">len</code> will be ignored.</p>
+<p>If <code class="param">len</code> is zero, the string must be null-terminated and will be measured. If <code class="param">len</code> is non-zero, the string may contain multiple null characters.</p>
+<p>The returned pointer must always be freed with <a class="el" href="#a94ea2dfcdcb2050165e9e4ca111e36e5" title="ucb_str_free()">ucb_str_free()</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cstr</td><td>a C string or literal </td></tr>
+    <tr><td class="paramname">len</td><td>0 or length of string excluding null-terminator </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to new <a class="el" href="structucb__str.html" title="Represents a UTF-8 string type.">ucb_str</a> or UCB_NULL on error. </dd></dl>
+
+</div>
+</div>
+<a id="a61d5ac32ed971720cf88eb02aa6a03c9" name="a61d5ac32ed971720cf88eb02aa6a03c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61d5ac32ed971720cf88eb02aa6a03c9">&#9670;&#160;</a></span>ucb_str_new_c()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -428,24 +1375,25 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const uint32_t UCB_STR_NO_VERIFY = 0x02</td>
+          <td class="memname"><a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_new_c </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>No verification flag When used, the string will not be verified to be valid UTF-8. </p>
-
-<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00039">39</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00194">194</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 
 </div>
 </div>
-<a id="ad33160897d8379af05ba9da031deef75" name="ad33160897d8379af05ba9da031deef75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad33160897d8379af05ba9da031deef75">&#9670;&#160;</a></span>UCB_STR_SHALLOW</h2>
+<a id="a76a730ce6cb9ad6e1116527d654a17cf" name="a76a730ce6cb9ad6e1116527d654a17cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76a730ce6cb9ad6e1116527d654a17cf">&#9670;&#160;</a></span>ucb_str_new_empty()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -454,19 +1402,445 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const uint32_t UCB_STR_SHALLOW = 0x01</td>
+          <td class="memname"><a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_new_empty </td>
+          <td>(</td>
+          <td class="paramtype">void</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Shallow copy flag When used, any new string will not own the underlying data. The new strings still needs to be free'd with ucb_str_free. </p>
+<p>Allocate and initialize an empty wrapped string around "" string literal. </p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to new <a class="el" href="structucb__str.html" title="Represents a UTF-8 string type.">ucb_str</a> or UCB_NULL on error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00033">33</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00219">219</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="a16b98498822d43fa6621691203a57980" name="a16b98498822d43fa6621691203a57980"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16b98498822d43fa6621691203a57980">&#9670;&#160;</a></span>ucb_str_new_wrap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_new_wrap </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allocate and initialize a wrapped string from a C string without copying data. </p>
+<p>Otherwise behaves same as same as <a class="el" href="#a6ecceb5eb2c3f58acd322b098731b2c4" title="ucb_str_new()">ucb_str_new()</a></p>
+<dl class="section note"><dt>Note</dt><dd>If the string is not null-terminated, it will become an owned string. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cstr</td><td>a C string or literal </td></tr>
+    <tr><td class="paramname">len</td><td>length of string excluding null-terminator, or 0 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to new <a class="el" href="structucb__str.html" title="Represents a UTF-8 string type.">ucb_str</a> or UCB_NULL on error. </dd></dl>
+
+</div>
+</div>
+<a id="aa71eecc030736543043361c92587f26f" name="aa71eecc030736543043361c92587f26f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa71eecc030736543043361c92587f26f">&#9670;&#160;</a></span>ucb_str_new_wrap_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_new_wrap_c </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00210">210</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
+
+</div>
+</div>
+<a id="af017d8212efc2149812c8d462cec2273" name="af017d8212efc2149812c8d462cec2273"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af017d8212efc2149812c8d462cec2273">&#9670;&#160;</a></span>ucb_str_next_char()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_next_char </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>from_byte</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the next character position. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="unicode_8h.html#aaf7a29c55fb2ed6af1c98cdddf5c6374" title="Get the next character position.">ucb_uc_next_char()</a> </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to search </td></tr>
+    <tr><td class="paramname">from_byte</td><td>byte offset to start from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>byte offset to next character or UCB_NPOS if at end of string </dd></dl>
+
+</div>
+</div>
+<a id="a42fcf536c16813644ff30765c0827893" name="a42fcf536c16813644ff30765c0827893"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42fcf536c16813644ff30765c0827893">&#9670;&#160;</a></span>ucb_str_normalize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_normalize </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="unicode__enum_8h.html#a30a7771c4928301494f503be6accca66">ucb_norm_form</a></td>          <td class="paramname"><span class="paramname"><em>form</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a577f8ce38d4b787caed37ed0bc66f717" name="a577f8ce38d4b787caed37ed0bc66f717"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a577f8ce38d4b787caed37ed0bc66f717">&#9670;&#160;</a></span>ucb_str_num_char()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_num_char </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the number of perceived characters in the string. </p>
+<p>This is the number of characters that would be printed to the screen. For instance it could count a starter + multiple combining characters into a single character.</p>
+<dl class="section note"><dt>Note</dt><dd>This is not the same as the number of unicode codepoints </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>length in printable characters </dd></dl>
+
+</div>
+</div>
+<a id="a67ec0191bbe9606141d6cbdb390095b3" name="a67ec0191bbe9606141d6cbdb390095b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67ec0191bbe9606141d6cbdb390095b3">&#9670;&#160;</a></span>ucb_str_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_release </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Release a string. </p>
+<p>The string must have been initialized with <a class="el" href="#a72d8cef4b17d49254aee40b824eff2b0" title="ucb_str_init()">ucb_str_init()</a> </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to release </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abadb65e5b7f54ecd0a068b603b196aed" name="abadb65e5b7f54ecd0a068b603b196aed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abadb65e5b7f54ecd0a068b603b196aed">&#9670;&#160;</a></span>ucb_str_reserve()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_reserve </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Ensure at least <code class="param">size</code> bytes of free space in string. </p>
+<p>The current size is always the string length, regardless of null-terminator. It will add an extra byte when reallocating to ensure null-termination.</p>
+<p>Wrapped strings will be detached and the current string copied over.</p>
+<p>This is a no-op if the string is already large enough. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to update </td></tr>
+    <tr><td class="paramname">size</td><td>bytes of free space to ensure. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the string has enough space. </dd>
+<dd>
+false if out of memory </dd></dl>
+
+</div>
+</div>
+<a id="ab6b60b2101c255975f3fee858b08743b" name="ab6b60b2101c255975f3fee858b08743b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b60b2101c255975f3fee858b08743b">&#9670;&#160;</a></span>ucb_str_startswith()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_startswith </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>prefix</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a613bd29a1affedb744659746d93dbd25" name="a613bd29a1affedb744659746d93dbd25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a613bd29a1affedb744659746d93dbd25">&#9670;&#160;</a></span>ucb_str_substr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_substr </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>count</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allocate and initialize a substring from a string. </p>
+<p>The substring will be a wrapped string of the original <code class="param">str</code> underlying C string. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to copy from </td></tr>
+    <tr><td class="paramname">index</td><td>start index of character byte </td></tr>
+    <tr><td class="paramname">count</td><td>number of characters or UCB_NPOS until end of string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>ucb_str* </dd></dl>
+
+</div>
+</div>
+<a id="a12443c45170db07ee4e5aee5ce169584" name="a12443c45170db07ee4e5aee5ce169584"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12443c45170db07ee4e5aee5ce169584">&#9670;&#160;</a></span>ucb_str_substr_wrapped()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="structucb__str.html">ucb_str</a> * ucb_str_substr_wrapped </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>count</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9fea8bb412211ea5584bdbca2e4b8923" name="a9fea8bb412211ea5584bdbca2e4b8923"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fea8bb412211ea5584bdbca2e4b8923">&#9670;&#160;</a></span>ucb_str_to_lower()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_to_lower </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1aa858521126349932faa91a3ab60822" name="a1aa858521126349932faa91a3ab60822"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1aa858521126349932faa91a3ab60822">&#9670;&#160;</a></span>ucb_str_to_title()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_to_title </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abefc99e8377888819a1252fd8d5c730d" name="abefc99e8377888819a1252fd8d5c730d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abefc99e8377888819a1252fd8d5c730d">&#9670;&#160;</a></span>ucb_str_to_upper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_str_to_upper </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2a408e07ba4e0f996970d24e663ecedd" name="a2a408e07ba4e0f996970d24e663ecedd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a408e07ba4e0f996970d24e663ecedd">&#9670;&#160;</a></span>ucb_str_used()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> size_t ucb_str_used </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the used capacity of the underlying data. </p>
+<p>This return 0 for wrapped strings. This includes any eventual null-terminator. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>string to query </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>size in bytes </dd></dl>
+
+</div>
+</div>
+<a id="a5ace535fc05e7f5a1579982e95d04738" name="a5ace535fc05e7f5a1579982e95d04738"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ace535fc05e7f5a1579982e95d04738">&#9670;&#160;</a></span>ucb_str_wrap()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_str_wrap </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t</td>          <td class="paramname"><span class="paramname"><em>len</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Wrap a C string pointer. </p>
+<p>Behaves as if calling <a class="el" href="#a67ec0191bbe9606141d6cbdb390095b3" title="ucb_str_release()">ucb_str_release()</a> followed by <a class="el" href="#ab0231ad0f78e314aa45ebaf170f22bcd" title="ucb_str_init_wrap()">ucb_str_init_wrap()</a>. </p>
+
+</div>
+</div>
+<a id="af2517cae10cd3d50e14b5e792bef7741" name="af2517cae10cd3d50e14b5e792bef7741"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2517cae10cd3d50e14b5e792bef7741">&#9670;&#160;</a></span>ucb_str_wrap_c()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ucb_str_wrap_c </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structucb__str.html">ucb_str</a> *</td>          <td class="paramname"><span class="paramname"><em>str</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>cstr</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="string_8h_source.html#l00382">382</a> of file <a class="el" href="string_8h_source.html">string.h</a>.</p>
 
 </div>
 </div>

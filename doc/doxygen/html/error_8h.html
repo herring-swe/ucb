@@ -107,22 +107,28 @@ $(function(){initNavTree('error_8h.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:ucb_5Ferror" id="r_ucb_5Ferror"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structucb__error.html">ucb_error</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error information for thrown errors.  <a href="structucb__error.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a54fabd6a08203a0dba5267954b72feff" id="r_a54fabd6a08203a0dba5267954b72feff"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a54fabd6a08203a0dba5267954b72feff">UCB_IS_THROWN</a>(err)</td></tr>
 <tr class="memdesc:a54fabd6a08203a0dba5267954b72feff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if an error is set and refer to a valid error object.  <br /></td></tr>
-<tr class="memitem:ae84f3055b261fa858e25ac7784904526" id="r_ae84f3055b261fa858e25ac7784904526"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ae84f3055b261fa858e25ac7784904526">UCB_VERIFY</a>(expr,  code,  msg)</td></tr>
-<tr class="memitem:ab8288882b313bee629489fd1fe41a93a" id="r_ab8288882b313bee629489fd1fe41a93a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ab8288882b313bee629489fd1fe41a93a">UCB_VERIFY_RET</a>(expr,  code,  msg,  ret)</td></tr>
+<tr class="memitem:a2634a9b35f82b74ca86b1f2a515828a8" id="r_a2634a9b35f82b74ca86b1f2a515828a8"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a2634a9b35f82b74ca86b1f2a515828a8">UCB_REPORT</a>(code,  fmt, ...)</td></tr>
+<tr class="memdesc:a2634a9b35f82b74ca86b1f2a515828a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a user error.  <br /></td></tr>
+<tr class="memitem:ad4d623f26f40a88a61633b74784b6f4a" id="r_ad4d623f26f40a88a61633b74784b6f4a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ad4d623f26f40a88a61633b74784b6f4a">UCB_REPORT_MSG</a>(code,  msg)</td></tr>
+<tr class="memitem:a57b7948e72fc22b0bf0b6e32a58b04bb" id="r_a57b7948e72fc22b0bf0b6e32a58b04bb"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a57b7948e72fc22b0bf0b6e32a58b04bb">UCB_FATAL</a>(code,  fmt, ...)</td></tr>
+<tr class="memdesc:a57b7948e72fc22b0bf0b6e32a58b04bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a fatal error.  <br /></td></tr>
+<tr class="memitem:a15919092459b79bbb43d88ae4237f734" id="r_a15919092459b79bbb43d88ae4237f734"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a15919092459b79bbb43d88ae4237f734">UCB_REPORT_ERRNO</a>(value,  msg)</td></tr>
+<tr class="memdesc:a15919092459b79bbb43d88ae4237f734"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a errno code as a system error.  <br /></td></tr>
+<tr class="memitem:ab041da3e8f5151662ba645ff06e343f7" id="r_ab041da3e8f5151662ba645ff06e343f7"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ab041da3e8f5151662ba645ff06e343f7">UCB_WARN</a>(fmt, ...)</td></tr>
+<tr class="memdesc:ab041da3e8f5151662ba645ff06e343f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a warning.  <br /></td></tr>
+<tr class="memitem:aaa75de7693e93195fd2456eea5c7c98c" id="r_aaa75de7693e93195fd2456eea5c7c98c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aaa75de7693e93195fd2456eea5c7c98c">UCB_REPORT_ERROR</a>(err)</td></tr>
+<tr class="memitem:a0cd694e872787238a83b1d3ad7eb17a9" id="r_a0cd694e872787238a83b1d3ad7eb17a9"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a0cd694e872787238a83b1d3ad7eb17a9">UCB_VERIFY</a>(expr,  code,  fmt, ...)</td></tr>
+<tr class="memdesc:a0cd694e872787238a83b1d3ad7eb17a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify an expression and report a user error if it fails.  <br /></td></tr>
+<tr class="memitem:a27768d6f24ca0a26c558fcc21043d92b" id="r_a27768d6f24ca0a26c558fcc21043d92b"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a27768d6f24ca0a26c558fcc21043d92b">UCB_VERIFY_MSG</a>(expr,  code,  msg)</td></tr>
+<tr class="memitem:a3d0dbc03cbffef714c5ac1529257695e" id="r_a3d0dbc03cbffef714c5ac1529257695e"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a3d0dbc03cbffef714c5ac1529257695e">UCB_VERIFY_ERROR</a>(expr,  err)</td></tr>
 <tr class="memitem:a6400bde0a8673a9efea8ce02cd80a8a6" id="r_a6400bde0a8673a9efea8ce02cd80a8a6"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a6400bde0a8673a9efea8ce02cd80a8a6">UCB_VERIFY_ARGS</a>(expr)</td></tr>
-<tr class="memitem:a042a82c4165511bf4d54d0cfb7d94bfa" id="r_a042a82c4165511bf4d54d0cfb7d94bfa"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a042a82c4165511bf4d54d0cfb7d94bfa">UCB_VERIFY_ARGS_RET</a>(expr,  ret)</td></tr>
-<tr class="memitem:a4675514e9347c46ad47a8f2145e7c004" id="r_a4675514e9347c46ad47a8f2145e7c004"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a4675514e9347c46ad47a8f2145e7c004">UCB_VERIFY_ERRNO</a>(status,  msg)</td></tr>
-<tr class="memitem:a1474301300e905943081aa97acc7932c" id="r_a1474301300e905943081aa97acc7932c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1474301300e905943081aa97acc7932c">ucb_fatal_format</a>(code,  fmt, ...)</td></tr>
-<tr class="memitem:ab6a0d1062b35cafa5bc120b058d44aff" id="r_ab6a0d1062b35cafa5bc120b058d44aff"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ab6a0d1062b35cafa5bc120b058d44aff">ucb_fatal_literal</a>(code,  msg)</td></tr>
-<tr class="memitem:a90c9d238429b033653498446e3ec7456" id="r_a90c9d238429b033653498446e3ec7456"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a90c9d238429b033653498446e3ec7456">ucb_user_format</a>(code,  fmt, ...)</td></tr>
-<tr class="memitem:a654f8fa42ebffb6e3465e010a8ab4a81" id="r_a654f8fa42ebffb6e3465e010a8ab4a81"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a654f8fa42ebffb6e3465e010a8ab4a81">ucb_user_literal</a>(code,  msg)</td></tr>
-<tr class="memitem:a045ed1301cd14a710d959367418c8a3c" id="r_a045ed1301cd14a710d959367418c8a3c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a045ed1301cd14a710d959367418c8a3c">ucb_warn_format</a>(code,  fmt, ...)</td></tr>
-<tr class="memitem:a722942778ed3073d9d1771e6d4c362d5" id="r_a722942778ed3073d9d1771e6d4c362d5"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a722942778ed3073d9d1771e6d4c362d5">ucb_warn_literal</a>(code,  msg)</td></tr>
+<tr class="memdesc:a6400bde0a8673a9efea8ce02cd80a8a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verify an expression and report invalid arguments if it fails.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -132,13 +138,17 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a62b1debee81ccd1fa9fa6759593f637b" id="r_a62b1debee81ccd1fa9fa6759593f637b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> { <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a">UCB_ERRLVL_FATAL</a>
-, <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a>
+<tr class="memitem:a62b1debee81ccd1fa9fa6759593f637b" id="r_a62b1debee81ccd1fa9fa6759593f637b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> { <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a>
+, <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a">UCB_ERRLVL_FATAL</a>
+, <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba2ec80267ffc708a87408854b081a95a3">UCB_ERRLVL_SYSTEM</a>
 , <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10">UCB_ERRLVL_WARNING</a>
  }</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a244d144e04b99a8ec2db4da0cad769e9" id="r_a244d144e04b99a8ec2db4da0cad769e9"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a244d144e04b99a8ec2db4da0cad769e9">ucb_error_set_func</a> (<a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a> func)</td></tr>
+<tr class="memdesc:a244d144e04b99a8ec2db4da0cad769e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the global error function.  <br /></td></tr>
+<tr class="memitem:a2905bd30e0f7320b491f9f53cc666af0" id="r_a2905bd30e0f7320b491f9f53cc666af0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2905bd30e0f7320b491f9f53cc666af0">ucb_error_get_func</a> (void)</td></tr>
 <tr class="memitem:abf471dc214c10359314a5d2cc383ab06" id="r_abf471dc214c10359314a5d2cc383ab06"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char *&#160;</td><td class="memItemRight"><a class="el" href="#abf471dc214c10359314a5d2cc383ab06">ucb_error_lvlstr</a> (<a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> lvl)</td></tr>
 <tr class="memdesc:abf471dc214c10359314a5d2cc383ab06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a string representation of the error level.  <br /></td></tr>
 <tr class="memitem:a8a8236e3844181bbc6bed792fd76caa6" id="r_a8a8236e3844181bbc6bed792fd76caa6"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const char *&#160;</td><td class="memItemRight"><a class="el" href="#a8a8236e3844181bbc6bed792fd76caa6">ucb_error_codestr</a> (<a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code)</td></tr>
@@ -151,8 +161,6 @@ Functions</h2></td></tr>
 <tr class="memdesc:a791ccf7c9361d86ba065c61617f3d3e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares an error for reporting with formatted message.  <br /></td></tr>
 <tr class="memitem:a3adbbfd86975402f778f13e013ab8123" id="r_a3adbbfd86975402f778f13e013ab8123"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const <a class="el" href="structucb__error.html">ucb_error</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a3adbbfd86975402f778f13e013ab8123">ucb_error_formatv</a> (<a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *fmt, va_list args)</td></tr>
 <tr class="memdesc:a3adbbfd86975402f778f13e013ab8123"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares an error for reporting with formatted message using va_list.  <br /></td></tr>
-<tr class="memitem:ad43c0326f6618edc99180f112a508dc8" id="r_ad43c0326f6618edc99180f112a508dc8"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const <a class="el" href="structucb__error.html">ucb_error</a> *&#160;</td><td class="memItemRight"><a class="el" href="#ad43c0326f6618edc99180f112a508dc8">ucb_error_literal</a> (<a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *msg)</td></tr>
-<tr class="memdesc:ad43c0326f6618edc99180f112a508dc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares an error for reporting with a literal message.  <br /></td></tr>
 <tr class="memitem:aed66ef809c7b80a6ca1d566004ddfd5c" id="r_aed66ef809c7b80a6ca1d566004ddfd5c"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#aed66ef809c7b80a6ca1d566004ddfd5c">ucb_error_print</a> (<a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> lvl, const <a class="el" href="structucb__error.html">ucb_error</a> *error)</td></tr>
 <tr class="memdesc:aed66ef809c7b80a6ca1d566004ddfd5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print error to stderr.  <br /></td></tr>
 <tr class="memitem:afb85daa79ddb67d6361e584618eafaaa" id="r_afb85daa79ddb67d6361e584618eafaaa"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#afb85daa79ddb67d6361e584618eafaaa">ucb_error_clear</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr)</td></tr>
@@ -160,15 +168,18 @@ Functions</h2></td></tr>
 <tr class="memitem:abc47f0ab6d4a74ce0e0fed55583c5fef" id="r_abc47f0ab6d4a74ce0e0fed55583c5fef"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#abc47f0ab6d4a74ce0e0fed55583c5fef">ucb_throw</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr, <a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *msg)</td></tr>
 <tr class="memitem:add00369be730bc0dc8022f9cc0650e97" id="r_add00369be730bc0dc8022f9cc0650e97"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#add00369be730bc0dc8022f9cc0650e97">ucb_throw_format</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr, <a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *fmt,...)</td></tr>
 <tr class="memitem:a6ec9e1c6df42d3f231094d0947d233eb" id="r_a6ec9e1c6df42d3f231094d0947d233eb"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a6ec9e1c6df42d3f231094d0947d233eb">ucb_throw_formatv</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr, <a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *fmt, va_list args)</td></tr>
-<tr class="memitem:a244d144e04b99a8ec2db4da0cad769e9" id="r_a244d144e04b99a8ec2db4da0cad769e9"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a244d144e04b99a8ec2db4da0cad769e9">ucb_error_set_func</a> (<a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a> func)</td></tr>
-<tr class="memdesc:a244d144e04b99a8ec2db4da0cad769e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the global error function.  <br /></td></tr>
-<tr class="memitem:a2905bd30e0f7320b491f9f53cc666af0" id="r_a2905bd30e0f7320b491f9f53cc666af0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> <a class="el" href="#a9c66edcacb3857ea64ab6c116609a42b">ucb_error_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2905bd30e0f7320b491f9f53cc666af0">ucb_error_get_func</a> (void)</td></tr>
-<tr class="memitem:a974473407c14aaf958282125343d69e0" id="r_a974473407c14aaf958282125343d69e0"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a> (<a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> lvl, const <a class="el" href="structucb__error.html">ucb_error</a> *error)</td></tr>
-<tr class="memdesc:a974473407c14aaf958282125343d69e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report error.  <br /></td></tr>
+<tr class="memitem:a4a0051b0db5e6bd21874922a9b00b605" id="r_a4a0051b0db5e6bd21874922a9b00b605"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a4a0051b0db5e6bd21874922a9b00b605">ucb_error_report</a> (<a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> lvl, const <a class="el" href="structucb__error.html">ucb_error</a> *err)</td></tr>
+<tr class="memdesc:a4a0051b0db5e6bd21874922a9b00b605"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report an error. Not to be called directly.  <br /></td></tr>
+<tr class="memitem:a61a50a410a7397461680342a70c9910b" id="r_a61a50a410a7397461680342a70c9910b"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a61a50a410a7397461680342a70c9910b">ucb_report_fatal</a> (<a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *fmt,...)</td></tr>
+<tr class="memdesc:a61a50a410a7397461680342a70c9910b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a fatal error.  <br /></td></tr>
+<tr class="memitem:ade122e2e0572e3650f2c8dac6e2ffa5e" id="r_ade122e2e0572e3650f2c8dac6e2ffa5e"><td class="memItemLeft"><a class="el" href="export_8h.html#a8ec06c98b18cffb8c805a493ad41ebf1">UCB_API_NORETURN</a> void&#160;</td><td class="memItemRight"><a class="el" href="#ade122e2e0572e3650f2c8dac6e2ffa5e">ucb_report_user</a> (<a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a> code, const char *fmt,...)</td></tr>
+<tr class="memdesc:ade122e2e0572e3650f2c8dac6e2ffa5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a user error.  <br /></td></tr>
+<tr class="memitem:a9ae7819fbfa2042f4ffb5652152128d3" id="r_a9ae7819fbfa2042f4ffb5652152128d3"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a9ae7819fbfa2042f4ffb5652152128d3">ucb_report_warning</a> (const char *fmt,...)</td></tr>
+<tr class="memdesc:a9ae7819fbfa2042f4ffb5652152128d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Report a warning.  <br /></td></tr>
 <tr class="memitem:a892aceb846b3b50ac4ce1d7599780b3d" id="r_a892aceb846b3b50ac4ce1d7599780b3d"><td class="memItemLeft"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a>&#160;</td><td class="memItemRight"><a class="el" href="#a892aceb846b3b50ac4ce1d7599780b3d">ucb_err_wrap_errno</a> (int err)</td></tr>
 <tr class="memitem:a56a9bcc88f7a37266e4945dbce50f37a" id="r_a56a9bcc88f7a37266e4945dbce50f37a"><td class="memItemLeft"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a>&#160;</td><td class="memItemRight"><a class="el" href="#a56a9bcc88f7a37266e4945dbce50f37a">ucb_err_get_errno</a> (void)</td></tr>
-<tr class="memitem:aace64e2465863dafaaf340f437b04c8f" id="r_aace64e2465863dafaaf340f437b04c8f"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#aace64e2465863dafaaf340f437b04c8f">ucb_report_on_status</a> (int status, <a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a> lvl, const char *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> msg, const char *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> function)</td></tr>
-<tr class="memitem:ab61cf36a2a025f602b8ff86d1a2c0a04" id="r_ab61cf36a2a025f602b8ff86d1a2c0a04"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#ab61cf36a2a025f602b8ff86d1a2c0a04">ucb_throw_on_status</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr, int status, const char *msg)</td></tr>
+<tr class="memitem:a888515d31476d1ea89dbce8f3630546f" id="r_a888515d31476d1ea89dbce8f3630546f"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a888515d31476d1ea89dbce8f3630546f">ucb_report_errno</a> (int status, const char *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> msg, const char *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> function)</td></tr>
+<tr class="memitem:a98dd9066de96ecd0de08ad958ea3a91a" id="r_a98dd9066de96ecd0de08ad958ea3a91a"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool&#160;</td><td class="memItemRight"><a class="el" href="#a98dd9066de96ecd0de08ad958ea3a91a">ucb_throw_errno</a> (const <a class="el" href="structucb__error.html">ucb_error</a> **perr, int status, const char *msg)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Error handling. </p>
@@ -205,14 +216,14 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 </div><a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">Macro Definition Documentation</h2>
-<a id="a1474301300e905943081aa97acc7932c" name="a1474301300e905943081aa97acc7932c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1474301300e905943081aa97acc7932c">&#9670;&#160;</a></span>ucb_fatal_format</h2>
+<a id="a57b7948e72fc22b0bf0b6e32a58b04bb" name="a57b7948e72fc22b0bf0b6e32a58b04bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57b7948e72fc22b0bf0b6e32a58b04bb">&#9670;&#160;</a></span>UCB_FATAL</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ucb_fatal_format</td>
+          <td class="memname">#define UCB_FATAL</td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
         </tr>
@@ -228,37 +239,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a">UCB_ERRLVL_FATAL</a>, <a class="code hl_function" href="#a791ccf7c9361d86ba065c61617f3d3e8">ucb_error_format</a>(code, fmt, __VA_ARGS__))</div>
-<div class="ttc" id="aerror_8h_html_a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a"><div class="ttname"><a href="#a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a">UCB_ERRLVL_FATAL</a></div><div class="ttdeci">@ UCB_ERRLVL_FATAL</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00048">error.h:48</a></div></div>
-<div class="ttc" id="aerror_8h_html_a791ccf7c9361d86ba065c61617f3d3e8"><div class="ttname"><a href="#a791ccf7c9361d86ba065c61617f3d3e8">ucb_error_format</a></div><div class="ttdeci">UCB_API const ucb_error * ucb_error_format(ucb_ecode code, const char *fmt,...)</div><div class="ttdoc">Prepares an error for reporting with formatted message.</div></div>
-<div class="ttc" id="aerror_8h_html_a974473407c14aaf958282125343d69e0"><div class="ttname"><a href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a></div><div class="ttdeci">UCB_API void ucb_error_report(ucb_errlvl lvl, const ucb_error *error)</div><div class="ttdoc">Report error.</div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a61a50a410a7397461680342a70c9910b">ucb_report_fatal</a>((code), <span class="stringliteral">&quot;%s: &quot;</span> fmt, __func__, ##__VA_ARGS__)</div>
+<div class="ttc" id="aerror_8h_html_a61a50a410a7397461680342a70c9910b"><div class="ttname"><a href="#a61a50a410a7397461680342a70c9910b">ucb_report_fatal</a></div><div class="ttdeci">UCB_API void ucb_report_fatal(ucb_ecode code, const char *fmt,...)</div><div class="ttdoc">Report a fatal error.</div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00217">217</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p>Report a fatal error. </p>
+<p>Only used for severe errors like out-of-memory or internal errors. Only exits the program if the user has set a custom error handler to do so. </p>
 
-</div>
-</div>
-<a id="ab6a0d1062b35cafa5bc120b058d44aff" name="ab6a0d1062b35cafa5bc120b058d44aff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6a0d1062b35cafa5bc120b058d44aff">&#9670;&#160;</a></span>ucb_fatal_literal</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ucb_fatal_literal</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a">UCB_ERRLVL_FATAL</a>, <a class="code hl_function" href="#ad43c0326f6618edc99180f112a508dc8">ucb_error_literal</a>(code, msg))</div>
-<div class="ttc" id="aerror_8h_html_ad43c0326f6618edc99180f112a508dc8"><div class="ttname"><a href="#ad43c0326f6618edc99180f112a508dc8">ucb_error_literal</a></div><div class="ttdeci">UCB_API const ucb_error * ucb_error_literal(ucb_ecode code, const char *msg)</div><div class="ttdoc">Prepares an error for reporting with a literal message.</div></div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00219">219</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00215">215</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
@@ -281,23 +268,23 @@ Functions</h2></td></tr>
 <p>Check if an error is set and refer to a valid error object. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">err</td><td>the <a class="el" href="structucb__error.html">ucb_error</a> object to check </td></tr>
+    <tr><td class="paramname">err</td><td>the <a class="el" href="structucb__error.html" title="Error information for thrown errors.">ucb_error</a> object to check </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00141">141</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00177">177</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="a90c9d238429b033653498446e3ec7456" name="a90c9d238429b033653498446e3ec7456"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90c9d238429b033653498446e3ec7456">&#9670;&#160;</a></span>ucb_user_format</h2>
+<a id="a2634a9b35f82b74ca86b1f2a515828a8" name="a2634a9b35f82b74ca86b1f2a515828a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2634a9b35f82b74ca86b1f2a515828a8">&#9670;&#160;</a></span>UCB_REPORT</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ucb_user_format</td>
+          <td class="memname">#define UCB_REPORT</td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
         </tr>
@@ -313,21 +300,73 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a>, <a class="code hl_function" href="#a791ccf7c9361d86ba065c61617f3d3e8">ucb_error_format</a>(code, fmt, __VA_ARGS__))</div>
-<div class="ttc" id="aerror_8h_html_a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c"><div class="ttname"><a href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a></div><div class="ttdeci">@ UCB_ERRLVL_USER</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00049">error.h:49</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#ade122e2e0572e3650f2c8dac6e2ffa5e">ucb_report_user</a>((code), <span class="stringliteral">&quot;%s: &quot;</span> fmt, __func__, ##__VA_ARGS__)</div>
+<div class="ttc" id="aerror_8h_html_ade122e2e0572e3650f2c8dac6e2ffa5e"><div class="ttname"><a href="#ade122e2e0572e3650f2c8dac6e2ffa5e">ucb_report_user</a></div><div class="ttdeci">UCB_API_NORETURN void ucb_report_user(ucb_ecode code, const char *fmt,...)</div><div class="ttdoc">Report a user error.</div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00221">221</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p>Report a user error. </p>
+<p>Always aborts(), since this is a breach on the contract between the user and the library and needs to be caught and fixed early. </p>
+
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00206">206</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="a654f8fa42ebffb6e3465e010a8ab4a81" name="a654f8fa42ebffb6e3465e010a8ab4a81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a654f8fa42ebffb6e3465e010a8ab4a81">&#9670;&#160;</a></span>ucb_user_literal</h2>
+<a id="a15919092459b79bbb43d88ae4237f734" name="a15919092459b79bbb43d88ae4237f734"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15919092459b79bbb43d88ae4237f734">&#9670;&#160;</a></span>UCB_REPORT_ERRNO</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ucb_user_literal</td>
+          <td class="memname">#define UCB_REPORT_ERRNO</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>value</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a888515d31476d1ea89dbce8f3630546f">ucb_report_errno</a>((value), (msg), __func__)</div>
+<div class="ttc" id="aerror_8h_html_a888515d31476d1ea89dbce8f3630546f"><div class="ttname"><a href="#a888515d31476d1ea89dbce8f3630546f">ucb_report_errno</a></div><div class="ttdeci">UCB_API bool ucb_report_errno(int status, const char *UCB_RESTRICT msg, const char *UCB_RESTRICT function)</div></div>
+</div><!-- fragment -->
+<p>Report a errno code as a system error. </p>
+<p>The value is verified to be non-zero before reporting. Value can either be errno or the return value from a function. </p>
+
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00223">223</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+
+</div>
+</div>
+<a id="aaa75de7693e93195fd2456eea5c7c98c" name="aaa75de7693e93195fd2456eea5c7c98c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa75de7693e93195fd2456eea5c7c98c">&#9670;&#160;</a></span>UCB_REPORT_ERROR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UCB_REPORT_ERROR</td>
+          <td>(</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>err</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#ad4d623f26f40a88a61633b74784b6f4a">UCB_REPORT_MSG</a>(err-&gt;code, err-&gt;msg)</div>
+<div class="ttc" id="aerror_8h_html_ad4d623f26f40a88a61633b74784b6f4a"><div class="ttname"><a href="#ad4d623f26f40a88a61633b74784b6f4a">UCB_REPORT_MSG</a></div><div class="ttdeci">#define UCB_REPORT_MSG(code, msg)</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00207">error.h:207</a></div></div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00240">240</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+
+</div>
+</div>
+<a id="ad4d623f26f40a88a61633b74784b6f4a" name="ad4d623f26f40a88a61633b74784b6f4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4d623f26f40a88a61633b74784b6f4a">&#9670;&#160;</a></span>UCB_REPORT_MSG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UCB_REPORT_MSG</td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
         </tr>
@@ -338,14 +377,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a>, <a class="code hl_function" href="#ad43c0326f6618edc99180f112a508dc8">ucb_error_literal</a>(code, msg))</div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#ade122e2e0572e3650f2c8dac6e2ffa5e">ucb_report_user</a>((code), <span class="stringliteral">&quot;%s: %s&quot;</span>, __func__, (msg))</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00223">223</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00207">207</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="ae84f3055b261fa858e25ac7784904526" name="ae84f3055b261fa858e25ac7784904526"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae84f3055b261fa858e25ac7784904526">&#9670;&#160;</a></span>UCB_VERIFY</h2>
+<a id="a0cd694e872787238a83b1d3ad7eb17a9" name="a0cd694e872787238a83b1d3ad7eb17a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cd694e872787238a83b1d3ad7eb17a9">&#9670;&#160;</a></span>UCB_VERIFY</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -363,20 +402,24 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em></em></span>...&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                      \</div>
-<div class="line">{                                                       \</div>
-<div class="line">    if (!(expr))                                        \</div>
-<div class="line">    {                                                   \</div>
-<div class="line">        ucb_user_format(code, <span class="stringliteral">&quot;%s: %s&quot;</span>, __func__, msg); \</div>
-<div class="line">        <span class="keywordflow">return</span>;                                         \</div>
-<div class="line">    }                                                   \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                             \</div>
+<div class="line">{                                                              \</div>
+<div class="line">    if (!(expr))                                               \</div>
+<div class="line">        UCB_REPORT(code, <span class="stringliteral">&quot;%s: &quot;</span> fmt, __func__, ##__VA_ARGS__); \</div>
 <div class="line">} <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00160">160</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p>Verify an expression and report a user error if it fails. </p>
+
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00245">245</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
@@ -394,49 +437,56 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#ae84f3055b261fa858e25ac7784904526">UCB_VERIFY</a>(expr, <a class="code hl_enumvalue" href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2">UCB_ERROR_INVALID_ARG</a>, <span class="stringliteral">&quot;Invalid arguments&quot;</span>)</div>
-<div class="ttc" id="aerrcodes_8h_html_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2"><div class="ttname"><a href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2">UCB_ERROR_INVALID_ARG</a></div><div class="ttdeci">@ UCB_ERROR_INVALID_ARG</div><div class="ttdef"><b>Definition</b> <a href="errcodes_8h_source.html#l00017">errcodes.h:17</a></div></div>
-<div class="ttc" id="aerror_8h_html_ae84f3055b261fa858e25ac7784904526"><div class="ttname"><a href="#ae84f3055b261fa858e25ac7784904526">UCB_VERIFY</a></div><div class="ttdeci">#define UCB_VERIFY(expr, code, msg)</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00160">error.h:160</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#a0cd694e872787238a83b1d3ad7eb17a9">UCB_VERIFY</a>(expr, <a class="code hl_enumvalue" href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2">UCB_ERROR_INVALID_ARG</a>, <span class="stringliteral">&quot;Invalid arguments&quot;</span>)</div>
+<div class="ttc" id="aerrcodes_8h_html_ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2"><div class="ttname"><a href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2">UCB_ERROR_INVALID_ARG</a></div><div class="ttdeci">@ UCB_ERROR_INVALID_ARG</div><div class="ttdef"><b>Definition</b> <a href="errcodes_8h_source.html#l00018">errcodes.h:18</a></div></div>
+<div class="ttc" id="aerror_8h_html_a0cd694e872787238a83b1d3ad7eb17a9"><div class="ttname"><a href="#a0cd694e872787238a83b1d3ad7eb17a9">UCB_VERIFY</a></div><div class="ttdeci">#define UCB_VERIFY(expr, code, fmt,...)</div><div class="ttdoc">Verify an expression and report a user error if it fails.</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00245">error.h:245</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00180">180</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p>Verify an expression and report invalid arguments if it fails. </p>
+
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00264">264</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="a042a82c4165511bf4d54d0cfb7d94bfa" name="a042a82c4165511bf4d54d0cfb7d94bfa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a042a82c4165511bf4d54d0cfb7d94bfa">&#9670;&#160;</a></span>UCB_VERIFY_ARGS_RET</h2>
+<a id="a3d0dbc03cbffef714c5ac1529257695e" name="a3d0dbc03cbffef714c5ac1529257695e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d0dbc03cbffef714c5ac1529257695e">&#9670;&#160;</a></span>UCB_VERIFY_ERROR</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCB_VERIFY_ARGS_RET</td>
+          <td class="memname">#define UCB_VERIFY_ERROR</td>
           <td>(</td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>ret</em></span>&#160;)</td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>err</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#ab8288882b313bee629489fd1fe41a93a">UCB_VERIFY_RET</a>(expr, <a class="code hl_enumvalue" href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2">UCB_ERROR_INVALID_ARG</a>, <span class="stringliteral">&quot;Invalid arguments&quot;</span>, ret)</div>
-<div class="ttc" id="aerror_8h_html_ab8288882b313bee629489fd1fe41a93a"><div class="ttname"><a href="#ab8288882b313bee629489fd1fe41a93a">UCB_VERIFY_RET</a></div><div class="ttdeci">#define UCB_VERIFY_RET(expr, code, msg, ret)</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00170">error.h:170</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#a27768d6f24ca0a26c558fcc21043d92b">UCB_VERIFY_MSG</a>(expr, err-&gt;code, err-&gt;msg)</div>
+<div class="ttc" id="aerror_8h_html_a27768d6f24ca0a26c558fcc21043d92b"><div class="ttname"><a href="#a27768d6f24ca0a26c558fcc21043d92b">UCB_VERIFY_MSG</a></div><div class="ttdeci">#define UCB_VERIFY_MSG(expr, code, msg)</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00252">error.h:252</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00181">181</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00259">259</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="a4675514e9347c46ad47a8f2145e7c004" name="a4675514e9347c46ad47a8f2145e7c004"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4675514e9347c46ad47a8f2145e7c004">&#9670;&#160;</a></span>UCB_VERIFY_ERRNO</h2>
+<a id="a27768d6f24ca0a26c558fcc21043d92b" name="a27768d6f24ca0a26c558fcc21043d92b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27768d6f24ca0a26c558fcc21043d92b">&#9670;&#160;</a></span>UCB_VERIFY_MSG</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define UCB_VERIFY_ERRNO</td>
+          <td class="memname">#define UCB_VERIFY_MSG</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>status</em></span>, </td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -445,68 +495,25 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#aace64e2465863dafaaf340f437b04c8f">ucb_report_on_status</a>(status, <a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c">UCB_ERRLVL_USER</a>, msg, __func__)</div>
-<div class="ttc" id="aerror_8h_html_aace64e2465863dafaaf340f437b04c8f"><div class="ttname"><a href="#aace64e2465863dafaaf340f437b04c8f">ucb_report_on_status</a></div><div class="ttdeci">UCB_API bool ucb_report_on_status(int status, ucb_errlvl lvl, const char *UCB_RESTRICT msg, const char *UCB_RESTRICT function)</div></div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00184">184</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
-
-</div>
-</div>
-<a id="ab8288882b313bee629489fd1fe41a93a" name="ab8288882b313bee629489fd1fe41a93a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8288882b313bee629489fd1fe41a93a">&#9670;&#160;</a></span>UCB_VERIFY_RET</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define UCB_VERIFY_RET</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>expr</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>ret</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                      \</div>
-<div class="line">{                                                       \</div>
-<div class="line">    if (!(expr))                                        \</div>
-<div class="line">    {                                                   \</div>
-<div class="line">        ucb_user_format(code, <span class="stringliteral">&quot;%s: %s&quot;</span>, __func__, msg); \</div>
-<div class="line">        <span class="keywordflow">return</span> ret;                                     \</div>
-<div class="line">    }                                                   \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                  \</div>
+<div class="line">{                                   \</div>
+<div class="line">    if (!(expr))                    \</div>
+<div class="line">        UCB_REPORT_MSG(code, msg);  \</div>
 <div class="line">} <span class="keywordflow">while</span> (0)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00170">170</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00252">252</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
-<a id="a045ed1301cd14a710d959367418c8a3c" name="a045ed1301cd14a710d959367418c8a3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a045ed1301cd14a710d959367418c8a3c">&#9670;&#160;</a></span>ucb_warn_format</h2>
+<a id="ab041da3e8f5151662ba645ff06e343f7" name="ab041da3e8f5151662ba645ff06e343f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab041da3e8f5151662ba645ff06e343f7">&#9670;&#160;</a></span>UCB_WARN</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define ucb_warn_format</td>
+          <td class="memname">#define UCB_WARN</td>
           <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
         </tr>
         <tr>
@@ -516,34 +523,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10">UCB_ERRLVL_WARNING</a>, <a class="code hl_function" href="#a791ccf7c9361d86ba065c61617f3d3e8">ucb_error_format</a>(code, fmt, __VA_ARGS__))</div>
-<div class="ttc" id="aerror_8h_html_a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10"><div class="ttname"><a href="#a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10">UCB_ERRLVL_WARNING</a></div><div class="ttdeci">@ UCB_ERRLVL_WARNING</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00050">error.h:50</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a9ae7819fbfa2042f4ffb5652152128d3">ucb_report_warning</a>(<span class="stringliteral">&quot;%s: &quot;</span> fmt, __func__, ##__VA_ARGS__)</div>
+<div class="ttc" id="aerror_8h_html_a9ae7819fbfa2042f4ffb5652152128d3"><div class="ttname"><a href="#a9ae7819fbfa2042f4ffb5652152128d3">ucb_report_warning</a></div><div class="ttdeci">UCB_API void ucb_report_warning(const char *fmt,...)</div><div class="ttdoc">Report a warning.</div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00225">225</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p>Report a warning. </p>
 
-</div>
-</div>
-<a id="a722942778ed3073d9d1771e6d4c362d5" name="a722942778ed3073d9d1771e6d4c362d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a722942778ed3073d9d1771e6d4c362d5">&#9670;&#160;</a></span>ucb_warn_literal</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define ucb_warn_literal</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a974473407c14aaf958282125343d69e0">ucb_error_report</a>(<a class="code hl_enumvalue" href="#a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10">UCB_ERRLVL_WARNING</a>, <a class="code hl_function" href="#ad43c0326f6618edc99180f112a508dc8">ucb_error_literal</a>(code, msg))</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00227">227</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00238">238</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
@@ -588,7 +573,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00060">60</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00090">90</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
 
 </div>
 </div>
@@ -605,9 +590,18 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a" name="a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a"></a>UCB_ERRLVL_FATAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c" name="a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c"></a>UCB_ERRLVL_USER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10" name="a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10"></a>UCB_ERRLVL_WARNING&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c" name="a62b1debee81ccd1fa9fa6759593f637ba228a655f74d7b41757beb282c4dc118c"></a>UCB_ERRLVL_USER&#160;</td><td class="fielddoc"><p>User error. </p>
+<p>Invalid arguments, invalid state of given objects and other aspects of bad usage. Will always lead to abort. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a" name="a62b1debee81ccd1fa9fa6759593f637ba3b311be9086a8cca6149d8987db2e41a"></a>UCB_ERRLVL_FATAL&#160;</td><td class="fielddoc"><p>Fatal error. </p>
+<p>Out of memory or UCB internal error. Aborting by default but overridable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba2ec80267ffc708a87408854b081a95a3" name="a62b1debee81ccd1fa9fa6759593f637ba2ec80267ffc708a87408854b081a95a3"></a>UCB_ERRLVL_SYSTEM&#160;</td><td class="fielddoc"><p>System error. </p>
+<p>Unexpected system errors (e.g. thread creation failed). Aborting by default but overrideable. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10" name="a62b1debee81ccd1fa9fa6759593f637ba9e45cce26b035e2a7dd4cef0f7a0fc10"></a>UCB_ERRLVL_WARNING&#160;</td><td class="fielddoc"><p>Warning. </p>
+<p>Any non-severe error or detail that needs to be logged but not aborted, unless the user choose to. </p>
+</td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="error_8h_source.html#l00046">46</a> of file <a class="el" href="error_8h_source.html">error.h</a>.</p>
@@ -665,6 +659,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clear an error previously thrown error from a function. </p>
+<p>This is ment to be used in intermediate functions that handles an error before returning to the caller. For the top-level function, use <a class="el" href="#a9993b6c80ab589d7c45c41edc3266fc1" title="ucb_error_free()">ucb_error_free()</a> instead.</p>
 <p>The error will be free'd and the pointer set to UCB_NULL. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">perr</td><td>pointer to error to clear </td></tr>
@@ -810,7 +805,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Free an error. </p>
-<p>Can only be called on errors returned by ucb_error_copy or manual allocation with ucb memory functions. Then is_static must be false. Do not use with errors from reports or returned from functions. This method will report a user error if either err is UCB_NULL or err-&gt;is_static is true. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Can only be called on errors returned by <a class="el" href="#a427979c86b0eb47e2916e9e5e4868db9" title="ucb_error_copy()">ucb_error_copy()</a> or manual allocation with ucb memory functions. Then is_static must be false. Do not use with errors from reports or returned from functions. This method will report a user error if either err is UCB_NULL or err-&gt;is_static is true. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">err</td><td>Error to free </td></tr>
   </table>
@@ -833,30 +828,6 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad43c0326f6618edc99180f112a508dc8" name="ad43c0326f6618edc99180f112a508dc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad43c0326f6618edc99180f112a508dc8">&#9670;&#160;</a></span>ucb_error_literal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> const <a class="el" href="structucb__error.html">ucb_error</a> * ucb_error_literal </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Prepares an error for reporting with a literal message. </p>
-<p>The literal message itself is set on the error object, so it must be valid for the lifetime of the error object. The message will not be free'd. </p><dl class="section see"><dt>See also</dt><dd><a class="el" href="#a791ccf7c9361d86ba065c61617f3d3e8" title="Prepares an error for reporting with formatted message.">ucb_error_format</a> </dd></dl>
 
 </div>
 </div>
@@ -916,8 +887,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a974473407c14aaf958282125343d69e0" name="a974473407c14aaf958282125343d69e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a974473407c14aaf958282125343d69e0">&#9670;&#160;</a></span>ucb_error_report()</h2>
+<a id="a4a0051b0db5e6bd21874922a9b00b605" name="a4a0051b0db5e6bd21874922a9b00b605"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a0051b0db5e6bd21874922a9b00b605">&#9670;&#160;</a></span>ucb_error_report()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -930,20 +901,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> *</td>          <td class="paramname"><span class="paramname"><em>error</em></span>&#160;)</td>
+          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> *</td>          <td class="paramname"><span class="paramname"><em>err</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Report error. </p>
-<p>Depending on level, this will call the corresponding error function, if set. By default the error will be printed with ucb_error_print and return.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lvl</td><td>the error level </td></tr>
-    <tr><td class="paramname">error</td><td>the error to report </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Report an error. Not to be called directly. </p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a57b7948e72fc22b0bf0b6e32a58b04bb" title="Report a fatal error.">UCB_FATAL</a>, <a class="el" href="#a2634a9b35f82b74ca86b1f2a515828a8" title="Report a user error.">UCB_REPORT</a>, <a class="el" href="#ab041da3e8f5151662ba645ff06e343f7" title="Report a warning.">UCB_WARN</a> </dd></dl>
 
 </div>
 </div>
@@ -975,34 +939,111 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aace64e2465863dafaaf340f437b04c8f" name="aace64e2465863dafaaf340f437b04c8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aace64e2465863dafaaf340f437b04c8f">&#9670;&#160;</a></span>ucb_report_on_status()</h2>
+<a id="a888515d31476d1ea89dbce8f3630546f" name="a888515d31476d1ea89dbce8f3630546f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a888515d31476d1ea89dbce8f3630546f">&#9670;&#160;</a></span>ucb_report_errno()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_report_on_status </td>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_report_errno </td>
           <td>(</td>
           <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>status</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="#a62b1debee81ccd1fa9fa6759593f637b">ucb_errlvl</a></td>          <td class="paramname"><span class="paramname"><em>lvl</em></span>, </td>
+          <td class="paramtype">const char *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>msg</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>function</em></span>&#160;)</td>
+          <td class="paramtype">const char *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>function</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a61a50a410a7397461680342a70c9910b" name="a61a50a410a7397461680342a70c9910b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61a50a410a7397461680342a70c9910b">&#9670;&#160;</a></span>ucb_report_fatal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_report_fatal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>...</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Report a fatal error. </p>
+<p>Prefer to use the macro <a class="el" href="#a57b7948e72fc22b0bf0b6e32a58b04bb" title="UCB_FATAL">UCB_FATAL</a> </p>
+
+</div>
+</div>
+<a id="ade122e2e0572e3650f2c8dac6e2ffa5e" name="ade122e2e0572e3650f2c8dac6e2ffa5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade122e2e0572e3650f2c8dac6e2ffa5e">&#9670;&#160;</a></span>ucb_report_user()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#a8ec06c98b18cffb8c805a493ad41ebf1">UCB_API_NORETURN</a> void ucb_report_user </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>...</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Report a user error. </p>
+<p>Prefer to use the macro <a class="el" href="#a2634a9b35f82b74ca86b1f2a515828a8" title="UCB_REPORT">UCB_REPORT</a> </p>
+
+</div>
+</div>
+<a id="a9ae7819fbfa2042f4ffb5652152128d3" name="a9ae7819fbfa2042f4ffb5652152128d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ae7819fbfa2042f4ffb5652152128d3">&#9670;&#160;</a></span>ucb_report_warning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_report_warning </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>...</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Report a warning. </p>
+<p>Prefer to use the macro <a class="el" href="#ab041da3e8f5151662ba645ff06e343f7" title="UCB_WARN">UCB_WARN</a> </p>
 
 </div>
 </div>
@@ -1021,6 +1062,32 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="types_8h.html#a7b51af80e3e90400b56704878d961344">ucb_ecode</a></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98dd9066de96ecd0de08ad958ea3a91a" name="a98dd9066de96ecd0de08ad958ea3a91a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98dd9066de96ecd0de08ad958ea3a91a">&#9670;&#160;</a></span>ucb_throw_errno()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_throw_errno </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> **</td>          <td class="paramname"><span class="paramname"><em>perr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>status</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1088,32 +1155,6 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">va_list</td>          <td class="paramname"><span class="paramname"><em>args</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab61cf36a2a025f602b8ff86d1a2c0a04" name="ab61cf36a2a025f602b8ff86d1a2c0a04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab61cf36a2a025f602b8ff86d1a2c0a04">&#9670;&#160;</a></span>ucb_throw_on_status()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> bool ucb_throw_on_status </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structucb__error.html">ucb_error</a> **</td>          <td class="paramname"><span class="paramname"><em>perr</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>status</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>msg</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

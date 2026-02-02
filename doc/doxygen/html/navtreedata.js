@@ -26,19 +26,19 @@ var NAVTREE =
 [
   [ "UCB", "index.html", [
     [ "Unicode implementation", "md_doc_2markdown_2_unicode.html", [
-      [ "Supported features", "md_doc_2markdown_2_unicode.html#autotoc_md1", null ],
-      [ "To be added", "md_doc_2markdown_2_unicode.html#autotoc_md2", null ],
-      [ "Possible additions", "md_doc_2markdown_2_unicode.html#autotoc_md3", null ]
+      [ "Supported features", "md_doc_2markdown_2_unicode.html#autotoc_md9", null ],
+      [ "To be added", "md_doc_2markdown_2_unicode.html#autotoc_md10", null ],
+      [ "Possible additions", "md_doc_2markdown_2_unicode.html#autotoc_md11", null ]
     ] ],
     [ "VSCode setup", "md_doc_2markdown_2_v_s_code.html", [
-      [ "Extensions", "md_doc_2markdown_2_v_s_code.html#autotoc_md5", [
-        [ "Required", "md_doc_2markdown_2_v_s_code.html#autotoc_md6", null ],
-        [ "Recommended", "md_doc_2markdown_2_v_s_code.html#autotoc_md7", null ],
-        [ "Required for Python", "md_doc_2markdown_2_v_s_code.html#autotoc_md8", null ],
-        [ "Recommended for Python", "md_doc_2markdown_2_v_s_code.html#autotoc_md9", null ]
+      [ "Extensions", "md_doc_2markdown_2_v_s_code.html#autotoc_md13", [
+        [ "Required", "md_doc_2markdown_2_v_s_code.html#autotoc_md14", null ],
+        [ "Recommended", "md_doc_2markdown_2_v_s_code.html#autotoc_md15", null ],
+        [ "Required for Python", "md_doc_2markdown_2_v_s_code.html#autotoc_md16", null ],
+        [ "Recommended for Python", "md_doc_2markdown_2_v_s_code.html#autotoc_md17", null ]
       ] ],
-      [ "Settings", "md_doc_2markdown_2_v_s_code.html#autotoc_md10", null ],
-      [ "Debugging", "md_doc_2markdown_2_v_s_code.html#autotoc_md11", null ]
+      [ "Settings", "md_doc_2markdown_2_v_s_code.html#autotoc_md18", null ],
+      [ "Debugging", "md_doc_2markdown_2_v_s_code.html#autotoc_md19", null ]
     ] ],
     [ "Todo List", "todo.html", null ],
     [ "Topics", "topics.html", "topics" ],
@@ -54,23 +54,21 @@ var NAVTREE =
       [ "File List", "files.html", "files_dup" ],
       [ "Globals", "globals.html", [
         [ "All", "globals.html", "globals_dup" ],
-        [ "Functions", "globals_func.html", null ],
-        [ "Variables", "globals_vars.html", null ],
+        [ "Functions", "globals_func.html", "globals_func" ],
         [ "Typedefs", "globals_type.html", null ],
         [ "Enumerations", "globals_enum.html", null ],
         [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
-    ] ],
-    [ "Examples", "examples.html", "examples" ]
+    ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-"_safe-example.html",
-"errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356cace6e209311b6ccbcbbba0605f2aa595b",
-"structucb__uc__result.html"
+"annotated.html",
+"errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356cad0cc561e19730013a39cb277af527e3d",
+"structucb__btrace.html#a76d971a3c552bc58ba9f0d5fceae9806"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

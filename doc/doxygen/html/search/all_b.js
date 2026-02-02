@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['name_0',['name',['../structucb__mem__report.html#a8f8f80d37794cde9472343e4487ba3eb',1,'ucb_mem_report']]],
-  ['next_1',['next',['../structucb__mem__report__alloc.html#a63f56c3d149a5319fc134286395cb174',1,'ucb_mem_report_alloc']]]
+  ['generics_2eh_0',['generics.h',['../generics_8h.html',1,'']]],
+  ['grow_5ffunc_1',['grow_func',['../structucb__buffer.html#a39360b98e563f0b3c79dc338e4ec6cd2',1,'ucb_buffer']]]
 ];

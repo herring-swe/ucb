@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['settings_0',['Settings',['../md_doc_2markdown_2_v_s_code.html#autotoc_md10',1,'']]],
-  ['setup_1',['VSCode setup',['../md_doc_2markdown_2_v_s_code.html',1,'']]],
-  ['supported_20features_2',['Supported features',['../md_doc_2markdown_2_unicode.html#autotoc_md1',1,'']]]
+  ['features_0',['Supported features',['../md_doc_2markdown_2_unicode.html#autotoc_md9',1,'']]],
+  ['for_20python_1',['for Python',['../md_doc_2markdown_2_v_s_code.html#autotoc_md17',1,'Recommended for Python'],['../md_doc_2markdown_2_v_s_code.html#autotoc_md16',1,'Required for Python']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['extensions_0',['Extensions',['../md_doc_2markdown_2_v_s_code.html#autotoc_md5',1,'']]]
+  ['4_20code_20units_3a_0',['4. Code units:',['../structucb__str.html#autotoc_md6',1,'']]]
 ];

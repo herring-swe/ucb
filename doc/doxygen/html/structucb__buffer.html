@@ -93,22 +93,51 @@ $(function(){initNavTree('structucb__buffer.html','',''); });
 </div><!--header-->
 <div class="contents">
 
+<p>Byte buffer type.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="buffer_8h_source.html">buffer.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
 <tr class="memitem:a91a70b77df95bd8b0830b49a094c2acb" id="r_a91a70b77df95bd8b0830b49a094c2acb"><td class="memItemLeft">char *&#160;</td><td class="memItemRight"><a class="el" href="#a91a70b77df95bd8b0830b49a094c2acb">data</a></td></tr>
-<tr class="memitem:ae8cc011bf3ee2d3c19743095ffc0f7a5" id="r_ae8cc011bf3ee2d3c19743095ffc0f7a5"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#ae8cc011bf3ee2d3c19743095ffc0f7a5">used</a></td></tr>
-<tr class="memitem:ad721fc6ca6a3d6ba3bc506576622aab0" id="r_ad721fc6ca6a3d6ba3bc506576622aab0"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#ad721fc6ca6a3d6ba3bc506576622aab0">capacity</a></td></tr>
+<tr class="memdesc:a91a70b77df95bd8b0830b49a094c2acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory.  <br /></td></tr>
+<tr class="memitem:a854352f53b148adc24983a58a1866d66" id="r_a854352f53b148adc24983a58a1866d66"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#a854352f53b148adc24983a58a1866d66">size</a></td></tr>
+<tr class="memdesc:a854352f53b148adc24983a58a1866d66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number used bytes in memory.  <br /></td></tr>
+<tr class="memitem:aef168a011892f8314c216e76850982a6" id="r_aef168a011892f8314c216e76850982a6"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#aef168a011892f8314c216e76850982a6">alloc</a></td></tr>
+<tr class="memdesc:aef168a011892f8314c216e76850982a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes allocated.  <br /></td></tr>
 <tr class="memitem:a39360b98e563f0b3c79dc338e4ec6cd2" id="r_a39360b98e563f0b3c79dc338e4ec6cd2"><td class="memItemLeft"><a class="el" href="buffer_8h.html#a2bf1dfb78fe23e793d2390d9a36661c8">ucb_buffer_grow_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a39360b98e563f0b3c79dc338e4ec6cd2">grow_func</a></td></tr>
+<tr class="memdesc:a39360b98e563f0b3c79dc338e4ec6cd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">If UCB_NULL, always allocate requested size as-is.  <br /></td></tr>
 <tr class="memitem:aed36b56d32a772381b3f005cf03b3f2b" id="r_aed36b56d32a772381b3f005cf03b3f2b"><td class="memItemLeft">void *&#160;</td><td class="memItemRight"><a class="el" href="#aed36b56d32a772381b3f005cf03b3f2b">_impl</a></td></tr>
+<tr class="memdesc:aed36b56d32a772381b3f005cf03b3f2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reserved for implementation specific data.  <br /></td></tr>
 <tr class="memitem:a847028925afacd71637a8bffdb1bee2a" id="r_a847028925afacd71637a8bffdb1bee2a"><td class="memItemLeft"><a class="el" href="buffer_8h.html#aa1530caa899aa6c3ac9f3c225cc501c4">ucb_buffer_resize_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a847028925afacd71637a8bffdb1bee2a">_impl_resize</a></td></tr>
+<tr class="memdesc:a847028925afacd71637a8bffdb1bee2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">If UCB_NULL, resize not allowed.  <br /></td></tr>
 <tr class="memitem:a5d36ee318d5218f352c4380284dcd6df" id="r_a5d36ee318d5218f352c4380284dcd6df"><td class="memItemLeft"><a class="el" href="buffer_8h.html#ae7f63ea357d2822a235b772cd58296bb">ucb_buffer_free_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#a5d36ee318d5218f352c4380284dcd6df">_impl_free</a></td></tr>
+<tr class="memdesc:a5d36ee318d5218f352c4380284dcd6df"><td class="mdescLeft">&#160;</td><td class="mdescRight">If UCB_NULL, free not needed (static buffer).  <br /></td></tr>
 <tr class="memitem:abb87f57b69a6b6736ce7ddf32b6d0c88" id="r_abb87f57b69a6b6736ce7ddf32b6d0c88"><td class="memItemLeft"><a class="el" href="buffer_8h.html#ac48b776581b77ec33eaae50c46e3b751">ucb_buffer_transfer_func</a>&#160;</td><td class="memItemRight"><a class="el" href="#abb87f57b69a6b6736ce7ddf32b6d0c88">_impl_transfer</a></td></tr>
+<tr class="memdesc:abb87f57b69a6b6736ce7ddf32b6d0c88"><td class="mdescLeft">&#160;</td><td class="mdescRight">If UCB_NULL, release not allowed.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00099">99</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<div class="textblock"><p>Byte buffer type. </p>
+<p>A byte buffer for storing sequential data. It can have multiple implementations.</p>
+<p>Allocate on heap with ucb_buffer_new_&lt;type&gt; or initiate on stack with ucb_buffer_init_&lt;type&gt;</p>
+<p>Only resize or free the buffer using the functions provided in the <a class="el" href="structucb__buffer.html" title="Byte buffer type.">ucb_buffer</a> namespace.</p>
+<p>The buffer is not thread safe.</p>
+<dl class="section warning"><dt>Warning</dt><dd>All of the possible resize functions may invalidate pointers to the current memory. For this reason, it is recommended to only use offsets.</dd></dl>
+<p>Unsafe usage: </p><div class="fragment"><div class="line"><a class="code hl_struct" href="structucb__buffer.html">ucb_buffer</a>* buf = <a class="code hl_function" href="buffer_8h.html#a1efac518cbe3f96d8e7e3ed9755dbb58">ucb_buffer_new_heap</a>(1024);</div>
+<div class="line"><span class="keywordtype">char</span>* <a class="code hl_variable" href="#a91a70b77df95bd8b0830b49a094c2acb">data</a> = buf-&gt;<a class="code hl_variable" href="#a91a70b77df95bd8b0830b49a094c2acb">data</a>;</div>
+<div class="line"><a class="code hl_function" href="buffer_8h.html#a703b5180b7c5827f549042f91a7d041a">ucb_buffer_resize</a>(buf, 2048);</div>
+<div class="line"><a class="code hl_variable" href="#a91a70b77df95bd8b0830b49a094c2acb">data</a>[0] = <span class="charliteral">&#39;a&#39;</span>; <span class="comment">// This is now invalid.</span></div>
+<div class="ttc" id="abuffer_8h_html_a1efac518cbe3f96d8e7e3ed9755dbb58"><div class="ttname"><a href="buffer_8h.html#a1efac518cbe3f96d8e7e3ed9755dbb58">ucb_buffer_new_heap</a></div><div class="ttdeci">UCB_API ucb_buffer * ucb_buffer_new_heap(size_t initial_capacity)</div></div>
+<div class="ttc" id="abuffer_8h_html_a703b5180b7c5827f549042f91a7d041a"><div class="ttname"><a href="buffer_8h.html#a703b5180b7c5827f549042f91a7d041a">ucb_buffer_resize</a></div><div class="ttdeci">UCB_API bool ucb_buffer_resize(ucb_buffer *buf, size_t new_capacity)</div></div>
+<div class="ttc" id="astructucb__buffer_html"><div class="ttname"><a href="structucb__buffer.html">ucb_buffer</a></div><div class="ttdoc">Byte buffer type.</div><div class="ttdef"><b>Definition</b> <a href="buffer_8h_source.html#l00106">buffer.h:107</a></div></div>
+<div class="ttc" id="astructucb__buffer_html_a91a70b77df95bd8b0830b49a094c2acb"><div class="ttname"><a href="#a91a70b77df95bd8b0830b49a094c2acb">ucb_buffer::data</a></div><div class="ttdeci">char * data</div><div class="ttdoc">Memory.</div><div class="ttdef"><b>Definition</b> <a href="buffer_8h_source.html#l00108">buffer.h:108</a></div></div>
+</div><!-- fragment --><p>Safe usage: </p><div class="fragment"><div class="line"><a class="code hl_struct" href="structucb__buffer.html">ucb_buffer</a>* buf = <a class="code hl_function" href="buffer_8h.html#a1efac518cbe3f96d8e7e3ed9755dbb58">ucb_buffer_new_heap</a>(1024);</div>
+<div class="line"><span class="keywordtype">size_t</span> offset = 0;</div>
+<div class="line"><a class="code hl_function" href="buffer_8h.html#a703b5180b7c5827f549042f91a7d041a">ucb_buffer_resize</a>(buf, 2048);</div>
+<div class="line">buf-&gt;<a class="code hl_variable" href="#a91a70b77df95bd8b0830b49a094c2acb">data</a>[offset] = <span class="charliteral">&#39;a&#39;</span>;</div>
+</div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00106">106</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Field Documentation</h2>
 <a id="aed36b56d32a772381b3f005cf03b3f2b" name="aed36b56d32a772381b3f005cf03b3f2b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aed36b56d32a772381b3f005cf03b3f2b">&#9670;&#160;</a></span>_impl</h2>
@@ -122,7 +151,9 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00107">107</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>Reserved for implementation specific data. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00114">114</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -138,7 +169,9 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00109">109</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>If UCB_NULL, free not needed (static buffer). </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00116">116</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -154,7 +187,9 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00108">108</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>If UCB_NULL, resize not allowed. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00115">115</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -170,23 +205,27 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00110">110</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>If UCB_NULL, release not allowed. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00117">117</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
-<a id="ad721fc6ca6a3d6ba3bc506576622aab0" name="ad721fc6ca6a3d6ba3bc506576622aab0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad721fc6ca6a3d6ba3bc506576622aab0">&#9670;&#160;</a></span>capacity</h2>
+<a id="aef168a011892f8314c216e76850982a6" name="aef168a011892f8314c216e76850982a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef168a011892f8314c216e76850982a6">&#9670;&#160;</a></span>alloc</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t capacity</td>
+          <td class="memname">size_t alloc</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00103">103</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>Number of bytes allocated. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00110">110</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -202,7 +241,9 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00101">101</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>Memory. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00108">108</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -218,23 +259,27 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00104">104</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>If UCB_NULL, always allocate requested size as-is. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00111">111</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
-<a id="ae8cc011bf3ee2d3c19743095ffc0f7a5" name="ae8cc011bf3ee2d3c19743095ffc0f7a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8cc011bf3ee2d3c19743095ffc0f7a5">&#9670;&#160;</a></span>used</h2>
+<a id="a854352f53b148adc24983a58a1866d66" name="a854352f53b148adc24983a58a1866d66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a854352f53b148adc24983a58a1866d66">&#9670;&#160;</a></span>size</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">size_t used</td>
+          <td class="memname">size_t size</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00102">102</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p>Number used bytes in memory. </p>
+
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00109">109</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>

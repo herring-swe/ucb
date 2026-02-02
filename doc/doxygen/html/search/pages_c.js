@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['vscode_20setup_0',['VSCode setup',['../md_doc_2markdown_2_v_s_code.html',1,'']]]
+  ['of_20string_0',['Length of string',['../structucb__str.html#autotoc_md2',1,'']]],
+  ['owned_20strings_1',['Owned strings',['../structucb__str.html#autotoc_md0',1,'']]]
 ];

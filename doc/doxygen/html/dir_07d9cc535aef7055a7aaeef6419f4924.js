@@ -24,5 +24,6 @@ var dir_07d9cc535aef7055a7aaeef6419f4924 =
     [ "time.h", "time_8h.html", "time_8h" ],
     [ "types.h", "types_8h.html", "types_8h" ],
     [ "ucb.h", "ucb_8h.html", "ucb_8h" ],
-    [ "unicode.h", "unicode_8h.html", "unicode_8h" ]
+    [ "unicode.h", "unicode_8h.html", "unicode_8h" ],
+    [ "unicode_enum.h", "unicode__enum_8h.html", "unicode__enum_8h" ]
 ];

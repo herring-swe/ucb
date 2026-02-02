@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['be_20added_0',['To be added',['../md_doc_2markdown_2_unicode.html#autotoc_md2',1,'']]]
+  ['2_20unicode_20codepoints_3a_0',['2. Unicode codepoints:',['../structucb__str.html#autotoc_md4',1,'']]]
 ];

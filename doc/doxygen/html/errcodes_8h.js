@@ -2,6 +2,7 @@ var errcodes_8h =
 [
     [ "ucb_error_code", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356c", [
       [ "UCB_OK", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356cac6a1d603f0f4cbcd2119c5dd80cfa2ae", null ],
+      [ "UCB_ERROR_WARNING", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca63358b38b07462a7e177425a1af50d03", null ],
       [ "UCB_ERROR_OUT_OF_MEMORY", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356caf2f3fffc6909c078af156e410c998f3e", null ],
       [ "UCB_ERROR_INVALID_ARG", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca7003d1728835d730f01bb8953b5befd2", null ],
       [ "UCB_ERROR_UNHANDLED_ERROR", "errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca2c8dbfcf65f77629d199e82a20428e86", null ],

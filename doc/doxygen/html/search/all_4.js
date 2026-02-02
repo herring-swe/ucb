@@ -1,11 +1,7 @@
 var searchData=
 [
-  ['data_0',['data',['../structucb__buffer.html#a91a70b77df95bd8b0830b49a094c2acb',1,'ucb_buffer::data'],['../structucb__uc__result.html#a91a70b77df95bd8b0830b49a094c2acb',1,'ucb_uc_result::data']]],
-  ['data_5fclone_1',['data_clone',['../structucb__pqueue__args.html#a46bda7b3692ce8edc19284ede16f2e88',1,'ucb_pqueue_args']]],
-  ['data_5ffree_2',['data_free',['../structucb__pqueue__args.html#a676fdfb83f11db9ec6eb95528f017a1d',1,'ucb_pqueue_args']]],
-  ['debug_2eh_3',['debug.h',['../debug_8h.html',1,'']]],
-  ['debugging_4',['Debugging',['../md_doc_2markdown_2_v_s_code.html#autotoc_md11',1,'']]],
-  ['debugging_20functions_5',['Memory debugging functions',['../group___mem_debug.html',1,'']]],
-  ['defines_2eh_6',['defines.h',['../defines_8h.html',1,'']]],
-  ['diag_2eh_7',['diag.h',['../diag_8h.html',1,'']]]
+  ['_5fimpl_0',['_impl',['../structucb__buffer.html#aed36b56d32a772381b3f005cf03b3f2b',1,'ucb_buffer']]],
+  ['_5fimpl_5ffree_1',['_impl_free',['../structucb__buffer.html#a5d36ee318d5218f352c4380284dcd6df',1,'ucb_buffer']]],
+  ['_5fimpl_5fresize_2',['_impl_resize',['../structucb__buffer.html#a847028925afacd71637a8bffdb1bee2a',1,'ucb_buffer']]],
+  ['_5fimpl_5ftransfer_3',['_impl_transfer',['../structucb__buffer.html#abb87f57b69a6b6736ce7ddf32b6d0c88',1,'ucb_buffer']]]
 ];

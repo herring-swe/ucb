@@ -126,7 +126,7 @@ Functions</h2></td></tr>
 <tr class="memitem:gac09cf11633f56f58c68e9608a639238d" id="r_gac09cf11633f56f58c68e9608a639238d"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void *&#160;</td><td class="memItemRight"><a class="el" href="group___mem_debug.html#gac09cf11633f56f58c68e9608a639238d">ucb_realloc_debug</a> (void *ptr, size_t size, const char *file, int line)</td></tr>
 <tr class="memitem:ga685afff785a47ece81c6db7e6206f40a" id="r_ga685afff785a47ece81c6db7e6206f40a"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void *&#160;</td><td class="memItemRight"><a class="el" href="group___mem_debug.html#ga685afff785a47ece81c6db7e6206f40a">ucb_realloc2_debug</a> (void *ptr, size_t size, bool free_on_failure, const char *file, int line)</td></tr>
 <tr class="memitem:ga451ef2bd694e2cdc33d4a8fe875ffde4" id="r_ga451ef2bd694e2cdc33d4a8fe875ffde4"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="group___mem_debug.html#ga451ef2bd694e2cdc33d4a8fe875ffde4">ucb_free_debug</a> (void *ptr, const char *file, int line)</td></tr>
-<tr class="memitem:a3eb1e2bb2f389cb4d325c72ca4e2f85c" id="r_a3eb1e2bb2f389cb4d325c72ca4e2f85c"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a3eb1e2bb2f389cb4d325c72ca4e2f85c">ucb_memcpy_s</a> (void *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> dest, size_t dest_size, const void *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> src, size_t src_size)</td></tr>
+<tr class="memitem:a3eb1e2bb2f389cb4d325c72ca4e2f85c" id="r_a3eb1e2bb2f389cb4d325c72ca4e2f85c"><td class="memItemLeft"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void&#160;</td><td class="memItemRight"><a class="el" href="#a3eb1e2bb2f389cb4d325c72ca4e2f85c">ucb_memcpy_s</a> (void *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> dest, size_t dest_size, const void *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a> src, size_t src_size)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Memory allocation routines. </p>
@@ -178,7 +178,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> { <a class="code hl_function" href="#a1736cedf278c2c590f2e1e3b74a513ec">ucb_free</a>((<span class="keywordtype">void</span>*)(ptr)); (ptr) = <a class="code hl_define" href="defines_8h.html#a723a75ddd054b2bb8fc40bfb6b91d64d">UCB_NULL</a>; } <span class="keywordflow">while</span> (0)</div>
-<div class="ttc" id="adefines_8h_html_a723a75ddd054b2bb8fc40bfb6b91d64d"><div class="ttname"><a href="defines_8h.html#a723a75ddd054b2bb8fc40bfb6b91d64d">UCB_NULL</a></div><div class="ttdeci">#define UCB_NULL</div><div class="ttdef"><b>Definition</b> <a href="defines_8h_source.html#l00030">defines.h:30</a></div></div>
+<div class="ttc" id="adefines_8h_html_a723a75ddd054b2bb8fc40bfb6b91d64d"><div class="ttname"><a href="defines_8h.html#a723a75ddd054b2bb8fc40bfb6b91d64d">UCB_NULL</a></div><div class="ttdeci">#define UCB_NULL</div><div class="ttdef"><b>Definition</b> <a href="defines_8h_source.html#l00023">defines.h:23</a></div></div>
 <div class="ttc" id="amemory_8h_html_a1736cedf278c2c590f2e1e3b74a513ec"><div class="ttname"><a href="#a1736cedf278c2c590f2e1e3b74a513ec">ucb_free</a></div><div class="ttdeci">UCB_API void ucb_free(void *ptr)</div><div class="ttdoc">Same as free, ignores NULL.</div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="memory_8h_source.html#l00157">157</a> of file <a class="el" href="memory_8h_source.html">memory.h</a>.</p>
@@ -340,7 +340,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="export_8h.html#aa35e683f9335fd89ba4db703556be2c6">UCB_API</a> void ucb_memcpy_s </td>
           <td>(</td>
-          <td class="paramtype">void *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
+          <td class="paramtype">void *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>dest</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -350,7 +350,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const void *<a class="el" href="defines_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
+          <td class="paramtype">const void *<a class="el" href="export_8h.html#a1143291db8ef11b48f62e3eae00ced92">UCB_RESTRICT</a></td>          <td class="paramname"><span class="paramname"><em>src</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

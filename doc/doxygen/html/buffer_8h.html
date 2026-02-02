@@ -108,7 +108,9 @@ $(function(){initNavTree('buffer_8h.html','',''); });
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:ucb_5Fbuffer" id="r_ucb_5Fbuffer"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structucb__buffer.html">ucb_buffer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Byte buffer type.  <a href="structucb__buffer.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ucb_5Fbuffer_5Fview" id="r_ucb_5Fbuffer_5Fview"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="structucb__buffer__view.html">ucb_buffer_view</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A view into a buffer.  <a href="structucb__buffer__view.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
@@ -202,7 +204,7 @@ Functions</h2></td></tr>
 <b>Value:</b><div class="fragment"><div class="line"><a class="code hl_function" href="#a676d0fe996b8fdd6dde1285e2f4ebbb4">ucb_buffer_view_init</a>(view, buf, <span class="keyword">sizeof</span>(type))</div>
 <div class="ttc" id="abuffer_8h_html_a676d0fe996b8fdd6dde1285e2f4ebbb4"><div class="ttname"><a href="#a676d0fe996b8fdd6dde1285e2f4ebbb4">ucb_buffer_view_init</a></div><div class="ttdeci">ucb_ecode ucb_buffer_view_init(ucb_buffer_view *view, ucb_buffer *buf, size_t offset, size_t element_size)</div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00328">328</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00347">347</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -401,6 +403,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Ensure that a certain amount of bytes are available as free space in the buffer. If the buffer capacity is too small, it will be grown to accomodate the request. Calls ucb_buffer_grow if needed </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">size</td><td>size to ensure </td></tr>
   </table>
   </dd>
@@ -473,6 +476,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Grow the buffer capacity by given bytes. This will always try to allocate memory. It may use a user-defined grow function if one is set, otherwise size will be added to the current size. Calls ucb_buffer_resize to do the actual resize. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">inc_capacity</td><td>number of bytes to grow from current capacity </td></tr>
   </table>
   </dd>
@@ -511,7 +515,7 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00280">280</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="buffer_8h_source.html#l00299">299</a> of file <a class="el" href="buffer_8h_source.html">buffer.h</a>.</p>
 
 </div>
 </div>
@@ -644,6 +648,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Copies the last size data from the buffer and reduce the buffers used size. Does not shrink the buffers capacity or modify it's data </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">out_data</td><td>pointer to data that will be set </td></tr>
     <tr><td class="paramname">size</td><td>number of bytes to read </td></tr>
   </table>
@@ -677,6 +682,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Push data to the end of the buffer, growing the buffer if needed. Calls ucb_buffer_grow if needed </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">data</td><td>data to push, must be at least size bytes </td></tr>
     <tr><td class="paramname">size</td><td>number of bytes to push </td></tr>
   </table>
@@ -709,8 +715,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Formats and appends string to buffer. The buffer may grow as needed. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Formats and appends string to buffer. The buffer may grow as needed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">fmt</td><td>a format string </td></tr>
     <tr><td class="paramname">...</td><td>arguments to format </td></tr>
   </table>
@@ -745,6 +753,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Formats and appends string to buffer. The buffer may grow as needed. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">fmt</td><td>a format string </td></tr>
     <tr><td class="paramname">args</td><td>arguments to format </td></tr>
   </table>
@@ -784,6 +793,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Read from the buffer at a given offset. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">buf</td><td>the buffer </td></tr>
     <tr><td class="paramname">out_data</td><td>pointer to data that will be set </td></tr>
     <tr><td class="paramname">size</td><td>number of bytes to read </td></tr>
     <tr><td class="paramname">offset</td><td>offset to read from </td></tr>

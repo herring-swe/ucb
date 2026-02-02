@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['vscode_20setup_0',['VSCode setup',['../md_doc_2markdown_2_v_s_code.html',1,'']]],
-  ['vscode_2emd_1',['VSCode.md',['../_v_s_code_8md.html',1,'']]]
+  ['readme_2emd_0',['README.md',['../_r_e_a_d_m_e_8md.html',1,'']]],
+  ['recommended_1',['Recommended',['../md_doc_2markdown_2_v_s_code.html#autotoc_md15',1,'']]],
+  ['recommended_20for_20python_2',['Recommended for Python',['../md_doc_2markdown_2_v_s_code.html#autotoc_md17',1,'']]],
+  ['required_3',['Required',['../md_doc_2markdown_2_v_s_code.html#autotoc_md14',1,'']]],
+  ['required_20for_20python_4',['Required for Python',['../md_doc_2markdown_2_v_s_code.html#autotoc_md16',1,'']]]
 ];

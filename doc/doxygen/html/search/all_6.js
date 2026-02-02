@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['features_0',['Supported features',['../md_doc_2markdown_2_unicode.html#autotoc_md1',1,'']]],
-  ['file_1',['file',['../structucb__mem__report__alloc.html#af0baa3ccdd9d2a6adf03b72e2bea5789',1,'ucb_mem_report_alloc']]],
-  ['for_20python_2',['for Python',['../md_doc_2markdown_2_v_s_code.html#autotoc_md9',1,'Recommended for Python'],['../md_doc_2markdown_2_v_s_code.html#autotoc_md8',1,'Required for Python']]],
-  ['func_3',['func',['../structucb__task.html#a3efcee22e285af081f781d313f05cd39',1,'ucb_task']]],
-  ['functions_4',['Memory debugging functions',['../group___mem_debug.html',1,'']]]
+  ['be_20added_0',['To be added',['../md_doc_2markdown_2_unicode.html#autotoc_md10',1,'']]],
+  ['bt_1',['bt',['../structucb__mem__report__alloc.html#ab8def9068501277eb9d7763a0631a662',1,'ucb_mem_report_alloc']]],
+  ['btrace_2eh_2',['btrace.h',['../btrace_8h.html',1,'']]],
+  ['buf_3',['buf',['../structucb__buffer__view.html#a756af703598ad53d8c718fb46da6742a',1,'ucb_buffer_view']]],
+  ['buffer_2eh_4',['buffer.h',['../buffer_8h.html',1,'']]],
+  ['bufutil_2eh_5',['bufutil.h',['../bufutil_8h.html',1,'']]],
+  ['bytes_3a_6',['1. Bytes:',['../structucb__str.html#autotoc_md3',1,'']]]
 ];

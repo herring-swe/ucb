@@ -108,7 +108,6 @@ Macros</h2></td></tr>
 <tr class="memitem:aa25ef4036ded5b1ae5141264c8772522" id="r_aa25ef4036ded5b1ae5141264c8772522"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#aa25ef4036ded5b1ae5141264c8772522">UCB_ASSERT_INTERNAL</a>(expr,  msg)</td></tr>
 <tr class="memitem:a33ae73648e982e47355359b939b21e71" id="r_a33ae73648e982e47355359b939b21e71"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a33ae73648e982e47355359b939b21e71">UCB_ASSERT_STATUS</a>(status,  msg)</td></tr>
 <tr class="memitem:ac0897f314c8b590881e3df9ea5ed5920" id="r_ac0897f314c8b590881e3df9ea5ed5920"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ac0897f314c8b590881e3df9ea5ed5920">UCB_ASSERT_ERRNO</a>(status,  msg)</td></tr>
-<tr class="memitem:a4b6b7abfc69c613f4a0a10e98c6f4904" id="r_a4b6b7abfc69c613f4a0a10e98c6f4904"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a4b6b7abfc69c613f4a0a10e98c6f4904">UCB_WARN</a>(code,  fmt, ...)</td></tr>
 <tr class="memitem:a215d698c9dda6c75cc075c370c8c928a" id="r_a215d698c9dda6c75cc075c370c8c928a"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a215d698c9dda6c75cc075c370c8c928a">UCB_PRINT</a>(fmt, ...)</td></tr>
 <tr class="memitem:a574817267706bfd6dee9a8b53cb70bdc" id="r_a574817267706bfd6dee9a8b53cb70bdc"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a574817267706bfd6dee9a8b53cb70bdc">UCB_DPRINT</a>(fmt, ...)</td></tr>
 </table>
@@ -148,7 +147,7 @@ Macros</h2></td></tr>
 <div class="line">{                                                                            \</div>
 <div class="line">    if (!(expr))                                                             \</div>
 <div class="line">    {                                                                        \</div>
-<div class="line">        ucb_fatal_format(code, <span class="stringliteral">&quot;%s: Assertion failure - %s&quot;</span>, __func__, msg); \</div>
+<div class="line">        ucb_report_fatal(code, <span class="stringliteral">&quot;%s: Assertion failure - %s&quot;</span>, __func__, msg); \</div>
 <div class="line">        abort();                                                             \</div>
 <div class="line">    }                                                                        \</div>
 <div class="line">} <span class="keywordflow">while</span> (0)</div>
@@ -202,7 +201,7 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="#a594d5c80a15a9f248fa3af1c48700b1b">UCB_ASSERT</a>(expr, <a class="code hl_enumvalue" href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0">UCB_ERROR_INTERNAL</a>, msg)</div>
-<div class="ttc" id="aerrcodes_8h_html_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0"><div class="ttname"><a href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0">UCB_ERROR_INTERNAL</a></div><div class="ttdeci">@ UCB_ERROR_INTERNAL</div><div class="ttdef"><b>Definition</b> <a href="errcodes_8h_source.html#l00022">errcodes.h:22</a></div></div>
+<div class="ttc" id="aerrcodes_8h_html_ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0"><div class="ttname"><a href="errcodes_8h.html#ae79f1392f5d4e82a7b4c9c030734356ca3a6a17d9dae48c548acefaa0a69b7be0">UCB_ERROR_INTERNAL</a></div><div class="ttdeci">@ UCB_ERROR_INTERNAL</div><div class="ttdef"><b>Definition</b> <a href="errcodes_8h_source.html#l00023">errcodes.h:23</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="debug_8h_source.html#l00031">31</a> of file <a class="el" href="debug_8h_source.html">debug.h</a>.</p>
 
@@ -252,7 +251,7 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">((void)0)</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="debug_8h_source.html#l00064">64</a> of file <a class="el" href="debug_8h_source.html">debug.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="debug_8h_source.html#l00060">60</a> of file <a class="el" href="debug_8h_source.html">debug.h</a>.</p>
 
 </div>
 </div>
@@ -275,36 +274,6 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">fprintf(stderr, fmt, ##__VA_ARGS__)</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="debug_8h_source.html#l00040">40</a> of file <a class="el" href="debug_8h_source.html">debug.h</a>.</p>
-
-</div>
-</div>
-<a id="a4b6b7abfc69c613f4a0a10e98c6f4904" name="a4b6b7abfc69c613f4a0a10e98c6f4904"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b6b7abfc69c613f4a0a10e98c6f4904">&#9670;&#160;</a></span>UCB_WARN</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define UCB_WARN</td>
-          <td>(</td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>code</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em>fmt</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"></td>          <td class="paramname"><span class="paramname"><em></em></span>...&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><a class="code hl_define" href="error_8h.html#a045ed1301cd14a710d959367418c8a3c">ucb_warn_format</a>(code, <span class="stringliteral">&quot;%s: &quot;</span> fmt, __func__, ##__VA_ARGS__)</div>
-<div class="ttc" id="aerror_8h_html_a045ed1301cd14a710d959367418c8a3c"><div class="ttname"><a href="error_8h.html#a045ed1301cd14a710d959367418c8a3c">ucb_warn_format</a></div><div class="ttdeci">#define ucb_warn_format(code, fmt,...)</div><div class="ttdef"><b>Definition</b> <a href="error_8h_source.html#l00225">error.h:225</a></div></div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="debug_8h_source.html#l00038">38</a> of file <a class="el" href="debug_8h_source.html">debug.h</a>.</p>
 
