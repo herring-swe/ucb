@@ -1,0 +1,55 @@
+jobs:
+  clang-format:
+    name: Check clang-format
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      with:
+          fetch-depth: 0
+
+      - name: Install clang-format 21 (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get install -y clang-format-21
+
+      - name: Install clang-format 21 (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install llvm -y --version=21.0.0
+          echo "C:\Program Files\LLVM\bin" >> $GITHUB_PATH
+
+      - name: Install clang-format 21 (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          brew install llvm@21
+          echo "/usr/local/opt/llvm@21/bin" >> $GITHUB_PATH
+
+      - name: Check formatting (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          # Use git ls-files for cross-platform file listing
+          files=$(git ls-files '*.[ch]pp' '*.[ch]' | tr '\n' ' ')
+          if [ -n "$files" ]; then
+            clang-format-21 --dry-run --Werror $files
+          else
+            echo "No C/C++ files found."
+          fi
+
+      - name: Check formatting (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $files = git ls-files '*.[ch]pp' '*.[ch]' | Out-String
+          if ($files) {
+            clang-format-21 --dry-run --Werror ($files -split '\r?\n')
+          } else {
+            Write-Host "No C/C++ files found."
+          }
+
+      
