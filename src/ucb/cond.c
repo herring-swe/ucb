@@ -39,7 +39,7 @@ bool ucb_cond_init(ucb_cond* cond)
     return true;
 #else
     int ret = pthread_cond_init(&cond->handle, NULL);
-    UCB_REPORT_ERRNO(ret);
+    UCB_REPORT_ERRNO(ret, "pthread_cond_init failed");
     return ret == 0;
 #endif
 }
@@ -52,7 +52,7 @@ bool ucb_cond_release(ucb_cond* cond)
     return true;
 #else
     int ret = pthread_cond_destroy(&cond->handle);
-    UCB_REPORT_ERRNO(ret);
+    UCB_REPORT_ERRNO(ret, "pthread_cond_destroy failed");
     return ret == 0;
 #endif
 }
@@ -63,7 +63,7 @@ void ucb_cond_signal(ucb_cond* cond)
 #ifdef _WIN32
     WakeConditionVariable(&cond->handle);
 #else
-    UCB_REPORT_ERRNO(pthread_cond_signal(&cond->handle));
+    UCB_REPORT_ERRNO(pthread_cond_signal(&cond->handle), "pthread_cond_signal failed");
 #endif
 }
 
@@ -73,7 +73,7 @@ void ucb_cond_broadcast(ucb_cond* cond)
 #ifdef _WIN32
     WakeAllConditionVariable(&cond->handle);
 #else
-    UCB_REPORT_ERRNO(pthread_cond_broadcast(&cond->handle));
+    UCB_REPORT_ERRNO(pthread_cond_broadcast(&cond->handle), "pthread_cond_broadcast failed");
 #endif
 }
 
@@ -84,7 +84,7 @@ bool ucb_cond_wait(ucb_cond* cond, ucb_mutex* mutex)
     return SleepConditionVariableCS(&cond->handle, &mutex->handle, INFINITE) != 0;
 #else
     int ret = pthread_cond_wait(&cond->handle, &mutex->handle);
-    UCB_REPORT_ERRNO(ret);
+    UCB_REPORT_ERRNO(ret, "pthread_cond_wait failed");
     return ret == 0;
 #endif
 }

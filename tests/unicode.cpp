@@ -34,7 +34,7 @@
 #define NORM_TEST_FILE "dummy"
 #endif
 
-typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, const ucb_error** perr);
+typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, ucb_error** perr);
 
 static int split_line(const std::string& line, char c, std::vector<std::string>& result,
                       int max = -1)
@@ -188,7 +188,7 @@ static inline void test_mapping(const char* input, const char* lower, const char
 {
     size_t len;
     ucb_uc_result ucres;
-    const ucb_error* err = nullptr;
+    ucb_error* err = nullptr;
 
     const char* strings[5] = {input, lower, upper, title, casefold};
     mapping_func func[5]   = {nullptr, ucb_uc_to_lower, ucb_uc_to_upper, ucb_uc_to_title,
@@ -221,7 +221,7 @@ static inline void test_mapping(const char* input, const char* lower, const char
 static inline unsigned int test_norm_bench(const std::string& input, const std::string& correct,
                                            ucb_norm_form type)
 {
-    const ucb_error* err = nullptr;
+    ucb_error* err = nullptr;
     ucb_uc_result ucres  = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
 
     unsigned int success = 0;
@@ -237,7 +237,7 @@ static inline unsigned int test_norm_bench(const std::string& input, const std::
 
 static inline void test_norm(const char* input, const char* correct, ucb_norm_form type)
 {
-    const ucb_error* err = nullptr;
+    ucb_error* err = nullptr;
     ucb_uc_result ucres  = ucb_uc_normalize(input, strlen(input), type, &err);
     std::string type_str(ucb_uc_norm_form_to_str(type));
 

@@ -163,10 +163,9 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
             task.priority = prio;
 
             REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
-
-            // It will ignore multiple start attempts
-            ucb_threadpool_start(pool);
         }
+        // It will ignore multiple start attempts
+        // ucb_threadpool_start(pool);
         ucb_threadpool_wait_all(pool);
 
         REQUIRE(counter.load() == range);

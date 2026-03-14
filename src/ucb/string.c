@@ -461,7 +461,7 @@ void ucb_str_append(ucb_str* str, const ucb_str* append)
     ucb_str_append_utf8(str, str->data, str->size);
 }
 
-void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, const ucb_error** perr)
+void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str && cp);
 
@@ -502,7 +502,7 @@ void ucb_str_insert(ucb_str* str, size_t pos, const ucb_str* istr)
 }
 
 void ucb_str_insert_cp(ucb_str* str, size_t index, const ucb_cp* cp, size_t num_cp,
-                       const ucb_error** perr)
+                       ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str && (cp || !num_cp));
 

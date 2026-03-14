@@ -103,7 +103,6 @@ static int dummy_worker(void* arg)
 TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
 {
     FuncArg fa      = {this, 42};
-    FuncArg fa_exit = {this, 99};
 
     ucb_task task = {0};
     task.func     = worker_func;
@@ -116,7 +115,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
         REQUIRE_FALSE(ucb_thread_is_running(th));
         task.callback = callback_func;
         REQUIRE(ucb_thread_start(th, task) == true);
-        REQUIRE(ucb_thread_is_running(th));
+        // Thread may already have finished here...
         REQUIRE(ucb_thread_is_joinable(th));
         ucb_thread_join(th);
         REQUIRE_FALSE(ucb_thread_is_running(th));

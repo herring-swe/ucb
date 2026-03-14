@@ -111,7 +111,7 @@ ucb_threadpool* ucb_threadpool_new(size_t num_threads)
         pool->dflt_callback = UCB_NULL;
 
         ucb_pqueue_args pq_args = {
-            .data_free  = ucb_task_free,
+            .data_free  = (ucb_free_func)ucb_task_free,
             .data_clone = UCB_NULL, // Clone manually
         };
         ucb_pqueue_init(&pool->tasks, pq_args);

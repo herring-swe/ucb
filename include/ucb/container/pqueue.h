@@ -13,6 +13,8 @@
 #include "../export.h"
 #include "common.h"
 
+#include <stddef.h>
+
 /**
  * @struct ucb_pqueue
  * @brief Priority queue

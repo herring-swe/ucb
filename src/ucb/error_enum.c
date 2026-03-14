@@ -1,10 +1,10 @@
 /**
  * @file error_enum.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Error handling enum functions
  */
 
@@ -21,6 +21,8 @@ const char* ucb_error_lvlstr(ucb_errlvl lvl)
         return "ERROR";
     case UCB_ERRLVL_WARNING:
         return "WARNING";
+    case UCB_ERRLVL_SYSTEM:
+        return "SYSTEM ERROR";
     default:
         break;
     }
@@ -29,13 +31,14 @@ const char* ucb_error_lvlstr(ucb_errlvl lvl)
 
 const char* ucb_error_codestr(ucb_ecode code)
 {
-    // FIXME: Write all missing ones
     switch (code)
     {
     case UCB_OK:
         return "SUCCESS";
+    case UCB_ERROR_WARNING:
+        return "ERROR_WARNING";
     case UCB_ERROR_OUT_OF_MEMORY:
-        return "ERROR_OUT_OF_MEMRY";
+        return "ERROR_OUT_OF_MEMORY";
     case UCB_ERROR_INVALID_ARG:
         return "ERROR_INVALID_ARG";
     case UCB_ERROR_UNHANDLED_ERROR:
@@ -64,8 +67,289 @@ const char* ucb_error_codestr(ucb_ecode code)
         return "ERROR_THREAD_BUSY";
     case UCB_ERROR_MUTEX_LOCKED:
         return "ERROR_MUTEX_LOCKED";
+
+    case UCB_ERRSYS_UNKNOWN:
+        return "ERRSYS_UNKNOWN";
+    case UCB_ERRSYS_NOERROR:
+        return "ERRSYS_NOERROR";
+    case UCB_ERRSYS_EPERM:
+        return "ERRSYS_EPERM";
+    case UCB_ERRSYS_ENOENT:
+        return "ERRSYS_ENOENT";
+    case UCB_ERRSYS_ESRCH:
+        return "ERRSYS_ESRCH";
+    case UCB_ERRSYS_EINTR:
+        return "ERRSYS_EINTR";
+    case UCB_ERRSYS_EIO:
+        return "ERRSYS_EIO";
+    case UCB_ERRSYS_ENXIO:
+        return "ERRSYS_ENXIO";
+    case UCB_ERRSYS_E2BIG:
+        return "ERRSYS_E2BIG";
+    case UCB_ERRSYS_ENOEXEC:
+        return "ERRSYS_ENOEXEC";
+    case UCB_ERRSYS_EBADF:
+        return "ERRSYS_EBADF";
+    case UCB_ERRSYS_ECHILD:
+        return "ERRSYS_ECHILD";
+    case UCB_ERRSYS_EAGAIN:
+        return "ERRSYS_EAGAIN";
+    case UCB_ERRSYS_ENOMEM:
+        return "ERRSYS_ENOMEM";
+    case UCB_ERRSYS_EACCES:
+        return "ERRSYS_EACCES";
+    case UCB_ERRSYS_EFAULT:
+        return "ERRSYS_EFAULT";
+    case UCB_ERRSYS_ENOTBLK:
+        return "ERRSYS_ENOTBLK";
+    case UCB_ERRSYS_EBUSY:
+        return "ERRSYS_EBUSY";
+    case UCB_ERRSYS_EEXIST:
+        return "ERRSYS_EEXIST";
+    case UCB_ERRSYS_EXDEV:
+        return "ERRSYS_EXDEV";
+    case UCB_ERRSYS_ENODEV:
+        return "ERRSYS_ENODEV";
+    case UCB_ERRSYS_ENOTDIR:
+        return "ERRSYS_ENOTDIR";
+    case UCB_ERRSYS_EISDIR:
+        return "ERRSYS_EISDIR";
+    case UCB_ERRSYS_EINVAL:
+        return "ERRSYS_EINVAL";
+    case UCB_ERRSYS_ENFILE:
+        return "ERRSYS_ENFILE";
+    case UCB_ERRSYS_EMFILE:
+        return "ERRSYS_EMFILE";
+    case UCB_ERRSYS_ENOTTY:
+        return "ERRSYS_ENOTTY";
+    case UCB_ERRSYS_ETXTBSY:
+        return "ERRSYS_ETXTBSY";
+    case UCB_ERRSYS_EFBIG:
+        return "ERRSYS_EFBIG";
+    case UCB_ERRSYS_ENOSPC:
+        return "ERRSYS_ENOSPC";
+    case UCB_ERRSYS_ESPIPE:
+        return "ERRSYS_ESPIPE";
+    case UCB_ERRSYS_EROFS:
+        return "ERRSYS_EROFS";
+    case UCB_ERRSYS_EMLINK:
+        return "ERRSYS_EMLINK";
+    case UCB_ERRSYS_EPIPE:
+        return "ERRSYS_EPIPE";
+    case UCB_ERRSYS_EDOM:
+        return "ERRSYS_EDOM";
+    case UCB_ERRSYS_ERANGE:
+        return "ERRSYS_ERANGE";
+    case UCB_ERRSYS_EDEADLK:
+        return "ERRSYS_EDEADLK";
+    case UCB_ERRSYS_ENAMETOOLONG:
+        return "ERRSYS_ENAMETOOLONG";
+    case UCB_ERRSYS_ENOLCK:
+        return "ERRSYS_ENOLCK";
+    case UCB_ERRSYS_ENOSYS:
+        return "ERRSYS_ENOSYS";
+    case UCB_ERRSYS_ENOTEMPTY:
+        return "ERRSYS_ENOTEMPTY";
+    case UCB_ERRSYS_ELOOP:
+        return "ERRSYS_ELOOP";
+    case UCB_ERRSYS_ENOMSG:
+        return "ERRSYS_ENOMSG";
+    case UCB_ERRSYS_EIDRM:
+        return "ERRSYS_EIDRM";
+    case UCB_ERRSYS_ECHRNG:
+        return "ERRSYS_ECHRNG";
+    case UCB_ERRSYS_EL2NSYNC:
+        return "ERRSYS_EL2NSYNC";
+    case UCB_ERRSYS_EL3HLT:
+        return "ERRSYS_EL3HLT";
+    case UCB_ERRSYS_EL3RST:
+        return "ERRSYS_EL3RST";
+    case UCB_ERRSYS_ELNRNG:
+        return "ERRSYS_ELNRNG";
+    case UCB_ERRSYS_EUNATCH:
+        return "ERRSYS_EUNATCH";
+    case UCB_ERRSYS_ENOCSI:
+        return "ERRSYS_ENOCSI";
+    case UCB_ERRSYS_EL2HLT:
+        return "ERRSYS_EL2HLT";
+    case UCB_ERRSYS_EBADE:
+        return "ERRSYS_EBADE";
+    case UCB_ERRSYS_EBADR:
+        return "ERRSYS_EBADR";
+    case UCB_ERRSYS_EXFULL:
+        return "ERRSYS_EXFULL";
+    case UCB_ERRSYS_ENOANO:
+        return "ERRSYS_ENOANO";
+    case UCB_ERRSYS_EBADRQC:
+        return "ERRSYS_EBADRQC";
+    case UCB_ERRSYS_EBADSLT:
+        return "ERRSYS_EBADSLT";
+    case UCB_ERRSYS_EBFONT:
+        return "ERRSYS_EBFONT";
+    case UCB_ERRSYS_ENOSTR:
+        return "ERRSYS_ENOSTR";
+    case UCB_ERRSYS_ENODATA:
+        return "ERRSYS_ENODATA";
+    case UCB_ERRSYS_ETIME:
+        return "ERRSYS_ETIME";
+    case UCB_ERRSYS_ENOSR:
+        return "ERRSYS_ENOSR";
+    case UCB_ERRSYS_ENONET:
+        return "ERRSYS_ENONET";
+    case UCB_ERRSYS_ENOPKG:
+        return "ERRSYS_ENOPKG";
+    case UCB_ERRSYS_EREMOTE:
+        return "ERRSYS_EREMOTE";
+    case UCB_ERRSYS_ENOLINK:
+        return "ERRSYS_ENOLINK";
+    case UCB_ERRSYS_EADV:
+        return "ERRSYS_EADV";
+    case UCB_ERRSYS_ESRMNT:
+        return "ERRSYS_ESRMNT";
+    case UCB_ERRSYS_ECOMM:
+        return "ERRSYS_ECOMM";
+    case UCB_ERRSYS_EPROTO:
+        return "ERRSYS_EPROTO";
+    case UCB_ERRSYS_EMULTIHOP:
+        return "ERRSYS_EMULTIHOP";
+    case UCB_ERRSYS_EDOTDOT:
+        return "ERRSYS_EDOTDOT";
+    case UCB_ERRSYS_EBADMSG:
+        return "ERRSYS_EBADMSG";
+    case UCB_ERRSYS_EOVERFLOW:
+        return "ERRSYS_EOVERFLOW";
+    case UCB_ERRSYS_ENOTUNIQ:
+        return "ERRSYS_ENOTUNIQ";
+    case UCB_ERRSYS_EBADFD:
+        return "ERRSYS_EBADFD";
+    case UCB_ERRSYS_EREMCHG:
+        return "ERRSYS_EREMCHG";
+    case UCB_ERRSYS_ELIBACC:
+        return "ERRSYS_ELIBACC";
+    case UCB_ERRSYS_ELIBBAD:
+        return "ERRSYS_ELIBBAD";
+    case UCB_ERRSYS_ELIBSCN:
+        return "ERRSYS_ELIBSCN";
+    case UCB_ERRSYS_ELIBMAX:
+        return "ERRSYS_ELIBMAX";
+    case UCB_ERRSYS_ELIBEXEC:
+        return "ERRSYS_ELIBEXEC";
+    case UCB_ERRSYS_EILSEQ:
+        return "ERRSYS_EILSEQ";
+    case UCB_ERRSYS_ERESTART:
+        return "ERRSYS_ERESTART";
+    case UCB_ERRSYS_ESTRPIPE:
+        return "ERRSYS_ESTRPIPE";
+    case UCB_ERRSYS_EUSERS:
+        return "ERRSYS_EUSERS";
+    case UCB_ERRSYS_ENOTSOCK:
+        return "ERRSYS_ENOTSOCK";
+    case UCB_ERRSYS_EDESTADDRREQ:
+        return "ERRSYS_EDESTADDRREQ";
+    case UCB_ERRSYS_EMSGSIZE:
+        return "ERRSYS_EMSGSIZE";
+    case UCB_ERRSYS_EPROTOTYPE:
+        return "ERRSYS_EPROTOTYPE";
+    case UCB_ERRSYS_ENOPROTOOPT:
+        return "ERRSYS_ENOPROTOOPT";
+    case UCB_ERRSYS_EPROTONOSUPPORT:
+        return "ERRSYS_EPROTONOSUPPORT";
+    case UCB_ERRSYS_ESOCKTNOSUPPORT:
+        return "ERRSYS_ESOCKTNOSUPPORT";
+    case UCB_ERRSYS_EOPNOTSUPP:
+        return "ERRSYS_EOPNOTSUPP";
+    case UCB_ERRSYS_EPFNOSUPPORT:
+        return "ERRSYS_EPFNOSUPPORT";
+    case UCB_ERRSYS_EAFNOSUPPORT:
+        return "ERRSYS_EAFNOSUPPORT";
+    case UCB_ERRSYS_EADDRINUSE:
+        return "ERRSYS_EADDRINUSE";
+    case UCB_ERRSYS_EADDRNOTAVAIL:
+        return "ERRSYS_EADDRNOTAVAIL";
+    case UCB_ERRSYS_ENETDOWN:
+        return "ERRSYS_ENETDOWN";
+    case UCB_ERRSYS_ENETUNREACH:
+        return "ERRSYS_ENETUNREACH";
+    case UCB_ERRSYS_ENETRESET:
+        return "ERRSYS_ENETRESET";
+    case UCB_ERRSYS_ECONNABORTED:
+        return "ERRSYS_ECONNABORTED";
+    case UCB_ERRSYS_ECONNRESET:
+        return "ERRSYS_ECONNRESET";
+    case UCB_ERRSYS_ENOBUFS:
+        return "ERRSYS_ENOBUFS";
+    case UCB_ERRSYS_EISCONN:
+        return "ERRSYS_EISCONN";
+    case UCB_ERRSYS_ENOTCONN:
+        return "ERRSYS_ENOTCONN";
+    case UCB_ERRSYS_ESHUTDOWN:
+        return "ERRSYS_ESHUTDOWN";
+    case UCB_ERRSYS_ETOOMANYREFS:
+        return "ERRSYS_ETOOMANYREFS";
+    case UCB_ERRSYS_ETIMEDOUT:
+        return "ERRSYS_ETIMEDOUT";
+    case UCB_ERRSYS_ECONNREFUSED:
+        return "ERRSYS_ECONNREFUSED";
+    case UCB_ERRSYS_EHOSTDOWN:
+        return "ERRSYS_EHOSTDOWN";
+    case UCB_ERRSYS_EHOSTUNREACH:
+        return "ERRSYS_EHOSTUNREACH";
+    case UCB_ERRSYS_EALREADY:
+        return "ERRSYS_EALREADY";
+    case UCB_ERRSYS_EINPROGRESS:
+        return "ERRSYS_EINPROGRESS";
+    case UCB_ERRSYS_ESTALE:
+        return "ERRSYS_ESTALE";
+    case UCB_ERRSYS_EUCLEAN:
+        return "ERRSYS_EUCLEAN";
+    case UCB_ERRSYS_ENOTNAM:
+        return "ERRSYS_ENOTNAM";
+    case UCB_ERRSYS_ENAVAIL:
+        return "ERRSYS_ENAVAIL";
+    case UCB_ERRSYS_EISNAM:
+        return "ERRSYS_EISNAM";
+    case UCB_ERRSYS_EREMOTEIO:
+        return "ERRSYS_EREMOTEIO";
+    case UCB_ERRSYS_EDQUOT:
+        return "ERRSYS_EDQUOT";
+    case UCB_ERRSYS_ENOMEDIUM:
+        return "ERRSYS_ENOMEDIUM";
+    case UCB_ERRSYS_EMEDIUMTYPE:
+        return "ERRSYS_EMEDIUMTYPE";
+    case UCB_ERRSYS_ECANCELED:
+        return "ERRSYS_ECANCELED";
+    case UCB_ERRSYS_ENOKEY:
+        return "ERRSYS_ENOKEY";
+    case UCB_ERRSYS_EKEYEXPIRED:
+        return "ERRSYS_EKEYEXPIRED";
+    case UCB_ERRSYS_EKEYREVOKED:
+        return "ERRSYS_EKEYREVOKED";
+    case UCB_ERRSYS_EKEYREJECTED:
+        return "ERRSYS_EKEYREJECTED";
+    case UCB_ERRSYS_EOWNERDEAD:
+        return "ERRSYS_EOWNERDEAD";
+    case UCB_ERRSYS_ENOTRECOVERABLE:
+        return "ERRSYS_ENOTRECOVERABLE";
+    case UCB_ERRSYS_ERFKILL:
+        return "ERRSYS_ERFKILL";
+    case UCB_ERRSYS_EHWPOISON:
+        return "ERRSYS_EHWPOISON";
+    case UCB_ERRSYS_ENOTSUP:
+        return "ERRSYS_ENOTSUP";
+    case UCB_ERRSYS_STRUNCATE:
+        return "ERRSYS_STRUNCATE";
+
+    case UCB_ERRSYS_WIN_GENERIC:
+        return "ERRSYS_WIN_GENERIC";
+    case UCB_ERRSYS_WIN_INVALID_HANDLE:
+        return "ERRSYS_WIN_INVALID_HANDLE";
+    case UCB_ERRSYS_WIN_CURRENT_DIRECTORY:
+        return "ERRSYS_WIN_CURRENT_DIRECTORY";
+    case UCB_ERRSYS_WIN_ERROR_DIRECTORY:
+        return "ERRSYS_WIN_ERROR_DIRECTORY";
+
     default:
         break;
     }
-    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error");
+    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error code %d", code);
 }

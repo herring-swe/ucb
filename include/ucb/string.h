@@ -468,7 +468,7 @@ static inline char* ucb_str_abandon_c(ucb_str* str)
  *             will be determined.
  * @return ucb_str* UTF-8 string or UCB_NULL on error
  */
-UCB_API ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** perr);
+UCB_API ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, ucb_error** perr);
 
 /**
  * Creates a Windows wide string from a UTF-8 string
@@ -476,7 +476,7 @@ UCB_API ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_
  * @param wlen_out optional pointer, set to length of the returned string
  * @return wchar_t* UTF-16 string or UCB_NULL on error
  */
-UCB_API wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, const ucb_error** perr);
+UCB_API wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, ucb_error** perr);
 #endif
 
 /** @} */
@@ -621,8 +621,7 @@ UCB_API void ucb_str_clear(ucb_str* str);
  * @param append string to append
  */
 UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
-UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp,
-                               const ucb_error** perr);
+UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr);
 UCB_API void ucb_str_append_utf8(ucb_str* str, const char* cstr, size_t len);
 
 /**
@@ -635,7 +634,7 @@ UCB_API void ucb_str_append_utf8(ucb_str* str, const char* cstr, size_t len);
  */
 UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
 UCB_API void ucb_str_insert_cp(ucb_str* str, size_t index, const ucb_cp* cp, size_t num_cp,
-                               const ucb_error** perr);
+                               ucb_error** perr);
 UCB_API void ucb_str_insert_utf8(ucb_str* str, size_t index, const char* cstr, size_t len);
 
 UCB_API ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2);

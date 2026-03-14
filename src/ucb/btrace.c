@@ -149,12 +149,16 @@ void ucb_btrace_copy(ucb_btrace* dst, const ucb_btrace* src)
 
     // Update dst->strs to point to its own memory
     char* str     = (char*)dst->strs + array_size;
+#ifndef NDEBUG
     size_t remain = total_size - array_size;
+#endif
     for (size_t i = 0; i < dst->count; ++i)
     {
         dst->strs[i] = str;
         str += strlen(dst->strs[i]) + 1;
+#ifndef NDEBUG
         remain -= str - dst->strs[i];
+#endif
     }
     UCB_ASSERT_INTERNAL(remain == 0, "Validation failed");
 }

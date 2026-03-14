@@ -186,11 +186,11 @@ UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
  * The error will be free'd and the pointer set to UCB_NULL.
  * @param perr pointer to error to clear
  */
-UCB_API void ucb_error_clear(const ucb_error** perr);
+UCB_API void ucb_error_clear(ucb_error** perr);
 
-UCB_API void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg);
-UCB_API void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...);
-UCB_API void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const char* fmt,
+UCB_API void ucb_throw(ucb_error** perr, ucb_ecode code, const char* msg);
+UCB_API void ucb_throw_format(ucb_error** perr, ucb_ecode code, const char* fmt, ...);
+UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt,
                                va_list args);
 
 /* -------------------------------------------------------------------------- */
@@ -299,7 +299,7 @@ ucb_ecode ucb_err_get_errno(void);
 
 UCB_API bool ucb_report_errno(int status, const char* UCB_RESTRICT msg,
                               const char* UCB_RESTRICT function);
-UCB_API bool ucb_throw_errno(const ucb_error** perr, int status, const char* msg);
+UCB_API bool ucb_throw_errno(ucb_error** perr, int status, const char* msg);
 
 #ifdef _WIN32
 
@@ -318,7 +318,7 @@ UCB_API char* ucb_err_msg_win32(uint32_t err);
 
 UCB_API bool ucb_report_win32(uint32_t status, const char* UCB_RESTRICT msg,
                               const char* UCB_RESTRICT function);
-UCB_API bool ucb_throw_win32(const ucb_error** perr, uint32_t status, const char* msg);
+UCB_API bool ucb_throw_win32(ucb_error** perr, uint32_t status, const char* msg);
 
 #endif
 

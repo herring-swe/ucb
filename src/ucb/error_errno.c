@@ -596,7 +596,7 @@ bool ucb_report_errno(int status, const char* UCB_RESTRICT msg, const char* UCB_
     return true;
 }
 
-bool ucb_throw_errno(const ucb_error** perr, int status, const char* msg)
+bool ucb_throw_errno(ucb_error** perr, int status, const char* msg)
 {
     if (status == 0)
         return false;

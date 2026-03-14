@@ -91,10 +91,10 @@ static const ucb_uc_combiners* ucb_uc_get_combiners(const ucb_uc_prop* prop)
     return UCB_NULL;
 }
 
-static bool is_combining_mark(ucb_uc_prop* prop)
-{
-    return prop && prop->ccc > 0;
-}
+// static bool is_combining_mark(ucb_uc_prop* prop)
+// {
+//     return prop && prop->ccc > 0;
+// }
 
 /* -------------------------------------------------------------------------- */
 /*                                 Validation                                 */
@@ -166,7 +166,7 @@ ucb_cp ucb_uc_iter_utf8(const unsigned char** iter)
 // NOTE:
 // See implementation notes here:
 // https://unicode.org/mail-arch/unicode-ml/y2003-m02/att-0467/01-The_Algorithm_to_Valide_an_UTF-8_String
-bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr)
+bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str);
 
@@ -280,7 +280,7 @@ bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr)
  * Assumes that the buffer codepoints and len are valid.
  */
 bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t len,
-                              const ucb_error** perr)
+                              ucb_error** perr)
 {
     // Minimum chunks to work with
     uint8_t bytes[5 * UCB_UC_MAX_MULTI_LEN];
@@ -350,6 +350,7 @@ size_t ucb_uc_num_cp(const char* str, size_t len)
         ucb_cp cp;
         FOR_EACH_CODEPOINT(cp, str, len)
         {
+            UCB_UNUSED(cp);
             num++;
         }
         FOR_EACH_CODEPOINT_CHECK_RET();
@@ -479,7 +480,7 @@ typedef struct
     ucb_cp last_cp;
 } casemap_ctx_t;
 
-static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
+static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, ucb_error** perr)
 {
     ctx->out_len = 1; // By default, keep value sent in
     if (!ctx->buf[0]) // Null terminator
@@ -559,7 +560,7 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
  * lengths.
  */
 static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_op_t op,
-                                     ucb_buffer* dstbuf, const ucb_error** perr)
+                                     ucb_buffer* dstbuf, ucb_error** perr)
 {
     ucb_uc_result ret = {0};
     UCB_VERIFY_ARGS(str);
@@ -620,22 +621,22 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
     return ret;
 }
 
-ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, const ucb_error** perr)
+ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, ucb_error** perr)
 {
     return ucb_uc_case_map(str, size, UCB_UC_CASE_UPPER, UCB_NULL, perr);
 }
 
-ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, const ucb_error** perr)
+ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, ucb_error** perr)
 {
     return ucb_uc_case_map(str, size, UCB_UC_CASE_LOWER, UCB_NULL, perr);
 }
 
-ucb_uc_result ucb_uc_to_title(const char* str, size_t size, const ucb_error** perr)
+ucb_uc_result ucb_uc_to_title(const char* str, size_t size, ucb_error** perr)
 {
     return ucb_uc_case_map(str, size, UCB_UC_CASE_TITLE, UCB_NULL, perr);
 }
 
-ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const ucb_error** perr)
+ucb_uc_result ucb_uc_casefold(const char* str, size_t size, ucb_error** perr)
 {
     return ucb_uc_case_map(str, size, UCB_UC_CASE_FOLD, UCB_NULL, perr);
 }
@@ -683,7 +684,7 @@ static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
     }
 }
 
-static bool norm_ctx_flush(norm_ctx_t* ctx, const ucb_error** perr)
+static bool norm_ctx_flush(norm_ctx_t* ctx, ucb_error** perr)
 {
     bool ret = true;
     if (ctx->len > 0)
@@ -748,7 +749,7 @@ static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
     return 0xAC00 + (L_idx0 * 21 + V_idx0) * 28 + T_idx1;
 }
 
-static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, const ucb_error** perr)
+static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, ucb_error** perr)
 {
     uint8_t ccc                 = 0;
     const ucb_uc_prop* prop     = ucb_uc_get_prop(cp);
@@ -870,7 +871,7 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
 }
 
 static bool normalize(norm_ctx_t* ctx, const char* str, size_t size, bool must_decomp,
-                      const ucb_error** perr)
+                      ucb_error** perr)
 {
     ucb_cp cp;
 
@@ -948,7 +949,7 @@ static size_t ucb_uc_check_norm(const char* str, size_t size, bool* is_latin1, b
 }
 
 ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
-                               const ucb_error** perr)
+                               ucb_error** perr)
 {
     UCB_UNUSED(size);
     norm_ctx_t ctx    = {0};

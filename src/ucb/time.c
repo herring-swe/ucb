@@ -1,10 +1,10 @@
 /**
  * @file time.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Time handling utilities implementation
  */
 
@@ -33,11 +33,12 @@ void ucb_sleep(ucb_stime dur)
     struct timespec ts;
     ts.tv_sec  = dur;
     ts.tv_nsec = 0;
-    while (nanosleep(&ts, &ts) == -1 && errno == EINTR)
+    int ret;
+    do
     {
-        // Loop until sleep completes or error other than EINTR
-    }
-    UCB_ASSERT_INTERNAL(errno == 0, "nanosleep failed");
+        ret = nanosleep(&ts, &ts);
+    } while (ret == -1 && errno == EINTR);
+    UCB_ASSERT_ERRNO(ret, "nanosleep failed");
 #endif
 }
 
@@ -51,10 +52,11 @@ void ucb_sleep_ms(ucb_stime_ms dur)
     struct timespec ts;
     ts.tv_sec  = dur / 1000;
     ts.tv_nsec = (dur % 1000) * 1000000;
-    while (nanosleep(&ts, &ts) == -1 && errno == EINTR)
+    int ret;
+    do
     {
-        // Loop until sleep completes or error other than EINTR
-    }
-    UCB_ASSERT_INTERNAL(errno == 0, "nanosleep failed");
+        ret = nanosleep(&ts, &ts);
+    } while (ret == -1 && errno == EINTR);
+    UCB_ASSERT_ERRNO(ret, "nanosleep failed");
 #endif
 }

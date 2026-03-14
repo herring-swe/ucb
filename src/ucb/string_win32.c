@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 
-ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** perr)
+ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(wstr);
 
@@ -74,7 +74,7 @@ ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** 
     return str;
 }
 
-wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, const ucb_error** perr)
+wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str);
 
