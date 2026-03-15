@@ -51,10 +51,10 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.14'
+        python-version: '3.10'
 
     - name: Install Python dependencies
-      run: pip install jinja2  # Add other deps here if needed
+      run: pip install -r tools/pyreq.txt
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
