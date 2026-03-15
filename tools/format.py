@@ -10,7 +10,7 @@ import subprocess
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, List, Optional, Sequence
+from typing import Iterable, List, Sequence
 
 C_SUFFIXES = {".c", ".cpp", ".h", ".hpp"}
 C_DIRS = sorted(["src", "include", "tests", "!tests/doctest"])
@@ -162,7 +162,9 @@ def discover_files(
         exit(1)
 
 
-def run_format_c(files: Sequence[Path], fix: bool, clang_format_override: Optional[str] = None) -> bool:
+def run_format_c(
+    files: Sequence[Path], fix: bool, clang_format_override: str | None = None
+) -> bool:
     c_files = [str(file) for file in files if file.suffix.lower() in C_SUFFIXES]
     if not c_files:
         print("No C/C++ files to format")
