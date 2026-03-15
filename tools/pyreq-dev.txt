@@ -1,0 +1,4 @@
+reuse
+jinja2
+ruff
+mypy

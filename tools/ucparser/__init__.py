@@ -2,15 +2,15 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
+from .parser import ParseError, UnicodeDataParser
 from .types import (
-    GeneralCategory,
-    DecompositionType,
     Codepoint,
-    Decomp,
-    Mapping,
     CodepointInfo,
+    Decomp,
+    DecompositionType,
+    GeneralCategory,
+    Mapping,
 )
-from .parser import UnicodeDataParser, ParseError
 
 __all__ = [
     "GeneralCategory",

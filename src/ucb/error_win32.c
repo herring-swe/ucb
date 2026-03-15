@@ -203,7 +203,9 @@ char* ucb_err_msg_win32(uint32_t err)
     return data;
 }
 
-bool ucb_report_win32(uint32_t status, const char* UCB_RESTRICT msg, const char* UCB_RESTRICT function)
+bool ucb_report_win32(uint32_t status,
+                      const char* UCB_RESTRICT msg,
+                      const char* UCB_RESTRICT function)
 {
     if (status == 0)
         return false;

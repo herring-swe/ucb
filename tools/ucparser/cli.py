@@ -2,12 +2,12 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
+import logging
 import os
 import sys
-import logging
 from argparse import ArgumentParser
 
-from .parser import UnicodeDataParser, ParseError
+from .parser import ParseError, UnicodeDataParser
 from .stats import print_stats
 
 
@@ -24,7 +24,8 @@ def main():
     required_files = ["UnicodeData.txt", "CaseFolding.txt"]
     if any(not os.path.exists(fn) for fn in required_files):
         print(
-            f"Error: Required files not found. Please ensure {', '.join(required_files)} are in the current directory.",
+            f"Error: Required files not found. Please ensure "
+            f"{', '.join(required_files)} are in the current directory.",
             file=sys.stderr,
         )
         exit(1)
@@ -35,7 +36,7 @@ def main():
         ucparser.write_templates()
         print_stats(ucparser)
     except ParseError as e:
-        print(f"Parse error: {e}")
+        print(f"Parse error: {e}", file=sys.stderr)
         exit(1)
 
 

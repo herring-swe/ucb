@@ -1,10 +1,10 @@
 /**
  * @file time.h
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Time handling utilities
  */
 
@@ -43,6 +43,5 @@ UCB_API void ucb_sleep(ucb_stime dur);
  * @param dur time in milliseconds
  */
 UCB_API void ucb_sleep_ms(ucb_stime_ms dur);
-
 
 #endif // UCB_TIME_H

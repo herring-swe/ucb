@@ -21,7 +21,6 @@
     #define UCB_RESTRICT restrict
 #endif
 
-// clang-format off
 #ifdef _MSC_VER
     #define UCB_DEPRECATED __declspec(deprecated)
 #elif defined(__GNUC__) || defined(__clang__)
@@ -61,7 +60,7 @@
 #endif
 // clang-format on
 
-#define UCB_API          UCB_EXTERN_C UCB_EXPORT
+#define UCB_API UCB_EXTERN_C UCB_EXPORT
 #define UCB_API_NORETURN UCB_EXTERN_C UCB_NORETURN UCB_EXPORT
 
 #endif // UCB_EXPORT_H

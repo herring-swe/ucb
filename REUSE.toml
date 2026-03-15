@@ -6,18 +6,26 @@ SPDX-PackageDownloadLocation = "https://github.com/herring-swe/ucb"
 [[annotations]]
 path = [".*", "**/*.cmake.in", "src/.*"]
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2025 Åke Svedin <ake@svedin.org>"
+SPDX-FileCopyrightText = "2026 Åke Svedin <ake@svedin.org>"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
 # Documentation files, treat as Creative Commons Zero
-path = ["**/*.md", "doc/**"]
+path = ["**/*.md", "doc/**", "tools/pyreq*.txt"]
 # Must override as the documentation itself can contain information about SPDX commenting
 # which reuse may mark as "invalid SPDX License Expressions"
 precedence = "override"
 SPDX-FileType = "Documentation"
 SPDX-FileCopyrightText = "None"
 SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["tools/clang-format/clang-format*"]
+precedence = "aggregate"
+# Copyright for LLVM
+SPDX-FileCopyrightText = "2025 LLVM Project"
+SPDX-License-Identifier = "Apache-2.0 WITH LLVM-exception"
+
 
 [[annotations]]
 path = ["tests/doctest/**"]

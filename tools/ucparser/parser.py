@@ -5,29 +5,30 @@
 # Requires UnicodeData.txt and CaseFolding.txt from unicode.org
 # In the current working directory
 
-import os
 import logging
+import os
 from pathlib import Path
-from typing import Optional, TextIO, Dict, List, Tuple, Union, Set
+from typing import Dict, List, Optional, Set, TextIO, Tuple, Union
+
 from jinja2 import Environment, FileSystemLoader
 
 from .types import (
-    GeneralCategory,
-    DecompositionType,
-    PropertyFlags,
     Codepoint,
-    Mapping,
-    Decomp,
-    Combiners,
     CodepointInfo,
+    Combiners,
+    Decomp,
+    DecompositionType,
+    GeneralCategory,
+    Mapping,
+    PropertyFlags,
 )
 from .util import (
-    jinja_functions_dict,
-    get_option_str,
+    cstduint,
     get_option_bool,
     get_option_int,
+    get_option_str,
+    jinja_functions_dict,
     max_printed_width,
-    cstduint,
     set_global_prefix,
 )
 
@@ -117,7 +118,9 @@ class UnicodeDataParser(object):
         set_global_prefix(self.prefix)
         # FIXME: When arguments are properly set
         # self.prefix_filename = get_option_str("prefix_filename", self.prefix, kwargs)
-        # self.prefix_header_guard = get_option_str("prefix_header_guard", self.prefix_filename, kwargs)
+        # self.prefix_header_guard = get_option_str(
+        #     "prefix_header_guard", self.prefix_filename, kwargs
+        # )
 
         self.with_verif = get_option_bool("with_verif", True, kwargs)
         self.with_comments = get_option_bool("with_comments", True, kwargs)
@@ -226,17 +229,11 @@ class UnicodeDataParser(object):
                     info.decomp = Decomp(cp, dctype, dcvals)
 
                 if fields[UDF_SIMPLE_UPPERCASE_MAPPING]:
-                    info.to_upper = Mapping(
-                        Codepoint(fields[UDF_SIMPLE_UPPERCASE_MAPPING])
-                    )
+                    info.to_upper = Mapping(Codepoint(fields[UDF_SIMPLE_UPPERCASE_MAPPING]))
                 if fields[UDF_SIMPLE_LOWERCASE_MAPPING]:
-                    info.to_lower = Mapping(
-                        Codepoint(fields[UDF_SIMPLE_LOWERCASE_MAPPING])
-                    )
+                    info.to_lower = Mapping(Codepoint(fields[UDF_SIMPLE_LOWERCASE_MAPPING]))
                 if fields[UDF_SIMPLE_TITLECASE_MAPPING]:
-                    info.to_title = Mapping(
-                        Codepoint(fields[UDF_SIMPLE_TITLECASE_MAPPING])
-                    )
+                    info.to_title = Mapping(Codepoint(fields[UDF_SIMPLE_TITLECASE_MAPPING]))
 
                 self.data[cp] = info
                 lines_parsed += 1
@@ -282,9 +279,7 @@ class UnicodeDataParser(object):
                         lineno,
                     )
                 if self.data[cp].casefold is not None:
-                    raise ParseError(
-                        f"Duplicate case folding for codepoint {cp}", filename, lineno
-                    )
+                    raise ParseError(f"Duplicate case folding for codepoint {cp}", filename, lineno)
                 self.data[cp].casefold = Mapping(value[0])
             elif status == "S":
                 # Skip simple case folding in favor for full
@@ -304,9 +299,7 @@ class UnicodeDataParser(object):
                     )
                 self.special_casefold[cp] = value[0]
             else:
-                raise ParseError(
-                    f'Unknown status character "{status}"', filename, lineno
-                )
+                raise ParseError(f'Unknown status character "{status}"', filename, lineno)
         return True
 
     def parse_composition_exclusions(self, fd: TextIO, filename: str) -> bool:
@@ -376,16 +369,12 @@ class UnicodeDataParser(object):
             log.debug(f"Range: {cp1:04X} - {cp2:04X} ({cp2 - cp1 + 1} codepoints)")
             total_cp -= cp2 - cp1 + 1
         log.debug(f"Original codepoints: {len(self.data)}")
-        log.debug(
-            f"Additional ranges: {len(ranges)} with {len(self.data) - total_cp} codepoints"
-        )
+        log.debug(f"Additional ranges: {len(ranges)} with {len(self.data) - total_cp} codepoints")
         log.debug(f"Resulting codepoints: {total_cp}")
         log.debug(f"Reduction to {total_cp / len(self.data) * 100:.2f}%")
         return len(ranges)
 
-    def _create_mapping_tables(
-        self, smap: Dict[str, Mapping], mmap: Dict[str, Mapping]
-    ) -> None:
+    def _create_mapping_tables(self, smap: Dict[str, Mapping], mmap: Dict[str, Mapping]) -> None:
         """
         Create tables for looking up mapping values
         smap -> single value
@@ -427,10 +416,7 @@ class UnicodeDataParser(object):
             return False
         # Only entries with one starter and combiner can be composed
         # Only canonical decompositions must be composed (even with of NFKC)
-        if (
-            info.decomp.dctype != DecompositionType.Canon
-            or len(info.decomp.dcvals) != 2
-        ):
+        if info.decomp.dctype != DecompositionType.Canon or len(info.decomp.dcvals) != 2:
             return False
 
         starter = info.decomp.dcvals[0]
@@ -466,9 +452,7 @@ class UnicodeDataParser(object):
                 if starter not in combiners:
                     combiners[starter] = Combiners(starter)
                 combiners[starter].add_entry(combiner, composed)
-                max_combiner_vals = max(
-                    max_combiner_vals, combiners[starter].num_entries
-                )
+                max_combiner_vals = max(max_combiner_vals, combiners[starter].num_entries)
 
         clist = [x for x in combiners.values()]
         clist.sort(key=lambda x: x.starter)
@@ -482,10 +466,7 @@ class UnicodeDataParser(object):
     def _update_property_flags(self, info: CodepointInfo) -> None:
         if info.cp in self.comp_exclusions or (
             info.decomp
-            and (
-                len(info.decomp.dcvals) == 1
-                or self.data[info.decomp.dcvals[0]].ccc != 0
-            )
+            and (len(info.decomp.dcvals) == 1 or self.data[info.decomp.dcvals[0]].ccc != 0)
         ):
             info.flags |= PropertyFlags.CompExcl
 
@@ -622,9 +603,7 @@ class UnicodeDataParser(object):
                     else:
                         log.debug("Match by checking shared data")
                 else:
-                    log.debug(
-                        f"Did not find {cp:x} with lookup index {lookup_func(cp)}"
-                    )
+                    log.debug(f"Did not find {cp:x} with lookup index {lookup_func(cp)}")
                     assert info.cp == 0xFFFF and info.propindex == 0
             except AssertionError as e:
                 log.debug(f"   Verifying: {cp:x}")

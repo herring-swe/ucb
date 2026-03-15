@@ -1,10 +1,10 @@
 /**
  * @file bufutil.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Buffer utility functions implementation
  */
 
@@ -15,7 +15,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-void* ucb_bufcast_align(void* buf, size_t size, size_t align_size, size_t elem_size,
+void* ucb_bufcast_align(void* buf,
+                        size_t size,
+                        size_t align_size,
+                        size_t elem_size,
                         size_t* out_count)
 {
     if (align_size == 0)

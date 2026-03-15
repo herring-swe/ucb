@@ -30,21 +30,21 @@ static ucb_error_func s_ucb_errfunc = UCB_NULL;
 #define UCB_BUFSIZE_ERROR_MSG 512
 static UCB_THREAD_LOCAL char s_buf[UCB_BUFSIZE_ERROR_MSG];
 static UCB_THREAD_LOCAL struct ucb_error s_err = {
-    .code      = UCB_OK,
-    .msg       = UCB_NULL,
+    .code = UCB_OK,
+    .msg = UCB_NULL,
     .is_static = true,
 };
 
 // FIXME: Rework mutex to be SRW and public
 static ucb_mutex s_mutex = {0};
-static int s_init_mutex  = 0;
+static int s_init_mutex = 0;
 
 static ucb_error* ucb_error_get(void)
 {
     if (!s_err.is_static)
     {
         s_err.code = UCB_ERROR_INVALID_STATE;
-        s_err.msg  = "Static ucb_error has been manipulated. Forcing abort.";
+        s_err.msg = "Static ucb_error has been manipulated. Forcing abort.";
         ucb_error_report(UCB_ERRLVL_USER, &s_err);
         abort();
     }
@@ -58,11 +58,12 @@ static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
     {
         if (*perr)
         {
-            UCB_WARN("Found unhandled error when preparing a new error. All errors returned from "
-                     "functions must be free'd with ucb_error_free().");
+            UCB_WARN(
+                "Found unhandled error when preparing a new error. All errors returned from "
+                "functions must be free'd with ucb_error_free().");
             ucb_error_clear(perr);
         }
-        err   = ucb_calloc_type(1, ucb_error);
+        err = ucb_calloc_type(1, ucb_error);
         *perr = err;
         return err;
     }
@@ -72,7 +73,7 @@ static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
 ucb_error_func ucb_error_set_func(ucb_error_func func)
 {
     ucb_error_func prev = s_ucb_errfunc;
-    s_ucb_errfunc       = func;
+    s_ucb_errfunc = func;
     return prev;
 }
 
@@ -90,9 +91,9 @@ ucb_error* ucb_error_copy(const ucb_error* err)
     ucb_error* ret = UCB_NULL;
     if (err)
     {
-        ret       = ucb_calloc_type(1, ucb_error);
+        ret = ucb_calloc_type(1, ucb_error);
         ret->code = err->code;
-        ret->msg  = ucb_cstr_dup(err->msg);
+        ret->msg = ucb_cstr_dup(err->msg);
         // ret->is_static = false; // Const value set by calloc.
     }
     return ret;
@@ -124,8 +125,8 @@ const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...)
 const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args)
 {
     ucb_error* err = ucb_error_get();
-    err->code      = code;
-    err->msg       = s_buf;
+    err->code = code;
+    err->msg = s_buf;
     // Will truncate if too long, including null terminator.
     ucb_cstr_vsnprintf(s_buf, UCB_BUFSIZE_ERROR_MSG, fmt, args);
     return err;
@@ -161,7 +162,7 @@ void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg)
         return;
 
     err->code = code;
-    err->msg  = ucb_cstr_dup(msg);
+    err->msg = ucb_cstr_dup(msg);
 }
 
 void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...)

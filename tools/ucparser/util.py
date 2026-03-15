@@ -2,16 +2,10 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
-# from __future__ import annotations
-
-from typing import List, Dict, Any, Iterable, TextIO, TYPE_CHECKING
-import sys
 import re
+import sys
 from enum import Enum
-
-if TYPE_CHECKING:
-    # False at run time, only for type checker
-    from _typeshed import SupportsWrite
+from typing import Any, Dict, Iterable, List, TextIO
 
 RE_C_IDENT = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 

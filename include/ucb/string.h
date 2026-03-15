@@ -169,8 +169,8 @@ typedef struct ucb_str
 static inline ucb_str ucb_str_make()
 {
     ucb_str str;
-    str.data  = "";
-    str.size  = 0;
+    str.data = "";
+    str.size = 0;
     str.alloc = 0;
     return str;
 }
@@ -621,7 +621,9 @@ UCB_API void ucb_str_clear(ucb_str* str);
  * @param append string to append
  */
 UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
-UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp,
+UCB_API void ucb_str_append_cp(ucb_str* str,
+                               const ucb_cp* cp,
+                               size_t num_cp,
                                const ucb_error** perr);
 UCB_API void ucb_str_append_utf8(ucb_str* str, const char* cstr, size_t len);
 
@@ -634,7 +636,10 @@ UCB_API void ucb_str_append_utf8(ucb_str* str, const char* cstr, size_t len);
  * @param insert string to insert
  */
 UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
-UCB_API void ucb_str_insert_cp(ucb_str* str, size_t index, const ucb_cp* cp, size_t num_cp,
+UCB_API void ucb_str_insert_cp(ucb_str* str,
+                               size_t index,
+                               const ucb_cp* cp,
+                               size_t num_cp,
                                const ucb_error** perr);
 UCB_API void ucb_str_insert_utf8(ucb_str* str, size_t index, const char* cstr, size_t len);
 

@@ -1,10 +1,10 @@
 /**
  * @file buffer.cpp
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief buffer tests
  */
 
@@ -39,13 +39,6 @@ UCB_DIAG_POP()
 
 TEST_SUITE_BEGIN("buffer");
 
-// TEST_CASE("buffer basics")
-// {
-//     UCB_MEMTRACK_PUSH();
-
-//     UCB_MEMTRACK_POP();
-// }
-
 TEST_CASE("buffer utils")
 {
     UCB_MEMTRACK_PUSH();
@@ -53,8 +46,8 @@ TEST_CASE("buffer utils")
     SUBCASE("bufcast aligned")
     {
         uint32_t test_data[4] = {0x11111111, 0x22222222, 0x33333333, 0x44444444};
-        void* data            = reinterpret_cast<char*>(test_data);
-        size_t data_size      = sizeof(test_data);
+        void* data = reinterpret_cast<char*>(test_data);
+        size_t data_size = sizeof(test_data);
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, data, data_size, &count);
 
@@ -73,7 +66,7 @@ TEST_CASE("buffer utils")
         UCB_DIAG_PUSH()
         UCB_DIAG_IGN_CAST_ALIGN()
         *reinterpret_cast<uint32_t*>(unaligned_buf + 1) =
-            0xAABBCCDD;                             // Write uint32_t at offset 1 (misaligned)
+            0xAABBCCDD;                           // Write uint32_t at offset 1 (misaligned)
         ucb_buffer buf = {unaligned_buf + 1, 16}; // 16 bytes (4x uint32_t)
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, buf.data, buf.size, &count);
@@ -122,8 +115,8 @@ TEST_CASE("buffer utils")
     SUBCASE("tiny buffer")
     {
         unsigned char tiny_buf[2] = {0xFF, 0xFF};
-        char* data                = reinterpret_cast<char*>(tiny_buf);
-        size_t data_size          = sizeof(tiny_buf);
+        char* data = reinterpret_cast<char*>(tiny_buf);
+        size_t data_size = sizeof(tiny_buf);
         size_t count;
         uint32_t* result = UCB_BUFCAST(uint32_t, data, data_size, &count);
 
@@ -139,7 +132,7 @@ TEST_CASE("buffer utils")
             {'b', 0x10000002, 0x1002},
             {'c', 0x10000003, 0x1003},
         };
-        void* data       = reinterpret_cast<void*>(struct_data);
+        void* data = reinterpret_cast<void*>(struct_data);
         size_t data_size = sizeof(struct_data);
 
         size_t count;
@@ -154,15 +147,15 @@ TEST_CASE("buffer utils")
         CHECK(alignof(test_struct) == 4);
         CHECK(sizeof(test_struct) == 12);
 
-        constexpr size_t num_data  = 50;
-        constexpr size_t misalign  = 3;
+        constexpr size_t num_data = 50;
+        constexpr size_t misalign = 3;
         constexpr size_t data_size = num_data * sizeof(test_struct) + misalign;
 
         char bufmem[data_size];
         test_struct* struct_data = reinterpret_cast<test_struct*>(bufmem + misalign);
         for (size_t i = 0; i < num_data; i++)
         {
-            char iadd      = static_cast<char>(i);
+            char iadd = static_cast<char>(i);
             struct_data[i] = {
                 static_cast<char>('A' + i % 26),
                 static_cast<int32_t>(0x10000000 + iadd),

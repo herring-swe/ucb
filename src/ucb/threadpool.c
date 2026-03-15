@@ -85,10 +85,10 @@ static void ucb_threadpool_start_impl(ucb_threadpool* pool)
     {
         ucb_task task = {
             .func = ucb_threadpool_worker,
-            .arg  = pool,
+            .arg = pool,
         };
 
-        pool->stop    = false;
+        pool->stop = false;
         pool->running = true;
         for (size_t i = 0; i < pool->num_threads; i++)
         {
@@ -104,14 +104,14 @@ ucb_threadpool* ucb_threadpool_new(size_t num_threads)
     ucb_threadpool* pool = ucb_malloc_type(1, ucb_threadpool);
     if (pool)
     {
-        pool->num_threads   = num_threads;
-        pool->num_running   = 0;
-        pool->running       = false;
-        pool->stop          = false;
+        pool->num_threads = num_threads;
+        pool->num_running = 0;
+        pool->running = false;
+        pool->stop = false;
         pool->dflt_callback = UCB_NULL;
 
         ucb_pqueue_args pq_args = {
-            .data_free  = ucb_task_free,
+            .data_free = ucb_task_free,
             .data_clone = UCB_NULL, // Clone manually
         };
         ucb_pqueue_init(&pool->tasks, pq_args);

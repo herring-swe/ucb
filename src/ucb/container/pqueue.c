@@ -34,7 +34,7 @@
 // clang-format on
 
 #define PQUEUE_INITIAL_NUM_BUCKETS_INITIAL 16
-#define PQUEUE_BUCKETS_GROW_FACTOR         2
+#define PQUEUE_BUCKETS_GROW_FACTOR 2
 
 static bool ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt)
 {
@@ -48,11 +48,11 @@ static bool ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt
     if (pq->buckets)
     {
         pq->data_clone = args.data_clone;
-        pq->data_free  = args.data_free;
+        pq->data_free = args.data_free;
 
-        pq->num_buckets   = 0;
+        pq->num_buckets = 0;
         pq->alloc_buckets = PQUEUE_INITIAL_NUM_BUCKETS_INITIAL;
-        pq->mutex         = mt ? ucb_mutex_new() : UCB_NULL;
+        pq->mutex = mt ? ucb_mutex_new() : UCB_NULL;
     }
     return pq->buckets != UCB_NULL;
 }
@@ -66,7 +66,7 @@ static bool ucb_pqueue_init_common(ucb_pqueue* pq, ucb_pqueue_args args, bool mt
 static int ucb_pqueue_search_bucket(ucb_pqueue* pq, int prio)
 {
     // Binary search for the bucket with the given priority
-    int low  = 0;
+    int low = 0;
     int high = (int)pq->num_buckets - 1;
 
     while (low <= high)
@@ -95,7 +95,7 @@ static size_t ucb_pqueue_push_node(ucb_pqueue* pq, int prio, ucb_fwdlist_node* n
         UCB_ASSERT(bucket->num_items > 0, UCB_ERROR_INVALID_STATE, "Bucket should have items");
 
         bucket->last->next = node;
-        bucket->last       = node;
+        bucket->last = node;
         bucket->num_items++;
     }
     else
@@ -110,7 +110,7 @@ static size_t ucb_pqueue_push_node(ucb_pqueue* pq, int prio, ucb_fwdlist_node* n
             if (!new_buckets)
                 return SIZE_MAX;
             pq->alloc_buckets = new_size;
-            pq->buckets       = new_buckets;
+            pq->buckets = new_buckets;
         }
 
         if (idx == pq->num_buckets)
@@ -127,10 +127,10 @@ static size_t ucb_pqueue_push_node(ucb_pqueue* pq, int prio, ucb_fwdlist_node* n
         }
 
         bucket->num_items = 1;
-        bucket->priority  = prio;
-        bucket->first     = node;
-        bucket->last      = node;
-        node->next        = UCB_NULL;
+        bucket->priority = prio;
+        bucket->first = node;
+        bucket->last = node;
+        node->next = UCB_NULL;
         pq->num_buckets++;
     }
 
@@ -156,9 +156,9 @@ static ucb_fwdlist_node* ucb_pqueue_pop_node(ucb_pqueue* pq)
     if (pq->num_buckets)
     {
         // Always pop from head of first bucket
-        node                 = pq->buckets[0].first;
+        node = pq->buckets[0].first;
         pq->buckets[0].first = node->next;
-        node->next           = UCB_NULL;
+        node->next = UCB_NULL;
         pq->buckets->num_items--;
 
         if (pq->buckets[0].num_items == 0)
@@ -222,8 +222,8 @@ void ucb_pqueue_release(ucb_pqueue* pq)
 
     // Clear what hasn't been cleared above
     pq->data_clone = UCB_NULL;
-    pq->data_free  = UCB_NULL;
-    pq->mutex      = UCB_NULL;
+    pq->data_free = UCB_NULL;
+    pq->mutex = UCB_NULL;
 }
 
 void ucb_pqueue_free(ucb_pqueue* pq)
@@ -265,7 +265,7 @@ void ucb_pqueue_fit(ucb_pqueue* pq)
 
     if (pq->num_buckets > PQUEUE_INITIAL_NUM_BUCKETS_INITIAL && pq->num_buckets < pq->alloc_buckets)
     {
-        pq->buckets       = ucb_realloc(pq->buckets, pq->num_buckets * sizeof(ucb_pqueue_bucket));
+        pq->buckets = ucb_realloc(pq->buckets, pq->num_buckets * sizeof(ucb_pqueue_bucket));
         pq->alloc_buckets = pq->num_buckets;
     }
 
@@ -277,7 +277,7 @@ size_t ucb_pqueue_push(ucb_pqueue* pq, void* data, int prio)
     UCB_VERIFY_ARGS(pq && data);
 
     ucb_fwdlist_node* node;
-    node       = ucb_malloc_type(1, ucb_fwdlist_node);
+    node = ucb_malloc_type(1, ucb_fwdlist_node);
     node->next = UCB_NULL;
     if (pq->data_clone)
     {
@@ -300,7 +300,7 @@ void* ucb_pqueue_pop(ucb_pqueue* pq)
 {
     UCB_VERIFY_ARGS(pq);
 
-    void* data             = UCB_NULL;
+    void* data = UCB_NULL;
     ucb_fwdlist_node* node = ucb_pqueue_pop_node(pq);
     if (node)
     {

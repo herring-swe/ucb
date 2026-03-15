@@ -24,7 +24,7 @@
 #include <string.h>
 
 #define STR_WRAP true
-#define STR_OWN  false
+#define STR_OWN false
 
 /* -------------------------------------------------------------------------- */
 /*                                Construction                                */
@@ -41,7 +41,7 @@ static bool ucb_str_init_common(ucb_str* str, bool wrap, const char* cstr, size_
     if (!cstr)
     {
         cstr = "";
-        len  = 0;
+        len = 0;
     }
     else if (len == 0)
     {
@@ -52,8 +52,8 @@ static bool ucb_str_init_common(ucb_str* str, bool wrap, const char* cstr, size_
 
     if (wrap)
     {
-        str->data  = (char*)cstr;
-        str->size  = len;
+        str->data = (char*)cstr;
+        str->size = len;
         str->alloc = 0;
     }
     else
@@ -64,7 +64,7 @@ static bool ucb_str_init_common(ucb_str* str, bool wrap, const char* cstr, size_
             memcpy(str->data, cstr, len);
             str->data[str->size] = '\0';
 
-            str->size  = len;
+            str->size = len;
             str->alloc = len + 1;
         }
     }
@@ -171,9 +171,9 @@ bool ucb_str_detach(ucb_str* str)
             memcpy(data, str->data, str->size);
             data[str->size] = '\0';
 
-            str->data  = data;
+            str->data = data;
             str->alloc = str->size + 1;
-            modified   = true;
+            modified = true;
         }
     }
     return modified;
@@ -194,10 +194,10 @@ bool ucb_str_fit(ucb_str* str)
             char* data = ucb_realloc(str->data, str->size + 1);
             if (data)
             {
-                str->data            = data;
+                str->data = data;
                 str->data[str->size] = '\0';
-                str->alloc           = str->size + 1;
-                modified             = true;
+                str->alloc = str->size + 1;
+                modified = true;
             }
         }
     }
@@ -226,10 +226,10 @@ bool ucb_str_ensure(ucb_str* str, size_t size)
                 char* data = ucb_realloc(str->data, new_size);
                 if (data)
                 {
-                    str->data            = data;
+                    str->data = data;
                     str->data[str->size] = '\0';
-                    str->alloc           = new_size;
-                    has_free             = true;
+                    str->alloc = new_size;
+                    has_free = true;
                 }
             }
         }
@@ -241,10 +241,10 @@ bool ucb_str_ensure(ucb_str* str, size_t size)
         if (data)
         {
             memcpy(data, str->data, str->size);
-            str->data            = data;
+            str->data = data;
             str->data[str->size] = '\0';
-            str->alloc           = str->size + size + 1;
-            has_free             = true;
+            str->alloc = str->size + size + 1;
+            has_free = true;
         }
     }
     return has_free;
@@ -270,8 +270,8 @@ void ucb_str_adopt(ucb_str* str, char* data, size_t len, size_t alloc)
     else
         UCB_VERIFY(alloc >= len, UCB_ERROR_INVALID_ARG, "alloc < len");
 
-    str->data  = data;
-    str->size  = len;
+    str->data = data;
+    str->size = len;
     str->alloc = alloc;
 }
 
@@ -281,8 +281,8 @@ void ucb_str_adopt_c(ucb_str* str, char* cstr)
 
     ucb_str_release_common(str);
 
-    str->data  = cstr;
-    str->size  = strlen(cstr);
+    str->data = cstr;
+    str->size = strlen(cstr);
     str->alloc = str->size + 1;
 }
 
@@ -395,7 +395,7 @@ bool ucb_str_equal(const ucb_str* str1, const ucb_str* str2)
 int ucb_str_comp(const ucb_str* str1, const ucb_str* str2)
 {
     size_t min_len = (str1->size < str2->size) ? str1->size : str2->size;
-    int cmp        = memcmp(str1->data, str2->data, min_len);
+    int cmp = memcmp(str1->data, str2->data, min_len);
     if (cmp != 0)
         return cmp;
     return (int)(str1->size - str2->size); // Longer string is "greater"
@@ -450,8 +450,8 @@ void ucb_str_clear(ucb_str* str)
     UCB_VERIFY_ARGS(str);
     ucb_str_release_common(str);
 
-    str->data  = "";
-    str->size  = 0;
+    str->data = "";
+    str->size = 0;
     str->alloc = 0;
 }
 
@@ -501,7 +501,10 @@ void ucb_str_insert(ucb_str* str, size_t pos, const ucb_str* istr)
     ucb_str_insert_utf8(str, pos, istr->data, istr->size);
 }
 
-void ucb_str_insert_cp(ucb_str* str, size_t index, const ucb_cp* cp, size_t num_cp,
+void ucb_str_insert_cp(ucb_str* str,
+                       size_t index,
+                       const ucb_cp* cp,
+                       size_t num_cp,
                        const ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str && (cp || !num_cp));
@@ -554,7 +557,7 @@ ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2)
 {
     UCB_VERIFY_ARGS(str1 && str2);
 
-    size_t size  = str1->size + str2->size;
+    size_t size = str1->size + str2->size;
     ucb_str* dst = ucb_malloc_type(1, ucb_str);
     if (dst)
     {
@@ -566,8 +569,8 @@ ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2)
                 memcpy(dst->data, str1->data, str1->size);
                 memcpy(dst->data + str1->size, str2->data, str2->size);
                 dst->data[size] = '\0';
-                dst->alloc      = size + 1;
-                dst->size       = size;
+                dst->alloc = size + 1;
+                dst->size = size;
             }
             else
             {
@@ -577,8 +580,8 @@ ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2)
         }
         else
         {
-            dst->data  = "";
-            dst->size  = 0;
+            dst->data = "";
+            dst->size = 0;
             dst->alloc = 0;
         }
     }
@@ -627,7 +630,7 @@ bool ucb_str_to_lower(ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
 
-    ucb_error* err    = UCB_NULL;
+    ucb_error* err = UCB_NULL;
     ucb_uc_result res = ucb_uc_to_lower(str->data, str->size, &err);
     UCB_VERIFY_ERROR(res.data, err);
     ucb_str_adopt(str, res.data, res.size, res.size + 1);
@@ -638,7 +641,7 @@ bool ucb_str_to_upper(ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
 
-    ucb_error* err    = UCB_NULL;
+    ucb_error* err = UCB_NULL;
     ucb_uc_result res = ucb_uc_to_upper(str->data, str->size, &err);
     UCB_VERIFY_ERROR(res.data, err);
     ucb_str_adopt(str, res.data, res.size, res.size + 1);
@@ -649,7 +652,7 @@ bool ucb_str_to_title(ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
 
-    ucb_error* err    = UCB_NULL;
+    ucb_error* err = UCB_NULL;
     ucb_uc_result res = ucb_uc_to_title(str->data, str->size, &err);
     UCB_VERIFY_ERROR(res.data, err);
     ucb_str_adopt(str, res.data, res.size, res.size + 1);
@@ -660,7 +663,7 @@ bool ucb_str_casefold(ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
 
-    ucb_error* err    = UCB_NULL;
+    ucb_error* err = UCB_NULL;
     ucb_uc_result res = ucb_uc_casefold(str->data, str->size, &err);
     UCB_VERIFY_ERROR(res.data, err);
     ucb_str_adopt(str, res.data, res.size, res.size + 1);
@@ -671,7 +674,7 @@ bool ucb_str_normalize(ucb_str* str, ucb_norm_form form)
 {
     UCB_VERIFY_ARGS(str && form >= UCB_NORM_NFD && form <= UCB_NORM_NFKC);
 
-    ucb_error* err    = UCB_NULL;
+    ucb_error* err = UCB_NULL;
     ucb_uc_result res = ucb_uc_normalize(str->data, str->size, form, &err);
     UCB_VERIFY_ERROR(res.data, err);
     ucb_str_adopt(str, res.data, res.size, res.size + 1);

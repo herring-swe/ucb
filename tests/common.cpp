@@ -25,8 +25,8 @@ jmp_buf FailureSetJump;
 
 TestFailureFixture::TestFailureFixture() : m_prev_func(ucb_error_set_func(error_collect))
 {
-    s_fixture  = this;
-    num_error  = 0;
+    s_fixture = this;
+    num_error = 0;
     num_aborts = 0;
 }
 

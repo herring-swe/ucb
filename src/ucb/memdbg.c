@@ -30,12 +30,12 @@
 
 #define VERIFY_LEVEL 0
 
-#define ALLOC_MAGIC   0xBEA01234
+#define ALLOC_MAGIC 0xBEA01234
 #define DEALLOC_MAGIC 0x0DEADBEA
-#define META_SIZE     sizeof(ucb_alloc_meta)
+#define META_SIZE sizeof(ucb_alloc_meta)
 
 // TODO: Should be configurable via CMake
-#define MAX_TRACEPOINTS     10
+#define MAX_TRACEPOINTS 10
 #define MAX_TRACEPOINT_NAME 64
 
 typedef struct ucb_alloc_meta
@@ -67,7 +67,7 @@ typedef struct ucb_tracepoint
 
 // Global list of allocations
 static ucb_tracepoint_t* s_trace_points[MAX_TRACEPOINTS];
-static int s_trace_level                 = -1;
+static int s_trace_level = -1;
 static ucb_mem_report_func s_report_func = UCB_NULL;
 
 static ucb_mutex s_mutex = {0};
@@ -143,7 +143,7 @@ static void verify_level(int level)
     ucb_tracepoint_t* tp = s_trace_points[level];
     assert(tp);
 
-    size_t num  = 0;
+    size_t num = 0;
     size_t size = 0;
 
     ucb_alloc_meta* prev = UCB_NULL;
@@ -177,8 +177,8 @@ static int gen_tracepoint_report(int from_level, bool leaks)
     }
 
     ucb_mem_report* report = UCB_NULL;
-    ucb_mem_alloc* last    = UCB_NULL;
-    ucb_mem_alloc* cur     = UCB_NULL;
+    ucb_mem_alloc* last = UCB_NULL;
+    ucb_mem_alloc* cur = UCB_NULL;
 
     if (from_level < 0)
         from_level = 0;
@@ -201,12 +201,12 @@ static int gen_tracepoint_report(int from_level, bool leaks)
                 goto cleanup;
             }
             report->level = level;
-            report->name  = tp->name;
+            report->name = tp->name;
             report->leaks = leaks;
         }
 
-        report->peak_alloc       = UCB_MAX(report->peak_alloc, tp->peak_alloc);
-        report->peak_size        = UCB_MAX(report->peak_size, tp->peak_size);
+        report->peak_alloc = UCB_MAX(report->peak_alloc, tp->peak_alloc);
+        report->peak_size = UCB_MAX(report->peak_size, tp->peak_size);
         report->peak_alloc_block = UCB_MAX(report->peak_alloc_block, tp->peak_alloc_block);
         report->total_alloc += tp->total_alloc;
         report->total_size += tp->total_size;
@@ -222,7 +222,7 @@ static int gen_tracepoint_report(int from_level, bool leaks)
                 goto cleanup;
             }
 
-            cur->ptr  = alloc + 1;
+            cur->ptr = alloc + 1;
             cur->size = alloc->size;
             cur->file = alloc->file;
             cur->line = alloc->line;
@@ -270,8 +270,8 @@ void ucb_mem_tracking_enable(void)
     ucb_mutex_lock(&s_mutex);
     s_tracking_enabled = true;
 
-    s_report_func     = ucb_mem_tracking_default_report_func;
-    s_trace_level     = 0;
+    s_report_func = ucb_mem_tracking_default_report_func;
+    s_trace_level = 0;
     s_trace_points[0] = (ucb_tracepoint_t*)calloc(1, sizeof(ucb_tracepoint_t));
     mem_sprintf(s_trace_points[0]->name, MAX_TRACEPOINT_NAME, "%s", "all memory");
 
@@ -295,11 +295,11 @@ void ucb_mem_tracking_reset(void)
             ucb_tracepoint_t* tp = s_trace_points[level];
             assert(tp);
 
-            tp->peak_alloc       = 0;
-            tp->peak_size        = 0;
+            tp->peak_alloc = 0;
+            tp->peak_size = 0;
             tp->peak_alloc_block = 0;
-            tp->total_alloc      = 0;
-            tp->total_size       = 0;
+            tp->total_alloc = 0;
+            tp->total_size = 0;
         }
     }
     ucb_mutex_unlock(&s_mutex);
@@ -308,7 +308,7 @@ void ucb_mem_tracking_reset(void)
 ucb_mem_report_func ucb_mem_tracking_set_report_func(ucb_mem_report_func func)
 {
     ucb_mem_report_func old = s_report_func;
-    s_report_func           = func;
+    s_report_func = func;
     return old;
 }
 
@@ -374,7 +374,7 @@ void ucb_mem_tracking_pop(void)
         ucb_mutex_lock(&s_mutex);
     }
 
-    int level_up            = s_trace_level - 1;
+    int level_up = s_trace_level - 1;
     ucb_tracepoint_t* tp_up = s_trace_points[level_up];
     assert(tp_up);
 
@@ -391,8 +391,8 @@ void ucb_mem_tracking_pop(void)
 
         // Add to parent level
         entry->level = level_up;
-        entry->prev  = UCB_NULL;
-        entry->next  = tp_up->alloc;
+        entry->prev = UCB_NULL;
+        entry->next = tp_up->alloc;
         if (entry->next)
             entry->next->prev = entry;
         tp_up->alloc = entry;
@@ -430,21 +430,24 @@ void ucb_mem_tracking_report(bool final)
         gen_tracepoint_report(s_trace_level, false);
 }
 
-static inline void init_alloc(ucb_alloc_meta* entry, size_t size, const char* file, int line,
+static inline void init_alloc(ucb_alloc_meta* entry,
+                              size_t size,
+                              const char* file,
+                              int line,
                               ucb_btrace* bt)
 {
     assert(entry);
 
     entry->magic = ALLOC_MAGIC;
-    entry->size  = size;
-    entry->file  = file;
-    entry->line  = line;
+    entry->size = size;
+    entry->file = file;
+    entry->line = line;
 
 #ifdef UCB_MEMTRACK_BACKTRACE
     if (bt)
     {
         entry->bt.count = bt->count;
-        entry->bt.strs  = bt->strs;
+        entry->bt.strs = bt->strs;
     }
     else
     {
@@ -467,8 +470,8 @@ static inline void* register_alloc(ucb_alloc_meta* entry)
 
     // Add as first entry for current level
     entry->level = s_trace_level;
-    entry->next  = tp->alloc;
-    entry->prev  = UCB_NULL;
+    entry->next = tp->alloc;
+    entry->prev = UCB_NULL;
     if (entry->next)
     {
         assert(entry->next->magic == ALLOC_MAGIC);
@@ -483,8 +486,8 @@ static inline void* register_alloc(ucb_alloc_meta* entry)
     tp->total_alloc++;
     tp->total_size += entry->size;
 
-    tp->peak_alloc       = UCB_MAX(tp->current_alloc, tp->peak_alloc);
-    tp->peak_size        = UCB_MAX(tp->current_size, tp->peak_size);
+    tp->peak_alloc = UCB_MAX(tp->current_alloc, tp->peak_alloc);
+    tp->peak_size = UCB_MAX(tp->current_size, tp->peak_size);
     tp->peak_alloc_block = UCB_MAX(entry->size, tp->peak_alloc_block);
 
     ucb_mutex_unlock(&s_mutex);
@@ -599,7 +602,7 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
     // Save old btrace data, in order to free it on failure
     ucb_btrace old_bt = {
         .count = entry->bt.count,
-        .strs  = entry->bt.strs,
+        .strs = entry->bt.strs,
     };
 #endif
     if (size > 0)

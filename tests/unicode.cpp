@@ -26,8 +26,8 @@
 #include <vector>
 
 #ifdef USE_OPENMP
-#include <atomic>
 #include <omp.h>
+#include <atomic>
 #endif
 
 #ifdef __INTELLISENSE__
@@ -36,7 +36,9 @@
 
 typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, const ucb_error** perr);
 
-static int split_line(const std::string& line, char c, std::vector<std::string>& result,
+static int split_line(const std::string& line,
+                      char c,
+                      std::vector<std::string>& result,
                       int max = -1)
 {
     result.clear();
@@ -90,7 +92,7 @@ static inline void hexstr_to_utf8(const char* input, char** output)
 
         // Parse a single codepoint (1–6 hex digits)
         uint32_t cp = 0;
-        int digits  = 0;
+        int digits = 0;
         while (*ptr && isxdigit(*ptr) && digits < 6)
         {
             cp = (cp << 4) |
@@ -104,7 +106,7 @@ static inline void hexstr_to_utf8(const char* input, char** output)
     }
 
     size_t count = buf.size / sizeof(uint32_t);
-    buf.size     = 0; // reset buffer
+    buf.size = 0; // reset buffer
     ucb_uc_encode_codepoints(&buf, reinterpret_cast<uint32_t*>(buf.data), count, nullptr);
     ucb_buffer_push(&buf, "\0", 1);
     ucb_buffer_transfer(&buf, reinterpret_cast<void**>(output), nullptr, nullptr, nullptr);
@@ -163,7 +165,10 @@ static inline void test_basics(const char* input, size_t len, size_t num_cp, siz
     CHECK(ucb_uc_num_chars(input, len) == num_chars);
 }
 
-static inline void test_grapheme(const char* input, size_t len, size_t num_cp, size_t num_chars,
+static inline void test_grapheme(const char* input,
+                                 size_t len,
+                                 size_t num_cp,
+                                 size_t num_chars,
                                  size_t num_fail_chars)
 {
     bool with_null = check_with_null(input, len);
@@ -183,16 +188,19 @@ static inline void test_grapheme(const char* input, size_t len, size_t num_cp, s
     CHECK(ucb_uc_num_chars(input, len) == num_fail_chars);
 }
 
-static inline void test_mapping(const char* input, const char* lower, const char* upper,
-                                const char* title, const char* casefold)
+static inline void test_mapping(const char* input,
+                                const char* lower,
+                                const char* upper,
+                                const char* title,
+                                const char* casefold)
 {
     size_t len;
     ucb_uc_result ucres;
     const ucb_error* err = nullptr;
 
     const char* strings[5] = {input, lower, upper, title, casefold};
-    mapping_func func[5]   = {nullptr, ucb_uc_to_lower, ucb_uc_to_upper, ucb_uc_to_title,
-                              ucb_uc_casefold};
+    mapping_func func[5] = {nullptr, ucb_uc_to_lower, ucb_uc_to_upper, ucb_uc_to_title,
+                            ucb_uc_casefold};
     // const char* names[5]   = {"", "to_lower", "to_upper", "to_title", "casefold"};
 
     for (int i = 0; i < 5; i++)
@@ -218,11 +226,12 @@ static inline void test_mapping(const char* input, const char* lower, const char
     }
 }
 
-static inline unsigned int test_norm_bench(const std::string& input, const std::string& correct,
+static inline unsigned int test_norm_bench(const std::string& input,
+                                           const std::string& correct,
                                            ucb_norm_form type)
 {
     const ucb_error* err = nullptr;
-    ucb_uc_result ucres  = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
+    ucb_uc_result ucres = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
 
     unsigned int success = 0;
     if (!UCB_IS_THROWN(err))
@@ -238,7 +247,7 @@ static inline unsigned int test_norm_bench(const std::string& input, const std::
 static inline void test_norm(const char* input, const char* correct, ucb_norm_form type)
 {
     const ucb_error* err = nullptr;
-    ucb_uc_result ucres  = ucb_uc_normalize(input, strlen(input), type, &err);
+    ucb_uc_result ucres = ucb_uc_normalize(input, strlen(input), type, &err);
     std::string type_str(ucb_uc_norm_form_to_str(type));
 
     CAPTURE(type_str);
@@ -261,8 +270,8 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
     {
         const unsigned char* iter_res = reinterpret_cast<const unsigned char*>(ucres.data);
         const unsigned char* iter_cor = reinterpret_cast<const unsigned char*>(correct);
-        uint32_t cp_res               = 1;
-        uint32_t cp_cor               = 1;
+        uint32_t cp_res = 1;
+        uint32_t cp_cor = 1;
         std::stringstream ss_res("");
         std::stringstream ss_cor("");
 
@@ -374,11 +383,12 @@ TEST_CASE("unicode normalization")
     test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_NORM_NFD);
     test_norm("Héllö Wörld!", "Héllö Wörld!", UCB_NORM_NFC);
 
-    test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_NORM_NFD);
+    test_norm(
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        UCB_NORM_NFD);
     test_norm_hex(
         "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏ",
         "41 325 61 325 42 307 62 307 42 323 62 323 42 331 62 331 43 327 301 63 327 301 44 307 64 "
@@ -399,26 +409,30 @@ TEST_CASE("unicode normalization")
         "1e48 1e49 1e4a 1e4b 1e4c 1e4d 1e4e 1e4f",
         UCB_NORM_NFC);
 
-    test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_NORM_NFD);
-    test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_NORM_NFKD);
-    test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_NORM_NFC);
-    test_norm("ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
-              "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
-              UCB_NORM_NFKC);
+    test_norm(
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        UCB_NORM_NFD);
+    test_norm(
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        UCB_NORM_NFKD);
+    test_norm(
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        UCB_NORM_NFC);
+    test_norm(
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        "ḀḁḂḃḄḅḆḇḈḉḊḋḌḍḎḏḐḑḒḓḔḕḖḗḘḙḚḛḜḝḞḟḠḡḢḣḤḥḦḧḨḩḪḫḬḭḮḯḰḱḲḳḴḵḶḷḸḹḺḻḼḽḾḿṀṁṂṃṄṅṆṇṈṉṊṋṌṍṎṏṐṑṒṓ"
+        "ṔṕṖṗṘṙṚṛṜṝṞṟṠṡṢṣṤṥṦṧṨṩṪṫṬṭṮṯṰṱṲṳṴṵṶṷṸṹṺṻṼṽṾṿ",
+        UCB_NORM_NFKC);
 
     // Hangul + Latin tests
     test_norm("가각 Héllö", "가각 Héllö", UCB_NORM_NFD);
@@ -427,8 +441,7 @@ TEST_CASE("unicode normalization")
     // Hangul + Latin + Combining Marks + Ligatures
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
               UCB_NORM_NFD);
-    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
-              UCB_NORM_NFC);
+    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", UCB_NORM_NFC);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
               UCB_NORM_NFKC);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
@@ -491,11 +504,11 @@ static void read_ucd_norm_tests(std::vector<ucd_norm_test>& tests)
         // parts 3 is NFKC
         // parts 4 is NFKD
         // parts 5 is comment, including initial #
-        data.input   = hexstr_to_utf8(parts[0]);
-        data.nfc     = hexstr_to_utf8(parts[1]);
-        data.nfd     = hexstr_to_utf8(parts[2]);
-        data.nfkc    = hexstr_to_utf8(parts[3]);
-        data.nfkd    = hexstr_to_utf8(parts[4]);
+        data.input = hexstr_to_utf8(parts[0]);
+        data.nfc = hexstr_to_utf8(parts[1]);
+        data.nfd = hexstr_to_utf8(parts[2]);
+        data.nfkc = hexstr_to_utf8(parts[3]);
+        data.nfkd = hexstr_to_utf8(parts[4]);
         data.comment = parts.size() > 5 ? trim(parts[5]) : "";
 
         tests.push_back(data);
@@ -579,7 +592,7 @@ TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest
     auto start = std::chrono::high_resolution_clock::now();
 
     std::string form;
-    uint64_t passed       = 0;
+    uint64_t passed = 0;
     uint64_t test_strlens = 0;
     for (const auto& test : tests)
     {
@@ -633,10 +646,10 @@ TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest
         }
     }
 
-    auto end           = std::chrono::high_resolution_clock::now();
-    auto duration      = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     uint64_t num_tests = tests.size() * iterations;
-    uint64_t num_ops   = num_tests * 20;
+    uint64_t num_ops = num_tests * 20;
 
     std::cout << "Total time: " << duration << " ms" << std::endl;
     std::cout << "Passed: " << std::fixed << std::setprecision(1)

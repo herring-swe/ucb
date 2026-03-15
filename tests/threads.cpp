@@ -34,7 +34,7 @@ struct ThreadFixture
     ThreadFixture()
     {
         mutex = ucb_mutex_new();
-        th    = nullptr;
+        th = nullptr;
     }
 
     ~ThreadFixture()
@@ -102,12 +102,12 @@ static int dummy_worker(void* arg)
 // --- Tests ---
 TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
 {
-    FuncArg fa      = {this, 42};
+    FuncArg fa = {this, 42};
     FuncArg fa_exit = {this, 99};
 
     ucb_task task = {0};
-    task.func     = worker_func;
-    task.arg      = reinterpret_cast<void*>(&fa);
+    task.func = worker_func;
+    task.arg = reinterpret_cast<void*>(&fa);
 
     SUBCASE("Create/Free")
     {
@@ -163,8 +163,8 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread priorities")
     FuncArg fa = {this, 42};
 
     ucb_task task = {0};
-    task.func     = worker_func;
-    task.arg      = reinterpret_cast<void*>(&fa);
+    task.func = worker_func;
+    task.arg = reinterpret_cast<void*>(&fa);
 
     SUBCASE("Default Priority")
     {
@@ -191,8 +191,8 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread names")
     FuncArg fa = {this, 42};
 
     ucb_task task = {0};
-    task.func     = worker_func;
-    task.arg      = reinterpret_cast<void*>(&fa);
+    task.func = worker_func;
+    task.arg = reinterpret_cast<void*>(&fa);
 
     th = ucb_thread_new();
     ucb_thread_set_name(th, in_name.c_str());
@@ -206,7 +206,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread names")
 TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
 {
     constexpr int N_THREADS = 100;
-    constexpr int N_ITERS   = 1000;
+    constexpr int N_ITERS = 1000;
     std::vector<ucb_thread*> threads;
     std::atomic<int> shared_counter{0};
 
@@ -218,8 +218,8 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
     StressArgs args{&shared_counter, N_ITERS};
 
     ucb_task task = {0};
-    task.func     = stress_worker;
-    task.arg      = reinterpret_cast<void*>(&args);
+    task.func = stress_worker;
+    task.arg = reinterpret_cast<void*>(&args);
 
     for (int i = 0; i < N_THREADS; i++)
     {
@@ -260,7 +260,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
         th = ucb_thread_new();
 
         ucb_task task = {0};
-        task.func     = dummy_worker;
+        task.func = dummy_worker;
 
         REQUIRE(ucb_thread_start(th, task) == true);
         CHECK_ABORTS(ucb_thread_start(th, task)); // Already running
@@ -292,11 +292,11 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
 TEST_CASE("benchmark threads" * doctest::test_suite("benchmark") * doctest::skip())
 {
     const int N = 1000;
-    auto start  = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
 
     ucb_task task = {0};
-    task.func     = [](void*) { return 0; };
-    task.arg      = nullptr;
+    task.func = [](void*) { return 0; };
+    task.arg = nullptr;
 
     for (int i = 0; i < N; i++)
     {
@@ -306,7 +306,7 @@ TEST_CASE("benchmark threads" * doctest::test_suite("benchmark") * doctest::skip
         ucb_thread_free(th);
     }
 
-    auto end    = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
     uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     printf("Created/joined %d threads in %" PRIu64 " ms (%.1f threads/sec)\n", N, ms,
            (N * 1000.0) / ms);

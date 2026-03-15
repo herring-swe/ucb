@@ -3,19 +3,19 @@
 # SPDX-License-Identifier: MIT
 
 import bisect
+from enum import IntEnum
+from functools import total_ordering
 from typing import (
     Any,
-    Iterator,
-    Optional,
     Iterable,
+    Iterator,
+    List,
+    Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
-    List,
 )
-from enum import IntEnum
-from functools import total_ordering
 
 from .util import fmt_char, fmt_cp, fmt_cp_key_list, get_global_prefix
 
@@ -42,9 +42,7 @@ class UcEnum(IntEnum):
     description: str
     parse_val: Union[str, None]
 
-    def __new__(
-        cls, short_name: str, description: str, parse_val: Optional[str] = None
-    ):
+    def __new__(cls, short_name: str, description: str, parse_val: Optional[str] = None):
         value = len(cls.__members__)
         obj = int.__new__(cls, value)
         obj._value_ = value
@@ -117,9 +115,7 @@ class UcFlag(IntEnum):
 
     description: str
 
-    def __new__(
-        cls, description: str
-    ):
+    def __new__(cls, description: str):
         if len(cls.__members__) == 0:
             value = 0
         else:
@@ -161,12 +157,13 @@ class UcFlag(IntEnum):
     def c_comment(self) -> str:
         """Return a C comment for the enum value."""
         return f"// {self.description}"
-    
+
     def c_val(self) -> str:
         """Return hex value with max number of digits."""
         max_val = max(member.value for member in self.__class__)
-        max_w = len(f'{max_val:X}')
+        max_w = len(f"{max_val:X}")
         return f"0x{self.value:0{max_w}X}"
+
 
 class GeneralCategory(UcEnum):
     Lu = ("Lu", "Uppercase letter")
@@ -229,7 +226,8 @@ class DecompositionType(UcEnum):
     @classmethod
     def enum_prefix(cls):
         return "DC_"
-    
+
+
 class PropertyFlags(UcFlag):
     # fmt: off
     Default = ("No special flags")
@@ -239,6 +237,7 @@ class PropertyFlags(UcFlag):
     @classmethod
     def flag_prefix(cls):
         return "PROP_"
+
 
 class Freezable:
     def __init__(self):
@@ -306,16 +305,12 @@ class Codepoint(int):
     def __new__(cls, value: Union[int, str]):
         if isinstance(value, int):
             if not cls.is_valid(value):
-                raise ValueError(
-                    f"Value is outside of valid codepoint range: {hex(value)}"
-                )
+                raise ValueError(f"Value is outside of valid codepoint range: {hex(value)}")
             return int.__new__(cls, value)
         elif isinstance(value, str):
             value = int(value, 16)
             if not cls.is_valid(value):
-                raise ValueError(
-                    f"Value is outside of valid codepoint range: {hex(value)}"
-                )
+                raise ValueError(f"Value is outside of valid codepoint range: {hex(value)}")
             return int.__new__(cls, value)
         else:
             raise ValueError(f"Invalid value type {type(value)}")
@@ -334,15 +329,15 @@ class Codepoint(int):
 
     def __repr__(self) -> str:
         return f"Codepoint({self})"
-    
+
     def __hash__(self) -> int:
         return int.__hash__(self)
-    
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, (Codepoint, int)):
             return int.__eq__(self, other)
         return False
-    
+
     def __lt__(self, other: object) -> bool:
         if isinstance(other, (Codepoint, int)):
             return int.__lt__(self, other)
@@ -587,6 +582,7 @@ class Mapping(object):
             raise ValueError("Index must be positive")
         self._idx = idx
 
+
 class CodepointInfo(object):
     __slots__ = (
         "cp",
@@ -600,7 +596,7 @@ class CodepointInfo(object):
         "to_upper",
         "to_lower",
         "to_title",
-        "decomp",        
+        "decomp",
         "codepoints",
         "propindex",
     )
@@ -630,7 +626,10 @@ class CodepointInfo(object):
 
     @property
     def data_key(self) -> str:
-        return f"{self.flags}-{self.gc.value}-{self.ccc}-{self.mapping_idx}-{self.decomp_idx}-{self.combiner_idx}"
+        return (
+            f"{self.flags}-{self.gc.value}-{self.ccc}-{self.mapping_idx}-"
+            f"{self.decomp_idx}-{self.combiner_idx}"
+        )
 
     @property
     def has_mapping(self) -> bool:
@@ -708,7 +707,10 @@ class CodepointInfo(object):
         if num == 1:
             return fmt_char(self.codepoints.first, self.gc)
         else:
-            return f"{num} codepoints in range [{fmt_cp(self.codepoints.first)}, {fmt_cp(self.codepoints.last)}]"
+            return (
+                f"{num} codepoints in range [{fmt_cp(self.codepoints.first)}, "
+                f"{fmt_cp(self.codepoints.last)}]"
+            )
 
     def __contains__(self, key):
         if key in self.__slots__:

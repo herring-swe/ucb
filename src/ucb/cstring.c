@@ -37,7 +37,7 @@ char* ucb_cstr_dup(const char* str)
     if (!str)
         return UCB_NULL;
     size_t len = ucb_cstr_len(str);
-    char* dst  = ucb_malloc_type(len + 1, char);
+    char* dst = ucb_malloc_type(len + 1, char);
     if (dst == UCB_NULL)
         return UCB_NULL;
     memcpy(dst, str, len);
@@ -50,7 +50,7 @@ char* ucb_cstr_ndup(const char* str, size_t max_len)
     if (!str)
         return UCB_NULL;
     size_t len = ucb_cstr_nlen(str, max_len);
-    char* dst  = ucb_malloc_type(len + 1, char);
+    char* dst = ucb_malloc_type(len + 1, char);
     if (dst == UCB_NULL)
         return UCB_NULL;
     memcpy(dst, str, len);
@@ -95,7 +95,9 @@ int ucb_cstr_sprintf(char* restrict buffer, size_t buffer_size, const char* rest
     return r;
 }
 
-int ucb_cstr_vsprintf(char* restrict buffer, size_t buffer_size, const char* restrict fmt,
+int ucb_cstr_vsprintf(char* restrict buffer,
+                      size_t buffer_size,
+                      const char* restrict fmt,
                       va_list vlist)
 {
     if (!buffer)

@@ -11,7 +11,8 @@
 /*
  * This is such an ugly beaver to not include for error messages
  */
-static const char *ucb_error = "   (\\___/)"
-                               "   ( •ㅅ•)"
-                               "   /     \\  UCB ERROR: %s"
-                               "  /       \\";
+static const char* ucb_error =
+    "   (\\___/)"
+    "   ( •ㅅ•)"
+    "   /     \\  UCB ERROR: %s"
+    "  /       \\";

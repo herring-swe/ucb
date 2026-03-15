@@ -85,16 +85,16 @@ UCB_API void ucb_mem_tracking_report(bool final);
 #ifdef NDEBUG
 UCB_DIAG_PUSH()
 UCB_DIAG_IGN_UNUSED_VALUE()
-#define UCB_MEMTRACK_ENABLE()        ((void)0)
-#define UCB_MEMTRACK_RESET()         ((void)0)
-#define UCB_MEMTRACK_SET_FUNC(func)  ((ucb_mem_report_func)0)
-#define UCB_MEMTRACK_IS_ENABLED()    false
-#define UCB_MEMTRACK_LEVEL()         (-1)
-#define UCB_MEMTRACK_PUSH()          ((void)0)
+#define UCB_MEMTRACK_ENABLE() ((void)0)
+#define UCB_MEMTRACK_RESET() ((void)0)
+#define UCB_MEMTRACK_SET_FUNC(func) ((ucb_mem_report_func)0)
+#define UCB_MEMTRACK_IS_ENABLED() false
+#define UCB_MEMTRACK_LEVEL() (-1)
+#define UCB_MEMTRACK_PUSH() ((void)0)
 #define UCB_MEMTRACK_PUSH_NAME(name) ((void)0)
-#define UCB_MEMTRACK_POP()           ((void)0)
-#define UCB_MEMTRACK_REPORT()        ((void)0)
-#define UCB_MEMTRACK_FINAL()         ((void)0)
+#define UCB_MEMTRACK_POP() ((void)0)
+#define UCB_MEMTRACK_REPORT() ((void)0)
+#define UCB_MEMTRACK_FINAL() ((void)0)
 UCB_DIAG_POP()
 #else // Debug build
 
@@ -113,38 +113,38 @@ UCB_DIAG_POP()
  * @note This is only available in debug builds.
  * @note This must be done before any memory allocations are made using ucb functions.
  */
-#define UCB_MEMTRACK_ENABLE()        ucb_mem_tracking_enable()
+#define UCB_MEMTRACK_ENABLE() ucb_mem_tracking_enable()
 
 /**
  * @brief Reset memory tracking
  *
  * This will zero allocation stats.
  */
-#define UCB_MEMTRACK_RESET()         ucb_mem_tracking_reset()
+#define UCB_MEMTRACK_RESET() ucb_mem_tracking_reset()
 
 /**
  * @brief Set the memory report function
  * @param func The function to call when reporting memory usage
  * @return The previous function or NULL
  */
-#define UCB_MEMTRACK_SET_FUNC(func)  ucb_mem_tracking_set_report_func(func)
+#define UCB_MEMTRACK_SET_FUNC(func) ucb_mem_tracking_set_report_func(func)
 
 /**
  * @brief Check if memory tracking is enabled
  * @return true if enabled, false otherwise
  */
-#define UCB_MEMTRACK_IS_ENABLED()    ucb_mem_tracking_is_enabled()
+#define UCB_MEMTRACK_IS_ENABLED() ucb_mem_tracking_is_enabled()
 
 /**
  * @brief Get the current memory tracking level
  * @return The current level or -1 if not enabled
  */
-#define UCB_MEMTRACK_LEVEL()         ucb_mem_tracking_level()
+#define UCB_MEMTRACK_LEVEL() ucb_mem_tracking_level()
 
 /**
  * @brief Push a new memory tracking level
  */
-#define UCB_MEMTRACK_PUSH()          ucb_mem_tracking_push()
+#define UCB_MEMTRACK_PUSH() ucb_mem_tracking_push()
 
 /**
  * @brief Push a new memory tracking level with a name
@@ -157,7 +157,7 @@ UCB_DIAG_POP()
  * If there are still allocations remaining at this level, a leak report
  * is generated, and the memory tracked is moved to the previous level.
  */
-#define UCB_MEMTRACK_POP()           ucb_mem_tracking_pop()
+#define UCB_MEMTRACK_POP() ucb_mem_tracking_pop()
 
 /**
  * @brief Manually trigger a report
@@ -165,7 +165,7 @@ UCB_DIAG_POP()
  * Will report the state in the current memory tracking level.
  * Data is not considered leaks in this case.
  */
-#define UCB_MEMTRACK_REPORT()        ucb_mem_tracking_report(false)
+#define UCB_MEMTRACK_REPORT() ucb_mem_tracking_report(false)
 
 /**
  * @brief Trigger a final report
@@ -174,7 +174,7 @@ UCB_DIAG_POP()
  * It will generate a report of all memory still allocated as leaks.
  * @note No actual cleanup is done and levels remain intact.
  */
-#define UCB_MEMTRACK_FINAL()         ucb_mem_tracking_report(true)
+#define UCB_MEMTRACK_FINAL() ucb_mem_tracking_report(true)
 #endif // NDEBUG
 
 /**

@@ -1,10 +1,10 @@
 /**
  * @file buffer_private.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Buffer type internal implementation
  */
 
@@ -39,7 +39,7 @@ static bool ucb_buffer_resize_malloc(ucb_buffer* buf, size_t new_capacity)
     if (!tmp)
         return false;
 
-    buf->data     = tmp;
+    buf->data = tmp;
     buf->alloc = new_capacity;
     return true;
 }
@@ -54,8 +54,11 @@ static void ucb_buffer_free_malloc(ucb_buffer* buf)
     }
 }
 
-static bool ucb_buffer_transfer_malloc(ucb_buffer* buf, void** out_data, size_t* out_used,
-                                       size_t* out_capacity, const ucb_error** perr)
+static bool ucb_buffer_transfer_malloc(ucb_buffer* buf,
+                                       void** out_data,
+                                       size_t* out_used,
+                                       size_t* out_capacity,
+                                       const ucb_error** perr)
 {
     UCB_UNUSED(perr);
     *out_data = buf->data;
@@ -76,10 +79,10 @@ bool ucb_buffer_init_malloc(ucb_buffer* buf, size_t initial_capacity)
     if (!buf->data)
         return false;
 
-    buf->alloc       = initial_capacity;
-    buf->size           = 0;
-    buf->_impl_resize   = ucb_buffer_resize_malloc;
-    buf->_impl_free     = ucb_buffer_free_malloc;
+    buf->alloc = initial_capacity;
+    buf->size = 0;
+    buf->_impl_resize = ucb_buffer_resize_malloc;
+    buf->_impl_free = ucb_buffer_free_malloc;
     buf->_impl_transfer = ucb_buffer_transfer_malloc;
     return true;
 }

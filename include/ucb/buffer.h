@@ -52,8 +52,11 @@ typedef void (*ucb_buffer_free_func)(ucb_buffer* buf);
  *
  * @see ucb_buffer_transfer
  */
-typedef bool (*ucb_buffer_transfer_func)(ucb_buffer* buf, void** out_data, size_t* out_used,
-                                         size_t* out_capacity, const ucb_error** error);
+typedef bool (*ucb_buffer_transfer_func)(ucb_buffer* buf,
+                                         void** out_data,
+                                         size_t* out_used,
+                                         size_t* out_capacity,
+                                         const ucb_error** error);
 
 /**
  * @brief User-defined grow function
@@ -190,8 +193,11 @@ UCB_API bool ucb_buffer_can_transfer(ucb_buffer* buf);
  * The buffer will then become invalid. Either call ucb_free_buffer or
  * reinitialize it.
  */
-UCB_API bool ucb_buffer_transfer(ucb_buffer* buf, void** out_data, size_t* out_size,
-                                 size_t* out_capacity, const ucb_error** perr);
+UCB_API bool ucb_buffer_transfer(ucb_buffer* buf,
+                                 void** out_data,
+                                 size_t* out_size,
+                                 size_t* out_capacity,
+                                 const ucb_error** perr);
 
 /**
  * @brief Check if the buffer can be resized
@@ -324,7 +330,9 @@ static inline size_t ucb_buffer_grow_double(ucb_buffer* buf, size_t size_needed)
  * The view is not thread safe.
  */
 
-ucb_ecode ucb_buffer_view_init(ucb_buffer_view* view, ucb_buffer* buf, size_t offset,
+ucb_ecode ucb_buffer_view_init(ucb_buffer_view* view,
+                               ucb_buffer* buf,
+                               size_t offset,
                                size_t element_size);
 void ucb_buffer_view_release(ucb_buffer_view* view);
 

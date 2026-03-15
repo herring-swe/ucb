@@ -3,11 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 import sys
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
-from .types import CodepointInfo, GeneralCategory, DecompositionType
 from .parser import UnicodeDataParser
-from .util import pprint, Align
+from .types import CodepointInfo, DecompositionType, GeneralCategory
+from .util import Align, pprint
 
 
 def print_stats(parser: UnicodeDataParser, fd=sys.stdout) -> None:

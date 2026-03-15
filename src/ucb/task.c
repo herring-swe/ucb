@@ -28,8 +28,8 @@ ucb_task* ucb_task_new(ucb_task_func func, void* arg)
 void ucb_task_init(ucb_task* task, ucb_task_func func, void* arg)
 {
     UCB_VERIFY_ARGS(task);
-    task->func     = func;
-    task->arg      = arg;
+    task->func = func;
+    task->arg = arg;
     task->callback = UCB_NULL;
     task->priority = UCB_TASK_PRIO_NORMAL;
 }
@@ -37,8 +37,8 @@ void ucb_task_init(ucb_task* task, ucb_task_func func, void* arg)
 void ucb_task_release(ucb_task* task)
 {
     UCB_VERIFY_ARGS(task);
-    task->func     = UCB_NULL;
-    task->arg      = UCB_NULL;
+    task->func = UCB_NULL;
+    task->arg = UCB_NULL;
     task->callback = UCB_NULL;
     task->priority = UCB_TASK_PRIO_NORMAL;
 }
@@ -63,8 +63,8 @@ bool ucb_task_validate(const ucb_task* task)
 void ucb_task_copy(ucb_task* dst, const ucb_task* src)
 {
     UCB_VERIFY_ARGS(dst && src);
-    dst->func     = src->func;
-    dst->arg      = src->arg;
+    dst->func = src->func;
+    dst->arg = src->arg;
     dst->callback = src->callback;
     dst->priority = src->priority;
 }
@@ -92,7 +92,7 @@ void ucb_task_set_func(ucb_task* task, ucb_task_func func, void* arg)
 {
     UCB_VERIFY_ARGS(task && func);
     task->func = func;
-    task->arg  = arg;
+    task->arg = arg;
 }
 
 void ucb_task_set_callback(ucb_task* task, ucb_task_callback callback)

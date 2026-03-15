@@ -20,7 +20,7 @@
 
 // TODO Check return codes from system calls
 
-#define MTX_STANDARD  false
+#define MTX_STANDARD false
 #define MTX_RECURSIVE true
 
 static void ucb_mutex_init_common(ucb_mutex* mutex, bool recursive)

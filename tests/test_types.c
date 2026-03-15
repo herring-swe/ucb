@@ -26,23 +26,23 @@ int test_types(void)
 {
     int errs = 0;
 
-    unsigned char val_uchar       = 1;
-    unsigned short val_ushort     = 2;
-    unsigned int val_uint         = 3;
-    unsigned long val_ulong       = 4;
+    unsigned char val_uchar = 1;
+    unsigned short val_ushort = 2;
+    unsigned int val_uint = 3;
+    unsigned long val_ulong = 4;
     unsigned long long val_ullong = 5;
-    char val_char                 = 6;
-    short val_short               = 7;
-    int val_int                   = 8;
-    long val_long                 = 9;
-    long long val_llong           = 10;
-    float val_float               = 11.0f;
-    double val_double             = 12.0;
-    long double val_ldouble       = 13.0L;
+    char val_char = 6;
+    short val_short = 7;
+    int val_int = 8;
+    long val_long = 9;
+    long long val_llong = 10;
+    float val_float = 11.0f;
+    double val_double = 12.0;
+    long double val_ldouble = 13.0L;
 
-    char* val_pchar       = "14";
+    char* val_pchar = "14";
     wchar_t* val_pwchar_t = L"15";
-    void* val_pvoid       = NULL;
+    void* val_pvoid = NULL;
 
     char buf[BUFSIZE];
 
@@ -86,15 +86,15 @@ int test_types(void)
     ucb_cstr_sprintf(buf, BUFSIZE, "Test double = %s\n", UCB_FMT(val_double));
     printf(buf, val_double);
 
-    size_t val_size_t   = 1;
+    size_t val_size_t = 1;
     uint8_t val_uint8_t = 2;
     // uint16_t val_uint16_t   = 3;
     uint32_t val_uint32_t = 4;
     uint64_t val_uint64_t = 5;
-    int8_t val_int8_t     = 6;
+    int8_t val_int8_t = 6;
     // int16_t val_int16_t     = 7;
-    int32_t val_int32_t   = 8;
-    int64_t val_int64_t   = 9;
+    int32_t val_int32_t = 8;
+    int64_t val_int64_t = 9;
     intptr_t val_intptr_t = 10;
     // uintptr_t val_uintptr_t = 11;
 

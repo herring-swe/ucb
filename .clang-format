@@ -1,44 +1,37 @@
-BasedOnStyle: Microsoft
+---
+BasedOnStyle: Chromium
 IndentWidth: 4
-TabWidth: 4
-LineEnding: LF
+UseTab: Never
+ColumnLimit: 100
 
 AccessModifierOffset: -4
-UseTab: Never
-AllowShortFunctionsOnASingleLine: Empty
-ColumnLimit: 100
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+IndentCaseLabels: false
+SpacesBeforeTrailingComments: 1
+
 IncludeBlocks: Preserve
 SortIncludes:
-    IgnoreCase: true
-PointerAlignment: Left
-#IndentPPDirectives: BeforeHash
+  IgnoreCase: true
 
-CompactNamespaces: true
-FixNamespaceComments: true
-
-# Align enums
-AlignConsecutiveDeclarations: false
-AlignConsecutiveAssignments: true
-AlignConsecutiveMacros: true
-AlignEscapedNewlines: Left
-
-BreakTemplateDeclarations: true
+# Allman with few exceptions (namespace, extern block)
 BreakBeforeBraces: Custom
 BraceWrapping:
-    AfterClass:      true
-    AfterControlStatement: true
-    AfterEnum:       true
-    AfterFunction:   true
-    AfterNamespace:  false
+    AfterCaseLabel: true
+    AfterClass: true
+    AfterControlStatement: Always
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: false
     AfterObjCDeclaration: true
-    AfterStruct:     true
-    AfterUnion:      true
+    AfterStruct: true
+    AfterUnion: true
     AfterExternBlock: false
-    BeforeCatch:     true
-    BeforeElse:      true
-    IndentBraces:    false
-    SplitEmptyFunction: false
-    SplitEmptyRecord: false
-    SplitEmptyNamespace: false
-
-Standard: c++17
+    BeforeCatch: true
+    BeforeElse: true
+    BeforeLambdaBody: false
+    BeforeWhile: false
+    IndentBraces: false
+    SplitEmptyFunction: true
+    SplitEmptyRecord: true
+    SplitEmptyNamespace: true

@@ -41,8 +41,8 @@
     static inline void ucb_swap_##TNAME(TYPE* a, TYPE* b)                                        \
     {                                                                                            \
         TYPE tmp = *a;                                                                           \
-        *a       = *b;                                                                           \
-        *b       = tmp;                                                                          \
+        *a = *b;                                                                                 \
+        *b = tmp;                                                                                \
     }
 
 #define UCB_MATH_FUNCS_SIGNED_IMPL(TNAME, TYPE)        \
@@ -124,7 +124,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Get smallest value
- * 
+ *
  * Works for all primitives
  * @return min of a and b
  */
@@ -132,7 +132,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Get largest value
- * 
+ *
  * Works for all primitives
  * @return max of a and b
  */
@@ -140,7 +140,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Clamp val between min and max
- * 
+ *
  * Works for all primitives
  * @return val if val is between min and max, otherwise min or max
  */
@@ -148,7 +148,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Check if val is between min and max
- * 
+ *
  * Works for all primitives
  * @return bool true if val is between min and max
  */
@@ -156,7 +156,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Swap value of two variables
- * 
+ *
  * Works for all primitives
  * @param a address of first value
  * @param b address of second value
@@ -165,7 +165,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Return sign of val
- * 
+ *
  * Works for signed primitives
  * @return int -1, 0 or 1
  */
@@ -173,7 +173,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Get absolute value
- * 
+ *
  * Works for signed primitives
  * @return val or -val if val < 0
  */
@@ -181,7 +181,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Check if two values are equal within epsilon
- * 
+ *
  * Works for floating point primitives
  * @return bool true if a and b are equal within epsilon
  */
@@ -189,7 +189,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Check if two values are equal within the smallest epsilon for that type
- * 
+ *
  * Works for floating point primitives
  * @return bool true if a and b are equal within epsilon
  */
@@ -197,7 +197,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Compare two values within epsilon
- * 
+ *
  * Works for floating point primitives
  * @return int 0 if equal, -1 if a < b, 1 if a > b
  */
@@ -205,7 +205,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Compare two values within the smallest epsilon for that type
- * 
+ *
  * Works for floating point primitives
  * @return int 0 if equal, -1 if a < b, 1 if a > b
  */
@@ -213,7 +213,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Approximate equality for floating point values
- * 
+ *
  * Approximate equality is defined as a and b being within epsilon * max(|a|, |b|)
  * Works for floating point primitives
  * @return bool true if a and b are approximately equal
@@ -222,7 +222,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Approximate equality for floating point values using the smallest epsilon for that type
- * 
+ *
  * Works for floating point primitives
  * @return bool true if a and b are approximately equal
  * @see ucb_approx_equal_eps
@@ -231,7 +231,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Approximate comparison for floating point values
- * 
+ *
  * Works for floating point primitives
  * @return int 0 if a and b are approximately equal, -1 if a < b, 1 if a > b
  * @see ucb_approx_equal_eps
@@ -240,7 +240,7 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
 
 /**
  * @brief Approximate comparison for floating point values using the smallest epsilon for that type
- * 
+ *
  * Works for floating point primitives
  * @return int 0 if a and b are approximately equal, -1 if a < b, 1 if a > b
  * @see ucb_approx_equal_eps
@@ -258,8 +258,8 @@ UCB_MATH_FUNCS_FLOAT_IMPL(d, DBL, double)
     do                    \
     {                     \
         T _tmp = (a);     \
-        (a)    = (b);     \
-        (b)    = _tmp;    \
+        (a) = (b);        \
+        (b) = _tmp;       \
     } while (0)
 
 #else // __cplusplus
@@ -310,8 +310,8 @@ template <typename T>
 constexpr void ucb_swap(T& a, T& b) noexcept
 {
     T tmp = a;
-    a     = b;
-    b     = tmp;
+    a = b;
+    b = tmp;
 }
 
 template <typename T>
@@ -341,7 +341,7 @@ constexpr bool ucb_equal_eps(T a, U b, std::common_type_t<T, U> epsilon) noexcep
 template <typename T, typename U>
 constexpr bool ucb_equal(T a, U b) noexcept
 {
-    using common_t         = std::common_type_t<T, U>;
+    using common_t = std::common_type_t<T, U>;
     const common_t epsilon = std::is_same<common_t, float>::value
                                  ? UCB_EPSILON_F
                                  : UCB_EPSILON_D; // Default to double epsilon
@@ -371,7 +371,7 @@ constexpr bool ucb_approx_equal_eps(T a, U b, std::common_type_t<T, U> epsilon) 
 template <typename T, typename U>
 constexpr bool ucb_approx_equal(T a, U b) noexcept
 {
-    using common_t         = std::common_type_t<T, U>;
+    using common_t = std::common_type_t<T, U>;
     const common_t epsilon = std::is_same<common_t, float>::value
                                  ? UCB_EPSILON_F
                                  : UCB_EPSILON_D; // Default to double epsilon

@@ -3,12 +3,13 @@
 # SPDX-FileCopyrightText: 2025 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
-from reuse.project import Project
+import re
+import subprocess
+import sys
 from pathlib import Path
 from typing import Iterable, List, Set
-import re
-import sys
-import subprocess
+
+from reuse.project import Project
 
 # Define your default license and copyright
 DEFAULT_LICENSE = "MIT"

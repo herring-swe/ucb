@@ -37,7 +37,7 @@
 #define FOR_EACH_CODEPOINT(cp, str, len)                              \
     const unsigned char* _iter = (const unsigned char*)(str);         \
     const unsigned char* _last = (const unsigned char*)_iter + (len); \
-    (cp)                       = ucb_uc_next_valid(&_iter);           \
+    (cp) = ucb_uc_next_valid(&_iter);                                 \
     for (; _iter <= _last; (cp) = ucb_uc_next_valid(&_iter))
 
 #define FOR_EACH_CODEPOINT_CHECK_RET() \
@@ -45,7 +45,7 @@
 
 #define CODEPOINT_BYTE_POS(str) (size_t)(_iter - (const unsigned char*)(str))
 
-#define UCB_MAX(a, b)  ((a) > (b) ? (a) : (b))
+#define UCB_MAX(a, b) ((a) > (b) ? (a) : (b))
 #define UCB_COMP(a, b) (((a) > (b)) ? 1 : ((a) < (b)) ? -1 : 0)
 
 /* -------------------------------------------------------------------------- */
@@ -56,7 +56,7 @@ static const ucb_uc_prop* ucb_uc_get_prop(ucb_cp cp)
 {
     assert(cp <= 0x110000);
     unsigned int offset = s_ucb_uc_stage1_table[cp / UCB_UC_BLOCK_SIZE] * UCB_UC_BLOCK_SIZE;
-    unsigned int index  = s_ucb_uc_stage2_table[offset + cp % UCB_UC_BLOCK_SIZE];
+    unsigned int index = s_ucb_uc_stage2_table[offset + cp % UCB_UC_BLOCK_SIZE];
     assert(index < UCB_UC_NUM_PROPERTIES);
     return s_ucb_uc_prop_table + index;
 }
@@ -132,22 +132,22 @@ static ucb_cp ucb_uc_next_valid(const unsigned char** iter)
     ucb_cp cp;
     if (bytes[0] < 0x80u)
     {
-        cp    = bytes[0];
+        cp = bytes[0];
         *iter = bytes + 1;
     }
     else if ((bytes[0] & 0xE0) == 0xC0u)
     {
-        cp    = ucb_uc_fetch2(bytes);
+        cp = ucb_uc_fetch2(bytes);
         *iter = bytes + 2;
     }
     else if ((bytes[0] & 0xF0) == 0xE0u)
     {
-        cp    = ucb_uc_fetch3(bytes);
+        cp = ucb_uc_fetch3(bytes);
         *iter = bytes + 3;
     }
     else // 4-byte sequence
     {
-        cp    = ucb_uc_fetch4(bytes);
+        cp = ucb_uc_fetch4(bytes);
         *iter = bytes + 4;
     }
     return cp;
@@ -175,7 +175,7 @@ bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr)
 
     const unsigned char* bytes = (const unsigned char*)str;
 
-    bool success  = false;
+    bool success = false;
     size_t errpos = SIZE_MAX;
 
     ucb_cp cp;
@@ -279,7 +279,9 @@ bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr)
  * to the buffer.
  * Assumes that the buffer codepoints and len are valid.
  */
-bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t len,
+bool ucb_uc_encode_codepoints(ucb_buffer* buf,
+                              const ucb_cp* codepoints,
+                              size_t len,
                               const ucb_error** perr)
 {
     // Minimum chunks to work with
@@ -392,7 +394,7 @@ size_t ucb_uc_next_char(const char* str, size_t len, size_t from_byte)
     // Skip to the next base character (or end of string)
     while (iter < last)
     {
-        uint32_t cp             = ucb_uc_next_valid(&iter);
+        uint32_t cp = ucb_uc_next_valid(&iter);
         const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
         UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
 
@@ -496,7 +498,7 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
     const ucb_uc_mapping* mapping = ucb_uc_get_mapping(prop);
     if (!mapping)
     {
-        ctx->last_cp   = ctx->buf[0];
+        ctx->last_cp = ctx->buf[0];
         ctx->last_prop = prop;
         return true;
     }
@@ -510,7 +512,8 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
     case UCB_UC_CASE_LOWER:
         ref = mapping->to_lower;
         break;
-    case UCB_UC_CASE_TITLE: {
+    case UCB_UC_CASE_TITLE:
+    {
         if (!ctx->last_prop || ucb_uc_is_word_separator(ctx->last_cp, ctx->last_prop))
             ref = mapping->to_title;
         else
@@ -527,14 +530,14 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
 
     // No more use for last prop
     ctx->last_prop = prop;
-    ctx->last_cp   = ctx->buf[0];
+    ctx->last_cp = ctx->buf[0];
 
     if (!ref)
         return true;
 
     if (ref <= UCB_UC_NUM_SIMPLE_MAP)
     {
-        int idx     = ref - 1;
+        int idx = ref - 1;
         ctx->buf[0] = s_ucb_uc_smap_table[idx].value;
     }
     else
@@ -558,8 +561,11 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, const ucb_error** perr)
  * Setting codepoint of different sizes + UTF-8 encoding may result in different string
  * lengths.
  */
-static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_op_t op,
-                                     ucb_buffer* dstbuf, const ucb_error** perr)
+static ucb_uc_result ucb_uc_case_map(const char* str,
+                                     size_t size,
+                                     ucb_uc_case_op_t op,
+                                     ucb_buffer* dstbuf,
+                                     const ucb_error** perr)
 {
     ucb_uc_result ret = {0};
     UCB_VERIFY_ARGS(str);
@@ -567,9 +573,9 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
     ucb_cp cp;
     bool own_buffer = false;
     casemap_ctx_t ctx;
-    ctx.last_cp   = UCB_UC_NO_VALUE;
+    ctx.last_cp = UCB_UC_NO_VALUE;
     ctx.last_prop = UCB_NULL;
-    ctx.op        = op;
+    ctx.op = op;
 
     if (!dstbuf)
     {
@@ -577,7 +583,7 @@ static ucb_uc_result ucb_uc_case_map(const char* str, size_t size, ucb_uc_case_o
         if (!dstbuf)
             return ret;
         dstbuf->grow_func = ucb_buffer_grow_double;
-        own_buffer        = true;
+        own_buffer = true;
     }
 
     if (!ucb_buffer_ensure(dstbuf, size + 1))
@@ -646,7 +652,7 @@ ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const ucb_error** pe
 
 #define NORM_CTX_BUFSIZE 18
 #define UC_FLAGS_COMPOSE 0x01
-#define UC_FLAGS_COMPAT  0x02
+#define UC_FLAGS_COMPAT 0x02
 
 typedef struct
 {
@@ -662,7 +668,7 @@ static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
 {
     UCB_ASSERT_INTERNAL(ctx->len < NORM_CTX_BUFSIZE, "Buffer overflow");
 
-    ctx->cp_buf[ctx->len]  = cp;
+    ctx->cp_buf[ctx->len] = cp;
     ctx->ccc_buf[ctx->len] = ccc;
     ctx->len++;
 
@@ -674,9 +680,9 @@ static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
         while (i > 0 && ctx->ccc_buf[i - 1] > ccc)
         {
             // Swap with the previous mark
-            ctx->cp_buf[i]      = ctx->cp_buf[i - 1];
-            ctx->ccc_buf[i]     = ctx->ccc_buf[i - 1];
-            ctx->cp_buf[i - 1]  = cp;
+            ctx->cp_buf[i] = ctx->cp_buf[i - 1];
+            ctx->ccc_buf[i] = ctx->ccc_buf[i - 1];
+            ctx->cp_buf[i - 1] = cp;
             ctx->ccc_buf[i - 1] = ccc;
             i--;
         }
@@ -728,7 +734,7 @@ static void norm_decompose_hangul(norm_ctx_t* ctx, ucb_cp syllable)
 {
     assert(is_hangul_syllable(syllable));
 
-    const ucb_cp S      = syllable - 0xAC00;
+    const ucb_cp S = syllable - 0xAC00;
     const ucb_cp T_idx1 = S % 28;
     const ucb_cp V_idx0 = ((S - T_idx1) % 588) / 28; // was = (S / 28) % 21;
     const ucb_cp L_idx0 = S / 588;                   // was = S / (28 * 21);
@@ -750,8 +756,8 @@ static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
 
 static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, const ucb_error** perr)
 {
-    uint8_t ccc                 = 0;
-    const ucb_uc_prop* prop     = ucb_uc_get_prop(cp);
+    uint8_t ccc = 0;
+    const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
     const ucb_uc_decomp* decomp = UCB_NULL;
     if (prop)
     {
@@ -776,7 +782,7 @@ static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, cons
     for (size_t i = 0; i < decomp->len && ret; i++)
     {
         ucb_cp next_cp = (decomp->len <= 2) ? decomp->vals[i] : decomp->ptr[i];
-        ret            = norm_decompose_cp(ctx, next_cp, must_decomp, perr);
+        ret = norm_decompose_cp(ctx, next_cp, must_decomp, perr);
     }
     return ret;
 }
@@ -792,7 +798,7 @@ static ucb_cp norm_compose_cp(ucb_cp starter, ucb_cp combiner, const ucb_uc_comb
     const ucb_uc_combiner_entry* entries = combiners->entries;
 
     // Binary search for the combiner
-    size_t left  = 0;
+    size_t left = 0;
     size_t right = combiners->len;
     while (left < right)
     {
@@ -841,8 +847,8 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
         prop = ucb_uc_get_prop(cps[i]);
         for (int j = (int)i - 1; j >= 0; j--)
         {
-            prev_prop       = ucb_uc_get_prop(cps[j]);
-            combiners       = prev_prop ? ucb_uc_get_combiners(prev_prop) : UCB_NULL;
+            prev_prop = ucb_uc_get_prop(cps[j]);
+            combiners = prev_prop ? ucb_uc_get_combiners(prev_prop) : UCB_NULL;
             ucb_cp composed = 0;
             if (combiners)
                 composed = norm_compose_cp(cps[j], cps[i], combiners);
@@ -869,7 +875,10 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
     return count;
 }
 
-static bool normalize(norm_ctx_t* ctx, const char* str, size_t size, bool must_decomp,
+static bool normalize(norm_ctx_t* ctx,
+                      const char* str,
+                      size_t size,
+                      bool must_decomp,
                       const ucb_error** perr)
 {
     ucb_cp cp;
@@ -900,7 +909,7 @@ static bool normalize(norm_ctx_t* ctx, const char* str, size_t size, bool must_d
 
     if (ctx->flags & UC_FLAGS_COMPOSE)
     {
-        ucb_cp* cps  = (ucb_cp*)ctx->cp.data;
+        ucb_cp* cps = (ucb_cp*)ctx->cp.data;
         size_t count = ctx->cp.size / sizeof(ucb_cp);
 
         count = norm_compose(cps, count);
@@ -947,11 +956,13 @@ static size_t ucb_uc_check_norm(const char* str, size_t size, bool* is_latin1, b
     return num;
 }
 
-ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
+ucb_uc_result ucb_uc_normalize(const char* str,
+                               size_t size,
+                               ucb_norm_form form,
                                const ucb_error** perr)
 {
     UCB_UNUSED(size);
-    norm_ctx_t ctx    = {0};
+    norm_ctx_t ctx = {0};
     ucb_uc_result ret = {0};
 
     bool must_decomp = true;
@@ -978,7 +989,7 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
 
     // Find out how many codepoints we deal with and do fast checks
     bool is_latin1 = false;
-    size_t numcp   = ucb_uc_check_norm(str, size, &is_latin1, must_decomp ? NULL : &must_decomp);
+    size_t numcp = ucb_uc_check_norm(str, size, &is_latin1, must_decomp ? NULL : &must_decomp);
 
     // FIXME: Implement quick check according to:
     // https://unicode.org/reports/tr15/#Detecting_Normalization_Forms
@@ -1026,20 +1037,20 @@ int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2)
         return UCB_COMP(len1, len2);
     }
 
-    const unsigned char* p1   = (const unsigned char*)str1;
-    const unsigned char* p2   = (const unsigned char*)str2;
+    const unsigned char* p1 = (const unsigned char*)str1;
+    const unsigned char* p2 = (const unsigned char*)str2;
     const unsigned char* end1 = p1 + len1;
     const unsigned char* end2 = p2 + len2;
 
     casemap_ctx_t ctx1;
-    ctx1.last_cp   = UCB_UC_NO_VALUE;
+    ctx1.last_cp = UCB_UC_NO_VALUE;
     ctx1.last_prop = UCB_NULL;
-    ctx1.op        = UCB_UC_CASE_FOLD;
+    ctx1.op = UCB_UC_CASE_FOLD;
 
     casemap_ctx_t ctx2;
-    ctx2.last_cp   = UCB_UC_NO_VALUE;
+    ctx2.last_cp = UCB_UC_NO_VALUE;
     ctx2.last_prop = UCB_NULL;
-    ctx2.op        = UCB_UC_CASE_FOLD;
+    ctx2.op = UCB_UC_CASE_FOLD;
 
     ucb_error* err = UCB_NULL;
 

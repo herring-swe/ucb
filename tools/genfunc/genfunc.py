@@ -3,8 +3,6 @@
 # SPDX-FileCopyrightText: 2026 Åke Svedin <ake@svedin.org>
 # SPDX-License-Identifier: MIT
 
-import os
-import sys
 from pathlib import Path
 from typing import IO, Any
 

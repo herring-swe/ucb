@@ -47,8 +47,8 @@ static int format_line(ucb_buffer* buf, void* address, HANDLE process, PSYMBOL_I
     if (SymFromAddr(process, (DWORD64)address, 0, symbol))
     {
         DWORD displacement_line = 0;
-        IMAGEHLP_LINE64 line    = {0};
-        line.SizeOfStruct       = sizeof(line);
+        IMAGEHLP_LINE64 line = {0};
+        line.SizeOfStruct = sizeof(line);
 
         // Resolve source file/line
         if (SymGetLineFromAddr64(process, (DWORD64)address, &displacement_line, &line))
@@ -96,7 +96,7 @@ void ucb_btrace_init(ucb_btrace* bt)
     UCB_VERIFY_ARGS(bt);
 
     bt->count = 0;
-    bt->strs  = NULL;
+    bt->strs = NULL;
 }
 
 void ucb_btrace_release(ucb_btrace* bt)
@@ -106,7 +106,7 @@ void ucb_btrace_release(ucb_btrace* bt)
         if (bt->strs)
             free(bt->strs);
         bt->count = 0;
-        bt->strs  = UCB_NULL;
+        bt->strs = UCB_NULL;
     }
 }
 
@@ -148,7 +148,7 @@ void ucb_btrace_copy(ucb_btrace* dst, const ucb_btrace* src)
     ucb_memcpy_s(dst->strs, total_size, src->strs, total_size);
 
     // Update dst->strs to point to its own memory
-    char* str     = (char*)dst->strs + array_size;
+    char* str = (char*)dst->strs + array_size;
     size_t remain = total_size - array_size;
     for (size_t i = 0; i < dst->count; ++i)
     {
@@ -166,14 +166,14 @@ void ucb_btrace_capture(ucb_btrace* bt)
     if (bt->strs && bt->count)
         ucb_btrace_release(bt);
 
-    int frames  = 0;
+    int frames = 0;
     char** strs = UCB_NULL;
 
 #ifdef _WIN32
     void* callstack[UCB_BTRACE_MAX_FRAMES];
-    frames               = RtlCaptureStackBackTrace(1, UCB_BTRACE_MAX_FRAMES, callstack, NULL);
-    SYMBOL_INFO* symbol  = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
-    symbol->MaxNameLen   = 255;
+    frames = RtlCaptureStackBackTrace(1, UCB_BTRACE_MAX_FRAMES, callstack, NULL);
+    SYMBOL_INFO* symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+    symbol->MaxNameLen = 255;
     symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 
     HANDLE process = GetCurrentProcess();
@@ -193,7 +193,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
             goto cleanup;
         }
         buf.grow_func = grow_25;
-        buf.size      = array_size;
+        buf.size = array_size;
 
         for (int i = 0; i < frames; ++i)
         {
@@ -225,7 +225,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
         }
         else
         {
-            strs   = UCB_NULL;
+            strs = UCB_NULL;
             frames = 0;
         }
     }
@@ -257,7 +257,7 @@ cleanup:
     }
 
     bt->count = frames;
-    bt->strs  = strs;
+    bt->strs = strs;
 }
 
 void ucb_btrace_print(const ucb_btrace* bt, FILE* stream, int indent)

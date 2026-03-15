@@ -3,7 +3,7 @@
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Debug helper macros
  */
 
@@ -30,7 +30,7 @@
 
 #define UCB_ASSERT_INTERNAL(expr, msg) UCB_ASSERT(expr, UCB_ERROR_INTERNAL, msg)
 #define UCB_ASSERT_STATUS(status, msg) UCB_ASSERT(status == 0, ucb_err_wrap_errno(status), msg)
-#define UCB_ASSERT_ERRNO(status, msg)  UCB_ASSERT(status == 0, ucb_err_wrap_errno(errno), msg)
+#define UCB_ASSERT_ERRNO(status, msg) UCB_ASSERT(status == 0, ucb_err_wrap_errno(errno), msg)
 #ifdef _WIN32
 #define UCB_ASSERT_WIN32(status, msg) UCB_ASSERT(status == 0, ucb_err_wrap_win32(status), msg)
 #endif
@@ -44,10 +44,10 @@
 
 #else // Release mode
 
-#define UCB_ASSERT(expr, code, msg)    ((void)0)
+#define UCB_ASSERT(expr, code, msg) ((void)0)
 #define UCB_ASSERT_INTERNAL(expr, msg) ((void)0)
 #define UCB_ASSERT_STATUS(status, msg) ((void)0)
-#define UCB_ASSERT_ERRNO(status, msg)  ((void)0)
+#define UCB_ASSERT_ERRNO(status, msg) ((void)0)
 #ifdef _WIN32
 #define UCB_ASSERT_WIN32(status, msg) ((void)0)
 #endif

@@ -32,7 +32,7 @@ struct ThreadPoolFixture
     ThreadPoolFixture(size_t num_threads = 4)
     {
         mutex = ucb_mutex_new();
-        pool  = ucb_threadpool_new(num_threads);
+        pool = ucb_threadpool_new(num_threads);
         REQUIRE(pool != nullptr);
     }
 
@@ -51,7 +51,7 @@ struct func_arg
 
 static int worker_func(void* arg)
 {
-    func_arg* fa          = reinterpret_cast<func_arg*>(arg);
+    func_arg* fa = reinterpret_cast<func_arg*>(arg);
     ThreadPoolFixture* ft = fa->fixture;
 
     ft->counter.fetch_add(1);
@@ -65,7 +65,7 @@ static int worker_func(void* arg)
 static void callback_func(void* arg, int status)
 {
     UCB_UNUSED(status);
-    func_arg* fa          = reinterpret_cast<func_arg*>(arg);
+    func_arg* fa = reinterpret_cast<func_arg*>(arg);
     ThreadPoolFixture* ft = fa->fixture;
 
     ucb_mutex_lock(ft->mutex);
@@ -87,7 +87,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
         func_arg farg = {this, 42};
 
         ucb_task task = ucb_task_make(worker_func);
-        task.arg      = &farg;
+        task.arg = &farg;
         task.callback = callback_func;
 
         REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
@@ -114,8 +114,8 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
             fargs.push_back({this, i});
 
             ucb_task task = {0};
-            task.func     = worker_func;
-            task.arg      = &fargs[i];
+            task.func = worker_func;
+            task.arg = &fargs[i];
             task.callback = callback_func;
 
             REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
@@ -130,8 +130,8 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
         func_arg farg = {this, 42};
 
         ucb_task task = {0};
-        task.func     = worker_func;
-        task.arg      = &farg;
+        task.func = worker_func;
+        task.arg = &farg;
         task.priority = UCB_TASK_PRIO_NORMAL;
 
         REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
@@ -142,8 +142,8 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
 
     SUBCASE("High Priority")
     {
-        constexpr int low   = UCB_THREAD_PRIO_MIN;
-        constexpr int high  = UCB_THREAD_PRIO_MAX;
+        constexpr int low = UCB_THREAD_PRIO_MIN;
+        constexpr int high = UCB_THREAD_PRIO_MAX;
         constexpr int range = high - low + 1;
 
         std::vector<func_arg> fargs;
@@ -158,8 +158,8 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
             fargs.push_back({this, prio});
 
             ucb_task task = {0};
-            task.func     = worker_func;
-            task.arg      = &fargs[i];
+            task.func = worker_func;
+            task.arg = &fargs[i];
             task.priority = prio;
 
             REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
@@ -191,7 +191,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
         farg arg = {cond, mtx};
 
         ucb_task task = {0};
-        task.func     = [](void* arg) -> int {
+        task.func = [](void* arg) -> int {
             farg* f = reinterpret_cast<farg*>(arg);
             // Wait for the main thread to signal us to continue
             ucb_mutex_lock(f->mtx);
@@ -275,7 +275,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "threadpool error handling")
     SUBCASE("Invalid Task")
     {
         ucb_task invalid_task = {0};
-        ucb_threadpool* pool  = ucb_threadpool_new(1);
+        ucb_threadpool* pool = ucb_threadpool_new(1);
         CHECK_ABORTS(ucb_threadpool_add_task(pool, &invalid_task));
         ucb_threadpool_free(pool);
 

@@ -37,7 +37,7 @@ ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, const ucb_error** 
         if (wstr[0] == L'\0')
             return ucb_str_new_empty();
 
-        wlen       = wcslen(wstr);
+        wlen = wcslen(wstr);
         query_wlen = (int)wlen + 1;
     }
     else if (wstr[wlen] != L'\0')
@@ -95,7 +95,7 @@ wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, const ucb_error*
         return UCB_NULL;
     }
     size_t wstr_size = (size_t)ret;
-    wchar_t* wstr    = ucb_malloc_type(wstr_size, wchar_t);
+    wchar_t* wstr = ucb_malloc_type(wstr_size, wchar_t);
     if (!wstr)
         return UCB_NULL;
 

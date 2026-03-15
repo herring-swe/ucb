@@ -1,10 +1,10 @@
 /**
  * @file time.c
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Time handling utilities implementation
  */
 
@@ -31,7 +31,7 @@ void ucb_sleep(ucb_stime dur)
     Sleep(dur * 1000);
 #else
     struct timespec ts;
-    ts.tv_sec  = dur;
+    ts.tv_sec = dur;
     ts.tv_nsec = 0;
     while (nanosleep(&ts, &ts) == -1 && errno == EINTR)
     {
@@ -49,7 +49,7 @@ void ucb_sleep_ms(ucb_stime_ms dur)
     Sleep((DWORD)dur);
 #else
     struct timespec ts;
-    ts.tv_sec  = dur / 1000;
+    ts.tv_sec = dur / 1000;
     ts.tv_nsec = (dur % 1000) * 1000000;
     while (nanosleep(&ts, &ts) == -1 && errno == EINTR)
     {

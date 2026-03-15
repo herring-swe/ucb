@@ -47,7 +47,9 @@ UCB_DIAG_POP()
 
 UCB_API ucb_cp ucb_uc_iter_utf8(const unsigned char** iter);
 
-UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf, const ucb_cp* codepoints, size_t len,
+UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf,
+                                      const ucb_cp* codepoints,
+                                      size_t len,
                                       const struct ucb_error** perr);
 
 /**
@@ -129,7 +131,9 @@ UCB_API ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const struct
  * @param perr optional pointer that will be set on normalization error
  * @returns result, with the normalized string on success
  */
-UCB_API ucb_uc_result ucb_uc_normalize(const char* str, size_t len, ucb_norm_form form,
+UCB_API ucb_uc_result ucb_uc_normalize(const char* str,
+                                       size_t len,
+                                       ucb_norm_form form,
                                        const struct ucb_error** perr);
 
 UCB_API int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2);

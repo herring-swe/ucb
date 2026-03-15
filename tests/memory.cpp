@@ -1,10 +1,10 @@
 /**
  * @file memory.cpp
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief memory tests
  */
 
@@ -15,8 +15,8 @@
 #include <ucb/memory.h>
 
 #include <climits>
-#include <vector>
 #include <mutex>
+#include <vector>
 
 UCB_DIAG_PUSH()
 UCB_DIAG_IGN_PADDED()
@@ -44,6 +44,7 @@ static void memtrack_func(const ucb_mem_report* const report)
     if (!report)
         return;
 
+    // clang-format off
     s_state.reported         = true;
     s_state.alloc            = report->current_alloc;
     s_state.size             = report->current_size;
@@ -53,11 +54,12 @@ static void memtrack_func(const ucb_mem_report* const report)
     s_state.peak_alloc_block = report->peak_alloc_block;
     s_state.total_alloc      = report->total_alloc;
     s_state.total_size       = report->total_size;
+    // clang-format on
 
     // Verify report
     ucb_mem_alloc* cur = report->allocs;
-    size_t cur_alloc     = 0;
-    size_t cur_size      = 0;
+    size_t cur_alloc = 0;
+    size_t cur_size = 0;
     while (cur)
     {
         cur_alloc++;
@@ -79,7 +81,7 @@ TEST_CASE("basic memory")
 {
     s_mutex.lock();
 
-    void* mem  = nullptr;
+    void* mem = nullptr;
     void* mem2 = nullptr;
 
     SUBCASE("ucb_malloc")
@@ -155,7 +157,9 @@ TEST_CASE("basic memory")
 struct MemTrackFixture
 {
     ucb_mem_report_func prev_func;
-    MemTrackFixture() : prev_func(UCB_MEMTRACK_SET_FUNC(memtrack_func)) {}
+    MemTrackFixture() : prev_func(UCB_MEMTRACK_SET_FUNC(memtrack_func))
+    {
+    }
     ~MemTrackFixture()
     {
         UCB_MEMTRACK_SET_FUNC(prev_func);

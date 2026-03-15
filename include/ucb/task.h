@@ -26,10 +26,10 @@ typedef int (*ucb_task_func)(void* arg);
  */
 typedef void (*ucb_task_callback)(void* arg, int status);
 
-#define UCB_TASK_PRIO_LOWEST  -10
-#define UCB_TASK_PRIO_LOW     -5
-#define UCB_TASK_PRIO_NORMAL  0
-#define UCB_TASK_PRIO_HIGH    5
+#define UCB_TASK_PRIO_LOWEST -10
+#define UCB_TASK_PRIO_LOW -5
+#define UCB_TASK_PRIO_NORMAL 0
+#define UCB_TASK_PRIO_HIGH 5
 #define UCB_TASK_PRIO_HIGHEST 10
 
 /**
@@ -57,7 +57,7 @@ typedef struct ucb_task
 static inline ucb_task ucb_task_make(ucb_task_func func)
 {
     ucb_task task = {0};
-    task.func     = func;
+    task.func = func;
     return task;
 }
 

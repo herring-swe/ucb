@@ -37,8 +37,8 @@
 
 // Use only for threads with priority
 #define PTHREAD_SCHED SCHED_OTHER
-#define NICE_LOWEST   19
-#define NICE_HIGHEST  -20
+#define NICE_LOWEST 19
+#define NICE_HIGHEST -20
 
 #endif
 
@@ -129,7 +129,7 @@ static void set_thread_prio_posix(ucb_thread* th, pthread_attr_t* attr)
         max_prio = 0;
     }
 
-    int prio                 = map_prio(th->priority, min_prio, max_prio);
+    int prio = map_prio(th->priority, min_prio, max_prio);
     struct sched_param param = {.sched_priority = prio};
     pthread_attr_setschedpolicy(attr, SCHED_OTHER);
     bool success = pthread_attr_setschedparam(attr, &param) == 0;
@@ -171,7 +171,7 @@ static void ucb_thread_free_impl(ucb_thread* th)
 static unsigned __stdcall win_thread_wrapper(void* arg)
 {
     ucb_thread* th = (ucb_thread*)arg;
-    th->id         = ucb_thread_id();
+    th->id = ucb_thread_id();
     if (th->name)
         set_thread_name(th);
     if (th->priority != UCB_THREAD_PRIO_DEFAULT)
@@ -179,7 +179,7 @@ static unsigned __stdcall win_thread_wrapper(void* arg)
 
     th->status[1] = ucb_task_run(&th->task);
     th->status[0] = 1;
-    th->running   = false;
+    th->running = false;
 
     if (th->flags & UCB_THREAD_FLAG_DETACHED)
         ucb_thread_free_impl(th);
@@ -189,13 +189,13 @@ static unsigned __stdcall win_thread_wrapper(void* arg)
 static void* posix_thread_wrapper(void* arg)
 {
     ucb_thread* th = (ucb_thread*)arg;
-    th->id         = ucb_thread_id();
+    th->id = ucb_thread_id();
     if (th->name)
         set_thread_name(th);
 
     th->status[1] = ucb_task_run(&th->task);
     th->status[0] = 1;
-    th->running   = false;
+    th->running = false;
 
     if (th->flags & UCB_THREAD_FLAG_DETACHED)
         ucb_thread_free_impl(th);
@@ -208,10 +208,10 @@ static inline ucb_thread* ucb_thread_new_flags(int flags)
     ucb_thread* th = ucb_calloc_type(1, ucb_thread);
     if (th)
     {
-        th->flags     = flags;
-        th->running   = false;
+        th->flags = flags;
+        th->running = false;
         th->status[0] = 0;
-        th->id        = UCB_PID_INVALID;
+        th->id = UCB_PID_INVALID;
 #ifdef _WIN32
         th->handle = INVALID_HANDLE_VALUE;
 #else
@@ -291,7 +291,7 @@ void ucb_thread_set_stack_size(ucb_thread* thread, size_t stack_size)
     if (stack_size > 0)
     {
         size_t align = ucb_sys_get_thread_alignment();
-        stack_size   = (stack_size + align - 1) & ~(align - 1);
+        stack_size = (stack_size + align - 1) & ~(align - 1);
     }
     thread->stack_size = stack_size;
 }
@@ -338,10 +338,10 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
     }
     // UCB_DPRINT_INT("ucb_thread_start: stack_size = %zu\n", th->stack_size, "thread size");
 
-    th->task      = task;
-    th->running   = true;
+    th->task = task;
+    th->running = true;
     th->status[0] = 0;
-    th->id        = UCB_PID_INVALID;
+    th->id = UCB_PID_INVALID;
 #if defined(_WIN32)
     unsigned threadaddr;
     int stack_size = (int)th->stack_size;

@@ -24,7 +24,7 @@
 static void* int_clone(const void* data)
 {
     int* copy = ucb_malloc_type(1, int);
-    *copy     = *reinterpret_cast<const int*>(data);
+    *copy = *reinterpret_cast<const int*>(data);
     return copy;
 }
 
@@ -40,17 +40,17 @@ struct PQueueFixture
     PQueueFixture()
     {
         ucb_pqueue_args args = {0};
-        pq_shared            = ucb_pqueue_new(args);
+        pq_shared = ucb_pqueue_new(args);
 
         args.data_clone = int_clone;
-        args.data_free  = int_free;
-        pq_owned        = ucb_pqueue_new(args);
+        args.data_free = int_free;
+        pq_owned = ucb_pqueue_new(args);
     }
     ~PQueueFixture()
     {
         ucb_pqueue_free(pq_owned);
         ucb_pqueue_free(pq_shared);
-        pq_owned  = nullptr;
+        pq_owned = nullptr;
         pq_shared = nullptr;
     }
 };
@@ -141,7 +141,7 @@ TEST_CASE_FIXTURE(PQueueFixture, "container pqueue benchmark")
         ucb_pqueue_push(pq_shared, &items[i], items[i]);
     }
 
-    auto end         = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
     uint64_t push_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
     start = std::chrono::high_resolution_clock::now();

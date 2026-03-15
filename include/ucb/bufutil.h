@@ -3,7 +3,7 @@
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief Buffer utility functions
  */
 
@@ -26,7 +26,10 @@
  * @param out_count the number of elements that fit into the buffer
  * @return the buffer or a new buffer to satisfy alignment
  */
-UCB_API void* ucb_bufcast_align(void* buf, size_t size, size_t align_size, size_t elem_size,
+UCB_API void* ucb_bufcast_align(void* buf,
+                                size_t size,
+                                size_t align_size,
+                                size_t elem_size,
                                 size_t* out_count);
 
 /**

@@ -84,7 +84,9 @@ void ucb_free(void* ptr)
         free(ptr);
 }
 
-void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void* UCB_RESTRICT src,
+void ucb_memcpy_s(void* UCB_RESTRICT dest,
+                  size_t dest_size,
+                  const void* UCB_RESTRICT src,
                   size_t src_size)
 {
 #if defined(__STDC_LIB_EXT1__) || defined(_WIN32)

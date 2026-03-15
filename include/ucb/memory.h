@@ -78,7 +78,7 @@ UCB_API void ucb_free(void* ptr);
 
 /**
  * @defgroup MemDebug Memory debugging functions
- * 
+ *
  * @see memory.h
  * @{
  */
@@ -86,7 +86,10 @@ UCB_API void ucb_free(void* ptr);
 UCB_API void* ucb_malloc_debug(size_t size, const char* file, int line);
 UCB_API void* ucb_calloc_debug(size_t num, size_t size, const char* file, int line);
 UCB_API void* ucb_realloc_debug(void* ptr, size_t size, const char* file, int line);
-UCB_API void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const char* file,
+UCB_API void* ucb_realloc2_debug(void* ptr,
+                                 size_t size,
+                                 bool free_on_failure,
+                                 const char* file,
                                  int line);
 UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
 
@@ -101,11 +104,11 @@ UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
  * Override memory functions to include file and line information
  * Only for debug builds, see memdbh.h
  */
-#define ucb_malloc(num)              ucb_malloc_debug((num), __FILE__, __LINE__)
-#define ucb_calloc(num, size)        ucb_calloc_debug((num), (size), __FILE__, __LINE__)
-#define ucb_realloc(ptr, num)        ucb_realloc_debug((ptr), (num), __FILE__, __LINE__)
+#define ucb_malloc(num) ucb_malloc_debug((num), __FILE__, __LINE__)
+#define ucb_calloc(num, size) ucb_calloc_debug((num), (size), __FILE__, __LINE__)
+#define ucb_realloc(ptr, num) ucb_realloc_debug((ptr), (num), __FILE__, __LINE__)
 #define ucb_realloc2(ptr, num, free) ucb_realloc2_debug((ptr), (num), (free), __FILE__, __LINE__)
-#define ucb_free(ptr)                ucb_free_debug((ptr), __FILE__, __LINE__)
+#define ucb_free(ptr) ucb_free_debug((ptr), __FILE__, __LINE__)
 
 /**
  * @endcond
@@ -119,7 +122,9 @@ UCB_API void ucb_free_debug(void* ptr, const char* file, int line);
 /*                           Other memory functions                           */
 /* -------------------------------------------------------------------------- */
 
-UCB_API void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void* UCB_RESTRICT src,
+UCB_API void ucb_memcpy_s(void* UCB_RESTRICT dest,
+                          size_t dest_size,
+                          const void* UCB_RESTRICT src,
                           size_t src_size);
 
 /* -------------------------------------------------------------------------- */
@@ -173,12 +178,12 @@ UCB_API void ucb_memcpy_s(void* UCB_RESTRICT dest, size_t dest_size, const void*
  * my_type = ucb_calloc_ptr(1, my_type);
  */
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 202311L
-#define ucb_malloc_ptr(ptr, num)  ((typeof(ptr))ucb_malloc((num) * sizeof(*(ptr))))
-#define ucb_calloc_ptr(ptr, num)  ((typeof(ptr))ucb_calloc((num), sizeof(*(ptr))))
+#define ucb_malloc_ptr(ptr, num) ((typeof(ptr))ucb_malloc((num) * sizeof(*(ptr))))
+#define ucb_calloc_ptr(ptr, num) ((typeof(ptr))ucb_calloc((num), sizeof(*(ptr))))
 #define ucb_realloc_ptr(ptr, num) ((typeof(ptr))ucb_realloc((ptr), (num) * sizeof(*(ptr))))
 #elif defined(__gcc__) || defined(__clang__) || (defined(_MSC_VER) && _MSC_VER >= 1939)
-#define ucb_malloc_ptr(ptr, num)  ((__typeof__(ptr))ucb_malloc((num) * sizeof(*(ptr))))
-#define ucb_calloc_ptr(ptr, num)  ((__typeof__(ptr))ucb_calloc((num), sizeof(*(ptr))))
+#define ucb_malloc_ptr(ptr, num) ((__typeof__(ptr))ucb_malloc((num) * sizeof(*(ptr))))
+#define ucb_calloc_ptr(ptr, num) ((__typeof__(ptr))ucb_calloc((num), sizeof(*(ptr))))
 #define ucb_realloc_ptr(ptr, num) ((__typeof__(ptr))ucb_realloc((ptr), (num) * sizeof(*(ptr))))
 #endif
 

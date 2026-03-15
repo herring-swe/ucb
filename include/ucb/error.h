@@ -190,7 +190,9 @@ UCB_API void ucb_error_clear(const ucb_error** perr);
 
 UCB_API void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg);
 UCB_API void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...);
-UCB_API void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const char* fmt,
+UCB_API void ucb_throw_formatv(const ucb_error** perr,
+                               ucb_ecode code,
+                               const char* fmt,
                                va_list args);
 
 /* -------------------------------------------------------------------------- */
@@ -204,7 +206,7 @@ UCB_API void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const cha
  * and needs to be caught and fixed early.
  */
 #define UCB_REPORT(code, fmt, ...) ucb_report_user((code), "%s: " fmt, __func__, ##__VA_ARGS__)
-#define UCB_REPORT_MSG(code, msg)  ucb_report_user((code), "%s: %s", __func__, (msg))
+#define UCB_REPORT_MSG(code, msg) ucb_report_user((code), "%s: %s", __func__, (msg))
 
 /**
  * @brief Report a fatal error
@@ -297,7 +299,8 @@ UCB_API void ucb_report_warning(const char* fmt, ...);
 ucb_ecode ucb_err_wrap_errno(int err);
 ucb_ecode ucb_err_get_errno(void);
 
-UCB_API bool ucb_report_errno(int status, const char* UCB_RESTRICT msg,
+UCB_API bool ucb_report_errno(int status,
+                              const char* UCB_RESTRICT msg,
                               const char* UCB_RESTRICT function);
 UCB_API bool ucb_throw_errno(const ucb_error** perr, int status, const char* msg);
 
@@ -316,7 +319,8 @@ UCB_API ucb_ecode ucb_err_get_win32(void);
  */
 UCB_API char* ucb_err_msg_win32(uint32_t err);
 
-UCB_API bool ucb_report_win32(uint32_t status, const char* UCB_RESTRICT msg,
+UCB_API bool ucb_report_win32(uint32_t status,
+                              const char* UCB_RESTRICT msg,
                               const char* UCB_RESTRICT function);
 UCB_API bool ucb_throw_win32(const ucb_error** perr, uint32_t status, const char* msg);
 

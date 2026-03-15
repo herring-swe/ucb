@@ -1,10 +1,10 @@
 /**
  * @file main_doctest.cpp
- * 
+ *
  * This file is part of the UCB project
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
- * 
+ *
  * @brief main test function
  */
 
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     ucb_error_set_func(testing_errfunc);
     UCB_MEMTRACK_ENABLE();
     s_default_mem_report = UCB_MEMTRACK_SET_FUNC(testing_memreport);
-    int ret              = doctest::Context(argc, argv).run();
+    int ret = doctest::Context(argc, argv).run();
     UCB_MEMTRACK_SET_FUNC(testing_memreport_final);
     UCB_MEMTRACK_FINAL();
     return ret;
