@@ -50,7 +50,7 @@ UCB_API ucb_cp ucb_uc_iter_utf8(const unsigned char** iter);
 UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf,
                                       const ucb_cp* codepoints,
                                       size_t len,
-                                      const struct ucb_error** perr);
+                                      ucb_error** perr);
 
 /**
  * @brief Validate a string as UTF-8
@@ -62,7 +62,7 @@ UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf,
  * @param perr optional pointer that may be set on error
  * @return UCB_OK if valid
  */
-UCB_API bool ucb_uc_validate(const char* str, size_t len, const struct ucb_error** perr);
+UCB_API bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr);
 
 /**
  * @brief Count the number of codepoints in a UTF-8 string.
@@ -113,10 +113,10 @@ UCB_API size_t ucb_uc_char_index(const char* str, size_t len, size_t index);
  */
 UCB_API size_t ucb_uc_next_char(const char* str, size_t len, size_t from_byte);
 
-UCB_API ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, const struct ucb_error** perr);
-UCB_API ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, const struct ucb_error** perr);
-UCB_API ucb_uc_result ucb_uc_to_title(const char* str, size_t size, const struct ucb_error** perr);
-UCB_API ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const struct ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_to_upper(const char* str, size_t size, ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_to_lower(const char* str, size_t size, ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_to_title(const char* str, size_t size, ucb_error** perr);
+UCB_API ucb_uc_result ucb_uc_casefold(const char* str, size_t size, ucb_error** perr);
 
 /**
  * @brief Normalize an UTF-8 string
@@ -134,7 +134,7 @@ UCB_API ucb_uc_result ucb_uc_casefold(const char* str, size_t size, const struct
 UCB_API ucb_uc_result ucb_uc_normalize(const char* str,
                                        size_t len,
                                        ucb_norm_form form,
-                                       const struct ucb_error** perr);
+                                       ucb_error** perr);
 
 UCB_API int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2);
 

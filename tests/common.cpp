@@ -13,11 +13,20 @@
 #include "ucb/errcodes.h"
 #include "ucb/error.h"
 
+#include <cstdlib>
 #include <iostream>
+
+#ifndef _WIN32
+#include <signal.h>
+#endif
 
 static thread_local TestFailureFixture* s_fixture = nullptr;
 
+#ifdef _WIN32
 jmp_buf FailureSetJump;
+#else
+sigjmp_buf FailureSetJump;
+#endif
 
 /**
  * Catches errors without failing so we can validate invalid arguments etc
@@ -32,7 +41,6 @@ TestFailureFixture::TestFailureFixture() : m_prev_func(ucb_error_set_func(error_
 
 TestFailureFixture::~TestFailureFixture()
 {
-    // std::signal(SIGABRT, SIG_DFL);
     ucb_error_set_func(m_prev_func);
     s_fixture = nullptr;
 }
@@ -47,13 +55,14 @@ void TestFailureFixture::error_collect(ucb_errlvl lvl, const ucb_error* e)
 
 void TestFailureFixture::abort_handler(int)
 {
-    std::cerr << "Caught abort" << std::endl;
+    // No I/O here — this runs in signal context (async-signal-unsafe)
     if (!s_fixture)
-    {
-        std::cerr << "No fixture set" << std::endl;
-        std::abort();
-        return;
-    }
+        _Exit(128 + SIGABRT);
+
     s_fixture->num_aborts++;
+#ifdef _WIN32
     longjmp(FailureSetJump, 1);
+#else
+    siglongjmp(FailureSetJump, 1);
+#endif
 }

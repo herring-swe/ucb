@@ -1,0 +1,34 @@
+name: Check formatting
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  clang-format:
+    name: Check clang-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install clang-format 21 (Ubuntu)
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get install -y clang-format-21
+
+      - name: Check formatting (Unix)
+        run: |
+          # Use git ls-files for cross-platform file listing
+          files=$(git ls-files '*.[ch]pp' '*.[ch]' | tr '\n' ' ')
+          if [ -n "$files" ]; then
+            clang-format-21 --dry-run --Werror $files
+          else
+            echo "No C/C++ files found."
+          fi

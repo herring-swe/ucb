@@ -226,7 +226,7 @@ bool ucb_report_win32(uint32_t status,
     return true;
 }
 
-bool ucb_throw_win32(const ucb_error** perr, uint32_t status, const char* msg)
+bool ucb_throw_win32(ucb_error** perr, uint32_t status, const char* msg)
 {
     if (status == 0)
         return false;

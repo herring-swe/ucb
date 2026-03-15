@@ -113,7 +113,7 @@ static size_t ucb_pqueue_push_node(ucb_pqueue* pq, int prio, ucb_fwdlist_node* n
             pq->buckets = new_buckets;
         }
 
-        if (idx == pq->num_buckets)
+        if ((size_t)idx == pq->num_buckets)
         {
             // Append new bucket
             bucket = &pq->buckets[pq->num_buckets];

@@ -51,7 +51,7 @@ static ucb_error* ucb_error_get(void)
     return &s_err;
 }
 
-static ucb_error* ucb_error_prepare_throw(const ucb_error** perr)
+static ucb_error* ucb_error_prepare_throw(ucb_error** perr)
 {
     ucb_error* err = UCB_NULL;
     if (perr)
@@ -146,16 +146,16 @@ void ucb_error_print(ucb_errlvl lvl, const ucb_error* err)
 /*                                Thrown errors                               */
 /* -------------------------------------------------------------------------- */
 
-void ucb_error_clear(const ucb_error** perr)
+void ucb_error_clear(ucb_error** perr)
 {
     if (perr && *perr)
     {
-        ucb_error_free((ucb_error*)*perr);
+        ucb_error_free(*perr);
         *perr = UCB_NULL;
     }
 }
 
-void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg)
+void ucb_throw(ucb_error** perr, ucb_ecode code, const char* msg)
 {
     ucb_error* err = ucb_error_prepare_throw(perr);
     if (!err)
@@ -165,7 +165,7 @@ void ucb_throw(const ucb_error** perr, ucb_ecode code, const char* msg)
     err->msg = ucb_cstr_dup(msg);
 }
 
-void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, ...)
+void ucb_throw_format(ucb_error** perr, ucb_ecode code, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
@@ -173,7 +173,7 @@ void ucb_throw_format(const ucb_error** perr, ucb_ecode code, const char* fmt, .
     va_end(args);
 }
 
-void ucb_throw_formatv(const ucb_error** perr, ucb_ecode code, const char* fmt, va_list args)
+void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt, va_list args)
 {
     ucb_error* err = ucb_error_prepare_throw(perr);
     if (!err)
