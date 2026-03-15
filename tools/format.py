@@ -160,7 +160,11 @@ def run_format_c(files: Sequence[Path], fix: bool) -> bool:
     cmd.extend(str(path) for path in c_files)
 
     print(f"Running clang-format on {len(c_files)} files...")
-    completed = subprocess.run(cmd, check=False)
+    completed = subprocess.run(cmd, check=False, capture_output=True)
+    if completed.stdout:
+        print(completed.stdout.decode("utf-8", errors="replace"))
+    if completed.stderr:
+        print(completed.stderr.decode("utf-8", errors="replace"))
     return completed.returncode == 0
 
 
@@ -180,9 +184,25 @@ def run_format_python(root_dir: Path, fix: bool) -> bool:
     mypy_cmd = [sys.executable, "-m", "mypy", *targets]
 
     print("\nRunning ruff...")
-    ruff_ok = subprocess.run(ruff_cmd, check=False, cwd=root_dir).returncode == 0
+    ruff_result = subprocess.run(ruff_cmd, check=False, cwd=root_dir, capture_output=True)
+    if ruff_result.stdout:
+        print(ruff_result.stdout.decode("utf-8", errors="replace"))
+    if ruff_result.stderr:
+        print(ruff_result.stderr.decode("utf-8", errors="replace"))
+    ruff_ok = ruff_result.returncode == 0
+    if not ruff_ok:
+        print("ruff check failed")
+
     print("\nRunning mypy...")
-    mypy_ok = subprocess.run(mypy_cmd, check=False, cwd=root_dir).returncode == 0
+    mypy_result = subprocess.run(mypy_cmd, check=False, cwd=root_dir, capture_output=True)
+    if mypy_result.stdout:
+        print(mypy_result.stdout.decode("utf-8", errors="replace"))
+    if mypy_result.stderr:
+        print(mypy_result.stderr.decode("utf-8", errors="replace"))
+    mypy_ok = mypy_result.returncode == 0
+    if not mypy_ok:
+        print("mypy check failed")
+
     return ruff_ok and mypy_ok
 
 
