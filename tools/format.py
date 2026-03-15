@@ -160,11 +160,28 @@ def run_format_c(files: Sequence[Path], fix: bool) -> bool:
     cmd.extend(str(path) for path in c_files)
 
     print(f"Running clang-format on {len(c_files)} files...")
+    print(f"Command: {' '.join(cmd)}")
+    # Print ldd details for debugging on Linux
+    if platform.system() == "Linux":
+        print("\nclang-format ldd output:")
+        ldd_cmd = ["ldd", binary]
+        ldd_result = subprocess.run(ldd_cmd, capture_output=True, text=True)
+        if ldd_result.returncode == 0:
+            print(ldd_result.stdout)
+        else:
+            print(f"ldd failed with code {ldd_result.returncode}")
+            print(ldd_result.stderr)
     completed = subprocess.run(cmd, check=False, capture_output=True)
-    if completed.stdout:
-        print(completed.stdout.decode("utf-8", errors="replace"))
-    if completed.stderr:
-        print(completed.stderr.decode("utf-8", errors="replace"))
+    stdout = completed.stdout.decode("utf-8", errors="replace")
+    stderr = completed.stderr.decode("utf-8", errors="replace")
+    if stdout:
+        print(stdout)
+    if stderr:
+        print(stderr)
+    if completed.returncode != 0:
+        print(f"clang-format exited with code {completed.returncode}")
+        if not stdout and not stderr:
+            print("(no output from clang-format)")
     return completed.returncode == 0
 
 
