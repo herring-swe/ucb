@@ -35,6 +35,9 @@ CMakeUserPresets.json
 *.out
 *.app
 
+# Bundled tool binaries (force-track even if .exe)
+!tools/clang-format/clang-format.exe
+
 # Editor temp/backup files
 *~
 *.bak
