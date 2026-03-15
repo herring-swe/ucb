@@ -11,7 +11,8 @@ IndentCaseLabels: false
 SpacesBeforeTrailingComments: 1
 
 IncludeBlocks: Preserve
-SortIncludes: CaseInsensitive
+SortIncludes:
+  IgnoreCase: true
 
 # Allman with few exceptions (namespace, extern block)
 BreakBeforeBraces: Custom

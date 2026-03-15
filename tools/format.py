@@ -5,11 +5,12 @@
 
 import argparse
 import platform
+import re
 import subprocess
 import sys
 from enum import Enum
 from pathlib import Path
-from typing import Iterable, List, Sequence
+from typing import Iterable, List, Optional, Sequence
 
 C_SUFFIXES = {".c", ".cpp", ".h", ".hpp"}
 C_DIRS = sorted(["src", "include", "tests", "!tests/doctest"])
@@ -30,20 +31,39 @@ class FormatType(Enum):
     PYTHON = "python"
 
 
-def get_clang_format() -> str:
-    my_dir = Path(__file__).parent
-    if platform.system() == "Windows":
-        binary = my_dir / "clang-format" / "clang-format.exe"
-    elif platform.system() == "Darwin":
-        binary = my_dir / "clang-format" / "clang-format-mac"
+def resolve_clang_format(override: str | None = None) -> str:
+    if override:
+        binary = Path(override)
+        if not binary.exists():
+            print(f"clang-format binary not found: {override}")
+            sys.exit(1)
+        path = str(binary.resolve())
     else:
-        binary = my_dir / "clang-format" / "clang-format-linux"
+        my_dir = Path(__file__).parent
+        if platform.system() == "Windows":
+            bundled = my_dir / "clang-format" / "clang-format.exe"
+        elif platform.system() == "Darwin":
+            bundled = my_dir / "clang-format" / "clang-format-mac"
+        else:
+            bundled = my_dir / "clang-format" / "clang-format-linux"
+        if not bundled.exists():
+            print(f"clang-format binary not found at {bundled}")
+            sys.exit(1)
+        path = str(bundled.resolve())
 
-    if not binary.exists():
-        print(f"clang-format binary not found at {binary}")
+    result = subprocess.run([path, "--version"], capture_output=True, text=True)
+    version_output = result.stdout.strip() or result.stderr.strip()
+    m = re.search(r"clang-format version (\d+)\.", version_output)
+    if not m:
+        print(f"Could not determine clang-format version from: {version_output!r}")
+        sys.exit(1)
+    major = int(m.group(1))
+    if major != 21:
+        print(f"clang-format version 21.x.x required, got: {version_output}")
         sys.exit(1)
 
-    return str(binary.resolve())
+    print(f"clang-format: {version_output} ({path})")
+    return path
 
 
 def find_project_root() -> Path:
@@ -142,15 +162,13 @@ def discover_files(
         exit(1)
 
 
-def run_format_c(files: Sequence[Path], fix: bool) -> bool:
+def run_format_c(files: Sequence[Path], fix: bool, clang_format_override: Optional[str] = None) -> bool:
     c_files = [str(file) for file in files if file.suffix.lower() in C_SUFFIXES]
     if not c_files:
         print("No C/C++ files to format")
         return True
 
-    binary = get_clang_format()
-    print(f"Using clang-format binary at: {binary}")
-
+    binary = resolve_clang_format(clang_format_override)
     cmd = [binary]
     if fix:
         cmd.append("-i")
@@ -160,17 +178,6 @@ def run_format_c(files: Sequence[Path], fix: bool) -> bool:
     cmd.extend(str(path) for path in c_files)
 
     print(f"Running clang-format on {len(c_files)} files...")
-    print(f"Command: {' '.join(cmd)}")
-    # Print ldd details for debugging on Linux
-    if platform.system() == "Linux":
-        print("\nclang-format ldd output:")
-        ldd_cmd = ["ldd", binary]
-        ldd_result = subprocess.run(ldd_cmd, capture_output=True, text=True)
-        if ldd_result.returncode == 0:
-            print(ldd_result.stdout)
-        else:
-            print(f"ldd failed with code {ldd_result.returncode}")
-            print(ldd_result.stderr)
     completed = subprocess.run(cmd, check=False, capture_output=True)
     stdout = completed.stdout.decode("utf-8", errors="replace")
     stderr = completed.stderr.decode("utf-8", errors="replace")
@@ -263,7 +270,11 @@ def list_files_grouped(
         print("  (none)")
 
 
-def format_code(action: FormatAction, format_type: FormatType = FormatType.ALL) -> bool:
+def format_code(
+    action: FormatAction,
+    format_type: FormatType = FormatType.ALL,
+    clang_format_override: str | None = None,
+) -> bool:
     root_dir = find_project_root()
 
     c_files, python_files = discover_files_by_type(root_dir, format_type)
@@ -301,7 +312,7 @@ def format_code(action: FormatAction, format_type: FormatType = FormatType.ALL) 
     fix = action == FormatAction.FIX
     ok = True
     if format_type in (FormatType.ALL, FormatType.C):
-        if not run_format_c(c_files, fix):
+        if not run_format_c(c_files, fix, clang_format_override):
             print("clang-format check failed for C/C++ files")
             ok = False
     if format_type in (FormatType.ALL, FormatType.PYTHON):
@@ -313,6 +324,11 @@ def format_code(action: FormatAction, format_type: FormatType = FormatType.ALL) 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run clang-format for project files")
+    parser.add_argument(
+        "--clang-format",
+        metavar="PATH",
+        help="Path to clang-format binary (must be version 21.x.x; overrides bundled binary)",
+    )
     mode_group = parser.add_mutually_exclusive_group()
     mode_group.add_argument(
         "--list", action="store_true", help="List files that would be formatted"
@@ -332,7 +348,9 @@ def main() -> int:
     elif args.fix:
         action = FormatAction.FIX
 
-    if format_code(action, format_type=FormatType(args.type)):
+    if format_code(
+        action, format_type=FormatType(args.type), clang_format_override=args.clang_format
+    ):
         return 0
     return 1
 
