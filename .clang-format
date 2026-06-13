@@ -48,14 +48,21 @@ SortIncludes:
   IgnoreCase: true
 
 IncludeCategories:
-  - Regex:           '^"(ucb)/'
+  # UCB
+  - Regex:           '^[<"]ucb/'
     Priority:        2
     SortPriority:    2
     CaseSensitive:   true
-  - Regex:           '^((<|")(gtest|gmock|isl|json)/)'
+  # Thirdparty inclusion
+  - Regex:           '^((<|")(doctest))'
     Priority:        3
-  - Regex:           '<[[:alnum:].]+>'
+  # Standard library
+  - Regex:           '<[[:alnum:]./]+.h>'
     Priority:        4
+  # C++ standard library
+  - Regex:           '<[[:alnum:]./]+>'
+    Priority:        5
+  # Anything else (must be last)
   - Regex:           '.*'
     Priority:        1
     SortPriority:    0

@@ -84,6 +84,54 @@ int ucb_cstr_icomp(const char* a, const char* b)
 #endif // UCB_W
 }
 
+UCB_API char* ucb_cstr_concat(const char* str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    char* result = ucb_cstr_concatv(str, args);
+    va_end(args);
+    return result;
+}
+
+UCB_API char* ucb_cstr_concatv(const char* str, va_list args)
+{
+    UCB_VERIFY_ARGS(str);
+
+    const char* next;
+    size_t slen = strlen(str);
+    size_t size = slen;
+
+    va_list args_copy;
+    va_copy(args_copy, args);
+    next = va_arg(args_copy, const char*);
+    while (next)
+    {
+        size += strlen(next);
+        next = va_arg(args_copy, const char*);
+    }
+
+    if (!size)
+        return UCB_NULL;
+
+    char* dst = ucb_malloc(size + 1);
+    if (dst)
+    {
+        memcpy(dst, str, slen);
+
+        size_t offset = slen;
+        next = va_arg(args, const char*);
+        while (next)
+        {
+            slen = strlen(next);
+            memcpy(dst + offset, next, slen);
+            offset += slen;
+            next = va_arg(args, const char*);
+        }
+        dst[size] = '\0'; // null-terminate
+    }
+    return dst;
+}
+
 int ucb_cstr_sprintf(char* restrict buffer, size_t buffer_size, const char* restrict fmt, ...)
 {
     if (!buffer)

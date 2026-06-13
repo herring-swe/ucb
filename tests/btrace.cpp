@@ -8,12 +8,13 @@
  * @brief btrace tests
  */
 
-#include "doctest.h"
-
 #include "ucb/btrace.h"
+
 #include "ucb/config.h"
 
-#include <stdio.h>
+#include <doctest.h>
+
+#include <cstdio>
 
 static ucb_btrace* rec_func(int remain)
 {

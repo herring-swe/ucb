@@ -186,7 +186,8 @@ bool ucb_str_fit(ucb_str* str)
     bool modified = false;
     if (str->alloc)
     {
-        UCB_ASSERT(str->size <= str->alloc, UCB_ERROR_INVALID_STATE,
+        UCB_ASSERT(str->size <= str->alloc,
+                   UCB_ERROR_INVALID_STATE,
                    "Current string size exceeds allocation");
 
         if (str->alloc > str->size + 1)
@@ -217,7 +218,8 @@ bool ucb_str_ensure(ucb_str* str, size_t size)
         }
         else
         {
-            UCB_ASSERT(str->size <= str->alloc, UCB_ERROR_INVALID_STATE,
+            UCB_ASSERT(str->size <= str->alloc,
+                       UCB_ERROR_INVALID_STATE,
                        "Current string size exceeds allocation");
 
             size_t new_size = size + str->size + 1;
@@ -336,7 +338,8 @@ size_t ucb_str_used(const ucb_str* str)
     size_t used = 0;
     if (str->alloc)
     {
-        UCB_ASSERT(str->size <= str->alloc, UCB_ERROR_INVALID_STATE,
+        UCB_ASSERT(str->size <= str->alloc,
+                   UCB_ERROR_INVALID_STATE,
                    "String size exceeds allocation");
         used = str->size;
         if (str->alloc >= used + 1 && str->data[used] == '\0')
@@ -455,10 +458,10 @@ void ucb_str_clear(ucb_str* str)
     str->alloc = 0;
 }
 
-void ucb_str_append(ucb_str* str, const ucb_str* append)
+void ucb_str_append(ucb_str* str, const ucb_str* astr)
 {
-    UCB_VERIFY_ARGS(str && append);
-    ucb_str_append_utf8(str, str->data, str->size);
+    UCB_VERIFY_ARGS(str && astr);
+    ucb_str_append_cstr(str, astr->data, astr->size);
 }
 
 void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr)
@@ -479,17 +482,24 @@ void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error*
     }
 }
 
-void ucb_str_append_utf8(ucb_str* str, const char* data, size_t size)
+void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len)
 {
-    UCB_VERIFY_ARGS(str && (data || !size));
+    UCB_VERIFY_ARGS(str && (cstr || !len));
 
-    if (size == 0)
+    if (!cstr)
         return;
 
-    if (ucb_str_ensure(str, size))
+    if (len == 0)
     {
-        memcpy(str->data + str->size, data, size);
-        str->size += size;
+        len = strlen(cstr);
+        if (!len)
+            return;
+    }
+
+    if (ucb_str_ensure(str, len))
+    {
+        memcpy(str->data + str->size, cstr, len);
+        str->size += len;
         str->data[str->size] = '\0';
     }
 }
@@ -498,7 +508,7 @@ void ucb_str_insert(ucb_str* str, size_t pos, const ucb_str* istr)
 {
     UCB_VERIFY_ARGS(str && istr);
 
-    ucb_str_insert_utf8(str, pos, istr->data, istr->size);
+    ucb_str_insert_cstr(str, pos, istr->data, istr->size);
 }
 
 void ucb_str_insert_cp(ucb_str* str,
@@ -517,30 +527,37 @@ void ucb_str_insert_cp(ucb_str* str,
         ucb_buffer_init_heap(&buffer, max_size);
         if (ucb_uc_encode_codepoints(&buffer, cp, num_cp, perr))
         {
-            ucb_str_insert_utf8(str, index, buffer.data, buffer.size);
+            ucb_str_insert_cstr(str, index, buffer.data, buffer.size);
         }
         ucb_buffer_release(&buffer);
     }
 }
 
-void ucb_str_insert_utf8(ucb_str* str, size_t index, const char* cstr, size_t len)
+void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t len)
 {
     UCB_VERIFY_ARGS(str && (cstr || !len));
 
+    if (!cstr)
+        return;
+
     if (!len)
     {
-        // noop
+        len = strlen(cstr);
+        if (!len)
+            return;
     }
-    else if (index == str->size || index == UCB_NPOS)
+
+    if (index == str->size || index == UCB_NPOS)
     {
-        ucb_str_append_utf8(str, cstr, len);
+        ucb_str_append_cstr(str, cstr, len);
     }
     else
     {
         if (index > 0)
         {
             index = ucb_uc_char_index(str->data, str->size, index);
-            UCB_VERIFY(index > 0 && index < str->size, UCB_ERROR_INVALID_ARG,
+            UCB_VERIFY(index > 0 && index < str->size,
+                       UCB_ERROR_INVALID_ARG,
                        "Invalid character position or invalid UTF-8");
         }
         if (ucb_str_ensure(str, len))
@@ -553,39 +570,57 @@ void ucb_str_insert_utf8(ucb_str* str, size_t index, const char* cstr, size_t le
     }
 }
 
-ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2)
+ucb_str* ucb_str_concatv(const ucb_str* str, va_list args)
 {
-    UCB_VERIFY_ARGS(str1 && str2);
+    UCB_VERIFY_ARGS(str);
 
-    size_t size = str1->size + str2->size;
+    ucb_str* next;
+    size_t size = str->size;
+
+    va_list args_copy;
+    va_copy(args_copy, args);
+    next = va_arg(args_copy, ucb_str*);
+    while (next)
+    {
+        size += next->size;
+        next = va_arg(args_copy, ucb_str*);
+    }
+
+    if (!size)
+        return ucb_str_new_empty();
+
     ucb_str* dst = ucb_malloc_type(1, ucb_str);
     if (dst)
     {
-        if (size)
+        dst->size = size;
+        dst->alloc = size + 1;
+        dst->data = ucb_malloc(dst->alloc);
+
+        memcpy(dst->data, str->data, str->size);
+
+        size_t offset = str->size;
+        next = va_arg(args, ucb_str*);
+        while (next)
         {
-            dst->data = ucb_malloc(size + 1);
-            if (dst->data)
-            {
-                memcpy(dst->data, str1->data, str1->size);
-                memcpy(dst->data + str1->size, str2->data, str2->size);
-                dst->data[size] = '\0';
-                dst->alloc = size + 1;
-                dst->size = size;
-            }
-            else
-            {
-                ucb_free(dst);
-                dst = UCB_NULL;
-            }
+            memcpy(dst->data + offset, next->data, next->size);
+            offset += next->size;
+            next = va_arg(args, ucb_str*);
         }
-        else
-        {
-            dst->data = "";
-            dst->size = 0;
-            dst->alloc = 0;
-        }
+        dst->data[dst->size] = '\0';
     }
     return dst;
+}
+
+ucb_str* ucb_str_concat(const ucb_str* str, ...)
+{
+    va_list args;
+    va_start(args, str);
+
+    ucb_str* result = ucb_str_concatv(str, args);
+
+    va_end(args);
+
+    return result;
 }
 
 ucb_str* ucb_str_substr(const ucb_str* str, size_t start, size_t end)

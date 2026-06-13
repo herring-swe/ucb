@@ -8,19 +8,16 @@
  * @brief main test function
  */
 
-// #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
-#include <ucb/diag.h>
-
-#define DOCTEST_CONFIG_IMPLEMENT
-UCB_DIAG_PUSH()
-UCB_DIAG_IGN_NRVO()
-#include "doctest.h"
-UCB_DIAG_POP()
-
 #include <ucb/diag.h>
 #include <ucb/error.h>
 #include <ucb/memdbg.h>
 #include <ucb/ucb.h>
+
+#define DOCTEST_CONFIG_IMPLEMENT
+UCB_DIAG_PUSH()
+UCB_DIAG_IGN_NRVO()
+#include <doctest.h>
+UCB_DIAG_POP()
 
 static void testing_errfunc(ucb_errlvl lvl, const ucb_error* e)
 {

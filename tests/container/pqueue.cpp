@@ -7,7 +7,7 @@
  * @brief PQueue tests
  */
 
-#include "doctest.h"
+#include <doctest.h>
 
 #include "ucb/container/pqueue.h"
 

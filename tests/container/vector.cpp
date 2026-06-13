@@ -9,7 +9,7 @@
 
 #include "ucb/container/vector.h"
 
-#include "doctest.h"
+#include <doctest.h>
 #include "my_type.h"
 #include "test_vector.h"
 

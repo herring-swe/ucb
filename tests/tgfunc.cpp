@@ -8,9 +8,9 @@
  * @brief math tests
  */
 
-#include "doctest.h"
-
 #include "test_tgfunc.h"
+
+#include <doctest.h>
 
 #include <cstdio>
 

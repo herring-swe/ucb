@@ -8,12 +8,12 @@
  * @brief buffer tests
  */
 
-#include "doctest.h"
-
 #include <ucb/buffer.h>
 #include <ucb/bufutil.h>
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
+
+#include <doctest.h>
 
 #include <array>
 #include <cstring>

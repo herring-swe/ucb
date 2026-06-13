@@ -8,13 +8,15 @@
  * @brief threads tests
  */
 
-#include "doctest.h"
+#include "ucb/threads.h"
 
 #include "common.h"
+
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
-#include "ucb/threads.h"
 #include "ucb/time.h"
+
+#include <doctest.h>
 
 #include <atomic>
 #include <chrono>
@@ -307,6 +309,8 @@ TEST_CASE("benchmark threads" * doctest::test_suite("benchmark") * doctest::skip
 
     auto end = std::chrono::high_resolution_clock::now();
     uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    printf("Created/joined %d threads in %" PRIu64 " ms (%.1f threads/sec)\n", N, ms,
+    printf("Created/joined %d threads in %" PRIu64 " ms (%.1f threads/sec)\n",
+           N,
+           ms,
            (N * 1000.0) / ms);
 }

@@ -8,11 +8,11 @@
  * @brief memory tests
  */
 
-#include "doctest.h"
-
 #include <ucb/diag.h>
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
+
+#include <doctest.h>
 
 #include <climits>
 #include <mutex>

@@ -48,6 +48,8 @@ ucb_target_sources(ucb_tests PRIVATE
     buffer.cpp
     cast.cpp
     common.cpp
+    env.cpp
+    envmap.cpp
     memory.cpp
     tgfunc.cpp
     threadpool.cpp

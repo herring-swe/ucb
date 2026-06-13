@@ -78,6 +78,8 @@ ucb_target_public_headers(ucb FILES
     ucb/cstring.h
     ucb/debug.h
     ucb/defines.h
+    ucb/env.h
+    ucb/envmap.h
     ucb/error.h
     ucb/memdbg.h
     ucb/memory.h
@@ -124,6 +126,8 @@ ucb_target_sources(ucb PRIVATE
     ucb/bufutil.c
     ucb/cond.c
     ucb/cstring.c
+    ucb/env.c
+    ucb/envmap.c
     ucb/error_enum.c
     ucb/error_errno.c
     ucb/error.c

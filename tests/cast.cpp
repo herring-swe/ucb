@@ -7,14 +7,14 @@
  * @brief cast tests
  */
 
-#include "doctest.h"
-#include "test_cast.h"
-
 #include "ucb/cast.h"
+
+#include "test_cast.h"
 
 #include <cfloat>
 #include <climits>
 #include <cstddef>
+#include <doctest.h>
 #include <iostream>
 
 TEST_CASE("void casts")

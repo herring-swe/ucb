@@ -8,14 +8,16 @@
  * @brief threadpool tests
  */
 
-#include "doctest.h"
+#include "ucb/threadpool.h"
 
 #include "common.h"
+
 #include "ucb/cond.h"
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
-#include "ucb/threadpool.h"
 #include "ucb/time.h"
+
+#include <doctest.h>
 
 #include <atomic>
 #include <thread>

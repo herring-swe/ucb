@@ -16,6 +16,7 @@
 
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdarg.h>
 
 UCB_API size_t ucb_cstr_len(const char* str);
 UCB_API size_t ucb_cstr_nlen(const char* str, size_t max_len);
@@ -25,6 +26,9 @@ UCB_API char* ucb_cstr_ndup(const char* str, size_t max_len);
 
 UCB_API int ucb_cstr_comp(const char* a, const char* b);
 UCB_API int ucb_cstr_icomp(const char* a, const char* b);
+
+UCB_API char* ucb_cstr_concat(const char* str, ...);
+UCB_API char* ucb_cstr_concatv(const char* str, va_list args);
 
 UCB_API int ucb_cstr_sprintf(char* UCB_RESTRICT buffer,
                              size_t buffer_size,

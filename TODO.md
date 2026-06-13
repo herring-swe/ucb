@@ -40,7 +40,7 @@ Order: release first, priority second.
 - [ ] Threads: Thread/mutex robustness pass
 - [ ] Error Handling: Error handling behavior pass
 - [ ] Build: ASAN/UBSAN integration in build/test flow
-- [ ] Environment: Environment routines initial usable feature set
+- [x] Environment: Environment routines initial usable feature set
 - [x] Version: Generated version defines initial usable feature set
 
 #### P1
@@ -171,9 +171,9 @@ For Documentation only Doxygen is considered necessary.
 - [x] Get environment variable
 - [x] Set environment variable
 - [x] Unset environment variable
-- [ ] Optional environment enumeration
-- [ ] Testing
-- [ ] Documentation
+- [x] Environment map for copy/restore
+- [x] Testing
+- [x] Documentation
 
 ### File - File Abstraction API (Target: 0.3.0, required by 1.0.0)
 - [ ] File object model (path, name, extension)

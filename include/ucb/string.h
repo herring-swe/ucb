@@ -18,9 +18,10 @@
 #include <ucb/types.h>
 #include <ucb/unicode_enum.h>
 
+#include <stdarg.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 /**
  * @struct ucb_str
@@ -627,7 +628,11 @@ UCB_API void ucb_str_clear(ucb_str* str);
  */
 UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
 UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr);
-UCB_API void ucb_str_append_utf8(ucb_str* str, const char* cstr, size_t len);
+UCB_API void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len);
+static inline void ucb_str_append_c(ucb_str* str, const char* cstr)
+{
+    ucb_str_append_cstr(str, cstr, strlen(cstr));
+}
 
 /**
  * @brief Insert a string into another string at a specific character index
@@ -643,9 +648,14 @@ UCB_API void ucb_str_insert_cp(ucb_str* str,
                                const ucb_cp* cp,
                                size_t num_cp,
                                ucb_error** perr);
-UCB_API void ucb_str_insert_utf8(ucb_str* str, size_t index, const char* cstr, size_t len);
+UCB_API void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t len);
+static inline void ucb_str_insert_c(ucb_str* str, size_t index, const char* cstr)
+{
+    ucb_str_insert_cstr(str, index, cstr, strlen(cstr));
+}
 
-UCB_API ucb_str* ucb_str_concat(const ucb_str* str1, const ucb_str* str2);
+UCB_API ucb_str* ucb_str_concatv(const ucb_str* str, va_list args);
+UCB_API ucb_str* ucb_str_concat(const ucb_str* str, ...);
 
 /**
  * @brief Allocate and initialize a substring from a string

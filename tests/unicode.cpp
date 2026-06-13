@@ -8,12 +8,12 @@
  * @brief unicode tests
  */
 
-#include "doctest.h"
-
 #include <ucb/errcodes.h>
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
 #include <ucb/unicode.h>
+
+#include <doctest.h>
 
 #include <chrono>
 #include <climits>
@@ -27,6 +27,7 @@
 
 #ifdef USE_OPENMP
 #include <omp.h>
+
 #include <atomic>
 #endif
 
@@ -199,7 +200,10 @@ static inline void test_mapping(const char* input,
     ucb_error* err = nullptr;
 
     const char* strings[5] = {input, lower, upper, title, casefold};
-    mapping_func func[5] = {nullptr, ucb_uc_to_lower, ucb_uc_to_upper, ucb_uc_to_title,
+    mapping_func func[5] = {nullptr,
+                            ucb_uc_to_lower,
+                            ucb_uc_to_upper,
+                            ucb_uc_to_title,
                             ucb_uc_casefold};
     // const char* names[5]   = {"", "to_lower", "to_upper", "to_title", "casefold"};
 
@@ -353,8 +357,11 @@ TEST_CASE("unicode grapheme")
     test_grapheme("👩‍💻", 11, 3, 1, 3); // Woman technologist (ZWJ sequence)
     test_grapheme("🇺🇸", 8, 2, 1, 2);           // US flag (regional indicator symbols)
     test_grapheme("👨🏽", 8, 2, 1, 2);         // Man + medium skin tone modifier
-    test_grapheme("\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6", 18, 5,
-                  1, 5);
+    test_grapheme("\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6",
+                  18,
+                  5,
+                  1,
+                  5);
 
     UCB_MEMTRACK_POP();
 }
@@ -368,10 +375,16 @@ TEST_CASE("unicode mapping")
     test_mapping("straße", "straße", "STRAßE", "Straße", "strasse");
 
     test_mapping("O'Reilly", "o'reilly", "O'REILLY", "O'reilly", "o'reilly");
-    test_mapping("Over-achiever", "over-achiever", "OVER-ACHIEVER", "Over-achiever",
+    test_mapping("Over-achiever",
+                 "over-achiever",
+                 "OVER-ACHIEVER",
+                 "Over-achiever",
                  "over-achiever");
-    test_mapping("Simply \"The Best\"", "simply \"the best\"", "SIMPLY \"THE BEST\"",
-                 "Simply \"The Best\"", "simply \"the best\"");
+    test_mapping("Simply \"The Best\"",
+                 "simply \"the best\"",
+                 "SIMPLY \"THE BEST\"",
+                 "Simply \"The Best\"",
+                 "simply \"the best\"");
 
     UCB_MEMTRACK_POP();
 }
@@ -439,12 +452,15 @@ TEST_CASE("unicode normalization")
     test_norm("가각 Héllö", "가각 Héllö", UCB_NORM_NFC);
 
     // Hangul + Latin + Combining Marks + Ligatures
-    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
+    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
+              "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
               UCB_NORM_NFD);
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", UCB_NORM_NFC);
-    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
+    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
+              "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
               UCB_NORM_NFKC);
-    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ", "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
+    test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
+              "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
               UCB_NORM_NFKD);
 
     UCB_MEMTRACK_POP();

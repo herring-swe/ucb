@@ -8,9 +8,9 @@
  * @brief types tests
  */
 
-#include "doctest.h"
-
 #include "test_types.h"
+
+#include <doctest.h>
 
 #include <cstdio>
 
