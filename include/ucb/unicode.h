@@ -102,7 +102,7 @@ UCB_API size_t ucb_uc_num_cp(const char* str, size_t len);
  * @param len length of string or UCB_NPOS
  * @return number of printable characters in string
  */
-UCB_API size_t ucb_uc_num_chars(const char* str, size_t len);
+UCB_API size_t ucb_uc_num_char(const char* str, size_t len);
 
 UCB_API size_t ucb_uc_char_index(const char* str, size_t len, size_t index);
 

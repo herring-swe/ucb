@@ -163,7 +163,7 @@ static inline void test_basics(const char* input, size_t len, size_t num_cp, siz
     CHECK(ucb_uc_num_cp(input, len) == num_cp);
     if (!with_null)
         CHECK(ucb_uc_num_cp(input, UCB_NPOS) == num_cp);
-    CHECK(ucb_uc_num_chars(input, len) == num_chars);
+    CHECK(ucb_uc_num_char(input, len) == num_chars);
 }
 
 static inline void test_grapheme(const char* input,
@@ -184,9 +184,9 @@ static inline void test_grapheme(const char* input,
     CHECK(ucb_uc_num_cp(input, len) == num_cp);
 
     // This should not fail with grapheme clusters
-    CHECK(ucb_uc_num_chars(input, len) != num_chars);
+    CHECK(ucb_uc_num_char(input, len) != num_chars);
     // This is the wrong report
-    CHECK(ucb_uc_num_chars(input, len) == num_fail_chars);
+    CHECK(ucb_uc_num_char(input, len) == num_fail_chars);
 }
 
 static inline void test_mapping(const char* input,

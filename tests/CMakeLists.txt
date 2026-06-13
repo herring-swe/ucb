@@ -51,6 +51,7 @@ ucb_target_sources(ucb_tests PRIVATE
     env.cpp
     envmap.cpp
     memory.cpp
+    string.cpp
     tgfunc.cpp
     threadpool.cpp
     threads.cpp

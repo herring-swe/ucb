@@ -205,7 +205,7 @@ bool ucb_str_fit(ucb_str* str)
     return modified;
 }
 
-bool ucb_str_ensure(ucb_str* str, size_t size)
+bool ucb_str_reserve(ucb_str* str, size_t size)
 {
     UCB_VERIFY_ARGS(str);
 
@@ -378,10 +378,10 @@ size_t ucb_str_len(const ucb_str* str)
 //     return ucb_uc_num_cp(str->data, str->size);
 // }
 
-size_t ucb_str_num_chars(const ucb_str* str)
+size_t ucb_str_num_char(const ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
-    return ucb_uc_num_chars(str->data, str->size);
+    return ucb_uc_num_char(str->data, str->size);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -469,7 +469,7 @@ void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error*
     UCB_VERIFY_ARGS(str && cp);
 
     size_t max_size = 4 * num_cp;
-    if (ucb_str_ensure(str, max_size))
+    if (ucb_str_reserve(str, max_size))
     {
         ucb_buffer buffer;
         ucb_buffer_init_static(&buffer, str->data + str->size, max_size);
@@ -496,7 +496,7 @@ void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len)
             return;
     }
 
-    if (ucb_str_ensure(str, len))
+    if (ucb_str_reserve(str, len))
     {
         memcpy(str->data + str->size, cstr, len);
         str->size += len;
@@ -560,7 +560,7 @@ void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t le
                        UCB_ERROR_INVALID_ARG,
                        "Invalid character position or invalid UTF-8");
         }
-        if (ucb_str_ensure(str, len))
+        if (ucb_str_reserve(str, len))
         {
             memmove(str->data + index + len, str->data + index, str->size - index);
             memcpy(str->data + index, cstr, len);

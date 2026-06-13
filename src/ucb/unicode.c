@@ -402,7 +402,7 @@ size_t ucb_uc_num_cp(const char* str, size_t len)
     return num;
 }
 
-size_t ucb_uc_num_chars(const char* str, size_t len)
+size_t ucb_uc_num_char(const char* str, size_t len)
 {
     // Simple implementation before implementing grapheme clusters
     size_t num = 0;
