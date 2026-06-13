@@ -10,8 +10,8 @@
 #ifndef UCB_THREADPOOL_H
 #define UCB_THREADPOOL_H
 
-#include "export.h"
-#include "threads.h"
+#include <ucb/export.h>
+#include <ucb/threads.h>
 
 #include <stdbool.h>
 

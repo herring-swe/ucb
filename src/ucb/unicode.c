@@ -274,6 +274,71 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
 /*                             Buffer and encoder                             */
 /* -------------------------------------------------------------------------- */
 
+int ucb_uc_encode_codepoint(uint8_t* dst, const ucb_cp cp)
+{
+    int bytes_len = 0;
+    if (cp <= 0x7F)
+    {
+        // 1-byte sequence (0xxxxxxx)
+        if (dst)
+        {
+            dst[bytes_len++] = (uint8_t)cp;
+        }
+        else
+        {
+            bytes_len++;
+        }
+    }
+    else if (cp <= 0x7FF)
+    {
+        // 2-byte sequence (110xxxxx 10xxxxxx)
+        if (dst)
+        {
+            dst[bytes_len++] = (uint8_t)(0xC0 | (cp >> 6));
+            dst[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
+        }
+        else
+        {
+            bytes_len += 2;
+        }
+    }
+    else if (cp <= 0xFFFF)
+    {
+        // 3-byte sequence (1110xxxx 10xxxxxx 10xxxxxx)
+        if (dst)
+        {
+            dst[bytes_len++] = (uint8_t)(0xE0 | (cp >> 12));
+            dst[bytes_len++] = (uint8_t)(0x80 | ((cp >> 6) & 0x3F));
+            dst[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
+        }
+        else
+        {
+            bytes_len += 3;
+        }
+    }
+    else if (cp <= 0x10FFFF)
+    {
+        // 4-byte sequence (11110xxx 10xxxxxx 10xxxxxx 10xxxxxx)
+        if (dst)
+        {
+            dst[bytes_len++] = (uint8_t)(0xF0 | (cp >> 18));
+            dst[bytes_len++] = (uint8_t)(0x80 | ((cp >> 12) & 0x3F));
+            dst[bytes_len++] = (uint8_t)(0x80 | ((cp >> 6) & 0x3F));
+            dst[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
+        }
+        else
+        {
+            bytes_len += 4;
+        }
+    }
+    else
+    {
+        // Invalid code point (outside Unicode range)
+        return -1;
+    }
+    return bytes_len;
+}
+
 /**
  * Encodes an array of unicode code points into UTF-8 and appends them
  * to the buffer.
@@ -287,42 +352,19 @@ bool ucb_uc_encode_codepoints(ucb_buffer* buf,
     // Minimum chunks to work with
     uint8_t bytes[5 * UCB_UC_MAX_MULTI_LEN];
     size_t bytes_len = 0;
-    ucb_cp cp;
     for (size_t i = 0; i < len; i++)
     {
-        cp = codepoints[i];
-
-        if (cp <= 0x7F)
+        int res = ucb_uc_encode_codepoint(bytes + bytes_len, codepoints[i]);
+        if (res < 0)
         {
-            // 1-byte sequence (0xxxxxxx)
-            bytes[bytes_len++] = (uint8_t)cp;
-        }
-        else if (cp <= 0x7FF)
-        {
-            // 2-byte sequence (110xxxxx 10xxxxxx)
-            bytes[bytes_len++] = (uint8_t)(0xC0 | (cp >> 6));
-            bytes[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
-        }
-        else if (cp <= 0xFFFF)
-        {
-            // 3-byte sequence (1110xxxx 10xxxxxx 10xxxxxx)
-            bytes[bytes_len++] = (uint8_t)(0xE0 | (cp >> 12));
-            bytes[bytes_len++] = (uint8_t)(0x80 | ((cp >> 6) & 0x3F));
-            bytes[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
-        }
-        else if (cp <= 0x10FFFF)
-        {
-            // 4-byte sequence (11110xxx 10xxxxxx 10xxxxxx 10xxxxxx)
-            bytes[bytes_len++] = (uint8_t)(0xF0 | (cp >> 18));
-            bytes[bytes_len++] = (uint8_t)(0x80 | ((cp >> 12) & 0x3F));
-            bytes[bytes_len++] = (uint8_t)(0x80 | ((cp >> 6) & 0x3F));
-            bytes[bytes_len++] = (uint8_t)(0x80 | (cp & 0x3F));
+            if (perr)
+                ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32,
+                                 codepoints[i]);
+            return false;
         }
         else
         {
-            // Invalid code point (outside Unicode range)
-            ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32, cp);
-            return false;
+            bytes_len += (size_t)res;
         }
 
         // Push to buffer if next pass might overflow

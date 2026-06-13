@@ -13,11 +13,11 @@
 #ifndef UCB_UNICODE_H
 #define UCB_UNICODE_H
 
-#include "buffer.h"
-#include "diag.h"
-#include "export.h"
-#include "types.h"
-#include "unicode_enum.h"
+#include <ucb/buffer.h>
+#include <ucb/diag.h>
+#include <ucb/export.h>
+#include <ucb/types.h>
+#include <ucb/unicode_enum.h>
 
 #include <stddef.h>
 
@@ -47,6 +47,18 @@ UCB_DIAG_POP()
 
 UCB_API ucb_cp ucb_uc_iter_utf8(const unsigned char** iter);
 
+/**
+ * @brief Encode a single codepoint as UTF-8
+ * 
+ * The codepoint must be a valid Unicode code point (0 to 0x10FFFF, excluding surrogate pairs).
+ * 
+ * @param dst destination buffer, must have space for at least 4 bytes. If UCB_NULL, the function
+ * will return the number of bytes needed to encode the codepoint.
+ * @param cp codepoint to encode
+ * @return number of bytes written or needed
+ * @return -1 if codepoint is invalid (outside Unicode range)
+ */
+UCB_API int ucb_uc_encode_codepoint(uint8_t* dst, const ucb_cp cp);
 UCB_API bool ucb_uc_encode_codepoints(ucb_buffer* buf,
                                       const ucb_cp* codepoints,
                                       size_t len,

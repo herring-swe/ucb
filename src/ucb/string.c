@@ -62,7 +62,7 @@ static bool ucb_str_init_common(ucb_str* str, bool wrap, const char* cstr, size_
         if (str->data)
         {
             memcpy(str->data, cstr, len);
-            str->data[str->size] = '\0';
+            str->data[len] = '\0';
 
             str->size = len;
             str->alloc = len + 1;
