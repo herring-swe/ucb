@@ -1,0 +1,22 @@
+/**
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ *
+ * @brief Configuration header
+ */
+
+#ifndef UCB_CONFIG_H
+#define UCB_CONFIG_H
+
+/**
+ * @brief Enable backtrace support for memory tracking
+ */
+#cmakedefine UCB_MEMTRACK_BACKTRACE 1
+
+/**
+ * @brief Maximum number of frames to capture in a backtrace
+ */
+#define UCB_BTRACE_MAX_FRAMES @UCB_BTRACE_MAX_FRAMES@
+
+#endif // UCB_CONFIG_H

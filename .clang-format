@@ -7,12 +7,19 @@ ColumnLimit: 100
 AccessModifierOffset: -4
 AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
+AllowAllArgumentsOnNextLine: false
 IndentCaseLabels: false
 SpacesBeforeTrailingComments: 1
+# AlignAfterOpenBracket: true
+# AlwaysBreakAfterReturnType: None
+# BreakAfterOpenBracketFunction: true
+# BreakBeforeCloseBracketFunction: true
+# BreakAfterReturnType: Automatic
+# PenaltyReturnTypeOnItsOwnLine: 10000000
 
-IncludeBlocks: Preserve
-SortIncludes:
-  IgnoreCase: true
+BinPackArguments: false
+BinPackParameters: false
+# BinPackParametersStyle: OnePerLine
 
 # Allman with few exceptions (namespace, extern block)
 BreakBeforeBraces: Custom
@@ -35,3 +42,20 @@ BraceWrapping:
     SplitEmptyFunction: true
     SplitEmptyRecord: true
     SplitEmptyNamespace: true
+
+IncludeBlocks: Regroup
+SortIncludes:
+  IgnoreCase: true
+
+IncludeCategories:
+  - Regex:           '^"(ucb)/'
+    Priority:        2
+    SortPriority:    2
+    CaseSensitive:   true
+  - Regex:           '^((<|")(gtest|gmock|isl|json)/)'
+    Priority:        3
+  - Regex:           '<[[:alnum:].]+>'
+    Priority:        4
+  - Regex:           '.*'
+    Priority:        1
+    SortPriority:    0

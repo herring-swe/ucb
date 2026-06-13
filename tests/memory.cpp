@@ -162,7 +162,7 @@ struct MemTrackFixture
     }
     ~MemTrackFixture()
     {
-        UCB_MEMTRACK_SET_FUNC(prev_func);
+        UCB_UNUSED(UCB_MEMTRACK_SET_FUNC(prev_func));
     }
 };
 

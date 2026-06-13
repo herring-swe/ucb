@@ -100,6 +100,10 @@ function(ucb_add_library name)
         target_compile_definitions(${name} PUBLIC "$<$<CONFIG:DEBUG>:UCB_DEVEL>")
     endif()
 
+    if(UCB_FAST)
+        target_compile_definitions(${name} PUBLIC UCB_FAST)
+    endif()
+
     if(NOT MSVC)
         set_target_properties(${name} PROPERTIES
             POSITION_INDEPENDENT_CODE ON
@@ -158,5 +162,56 @@ function(ucb_install target)
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endfunction()
+
+# Macro to generate files based on template headers
+# Calls the preprocessor to do the processing
+# Takes:
+# - template header file
+# - output header file
+# - output source file
+# - list of common defines
+# - list of defines for header
+# - list of defines for source
+function(ucb_generate_from_template)
+    set(options)
+    set(oneValueArgs TEMPLATE HEADER SOURCE)
+    set(multiValueArgs COMMON_DEFINES HEADER_DEFINES SOURCE_DEFINES HEADER_INCLUDES)
+    cmake_parse_arguments(GEN "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # Update relative paths
+    set(INC_PATH_HEADER "<ucb/${GEN_HEADER}>")
+    set(GEN_TEMPLATE ${CMAKE_SOURCE_DIR}/include/ucb/${GEN_TEMPLATE})
+    set(GEN_HEADER ${CMAKE_SOURCE_DIR}/include/ucb/${GEN_HEADER})
+    set(GEN_SOURCE ${CMAKE_SOURCE_DIR}/src/ucb/${GEN_SOURCE})
+
+    
+    set(PYTHON_SCRIPT ${CMAKE_SOURCE_DIR}/tools/gen_template.py)
+    set(PYTHON_INTERPRETER ${Python_EXECUTABLE})
+    
+    set(DEFS_HEADER "")
+    set(DEFS_SOURCE "")
+    set(DEFS_HEADER_INCLUDES "")
+
+    foreach(INC ${GEN_HEADER_INCLUDES})
+        list(APPEND DEFS_HEADER_INCLUDES "-I${INC}")
+    endforeach()
+
+    foreach(DEF ${GEN_COMMON_DEFINES} ${GEN_HEADER_DEFINES})
+        list(APPEND DEFS_HEADER "-D${DEF}")
+    endforeach()
+
+    foreach(DEF ${GEN_COMMON_DEFINES} ${GEN_SOURCE_DEFINES})
+        list(APPEND DEFS_SOURCE "-D${DEF}")
+    endforeach()
+
+    add_custom_command(
+        OUTPUT ${GEN_HEADER} ${GEN_SOURCE}
+        COMMAND ${Python_EXECUTABLE} ${PYTHON_SCRIPT} ${DEFS_HEADER} -o ${GEN_HEADER} ${GEN_TEMPLATE} ${DEFS_HEADER_INCLUDES} -H
+        COMMAND ${Python_EXECUTABLE} ${PYTHON_SCRIPT} ${DEFS_SOURCE} -o ${GEN_SOURCE} ${GEN_TEMPLATE} -I ${INC_PATH_HEADER}
+        DEPENDS ${GEN_TEMPLATE}
+        COMMENT "Generating ${GEN_HEADER}"
+        VERBATIM
     )
 endfunction()

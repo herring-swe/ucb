@@ -12,6 +12,17 @@
 
 #define UCB_UNUSED(x) (void)(x)
 
+#define _UCB_STRINGIFY(x) #x
+#define UCB_STRINGIFY(x) _UCB_STRINGIFY(x)
+
+#define _UCB_JOIN(A, B) A##B
+#define UCB_JOIN(A, B) _UCB_JOIN(A, B)
+
+#define _UCB_JOIN_3(A, B, C) A##B##C
+#define UCB_JOIN_3(A, B, C) _UCB_JOIN_3(A, B, C)
+
+#define UCB_SNAKE(A, B) _UCB_JOIN_3(A, _, B)
+
 // clang-format off
 #ifdef __cplusplus
     #define UCB_NULL nullptr

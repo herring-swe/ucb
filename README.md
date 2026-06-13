@@ -6,11 +6,11 @@ It may, or may not, have another hidden meaning.
 ## Goal
 
 The goal of this C library is to abstract common platform specific functionality
-and provide a unified interface for the most common operations.
+and provide a unified interface for common operations on supported platforms.
 
-It is not intended to be a full replacement for the standard library. Focus will be on adding functionality that is either missing or do not behave the same on different platforms.
-
-However, it will also add functionality where it makes sense to do.
+Due to abstraction, it is impossible to be as performant as direct C implementation,
+nor C++ templating libraries. Although it aims to be as performant as possible while keeping
+a sane API for usage.
 
 The design is to use [UTF-8 everywhere](https://utf8everywhere.org/), unless otherwise
 specified.

@@ -1,0 +1,21 @@
+/**
+ * This file is part of the UCB project
+ * SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * SPDX-License-Identifier: MIT
+ *
+ * @brief Version header
+ */
+
+#ifndef UCB_VERSION_H
+#define UCB_VERSION_H
+
+#define UCB_VER_MAJOR @CMAKE_PROJECT_VERSION_MAJOR@
+#define UCB_VER_MINOR @CMAKE_PROJECT_VERSION_MINOR@
+#define UCB_VER_PATCH @CMAKE_PROJECT_VERSION_PATCH@
+
+/**
+ * @brief Defines the full version for ABI checks
+ */
+#define UCB_VER (UCB_VER_MAJOR < 10000) + (UCB_VER_MINOR < 100) + UCB_VER_PATCH
+
+#endif // UCB_VERSION_H

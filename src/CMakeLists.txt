@@ -5,13 +5,72 @@
 set(UNICODE_DATA_DIR "${CMAKE_CURRENT_BINARY_DIR}/ucb_data")
 include(${CMAKE_SOURCE_DIR}/cmake/unicode_data.cmake)
 
+# ---------------------------------------------------------------------------- #
+#                             Pre-generate sources                             #
+# ---------------------------------------------------------------------------- #
+
+set(_types int float double)
+set(_suffixes int flt dbl)
+foreach(_type _suffix IN ZIP_LISTS _types _suffixes)
+    ucb_generate_from_template(
+        TEMPLATE container/templates/vector_template.h
+        HEADER container/impl/vector_${_suffix}.h
+        SOURCE container/impl/vector_${_suffix}.c
+        COMMON_DEFINES UCB_T_SUFFIX=${_suffix} UCB_T_EXPORT=UCB_API UCB_T_IS_POD UCB_T_CMP_FUNC=ucb_comp_func_${_suffix}
+        HEADER_DEFINES "UCB_T_DECLARE=${_type}" 
+        SOURCE_DEFINES "UCB_T_DEFINE=${_type}"
+        HEADER_INCLUDES "<ucb/export.h>"
+    )
+endforeach()
+
+ucb_generate_from_template(
+    TEMPLATE container/templates/vector_template.h
+    HEADER container/impl/vector_ptr.h
+    SOURCE container/impl/vector_ptr.c
+    COMMON_DEFINES UCB_T_SUFFIX=ptr UCB_T_EXPORT=UCB_API UCB_T_CMP_FUNC=ucb_comp_func_ptr 
+    HEADER_DEFINES "UCB_T_DECLARE=void*" 
+    SOURCE_DEFINES "UCB_T_DEFINE=void*"
+    HEADER_INCLUDES "<ucb/export.h>"
+)
+
+ucb_generate_from_template(
+    TEMPLATE container/templates/vector_template.h
+    HEADER container/impl/vector_str.h
+    SOURCE container/impl/vector_str.c
+    COMMON_DEFINES UCB_T_SUFFIX=str UCB_T_EXPORT=UCB_API UCB_T_FREE_FUNC=ucb_str_free UCB_T_CLONE_FUNC=ucb_str_clone UCB_T_CMP_FUNC=ucb_str_cmp_func 
+    HEADER_DEFINES "UCB_T_DECLARE=struct ucb_str*" 
+    SOURCE_DEFINES "UCB_T_DEFINE=struct ucb_str*"
+    HEADER_INCLUDES "<ucb/string.h>" "<ucb/export.h>"
+)
+
+# ---------------------------------------------------------------------------- #
+#                                    Library                                   #
+# ---------------------------------------------------------------------------- #
+
 ucb_add_library(ucb LANGUAGE C)
 
 if(TARGET unicode_data)
     add_dependencies(ucb unicode_data)
 endif()
 
+# if(TARGET container_data)
+#     add_dependencies(ucb container_data)
+# endif()
+
 ucb_target_public_headers(ucb FILES
+    ucb/container/impl/vector_dbl.h
+    ucb/container/impl/vector_flt.h
+    ucb/container/impl/vector_int.h
+    ucb/container/impl/vector_ptr.h
+    ucb/container/impl/vector_str.h
+    
+    ucb/container/templates/vector_template.h
+
+    ucb/container/pqueue.h
+    ucb/container/vector_generic.h
+    ucb/container/vector.h
+    
+    ucb/algorithm.h
     ucb/btrace.h
     ucb/buffer.h
     ucb/bufutil.h
@@ -32,8 +91,6 @@ ucb_target_public_headers(ucb FILES
     ucb/ucb.h
     ucb/unicode_enum.h
     ucb/unicode.h
-
-    ucb/container/pqueue.h
 )
 
 ucb_target_sources(ucb PRIVATE
@@ -51,6 +108,16 @@ ucb_target_sources(ucb PRIVATE
 )
 
 ucb_target_sources(ucb PRIVATE
+    ucb/container/impl/vector_dbl.c
+    ucb/container/impl/vector_flt.c
+    ucb/container/impl/vector_int.c
+    ucb/container/impl/vector_ptr.c
+    ucb/container/impl/vector_str.c
+    
+    ucb/container/pqueue.c
+    ucb/container/vector_generic.c
+
+    ucb/algorithm.c
     ucb/btrace.c
     ucb/buffer_private.c
     ucb/buffer.c
@@ -72,8 +139,6 @@ ucb_target_sources(ucb PRIVATE
     ucb/ucb.c
     ucb/unicode_enum.c
     ucb/unicode.c
-
-    ucb/container/pqueue.c
 )
 
 if(WIN32)

@@ -32,8 +32,12 @@ ucb_add_executable(ucb_tests LANGUAGE CXX)
 ucb_target_sources(ucb_tests PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     common.h
+    test_cast.h
     test_tgfunc.h
     test_types.h
+
+    container/my_type.h
+    container/test_vector.h
 )
 
 ucb_target_sources(ucb_tests PRIVATE
@@ -42,8 +46,8 @@ ucb_target_sources(ucb_tests PRIVATE
     # Actual tests
     btrace.cpp
     buffer.cpp
+    cast.cpp
     common.cpp
-    container.cpp
     memory.cpp
     tgfunc.cpp
     threadpool.cpp
@@ -51,7 +55,13 @@ ucb_target_sources(ucb_tests PRIVATE
     types.cpp
     unicode.cpp
 
+    container/my_type.c
+    container/pqueue.cpp
+    container/test_vector.c
+    container/vector.cpp
+
     # Pure C tests
+    test_cast.c
     test_tgfunc.c
     test_types.c
 

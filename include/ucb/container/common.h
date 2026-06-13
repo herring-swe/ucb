@@ -11,6 +11,8 @@
 #define UCB_CONTAINER_COMMON_H
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /**
  * @brief Generic comparison function
@@ -23,14 +25,50 @@ typedef int (*ucb_cmp_func)(const void* a, const void* b);
 /**
  * @brief Generic clone function
  * @param data data to clone
- * @return void* cloned data
+ * @return void* cloned data or UCB_NULL on failure (OOM)
  */
 typedef void* (*ucb_clone_func)(const void* data);
+
+/**
+ * @brief Generic copy function
+ * @param dst destination to copy to
+ * @param src source to copy from
+ * @return true if copy was successful, false otherwise (OOM)
+ */
+typedef void* (*ucb_copy_func)(void* dst, const void* src);
 
 /**
  * @brief Generic free function
  * @param data data to free
  */
 typedef void (*ucb_free_func)(void* data);
+
+/**
+ * @brief Generic release function
+ *
+ * Frees all data but not the data pointer itself
+ * @param data data to release
+ */
+typedef void (*ucb_release_func)(void* data);
+
+static inline int ucb_comp_func_int(const void* a, const void* b)
+{
+    return (*(int*)a) - (*(int*)b);
+}
+
+static inline int ucb_comp_func_flt(const void* a, const void* b)
+{
+    return (*(float*)a) - (*(float*)b);
+}
+
+static inline int ucb_comp_func_dbl(const void* a, const void* b)
+{
+    return (*(double*)a) - (*(double*)b);
+}
+
+static inline int ucb_comp_func_ptr(const void* a, const void* b)
+{
+    return (uintptr_t)a - (uintptr_t)b;
+}
 
 #endif // UCB_CONTAINER_COMMON_H

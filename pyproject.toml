@@ -9,6 +9,7 @@
 target-version = "py310"
 line-length = 100
 include = ["tools/**/*.py"]
+exclude = ["tools/py_c_preprocessor"]
 
 force-exclude = true
 

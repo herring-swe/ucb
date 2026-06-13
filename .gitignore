@@ -1,11 +1,15 @@
 # Basic folders
 .vscode/
+.kilo/
 .mypy_cache/
 __pycache__/
 build/
 build_*/
 install/
 external/
+
+# Don't push doxygen
+doc/doxygen/html/
 
 # Local ignore files
 local_ignore/

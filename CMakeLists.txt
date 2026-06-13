@@ -9,17 +9,16 @@ include(cmake/setup.cmake)
 
 project(ucb VERSION 0.1.0 LANGUAGES C)
 
+# Special options, do not rename as they have a meaning in CMake
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTING "Build tests" ON)
 
+# Internal options and details
 option(UCB_CLANG_TIDY "Use clang-tidy" OFF)
 option(UCB_WITH_BEAVER "Beaver mode" OFF)
-option(UCB_WITH_UTF8 "Enable UTF-8 library" ON)
-option(UCB_WITH_ICONV "Enable iconv library" OFF)
-
-# Internal options and details
 option(UCB_DEVEL "Enables development logging and assertions for debug builds" ON)
 option(UCB_MEMTRACK_BACKTRACE "Enable backtrace support for memory tracking (SLOW)" OFF)
+option(UCB_FAST "Enable performance optimizations" ON)
 set(UCB_BTRACE_MAX_FRAMES 64 CACHE STRING "Maximum number of frames to capture in a backtrace")
 
 # External includes
@@ -51,13 +50,17 @@ if(UCB_CLANG_TIDY)
     endif()
 endif()
 
-if(UCB_WITH_UTF8 AND UCB_WITH_ICONV)
-    find_package(Iconv REQUIRED)
-endif()
+# Internal config.h
+configure_file(${CMAKE_SOURCE_DIR}/cmake/headers/config.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/config.h)
 
-configure_file(config.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/config.h)
+# Public version.h
+configure_file(${CMAKE_SOURCE_DIR}/cmake/headers/version.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/version.h)
+install(
+    FILES ${CMAKE_BINARY_DIR}/include/ucb/version.h
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ucb
+)
+
 include_directories(${CMAKE_BINARY_DIR}/include)
-
 add_subdirectory(src)
 
 if(BUILD_TESTING)
