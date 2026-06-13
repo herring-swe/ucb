@@ -11,12 +11,12 @@
 #ifndef UCB_STRING_H
 #define UCB_STRING_H
 
-#include "defines.h"
-#include "diag.h"
-#include "error.h"
-#include "export.h"
-#include "types.h"
-#include "unicode_enum.h"
+#include <ucb/defines.h>
+#include <ucb/diag.h>
+#include <ucb/error.h>
+#include <ucb/export.h>
+#include <ucb/types.h>
+#include <ucb/unicode_enum.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -169,7 +169,7 @@ typedef struct ucb_str
 static inline ucb_str ucb_str_make()
 {
     ucb_str str;
-    str.data = "";
+    str.data = (char*)"";
     str.size = 0;
     str.alloc = 0;
     return str;
@@ -582,6 +582,11 @@ UCB_API bool ucb_str_equal(const ucb_str* str1, const ucb_str* str2);
 
 UCB_API int ucb_str_comp(const ucb_str* str1, const ucb_str* str2);
 UCB_API int ucb_str_icomp(const ucb_str* str1, const ucb_str* str2);
+
+static inline int ucb_str_cmp_func(const void* a, const void* b)
+{
+    return ucb_str_comp((const ucb_str*)a, (const ucb_str*)b);
+}
 
 UCB_API bool ucb_str_startswith(const ucb_str* str, const ucb_str* prefix);
 UCB_API bool ucb_str_endswith(const ucb_str* str, const ucb_str* suffix);

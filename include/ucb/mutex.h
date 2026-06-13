@@ -11,8 +11,8 @@
 #ifndef UCB_MUTEX_H
 #define UCB_MUTEX_H
 
-#include "error.h"
-#include "export.h"
+#include <ucb/error.h>
+#include <ucb/export.h>
 
 typedef struct ucb_mutex ucb_mutex;
 

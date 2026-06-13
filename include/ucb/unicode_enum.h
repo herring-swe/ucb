@@ -10,7 +10,7 @@
 #ifndef UCB_UNICODE_ENUM_H
 #define UCB_UNICODE_ENUM_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 typedef enum ucb_norm_form
 {

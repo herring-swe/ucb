@@ -10,7 +10,7 @@
 #ifndef UCB_BUFUTIL_H
 #define UCB_BUFUTIL_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 #include <stdalign.h>
 #include <stddef.h>

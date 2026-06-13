@@ -12,7 +12,7 @@
 
 #ifndef NDEBUG // Debug mode
 
-#include "error.h"
+#include <ucb/error.h>
 
 #include <errno.h>
 #include <stdio.h>

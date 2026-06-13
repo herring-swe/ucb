@@ -11,7 +11,7 @@
 #ifndef UCB_TIME_H
 #define UCB_TIME_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 #include <stdint.h>
 

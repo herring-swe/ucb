@@ -11,10 +11,10 @@
 #ifndef UCB_MEMDBG_H
 #define UCB_MEMDBG_H
 
-#include "btrace.h"
-#include "defines.h"
-#include "diag.h"
-#include "export.h"
+#include <ucb/btrace.h>
+#include <ucb/defines.h>
+#include <ucb/diag.h>
+#include <ucb/export.h>
 
 #include <stdbool.h>
 #include <stddef.h>

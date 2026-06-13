@@ -10,7 +10,7 @@
 #ifndef UCB_COND_H
 #define UCB_COND_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 #include <stdbool.h>
 

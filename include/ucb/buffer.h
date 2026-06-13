@@ -10,9 +10,9 @@
 #ifndef UCB_BUFFER_H
 #define UCB_BUFFER_H
 
-#include "defines.h"
-#include "error.h"
-#include "export.h"
+#include <ucb/defines.h>
+#include <ucb/error.h>
+#include <ucb/export.h>
 
 #include <stdalign.h>
 #include <stdbool.h>

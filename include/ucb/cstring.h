@@ -12,7 +12,7 @@
 #ifndef UCB_CSTRING_H
 #define UCB_CSTRING_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 #include <stdarg.h>
 #include <stddef.h>

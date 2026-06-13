@@ -12,6 +12,7 @@
 #define UCB_TYPES_H
 
 #include <stdint.h>
+#include <stddef.h>
 
 #define UCB_PID_INVALID 0
 
@@ -37,5 +38,10 @@ typedef uint32_t ucb_pid;
  * Unicode codepoint
  */
 typedef uint32_t ucb_cp;
+
+/**
+ * Signed size_t
+ */
+typedef ptrdiff_t ucb_ssize;
 
 #endif // UCB_TYPES_H

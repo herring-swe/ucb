@@ -10,7 +10,7 @@
 #ifndef UCB_BTRACE_H
 #define UCB_BTRACE_H
 
-#include "export.h"
+#include <ucb/export.h>
 
 #include <stddef.h>
 #include <stdio.h>

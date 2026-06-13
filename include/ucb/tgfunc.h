@@ -10,7 +10,7 @@
 #ifndef UCB_FUNC_H
 #define UCB_FUNC_H
 
-#include "generics.h"
+#include <ucb/generics.h>
 
 #include <float.h>
 #include <limits.h>

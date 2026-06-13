@@ -35,10 +35,10 @@
 #ifndef UCB_ERROR_H
 #define UCB_ERROR_H
 
-#include "defines.h"
-#include "errcodes.h"
-#include "export.h"
-#include "types.h"
+#include <ucb/defines.h>
+#include <ucb/errcodes.h>
+#include <ucb/export.h>
+#include <ucb/types.h>
 
 #include <stdarg.h>
 #include <stdbool.h>

@@ -14,9 +14,9 @@
 #ifndef UCB_MEMORY_H
 #define UCB_MEMORY_H
 
-#include "defines.h"
-#include "export.h"
-#include "types.h"
+#include <ucb/defines.h>
+#include <ucb/export.h>
+#include <ucb/types.h>
 
 #include <stdbool.h>
 #include <stddef.h>

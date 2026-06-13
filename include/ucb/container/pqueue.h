@@ -10,8 +10,8 @@
 #ifndef UCB_CONTAINER_PQUEUE_H
 #define UCB_CONTAINER_PQUEUE_H
 
-#include "../export.h"
-#include "common.h"
+#include <ucb/container/common.h>
+#include <ucb/export.h>
 
 #include <stddef.h>
 
