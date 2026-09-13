@@ -10,18 +10,18 @@
 
 #include "ucb/unicode.h"
 
+#include "unicode_combine.h"
+#include "unicode_decomp.h"
+#include "unicode_defines.h"
+#include "unicode_mapping.h"
+#include "unicode_props.h"
+
 #include "ucb/bufutil.h"
 #include "ucb/cstring.h"
 #include "ucb/debug.h"
 #include "ucb/defines.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
-
-#include "unicode_combine.h"
-#include "unicode_decomp.h"
-#include "unicode_defines.h"
-#include "unicode_mapping.h"
-#include "unicode_props.h"
 
 #include <assert.h>
 #include <inttypes.h>
@@ -255,14 +255,17 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
         if (i == 0 || errpos != UCB_NPOS)
         {
             if (perr)
-                ucb_throw_format(perr, UCB_ERROR_INVALID_UTF8,
-                                 "Invalid UTF-8 sequence at position %zu", errpos);
+                ucb_throw_format(perr,
+                                 UCB_ERROR_INVALID_UTF8,
+                                 "Invalid UTF-8 sequence at position %zu",
+                                 errpos);
         }
         else
         {
             // We only break with errpos, so this mean string was too short.
             if (perr)
-                ucb_throw_format(perr, UCB_ERROR_INVALID_UTF8,
+                ucb_throw_format(perr,
+                                 UCB_ERROR_INVALID_UTF8,
                                  "Invalid UTF-8 sequence at end of string. Expected %zu more bytes",
                                  i - len);
         }
@@ -358,7 +361,9 @@ bool ucb_uc_encode_codepoints(ucb_buffer* buf,
         if (res < 0)
         {
             if (perr)
-                ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32,
+                ucb_throw_format(perr,
+                                 UCB_ERROR_INVALID_CODEPOINT,
+                                 "Invalid codepoint: " PRIu32,
                                  codepoints[i]);
             return false;
         }
@@ -534,7 +539,9 @@ static bool ucb_uc_case_map_cp(casemap_ctx_t* ctx, ucb_error** perr)
 
     if (!prop)
     {
-        ucb_throw_format(perr, UCB_ERROR_INVALID_CODEPOINT, "Invalid codepoint: " PRIu32,
+        ucb_throw_format(perr,
+                         UCB_ERROR_INVALID_CODEPOINT,
+                         "Invalid codepoint: " PRIu32,
                          ctx->buf[0]);
     }
 

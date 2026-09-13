@@ -13,8 +13,8 @@
 
 #include <ucb/export.h>
 
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 /**
  * @brief Environment map structure

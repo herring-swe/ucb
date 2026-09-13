@@ -10,9 +10,8 @@
 #ifndef UCB_PQUEUE_PRIVATE_H
 #define UCB_PQUEUE_PRIVATE_H
 
-#include "ucb/container/pqueue.h"
-
 #include "ucb/container/common_private.h"
+#include "ucb/container/pqueue.h"
 #include "ucb/mutex.h"
 
 typedef struct ucb_pqueue_bucket

@@ -79,7 +79,8 @@ void ucb_mutex_release(ucb_mutex* mutex)
     UCB_VERIFY_ARGS(mutex);
 
 #ifdef _WIN32
-    UCB_VERIFY(mutex->owner == UCB_PID_INVALID, UCB_ERROR_MUTEX_LOCKED,
+    UCB_VERIFY(mutex->owner == UCB_PID_INVALID,
+               UCB_ERROR_MUTEX_LOCKED,
                "Mutex locked during release");
     DeleteCriticalSection(&mutex->handle);
 #else

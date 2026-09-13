@@ -10,14 +10,14 @@
 
 #include "ucb/error.h"
 
+#include "mutex_private.h"
+
 #include "ucb/cstring.h"
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
 #include "ucb/memory.h"
 #include "ucb/threads.h"
 #include "ucb/types.h"
-
-#include "mutex_private.h"
 
 #include <assert.h>
 #include <stdarg.h>

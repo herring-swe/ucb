@@ -12,10 +12,9 @@
 #error "This file is only for Windows"
 #endif
 
-#include "ucb/error.h"
-
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
+#include "ucb/error.h"
 #include "ucb/memory.h"
 #include "ucb/string.h"
 
@@ -185,7 +184,11 @@ char* ucb_err_msg_win32(uint32_t err)
 
     if (FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
                           FORMAT_MESSAGE_IGNORE_INSERTS,
-                      NULL, err, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPTSTR)&wstr, 0,
+                      NULL,
+                      err,
+                      MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US),
+                      (LPTSTR)&wstr,
+                      0,
                       NULL) == 0)
     {
         return UCB_NULL;
@@ -218,8 +221,10 @@ bool ucb_report_win32(uint32_t status,
     {
         char* errmsg = ucb_err_msg_win32(status);
         ucb_error_report(UCB_ERRLVL_SYSTEM,
-                         ucb_error_format(ucb_err_wrap_win32(status), "%s: Unexpected error - %s",
-                                          function, errmsg ? errmsg : "Unknown error"));
+                         ucb_error_format(ucb_err_wrap_win32(status),
+                                          "%s: Unexpected error - %s",
+                                          function,
+                                          errmsg ? errmsg : "Unknown error"));
         if (errmsg)
             ucb_free(errmsg);
     }

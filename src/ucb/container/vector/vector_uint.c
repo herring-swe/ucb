@@ -1,5 +1,4 @@
 #include <ucb/container/vector/vector_uint.h>
-
 #include <ucb/error.h>
 #include <ucb/memory.h>
 
@@ -332,22 +331,25 @@ ucb_iter2* ucb_vector_uint_end(ucb_vector_uint* vec)
 ucb_iter2* ucb_vector_uint_cbegin(const ucb_vector_uint* vec)
 {
     UCB_VERIFY_ARGS(vec);
-    return ucb_vector_uint_iter_init(
-        (ucb_vector_uint*)vec, 0, UCB_ITER2_FLAG_IS_BEGIN | UCB_ITER2_FLAG_CONST);
+    return ucb_vector_uint_iter_init((ucb_vector_uint*)vec,
+                                     0,
+                                     UCB_ITER2_FLAG_IS_BEGIN | UCB_ITER2_FLAG_CONST);
 }
 
 ucb_iter2* ucb_vector_uint_cend(const ucb_vector_uint* vec)
 {
     UCB_VERIFY_ARGS(vec);
-    return ucb_vector_uint_iter_init(
-        (ucb_vector_uint*)vec, vec->size, UCB_ITER2_FLAG_IS_END | UCB_ITER2_FLAG_CONST);
+    return ucb_vector_uint_iter_init((ucb_vector_uint*)vec,
+                                     vec->size,
+                                     UCB_ITER2_FLAG_IS_END | UCB_ITER2_FLAG_CONST);
 }
 
 ucb_iter2* ucb_vector_uint_rbegin(ucb_vector_uint* vec)
 {
     UCB_VERIFY_ARGS(vec);
-    return ucb_vector_uint_iter_init(
-        vec, vec->size - 1, UCB_ITER2_FLAG_IS_BEGIN | UCB_ITER2_FLAG_REVERSE);
+    return ucb_vector_uint_iter_init(vec,
+                                     vec->size - 1,
+                                     UCB_ITER2_FLAG_IS_BEGIN | UCB_ITER2_FLAG_REVERSE);
 }
 
 ucb_iter2* ucb_vector_uint_rend(ucb_vector_uint* vec)

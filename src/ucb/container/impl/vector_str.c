@@ -21,7 +21,7 @@ void ucb_vector_str_free(ucb_vector_str* vec)
     }
 }
 
-UCB_API void ucb_vector_str_free_full(ucb_vector_str* vec)
+void ucb_vector_str_free_full(ucb_vector_str* vec)
 {
     if (vec)
     {
@@ -99,7 +99,7 @@ bool ucb_vector_str_reserve(ucb_vector_str* vec, size_t new_capacity)
     return true;
 }
 
-UCB_API void ucb_vector_str_clear_deep(ucb_vector_str* vec)
+void ucb_vector_str_clear_deep(ucb_vector_str* vec)
 {
     UCB_VERIFY_ARGS(vec);
     for (size_t i = 0; i < vec->size; i++)
@@ -215,7 +215,7 @@ size_t ucb_vector_str_foreach(ucb_vector_str* vec, ucb_vector_str_iter_func func
     return i;
 }
 
-UCB_API void ucb_vector_str_sort(ucb_vector_str* vec)
+void ucb_vector_str_sort(ucb_vector_str* vec)
 {
     ucb_vector_str_sort_with(vec, ucb_str_cmp_func);
 }
@@ -228,21 +228,25 @@ int ucb_vector_str_cmp_wrapper(const void* a, const void* b, void* ctx)
     return func(a_ptr, b_ptr);
 }
 
-UCB_API void ucb_vector_str_sort_with(ucb_vector_str* vec, ucb_cmp_func func)
+void ucb_vector_str_sort_with(ucb_vector_str* vec, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 
-    ucb_qsort_ctx(vec->data, vec->size, sizeof(struct ucb_str*), ucb_vector_str_cmp_wrapper, func);
+    ucb_qsort_ctx(vec->data,
+                  vec->size,
+                  sizeof(struct ucb_str*),
+                  ucb_vector_str_cmp_wrapper,
+                  (void*)(uintptr_t)func);
 }
 
-UCB_API size_t ucb_vector_str_insert_sorted(ucb_vector_str* vec, struct ucb_str* val)
+size_t ucb_vector_str_insert_sorted(ucb_vector_str* vec, struct ucb_str* val)
 {
     return ucb_vector_str_insert_sorted_with(vec, val, ucb_str_cmp_func);
 }
 
-UCB_API size_t ucb_vector_str_insert_sorted_with(ucb_vector_str* vec,
-                                                 struct ucb_str* val,
-                                                 ucb_cmp_func func)
+size_t ucb_vector_str_insert_sorted_with(ucb_vector_str* vec,
+                                         struct ucb_str* val,
+                                         ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     ucb_ssize pos = ucb_vector_str_find_with(vec, val, func);
@@ -259,14 +263,14 @@ UCB_API size_t ucb_vector_str_insert_sorted_with(ucb_vector_str* vec,
     return ins_pos;
 }
 
-UCB_API ucb_ssize ucb_vector_str_find(const ucb_vector_str* vec, const struct ucb_str* val)
+ucb_ssize ucb_vector_str_find(const ucb_vector_str* vec, const struct ucb_str* val)
 {
     return ucb_vector_str_find_with(vec, val, ucb_str_cmp_func);
 }
 
-UCB_API ucb_ssize ucb_vector_str_find_with(const ucb_vector_str* vec,
-                                           const struct ucb_str* val,
-                                           ucb_cmp_func func)
+ucb_ssize ucb_vector_str_find_with(const ucb_vector_str* vec,
+                                   const struct ucb_str* val,
+                                   ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 

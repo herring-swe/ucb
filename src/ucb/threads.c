@@ -20,9 +20,9 @@
 #if defined(_WIN32)
 
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
 #include <process.h>
+
+#include <Windows.h>
 
 #else // POSIX
 
@@ -254,7 +254,8 @@ ucb_thread* ucb_thread_new_detached()
 void ucb_thread_free(ucb_thread* th)
 {
     UCB_VERIFY_ARGS(th);
-    UCB_VERIFY(!th->running || (th->flags & UCB_THREAD_FLAG_JOINABLE), UCB_ERROR_INVALID_ARG,
+    UCB_VERIFY(!th->running || (th->flags & UCB_THREAD_FLAG_JOINABLE),
+               UCB_ERROR_INVALID_ARG,
                "Thread is running and not joinable");
 
     if (th->flags & UCB_THREAD_FLAG_JOINABLE)
@@ -390,7 +391,8 @@ void ucb_thread_join(ucb_thread* th)
             if (ret == WAIT_FAILED)
                 UCB_REPORT_WIN32(GetLastError(), "WaitForSingleObject failed");
             else
-                UCB_VERIFY(false, UCB_ERRSYS_UNKNOWN,
+                UCB_VERIFY(false,
+                           UCB_ERRSYS_UNKNOWN,
                            "WaitForSingleObject failed with unknown error");
             // failover?
         }

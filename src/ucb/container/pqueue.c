@@ -121,7 +121,8 @@ static size_t ucb_pqueue_push_node(ucb_pqueue* pq, int prio, ucb_fwdlist_node* n
         else
         {
             // Shift to accomodate bucket
-            memmove(&pq->buckets[idx + 1], &pq->buckets[idx],
+            memmove(&pq->buckets[idx + 1],
+                    &pq->buckets[idx],
                     (pq->num_buckets - idx) * sizeof(ucb_pqueue_bucket));
             bucket = &pq->buckets[idx];
         }
@@ -166,7 +167,8 @@ static ucb_fwdlist_node* ucb_pqueue_pop_node(ucb_pqueue* pq)
             if (pq->num_buckets > 1)
             {
                 // Shift buckets to the left
-                memmove(&pq->buckets[0], &pq->buckets[1],
+                memmove(&pq->buckets[0],
+                        &pq->buckets[1],
                         (pq->num_buckets - 1) * sizeof(ucb_pqueue_bucket));
             }
             pq->num_buckets--;

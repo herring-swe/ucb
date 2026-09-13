@@ -108,8 +108,10 @@ static void ucb_mem_tracking_default_report_func(const ucb_mem_report* const rep
     printf("*** Memory report *************************************************************\n");
     printf("Tracepoint: %s (Level %d)\n", report->name, report->level);
     printf("  Current: %zu allocs, %zu bytes\n", report->current_alloc, report->current_size);
-    printf("  Peaks: %zu allocs, %zu bytes, largest block %zu\n", report->peak_alloc,
-           report->peak_size, report->peak_alloc_block);
+    printf("  Peaks: %zu allocs, %zu bytes, largest block %zu\n",
+           report->peak_alloc,
+           report->peak_size,
+           report->peak_alloc_block);
     printf("  Totals: %zu allocs, %zu bytes\n", report->total_alloc, report->total_size);
 
     // List leaks
@@ -575,7 +577,10 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
         UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
                   "Invalid allocation, possible memory corruption at %p\n"
                   "Current realloc of %zu bytes called from: %s:%d",
-                  ptr, size, file, line);
+                  ptr,
+                  size,
+                  file,
+                  line);
         // If allowed to continue, reallocate and register
         if (size > 0)
         {
@@ -671,7 +676,9 @@ void ucb_free_debug(void* ptr, const char* file, int line)
         UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
                   "Invalid allocation, possible memory corruption at %p\n"
                   "Current free called from: %s:%d",
-                  ptr, file, line);
+                  ptr,
+                  file,
+                  line);
         // In this case, rather leak than free possibly invalid memory.
     }
 }

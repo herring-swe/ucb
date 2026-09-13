@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 #ifdef _MSC_VER
-struct
+typedef struct
 {
     ucb_cmp_func_ctx func;
     void* ctx;

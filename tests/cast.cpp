@@ -11,10 +11,11 @@
 
 #include "test_cast.h"
 
+#include <doctest.h>
+
 #include <cfloat>
 #include <climits>
 #include <cstddef>
-#include <doctest.h>
 #include <iostream>
 
 TEST_CASE("void casts")

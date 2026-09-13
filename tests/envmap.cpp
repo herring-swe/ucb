@@ -11,6 +11,7 @@
 #include "ucb/envmap.h"
 
 #include "ucb/defines.h"
+#include "ucb/env.h"
 
 #include <doctest.h>
 
@@ -173,7 +174,7 @@ TEST_CASE("envmap")
         CHECK(std::string(env_val) == "applied");
 
         // Clean up the process environment
-        unsetenv(_testKey);
+        ucb_env_unset(_testKey);
 
         ucb_envmap_free(map);
     }

@@ -58,17 +58,20 @@ static inline int ucb_comp_func_int(const void* a, const void* b)
 
 static inline int ucb_comp_func_flt(const void* a, const void* b)
 {
-    return (*(float*)a) - (*(float*)b);
+    float diff = (*(float*)a) - (*(float*)b);
+    return (diff > 0.0f) ? 1 : (diff < 0.0f) ? -1 : 0;
 }
 
 static inline int ucb_comp_func_dbl(const void* a, const void* b)
 {
-    return (*(double*)a) - (*(double*)b);
+    double diff = (*(double*)a) - (*(double*)b);
+    return (diff > 0.0) ? 1 : (diff < 0.0) ? -1 : 0;
 }
 
 static inline int ucb_comp_func_ptr(const void* a, const void* b)
 {
-    return (uintptr_t)a - (uintptr_t)b;
+    uintptr_t diff = (uintptr_t)a - (uintptr_t)b;
+    return (diff > 0) ? 1 : (diff < 0) ? -1 : 0;
 }
 
 #endif // UCB_CONTAINER_COMMON_H

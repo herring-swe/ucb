@@ -191,7 +191,7 @@ size_t ucb_vector_ptr_foreach(ucb_vector_ptr* vec, ucb_vector_ptr_iter_func func
     return i;
 }
 
-UCB_API void ucb_vector_ptr_sort(ucb_vector_ptr* vec)
+void ucb_vector_ptr_sort(ucb_vector_ptr* vec)
 {
     ucb_vector_ptr_sort_with(vec, ucb_comp_func_ptr);
 }
@@ -204,19 +204,23 @@ int ucb_vector_ptr_cmp_wrapper(const void* a, const void* b, void* ctx)
     return func(a_ptr, b_ptr);
 }
 
-UCB_API void ucb_vector_ptr_sort_with(ucb_vector_ptr* vec, ucb_cmp_func func)
+void ucb_vector_ptr_sort_with(ucb_vector_ptr* vec, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 
-    ucb_qsort_ctx(vec->data, vec->size, sizeof(void*), ucb_vector_ptr_cmp_wrapper, func);
+    ucb_qsort_ctx(vec->data,
+                  vec->size,
+                  sizeof(void*),
+                  ucb_vector_ptr_cmp_wrapper,
+                  (void*)(uintptr_t)func);
 }
 
-UCB_API size_t ucb_vector_ptr_insert_sorted(ucb_vector_ptr* vec, void* val)
+size_t ucb_vector_ptr_insert_sorted(ucb_vector_ptr* vec, void* val)
 {
     return ucb_vector_ptr_insert_sorted_with(vec, val, ucb_comp_func_ptr);
 }
 
-UCB_API size_t ucb_vector_ptr_insert_sorted_with(ucb_vector_ptr* vec, void* val, ucb_cmp_func func)
+size_t ucb_vector_ptr_insert_sorted_with(ucb_vector_ptr* vec, void* val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     ucb_ssize pos = ucb_vector_ptr_find_with(vec, val, func);
@@ -233,14 +237,12 @@ UCB_API size_t ucb_vector_ptr_insert_sorted_with(ucb_vector_ptr* vec, void* val,
     return ins_pos;
 }
 
-UCB_API ucb_ssize ucb_vector_ptr_find(const ucb_vector_ptr* vec, const void* val)
+ucb_ssize ucb_vector_ptr_find(const ucb_vector_ptr* vec, const void* val)
 {
     return ucb_vector_ptr_find_with(vec, val, ucb_comp_func_ptr);
 }
 
-UCB_API ucb_ssize ucb_vector_ptr_find_with(const ucb_vector_ptr* vec,
-                                           const void* val,
-                                           ucb_cmp_func func)
+ucb_ssize ucb_vector_ptr_find_with(const ucb_vector_ptr* vec, const void* val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 

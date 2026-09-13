@@ -1,11 +1,14 @@
-import os.path
 import sys
+from pathlib import Path
 
 # Hack to include module in base directory
-sys.path.insert(0, os.path.abspath('./'))
-from preprocessor import Preprocessor
+_TOOLS_DIR = Path(__file__).resolve().parents[2]  # .../tools
+if str(_TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(_TOOLS_DIR))
 
-SRC_PATH = "tests/test_src"
+from py_c_preprocessor.preprocessor import Preprocessor
+
+SRC_PATH = "tools/py_c_preprocessor/tests/test_src"
 
 def test_assert(expr, expected):
     if expr != expected:

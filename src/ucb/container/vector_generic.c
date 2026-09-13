@@ -45,9 +45,11 @@ ucb_vector* ucb_vector_new(ucb_vector_args args)
 
     if (args.data_clone || args.data_free)
     {
-        UCB_VERIFY_MSG(is_pointer, UCB_ERROR_INVALID_ARG,
+        UCB_VERIFY_MSG(is_pointer,
+                       UCB_ERROR_INVALID_ARG,
                        "data_clone/data_free require pointer mode (element_size must be 0)");
-        UCB_VERIFY_MSG(args.data_clone && args.data_free, UCB_ERROR_INVALID_ARG,
+        UCB_VERIFY_MSG(args.data_clone && args.data_free,
+                       UCB_ERROR_INVALID_ARG,
                        "data_clone and data_free must both be provided together");
     }
 
@@ -235,7 +237,8 @@ void ucb_vector_insert(ucb_vector* vec, size_t index, const void* data)
     }
     if (index < vec->size)
     {
-        memmove(vec->data + (index + 1) * vec->esize, vec->data + index * vec->esize,
+        memmove(vec->data + (index + 1) * vec->esize,
+                vec->data + index * vec->esize,
                 (vec->size - index) * vec->esize);
     }
     if (vec->is_pointer)
@@ -276,7 +279,8 @@ void ucb_vector_remove(ucb_vector* vec, size_t index, void* out_data)
     }
     if (index < vec->size - 1)
     {
-        memmove(vec->data + index * vec->esize, vec->data + (index + 1) * vec->esize,
+        memmove(vec->data + index * vec->esize,
+                vec->data + (index + 1) * vec->esize,
                 (vec->size - index - 1) * vec->esize);
     }
     vec->size--;

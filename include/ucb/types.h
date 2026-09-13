@@ -11,8 +11,8 @@
 #ifndef UCB_TYPES_H
 #define UCB_TYPES_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define UCB_PID_INVALID 0
 

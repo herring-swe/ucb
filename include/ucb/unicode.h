@@ -49,9 +49,9 @@ UCB_API ucb_cp ucb_uc_iter_utf8(const unsigned char** iter);
 
 /**
  * @brief Encode a single codepoint as UTF-8
- * 
+ *
  * The codepoint must be a valid Unicode code point (0 to 0x10FFFF, excluding surrogate pairs).
- * 
+ *
  * @param dst destination buffer, must have space for at least 4 bytes. If UCB_NULL, the function
  * will return the number of bytes needed to encode the codepoint.
  * @param cp codepoint to encode

@@ -10,12 +10,10 @@
 #include "ucb/threadpool.h"
 
 #include "ucb/cond_private.h"
-#include "ucb/mutex_private.h"
-
 #include "ucb/container/pqueue_private.h"
-
 #include "ucb/error.h"
 #include "ucb/memory.h"
+#include "ucb/mutex_private.h"
 
 struct ucb_threadpool
 {
@@ -149,7 +147,8 @@ void ucb_threadpool_free(ucb_threadpool* pool)
 void ucb_threadpool_set_thread_stack_size(ucb_threadpool* pool, size_t stack_size)
 {
     UCB_VERIFY_ARGS(pool);
-    UCB_VERIFY(!pool->running, UCB_ERROR_INVALID_STATE,
+    UCB_VERIFY(!pool->running,
+               UCB_ERROR_INVALID_STATE,
                "Cannot change stack size after threadpool has started");
 
     for (size_t i = 0; i < pool->num_threads; i++)
@@ -161,7 +160,8 @@ void ucb_threadpool_set_thread_stack_size(ucb_threadpool* pool, size_t stack_siz
 void ucb_threadpool_set_thread_priority(ucb_threadpool* pool, int priority)
 {
     UCB_VERIFY_ARGS(pool);
-    UCB_VERIFY(!pool->running, UCB_ERROR_INVALID_STATE,
+    UCB_VERIFY(!pool->running,
+               UCB_ERROR_INVALID_STATE,
                "Cannot change priority after threadpool has started");
 
     for (size_t i = 0; i < pool->num_threads; i++)

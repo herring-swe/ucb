@@ -190,23 +190,23 @@ size_t ucb_vector_dbl_foreach(ucb_vector_dbl* vec, ucb_vector_dbl_iter_func func
     return i;
 }
 
-UCB_API void ucb_vector_dbl_sort(ucb_vector_dbl* vec)
+void ucb_vector_dbl_sort(ucb_vector_dbl* vec)
 {
     ucb_vector_dbl_sort_with(vec, ucb_comp_func_dbl);
 }
 
-UCB_API void ucb_vector_dbl_sort_with(ucb_vector_dbl* vec, ucb_cmp_func func)
+void ucb_vector_dbl_sort_with(ucb_vector_dbl* vec, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     qsort(vec->data, vec->size, sizeof(double), func);
 }
 
-UCB_API size_t ucb_vector_dbl_insert_sorted(ucb_vector_dbl* vec, double val)
+size_t ucb_vector_dbl_insert_sorted(ucb_vector_dbl* vec, double val)
 {
     return ucb_vector_dbl_insert_sorted_with(vec, val, ucb_comp_func_dbl);
 }
 
-UCB_API size_t ucb_vector_dbl_insert_sorted_with(ucb_vector_dbl* vec, double val, ucb_cmp_func func)
+size_t ucb_vector_dbl_insert_sorted_with(ucb_vector_dbl* vec, double val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     ucb_ssize pos = ucb_vector_dbl_find_with(vec, &val, func);
@@ -223,14 +223,12 @@ UCB_API size_t ucb_vector_dbl_insert_sorted_with(ucb_vector_dbl* vec, double val
     return ins_pos;
 }
 
-UCB_API ucb_ssize ucb_vector_dbl_find(const ucb_vector_dbl* vec, const double* val)
+ucb_ssize ucb_vector_dbl_find(const ucb_vector_dbl* vec, const double* val)
 {
     return ucb_vector_dbl_find_with(vec, val, ucb_comp_func_dbl);
 }
 
-UCB_API ucb_ssize ucb_vector_dbl_find_with(const ucb_vector_dbl* vec,
-                                           const double* val,
-                                           ucb_cmp_func func)
+ucb_ssize ucb_vector_dbl_find_with(const ucb_vector_dbl* vec, const double* val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 

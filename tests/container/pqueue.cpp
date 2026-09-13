@@ -7,12 +7,12 @@
  * @brief PQueue tests
  */
 
-#include <doctest.h>
-
 #include "ucb/container/pqueue.h"
 
 #include "ucb/memdbg.h"
 #include "ucb/memory.h"
+
+#include <doctest.h>
 
 #include <chrono>
 #include <iostream>

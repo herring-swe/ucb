@@ -147,6 +147,7 @@ ucb_target_sources(ucb PRIVATE
 
 if(WIN32)
     ucb_target_sources(ucb PRIVATE
+        ucb/cstring_win32.c
         ucb/string_win32.c
         ucb/error_win32.c
     )

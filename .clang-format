@@ -56,6 +56,18 @@ IncludeCategories:
   # Thirdparty inclusion
   - Regex:           '^((<|")(doctest))'
     Priority:        3
+  # Windows headers before Windows.h
+  - Regex:           '<winsock2.h>'
+    Priority:        6
+    CaseSensitive:   false
+  # Windows headers
+  - Regex:           '<windows.h>'
+    Priority:        7
+    CaseSensitive:   false
+  # Windows headers after Windows.h
+  - Regex:           '<dbghelp.h>'
+    Priority:        8
+    CaseSensitive:   false
   # Standard library
   - Regex:           '<[[:alnum:]./]+.h>'
     Priority:        4

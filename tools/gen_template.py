@@ -19,7 +19,6 @@ Rules:
 
 import argparse
 import re
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -35,24 +34,23 @@ from py_c_preprocessor.preprocessor import (
 
 def get_clang_format() -> Optional[str]:
     # Find clang in path first, then via python
-    binary = shutil.which("clang-format")
-    if binary is None:
-        try:
-            import clang_format
+    mydir = Path(__file__).parent
+    binary = None
+    if sys.platform == "win32":
+        binary = mydir / "clang-format" / "clang-format.exe"
+    else:
+        binary = mydir / "clang-format" / "clang-format-linux"
 
-            binary = clang_format.get_executable("clang-format")
-        except ImportError:
-            pass
-    if binary is None:
-        print("clang-format not found, skipping formatting", file=sys.stderr)
-        return
-
-    return binary
+    if binary.exists():
+        return str(binary)
+    else:
+        raise FileNotFoundError(f"Could not find clang-format at {binary}")
 
 
 def format_file(filename: str) -> None:
     # Find clang in path first, then via python
     clang_format = get_clang_format()
+
     if clang_format is None:
         return
 

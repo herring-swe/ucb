@@ -84,7 +84,7 @@ int ucb_cstr_icomp(const char* a, const char* b)
 #endif // UCB_W
 }
 
-UCB_API char* ucb_cstr_concat(const char* str, ...)
+char* ucb_cstr_concat(const char* str, ...)
 {
     va_list args;
     va_start(args, str);
@@ -93,7 +93,7 @@ UCB_API char* ucb_cstr_concat(const char* str, ...)
     return result;
 }
 
-UCB_API char* ucb_cstr_concatv(const char* str, va_list args)
+char* ucb_cstr_concatv(const char* str, va_list args)
 {
     UCB_VERIFY_ARGS(str);
 

@@ -3,7 +3,7 @@
 /**
  * @file vector_ptr.h
  * This file is part of the UCB project
- * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
+ * - SPDX-FileCopyrightText: Â© 2026 Ã…ke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
  *
  * @brief Vector container for void*.

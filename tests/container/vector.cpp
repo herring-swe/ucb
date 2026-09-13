@@ -9,13 +9,14 @@
 
 #include "ucb/container/vector.h"
 
-#include <doctest.h>
 #include "my_type.h"
 #include "test_vector.h"
 
 #include "ucb/container/vector_generic.h"
 #include "ucb/memory.h"
 #include "ucb/string.h"
+
+#include <doctest.h>
 
 #include <chrono>
 #include <iomanip>

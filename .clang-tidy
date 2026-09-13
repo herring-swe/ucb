@@ -5,7 +5,8 @@ Checks: "*,
          -bugprone-easily-swappable-parameters,
          -google-readability-todo,
          -*-braces-around-statements,
-         -clang-diagnostic-declaration-after-statement"
+         -clang-diagnostic-declaration-after-statement,
+         -altera-*"
 # Enforce m_ prefix, but public members collide with struct
 # So all public members are allowed to be without prefix.
 CheckOptions:

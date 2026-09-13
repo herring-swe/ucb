@@ -190,23 +190,23 @@ size_t ucb_vector_flt_foreach(ucb_vector_flt* vec, ucb_vector_flt_iter_func func
     return i;
 }
 
-UCB_API void ucb_vector_flt_sort(ucb_vector_flt* vec)
+void ucb_vector_flt_sort(ucb_vector_flt* vec)
 {
     ucb_vector_flt_sort_with(vec, ucb_comp_func_flt);
 }
 
-UCB_API void ucb_vector_flt_sort_with(ucb_vector_flt* vec, ucb_cmp_func func)
+void ucb_vector_flt_sort_with(ucb_vector_flt* vec, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     qsort(vec->data, vec->size, sizeof(float), func);
 }
 
-UCB_API size_t ucb_vector_flt_insert_sorted(ucb_vector_flt* vec, float val)
+size_t ucb_vector_flt_insert_sorted(ucb_vector_flt* vec, float val)
 {
     return ucb_vector_flt_insert_sorted_with(vec, val, ucb_comp_func_flt);
 }
 
-UCB_API size_t ucb_vector_flt_insert_sorted_with(ucb_vector_flt* vec, float val, ucb_cmp_func func)
+size_t ucb_vector_flt_insert_sorted_with(ucb_vector_flt* vec, float val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     ucb_ssize pos = ucb_vector_flt_find_with(vec, &val, func);
@@ -223,14 +223,12 @@ UCB_API size_t ucb_vector_flt_insert_sorted_with(ucb_vector_flt* vec, float val,
     return ins_pos;
 }
 
-UCB_API ucb_ssize ucb_vector_flt_find(const ucb_vector_flt* vec, const float* val)
+ucb_ssize ucb_vector_flt_find(const ucb_vector_flt* vec, const float* val)
 {
     return ucb_vector_flt_find_with(vec, val, ucb_comp_func_flt);
 }
 
-UCB_API ucb_ssize ucb_vector_flt_find_with(const ucb_vector_flt* vec,
-                                           const float* val,
-                                           ucb_cmp_func func)
+ucb_ssize ucb_vector_flt_find_with(const ucb_vector_flt* vec, const float* val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 

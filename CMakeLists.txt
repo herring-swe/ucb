@@ -9,6 +9,10 @@ include(cmake/setup.cmake)
 
 project(ucb VERSION 0.1.0 LANGUAGES C)
 
+# clangd, clang-tidy, and other tools. The Visual Studio generator still
+# will not write this file; use Ninja or a Makefile generator for that.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Special options, do not rename as they have a meaning in CMake
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTING "Build tests" ON)
@@ -41,7 +45,6 @@ if(UCB_CLANG_TIDY)
 
     if(CLANG_TIDY_EXE)
         message(STATUS "Using clang-tidy: ${CLANG_TIDY_EXE}")
-        set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
         # set(CMAKE_C_CLANG_TIDY "${CLANG_TIDY_EXE}" -checks=-*,readability-*)
         set(CMAKE_C_CLANG_TIDY clang-tidy;-p=${CMAKE_BINARY_DIR})

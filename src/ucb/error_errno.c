@@ -8,10 +8,9 @@
  * @brief Error handling errno implementation
  */
 
-#include "ucb/error.h"
-
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
+#include "ucb/error.h"
 
 #include <errno.h>
 #include <string.h>
@@ -590,8 +589,10 @@ bool ucb_report_errno(int status, const char* UCB_RESTRICT msg, const char* UCB_
     else
     {
         ucb_error_report(UCB_ERRLVL_SYSTEM,
-                         ucb_error_format(ucb_err_wrap_errno(status), "%s: Unexpected error - %s",
-                                          function, strerror(status)));
+                         ucb_error_format(ucb_err_wrap_errno(status),
+                                          "%s: Unexpected error - %s",
+                                          function,
+                                          strerror(status)));
     }
     return true;
 }

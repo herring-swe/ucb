@@ -883,7 +883,7 @@ void UCB_VECTOR_T_FREE(_UCB_T_TYPE* vec)
 }
 
 #if defined(UCB_T_FREE_FUNC)
-UCB_T_EXPORT void UCB_VECTOR_T_FREE_FULL(_UCB_T_TYPE* vec)
+void UCB_VECTOR_T_FREE_FULL(_UCB_T_TYPE* vec)
 {
     if (vec)
     {
@@ -914,7 +914,7 @@ bool UCB_VECTOR_T_COPY(_UCB_T_TYPE* dst, const _UCB_T_TYPE* src)
 }
 
 #if defined(UCB_T_COPY_FUNC)
-UCB_T_EXPORT bool UCB_VECTOR_T_COPY_FULL(_UCB_T_TYPE* dst, const _UCB_T_TYPE* src)
+bool UCB_VECTOR_T_COPY_FULL(_UCB_T_TYPE* dst, const _UCB_T_TYPE* src)
 {
     UCB_VERIFY_ARGS(dst && src && dst != src);
 
@@ -961,7 +961,7 @@ _UCB_T_TYPE* UCB_VECTOR_T_CLONE(const _UCB_T_TYPE* src)
 }
 
 #if defined(UCB_T_COPY_FUNC)
-UCB_T_EXPORT _UCB_T_TYPE* UCB_VECTOR_T_CLONE_FULL(const _UCB_T_TYPE* src)
+_UCB_T_TYPE* UCB_VECTOR_T_CLONE_FULL(const _UCB_T_TYPE* src)
 {
     UCB_VERIFY_ARGS(src);
 
@@ -1042,7 +1042,7 @@ void UCB_VECTOR_T_CLEAR(_UCB_T_TYPE* vec)
 #endif
 
 #if defined(UCB_T_FREE_FUNC)
-UCB_T_EXPORT void UCB_VECTOR_T_CLEAR_FULL(_UCB_T_TYPE* vec)
+void UCB_VECTOR_T_CLEAR_FULL(_UCB_T_TYPE* vec)
 {
     UCB_VERIFY_ARGS(vec);
     for (size_t i = 0; i < vec->size; i++)
@@ -1198,7 +1198,7 @@ size_t UCB_VECTOR_T_FOREACH(_UCB_T_TYPE* vec, _UCB_T_FUNC(iter_func) func, void*
 /* ------------------------------ Find and sort ----------------------------- */
 
 #ifdef UCB_T_CMP_FUNC
-UCB_T_EXPORT void UCB_VECTOR_T_SORT(_UCB_T_TYPE* vec)
+void UCB_VECTOR_T_SORT(_UCB_T_TYPE* vec)
 {
     UCB_VECTOR_T_SORT_WITH(vec, UCB_T_CMP_FUNC);
 }
@@ -1214,7 +1214,7 @@ int _UCB_T_FUNC(cmp_wrapper)(const void* a, const void* b, void* ctx)
 }
 #endif
 
-UCB_T_EXPORT void UCB_VECTOR_T_SORT_WITH(_UCB_T_TYPE* vec, ucb_cmp_func func)
+void UCB_VECTOR_T_SORT_WITH(_UCB_T_TYPE* vec, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 #ifdef UCB_T_IS_POD
@@ -1227,18 +1227,22 @@ UCB_T_EXPORT void UCB_VECTOR_T_SORT_WITH(_UCB_T_TYPE* vec, ucb_cmp_func func)
      * the caller of this function. Therefore, we will handle the extra pointer level
      * using an intermediate wrapper.
      */
-    ucb_qsort_ctx(vec->data, vec->size, sizeof(_UCB_T), _UCB_T_FUNC(cmp_wrapper), func);
+    ucb_qsort_ctx(vec->data,
+                  vec->size,
+                  sizeof(_UCB_T),
+                  _UCB_T_FUNC(cmp_wrapper),
+                  (void*)(uintptr_t)func);
 #endif
 }
 
 #ifdef UCB_T_CMP_FUNC
-UCB_T_EXPORT size_t UCB_VECTOR_T_INSERT_SORTED(_UCB_T_TYPE* vec, _UCB_T val)
+size_t UCB_VECTOR_T_INSERT_SORTED(_UCB_T_TYPE* vec, _UCB_T val)
 {
     return UCB_VECTOR_T_INSERT_SORTED_WITH(vec, val, UCB_T_CMP_FUNC);
 }
 #endif
 
-UCB_T_EXPORT size_t UCB_VECTOR_T_INSERT_SORTED_WITH(_UCB_T_TYPE* vec, _UCB_T val, ucb_cmp_func func)
+size_t UCB_VECTOR_T_INSERT_SORTED_WITH(_UCB_T_TYPE* vec, _UCB_T val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
 #ifdef UCB_T_IS_POD
@@ -1262,15 +1266,13 @@ UCB_T_EXPORT size_t UCB_VECTOR_T_INSERT_SORTED_WITH(_UCB_T_TYPE* vec, _UCB_T val
 }
 
 #ifdef UCB_T_CMP_FUNC
-UCB_T_EXPORT ucb_ssize UCB_VECTOR_T_FIND(const _UCB_T_TYPE* vec, const _UCB_T_PTR val)
+ucb_ssize UCB_VECTOR_T_FIND(const _UCB_T_TYPE* vec, const _UCB_T_PTR val)
 {
     return UCB_VECTOR_T_FIND_WITH(vec, val, UCB_T_CMP_FUNC);
 }
 #endif
 
-UCB_T_EXPORT ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec,
-                                              const _UCB_T_PTR val,
-                                              ucb_cmp_func func)
+ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec, const _UCB_T_PTR val, ucb_cmp_func func)
 {
     UCB_VERIFY_ARGS(vec && func);
     // return rightmost index if found, otherwise -(index + 1)

@@ -12,7 +12,6 @@
 #define UCB_MUTEX_PRIVATE_H
 
 #include "ucb/mutex.h"
-
 #include "ucb/types.h"
 
 #if defined(_WIN32)

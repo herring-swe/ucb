@@ -44,8 +44,10 @@ void* ucb_calloc(size_t num, size_t size)
         mem = calloc(num, size);
         if (UCB_LIKELY(mem))
             return mem;
-        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate %zu * %zu = %zu bytes of memory",
-                  num, size);
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY,
+                  "Failed to allocate %zu * %zu = %zu bytes of memory",
+                  num,
+                  size);
     }
     return mem;
 }

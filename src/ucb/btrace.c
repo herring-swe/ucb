@@ -59,22 +59,32 @@ static int format_line(ucb_buffer* buf, void* address, HANDLE process, PSYMBOL_I
             module.SizeOfStruct = sizeof(module);
             if (SymGetModuleInfo64(process, (DWORD64)address, &module))
             {
-                slen = ucb_buffer_push_format(buf, "%s!%s+0x%llX (%s:%lu)", module.ModuleName,
-                                              symbol->Name, (DWORD64)address - symbol->Address,
-                                              line.FileName, line.LineNumber);
+                slen = ucb_buffer_push_format(buf,
+                                              "%s!%s+0x%llX (%s:%lu)",
+                                              module.ModuleName,
+                                              symbol->Name,
+                                              (DWORD64)address - symbol->Address,
+                                              line.FileName,
+                                              line.LineNumber);
             }
             else
             {
-                slen = ucb_buffer_push_format(buf, "%s+0x%llX (%s:%lu)", symbol->Name,
-                                              (DWORD64)address - symbol->Address, line.FileName,
+                slen = ucb_buffer_push_format(buf,
+                                              "%s+0x%llX (%s:%lu)",
+                                              symbol->Name,
+                                              (DWORD64)address - symbol->Address,
+                                              line.FileName,
                                               line.LineNumber);
             }
         }
         else
         {
             // Fallback: symbol + offset
-            slen = ucb_buffer_push_format(buf, "%s+0x%llX [0x%p]", symbol->Name,
-                                          (DWORD64)address - symbol->Address, address);
+            slen = ucb_buffer_push_format(buf,
+                                          "%s+0x%llX [0x%p]",
+                                          symbol->Name,
+                                          (DWORD64)address - symbol->Address,
+                                          address);
         }
     }
     else
@@ -215,8 +225,8 @@ void ucb_btrace_capture(ucb_btrace* bt)
         if (buf.data)
         {
             ucb_buffer_fit(&buf);
-            UCB_DPRINT("Backtrace buffer initial: %zu, final: %zu\n", total_size, buf.alloc);
-            ucb_buffer_transfer(&buf, &(void*)strs, &total_size, UCB_NULL, UCB_NULL);
+            // UCB_DPRINT("Backtrace buffer initial: %zu, final: %zu\n", total_size, buf.alloc);
+            ucb_buffer_transfer(&buf, (void**)&strs, &total_size, UCB_NULL, UCB_NULL);
             ucb_buffer_release(&buf);
 
             // Update all pointers
