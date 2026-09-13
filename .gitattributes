@@ -5,3 +5,5 @@
 *.bat text eol=crlf
 *.vcxproj* text eol=crlf
 *.sln text eol=crlf
+
+*.exe binary
