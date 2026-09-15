@@ -1,4 +1,4 @@
-* text eol=lf
+* text=auto eol=lf
 
 # Exceptions that may require CRLF
 # Shouldn't matter in ignored build folder
