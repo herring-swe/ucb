@@ -54,8 +54,11 @@ def format_file(filename: str) -> None:
     if clang_format is None:
         return
 
+    cmd = [clang_format, "-i", filename, "--style=file"]
+    print(f"Executing: {' '.join(cmd)}")
+
     # Format file, using .clang-format rules
-    subprocess.check_call([clang_format, "-i", filename, "--style=file"])
+    subprocess.check_call(cmd)
 
 
 def format_stream(contents: str) -> str:
