@@ -55,6 +55,7 @@ ucb_target_sources(ucb_tests PRIVATE
     tgfunc.cpp
     threadpool.cpp
     threads.cpp
+    tls.cpp
     types.cpp
     unicode.cpp
 

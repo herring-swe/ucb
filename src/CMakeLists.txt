@@ -90,6 +90,7 @@ ucb_target_public_headers(ucb FILES
     ucb/threadpool.h
     ucb/threads.h
     ucb/time.h
+    ucb/tls.h
     ucb/ucb.h
     ucb/unicode_enum.h
     ucb/unicode.h
@@ -140,6 +141,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/threadpool.c
     ucb/threads.c
     ucb/time.c
+    ucb/tls.c
     ucb/ucb.c
     ucb/unicode_enum.c
     ucb/unicode.c
