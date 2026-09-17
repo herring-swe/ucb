@@ -195,7 +195,7 @@ class Preprocessor:
                     return
                 else:
                     raise Exception('file "{}" cannot be found'.format(path))
-            file = open(path, "r")
+            file = open(path, "r", encoding="utf-8")
 
         elif type(file) is str:
             # Treat the file as a literal body

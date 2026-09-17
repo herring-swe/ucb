@@ -70,6 +70,7 @@ def format_stream(contents: str) -> str:
     p = subprocess.Popen(
         [clang_format, "--style=file"],
         universal_newlines=True,
+        encoding="utf-8",
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
     )
