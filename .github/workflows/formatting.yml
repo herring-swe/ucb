@@ -26,4 +26,4 @@ jobs:
 
       # Uses the clang-format in the repo
       - name: Check all formatting
-        run: python tools/format.py --clang-format $(which clang-format-21)
+        run: python tools/format.py
