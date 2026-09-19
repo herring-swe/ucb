@@ -2,9 +2,9 @@ name: Check formatting
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "release/**" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "release/**" ]
   workflow_dispatch:
 
 jobs:
@@ -24,12 +24,6 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r tools/pyreq-dev.txt
 
-      - name: Install clang-format-21
-        run: |
-          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-          echo "deb http://apt.llvm.org/noble/ llvm-toolchain-noble-21 main" | sudo tee /etc/apt/sources.list.d/llvm-21.list
-          sudo apt-get update -q
-          sudo apt-get install -y clang-format-21
-
+      # Uses the clang-format in the repo
       - name: Check all formatting
-        run: python tools/format.py --clang-format $(which clang-format-21)
+        run: python tools/format.py
