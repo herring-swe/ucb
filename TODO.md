@@ -98,8 +98,8 @@ For Documentation only Doxygen is considered necessary.
 ### Core - Core Base API (Target: 0.1.0)
 - [x] Public entry API (`ucb.h`) in place
 - [x] Common macros/types/exports in place
-- [ ] Testing
-- [ ] Documentation
+- [x] Testing
+- [x] Documentation
 
 ### Error Handling - Error Handling (Target: 0.1.0, harden in 0.2.0)
 - [x] Unified error code system
