@@ -105,9 +105,9 @@ For Documentation only Doxygen is considered necessary.
 - [x] Unified error code system
 - [x] Report vs throw model
 - [x] Platform mapping (POSIX/Win32)
-- [ ] Robustness pass for edge/error paths
-- [ ] Testing
-- [ ] Documentation
+- [x] Robustness pass for edge/error paths
+- [x] Testing
+- [x] Documentation
 
 ### Memory - Memory and Memdbg (Target: 0.1.0, improve in 0.2.0)
 - [x] malloc/calloc/realloc/free wrappers
@@ -134,6 +134,7 @@ For Documentation only Doxygen is considered necessary.
 ### Threads - Threads and Concurrency (Target: 0.1.0, harden in 0.2.0)
 - [x] Threads API (create/join/config)
 - [x] Mutex and condition variable API
+- [x] One-time initialization primitive (`ucb_once`)
 - [x] Threadpool and task API
 - [ ] Error-path robustness under resource pressure
 - [ ] Testing

@@ -11,6 +11,7 @@
 #include "ucb/error.h"
 
 #include "mutex_private.h"
+#include "once_private.h"
 
 #include "ucb/cstring.h"
 #include "ucb/defines.h"
@@ -35,9 +36,18 @@ static UCB_THREAD_LOCAL struct ucb_error s_err = {
     .is_static = true,
 };
 
-// FIXME: Rework mutex to be SRW and public
-static ucb_mutex s_mutex = {0};
-static int s_init_mutex = 0;
+// Guards output to stderr for the default handler. The mutex is recursive so a
+// nested report from the same thread cannot deadlock. Initialized once.
+static ucb_mutex s_report_mutex;
+static ucb_once s_report_once = UCB_ONCE_INIT;
+
+// Prevents a custom error handler that reports an error from recursing forever.
+static UCB_THREAD_LOCAL int s_report_depth = 0;
+
+static void s_report_lock_init(void)
+{
+    ucb_mutex_init_recursive(&s_report_mutex);
+}
 
 static ucb_error* ucb_error_get(void)
 {
@@ -64,6 +74,11 @@ static ucb_error* ucb_error_prepare_throw(ucb_error** perr)
             ucb_error_clear(perr);
         }
         err = ucb_calloc_type(1, ucb_error);
+        if (!err)
+        {
+            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate error object");
+            return UCB_NULL;
+        }
         *perr = err;
         return err;
     }
@@ -92,8 +107,19 @@ ucb_error* ucb_error_copy(const ucb_error* err)
     if (err)
     {
         ret = ucb_calloc_type(1, ucb_error);
+        if (!ret)
+        {
+            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate error copy");
+            return UCB_NULL;
+        }
         ret->code = err->code;
         ret->msg = ucb_cstr_dup(err->msg);
+        if (err->msg && !ret->msg)
+        {
+            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to copy error message");
+            ucb_free(ret);
+            return UCB_NULL;
+        }
         // ret->is_static = false; // Const value set by calloc.
     }
     return ret;
@@ -124,6 +150,8 @@ const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...)
 
 const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args)
 {
+    UCB_VERIFY_ARGS(code != UCB_OK && fmt != UCB_NULL);
+
     ucb_error* err = ucb_error_get();
     err->code = code;
     err->msg = s_buf;
@@ -134,6 +162,8 @@ const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args
 
 void ucb_error_print(ucb_errlvl lvl, const ucb_error* err)
 {
+    UCB_VERIFY_ARGS(err);
+
     fprintf(stderr, "\n\n** UCB %s **\n", ucb_error_lvlstr(lvl));
     fprintf(stderr, "%s\n", ucb_error_codestr(err->code));
     if (err->msg && err->msg[0])
@@ -157,12 +187,19 @@ void ucb_error_clear(ucb_error** perr)
 
 void ucb_throw(ucb_error** perr, ucb_ecode code, const char* msg)
 {
+    UCB_VERIFY_ARGS(code != UCB_OK && msg != UCB_NULL);
+
     ucb_error* err = ucb_error_prepare_throw(perr);
     if (!err)
         return;
 
     err->code = code;
     err->msg = ucb_cstr_dup(msg);
+    if (!err->msg)
+    {
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to copy error message");
+        ucb_error_clear(perr);
+    }
 }
 
 void ucb_throw_format(ucb_error** perr, ucb_ecode code, const char* fmt, ...)
@@ -175,12 +212,18 @@ void ucb_throw_format(ucb_error** perr, ucb_ecode code, const char* fmt, ...)
 
 void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt, va_list args)
 {
+    UCB_VERIFY_ARGS(code != UCB_OK && fmt != UCB_NULL);
+
     ucb_error* err = ucb_error_prepare_throw(perr);
     if (!err)
         return;
 
     err->code = code;
-    ucb_cstr_vasprintf((char**)&err->msg, fmt, args);
+    if (ucb_cstr_vasprintf((char**)&err->msg, fmt, args) < 0)
+    {
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to format error message");
+        ucb_error_clear(perr);
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -189,20 +232,36 @@ void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt, va_lis
 
 void ucb_error_report(ucb_errlvl lvl, const ucb_error* err)
 {
+    UCB_VERIFY_ARGS(err);
+
+    if (s_report_depth > 0)
+    {
+        // A handler reported an error while handling one. Avoid recursion and
+        // any lock, and just note it.
+        fprintf(stderr,
+                "\n\n** UCB %s **\nReentrant error report suppressed\n\n",
+                ucb_error_lvlstr(lvl));
+        return;
+    }
+
+    s_report_depth++;
     if (s_ucb_errfunc)
     {
         s_ucb_errfunc(lvl, err);
     }
     else
     {
-        if (!s_init_mutex)
-            ucb_mutex_init(&s_mutex);
-        ucb_mutex_lock(&s_mutex);
+        ucb_once_run(&s_report_once, s_report_lock_init);
+        ucb_mutex_lock(&s_report_mutex);
         ucb_error_print(lvl, err);
         if (lvl != UCB_ERRLVL_WARNING && lvl != UCB_ERRLVL_USER)
+        {
+            s_report_depth--;
             abort();
-        ucb_mutex_unlock(&s_mutex);
+        }
+        ucb_mutex_unlock(&s_report_mutex);
     }
+    s_report_depth--;
 }
 
 void ucb_report_fatal(ucb_ecode code, const char* fmt, ...)

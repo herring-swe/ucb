@@ -24,9 +24,8 @@ const char* ucb_error_lvlstr(ucb_errlvl lvl)
     case UCB_ERRLVL_SYSTEM:
         return "SYSTEM ERROR";
     default:
-        break;
+        return "UNKNOWN";
     }
-    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error level %d", lvl);
 }
 
 const char* ucb_error_codestr(ucb_ecode code)
@@ -349,7 +348,6 @@ const char* ucb_error_codestr(ucb_ecode code)
         return "ERRSYS_WIN_ERROR_DIRECTORY";
 
     default:
-        break;
+        return "UNKNOWN_ERROR";
     }
-    UCB_REPORT(UCB_ERROR_INVALID_ARG, "No match for error code %d", code);
 }

@@ -102,7 +102,7 @@ ucb_ecode ucb_err_wrap_win32(uint32_t err)
         return UCB_ERRSYS_ECONNABORTED;
 
     case ERROR_TIMEOUT:
-        UCB_ERRSYS_ETIMEDOUT;
+        return UCB_ERRSYS_ETIMEDOUT;
 
     case ERROR_WRITE_PROTECT:
         return UCB_ERRSYS_EROFS;
