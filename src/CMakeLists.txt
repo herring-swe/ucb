@@ -84,6 +84,7 @@ ucb_target_public_headers(ucb FILES
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h
+    ucb/once.h
     ucb/string.h
     ucb/task.h
     ucb/tgfunc.h
@@ -101,6 +102,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/buffer_private.h
     ucb/cond_private.h
     ucb/mutex_private.h
+    ucb/once_private.h
     ucb/sys_private.h
 
     ucb/container/common_private.h
@@ -135,6 +137,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/memdbg.c
     ucb/memory.c
     ucb/mutex.c
+    ucb/once.c
     ucb/string.c
     ucb/sys_private.c
     ucb/task.c

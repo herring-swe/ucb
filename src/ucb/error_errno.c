@@ -13,6 +13,7 @@
 #include "ucb/error.h"
 
 #include <errno.h>
+#include <stdio.h>
 #include <string.h>
 
 #if _WIN32
@@ -25,6 +26,36 @@
 #ifndef NOERROR
 #define NOERROR 0
 #endif
+
+#define UCB_BUFSIZE_STRERROR 256
+
+/**
+ * Thread-safe replacement for strerror(). Always null-terminates the buffer.
+ */
+static void ucb_strerror_buf(int err, char* buf, size_t size)
+{
+    if (!buf || size == 0)
+        return;
+    buf[0] = '\0';
+#if defined(_WIN32) || defined(__STDC_LIB_EXT1__)
+    strerror_s(buf, size, err);
+#elif defined(__GLIBC__) && defined(_GNU_SOURCE)
+    // GNU strerror_r returns a pointer, which may point to a static string.
+    const char* res = strerror_r(err, buf, size);
+    if (res && res != buf)
+    {
+        size_t len = strlen(res);
+        if (len >= size)
+            len = size - 1;
+        memcpy(buf, res, len);
+        buf[len] = '\0';
+    }
+#else
+    // XSI strerror_r returns 0 on success.
+    if (strerror_r(err, buf, size) != 0)
+        snprintf(buf, size, "Unknown error %d", err);
+#endif
+}
 
 ucb_ecode ucb_err_wrap_errno(int err)
 {
@@ -588,11 +619,13 @@ bool ucb_report_errno(int status, const char* UCB_RESTRICT msg, const char* UCB_
     }
     else
     {
+        char errbuf[UCB_BUFSIZE_STRERROR];
+        ucb_strerror_buf(status, errbuf, sizeof(errbuf));
         ucb_error_report(UCB_ERRLVL_SYSTEM,
                          ucb_error_format(ucb_err_wrap_errno(status),
                                           "%s: Unexpected error - %s",
                                           function,
-                                          strerror(status)));
+                                          errbuf));
     }
     return true;
 }
@@ -604,6 +637,10 @@ bool ucb_throw_errno(ucb_error** perr, int status, const char* msg)
     if (msg)
         ucb_throw(perr, ucb_err_wrap_errno(status), msg);
     else
-        ucb_throw_format(perr, ucb_err_wrap_errno(status), "%s", strerror(status));
+    {
+        char errbuf[UCB_BUFSIZE_STRERROR];
+        ucb_strerror_buf(status, errbuf, sizeof(errbuf));
+        ucb_throw_format(perr, ucb_err_wrap_errno(status), "%s", errbuf);
+    }
     return true;
 }

@@ -6,8 +6,6 @@
  *
  * @brief Error handling
  *
- * @todo Write a more fluid documentation.
- *
  * UCB handles errors in the following way:
  * - Fatal errors, user errors and warnings:
  *   - Are **reported** to a single error handling function.
@@ -30,6 +28,18 @@
  * - Otherwise for simple functions, like getters, any input NULL pointers may be ignored if the
  * return type allows it.
  * - All functions must document if they behave differently than above rules.
+ *
+ * Edge cases in this module follow the same severity model:
+ * - Misuse of the API (NULL where not allowed, a zero error code, a NULL format
+ *   string, or freeing an error that is not owned) is reported as a user error,
+ *   which always aborts.
+ * - Internal allocation failures while building or copying an error are reported
+ *   as fatal errors. These abort with the default handler but can be overridden.
+ *   An error is never silently dropped.
+ * - Unknown error levels and codes are not misuse: @ref ucb_error_lvlstr and
+ *   @ref ucb_error_codestr return static fallbacks instead of aborting.
+ * - @ref ucb_error_report suppresses reentrant reports made from an error
+ *   handler, to avoid unbounded recursion.
  */
 
 #ifndef UCB_ERROR_H
@@ -97,6 +107,9 @@ typedef void (*ucb_error_func)(ucb_errlvl lvl, const ucb_error* error);
  *
  * The function may be called from a different thread.
  *
+ * @warning The handler is stored in a global without synchronization. Set it
+ * before any other thread may report an error.
+ *
  * @param func error function
  * @return previous error function, or UCB_NULL
  */
@@ -106,14 +119,14 @@ UCB_API ucb_error_func ucb_error_get_func(void);
 /**
  * @brief Get a string representation of the error level.
  * @param lvl the level
- * @return a string literal
+ * @return a string literal, or "UNKNOWN" if the level is not recognized
  */
 UCB_API const char* ucb_error_lvlstr(ucb_errlvl lvl);
 
 /**
  * @brief Get a string representation of the error code.
  * @param code the error
- * @return A string literal
+ * @return A string literal, or "UNKNOWN_ERROR" if the code is not recognized
  */
 UCB_API const char* ucb_error_codestr(ucb_ecode code);
 
@@ -147,8 +160,12 @@ UCB_API void ucb_error_free(ucb_error* err);
  *
  * See general documentation about the lifetime of the error object.
  *
+ * @warning A zero @p code or a UCB_NULL @p fmt is misuse and aborts. The
+ * returned object is valid until the next call to @ref ucb_error_format or
+ * @ref ucb_error_formatv on the same thread.
+ *
  * @param code the error code, must be non-zero.
- * @param fmt the format string
+ * @param fmt the format string, must be non-NULL
  * @param ... the format arguments
  * @return a pointer to the thread-local error object.
  */
@@ -161,8 +178,11 @@ UCB_API const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_l
 
 /**
  * @brief Print error to stderr
+ *
+ * @warning A UCB_NULL @p error is misuse and aborts.
+ *
  * @param lvl the level
- * @param error the error
+ * @param error the error, must be non-NULL
  */
 UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
 
@@ -188,8 +208,33 @@ UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
  */
 UCB_API void ucb_error_clear(ucb_error** perr);
 
+/**
+ * @brief Throw an error with a static message
+ *
+ * If @p perr is non-NULL, a new error object is allocated and stored in
+ * @p *perr. An existing error in @p *perr is reported as a warning and cleared
+ * first.
+ *
+ * @warning @p code must be non-zero and @p msg must be non-NULL, otherwise it is
+ * misuse and aborts. If the error object or message cannot be allocated, a fatal
+ * out-of-memory error is reported and @p *perr may be left as UCB_NULL.
+ *
+ * @param perr optional pointer to store the error
+ * @param code the error code, must be non-zero
+ * @param msg the error message, must be non-NULL
+ */
 UCB_API void ucb_throw(ucb_error** perr, ucb_ecode code, const char* msg);
+
+/**
+ * @brief Throw an error with a formatted message
+ * @see ucb_throw
+ */
 UCB_API void ucb_throw_format(ucb_error** perr, ucb_ecode code, const char* fmt, ...);
+
+/**
+ * @brief Throw an error with a formatted message using va_list
+ * @see ucb_throw
+ */
 UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt, va_list args);
 
 /* -------------------------------------------------------------------------- */
@@ -236,7 +281,21 @@ UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt
  */
 #define UCB_WARN(fmt, ...) ucb_report_warning("%s: " fmt, __func__, ##__VA_ARGS__)
 
-#define UCB_REPORT_ERROR(err) UCB_REPORT_MSG(err->code, err->msg)
+/**
+ * @brief Report a thrown error
+ *
+ * Reports the code and message of @p err as a user error, which aborts.
+ * If @p err is UCB_NULL or has no code, invalid arguments are reported instead.
+ * A missing message is replaced with a fallback.
+ */
+#define UCB_REPORT_ERROR(err)                                                      \
+    do                                                                             \
+    {                                                                              \
+        if (UCB_IS_THROWN(err))                                                    \
+            UCB_REPORT_MSG((err)->code, (err)->msg ? (err)->msg : "(no message)"); \
+        else                                                                       \
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "No error to report");               \
+    } while (0)
 
 /**
  * @brief Verify an expression and report a user error if it fails
@@ -264,6 +323,11 @@ UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt
 
 /**
  * @brief Report an error. Not to be called directly.
+ *
+ * @warning A UCB_NULL @p err is misuse and aborts. Reports made while already
+ * inside an error report (for example from a custom handler) are suppressed to
+ * avoid unbounded recursion.
+ *
  * @see UCB_FATAL, UCB_REPORT, UCB_WARN
  */
 UCB_API void ucb_error_report(ucb_errlvl lvl, const ucb_error* err);

@@ -50,6 +50,7 @@ ucb_target_sources(ucb_tests PRIVATE
     common.cpp
     env.cpp
     envmap.cpp
+    error.cpp
     memory.cpp
     string.cpp
     tgfunc.cpp
