@@ -38,7 +38,7 @@ Order: release first, priority second.
 #### P0
 - [x] Containers: Vector template and generation tool initial usable feature set
 - [ ] Threads: Thread/mutex robustness pass
-- [ ] Error Handling: Error handling behavior pass
+- [x] Error Handling: Error handling behavior pass
 - [ ] Build: ASAN/UBSAN integration in build/test flow
 - [x] Environment: Environment routines initial usable feature set
 - [x] Version: Generated version defines initial usable feature set
