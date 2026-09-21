@@ -546,12 +546,12 @@ TEST_CASE("container vector sort and find")
 /*                                 Benchmarks                                 */
 /* -------------------------------------------------------------------------- */
 
-static void bench_report(const std::string& label, long long ms, int iterations, int n)
+static void bench_report(const std::string& label, long long ns, int iterations, int n)
 {
     double ops = static_cast<double>(iterations) * n * 2; // inserts + removes
-    std::cout << std::left << std::setw(28) << label << " " << std::right << std::setw(6) << ms
-              << " ms   " << std::fixed << std::setprecision(2)
-              << (ops * 1000.0 / static_cast<double>(ms)) / 1e6 << " Mops/s" << std::endl;
+    std::cout << std::left << std::setw(34) << label << " " << std::right << std::setw(6) << ns
+              << " μs   " << std::fixed << std::setprecision(2)
+              << (ops * 1000000.0 / static_cast<double>(ns)) / 1e6 << " Mops/s" << std::endl;
 }
 
 static int64_t test_stdvector_direct(int iterations, int n_elem)
@@ -620,7 +620,7 @@ TEST_CASE("benchmark vector" * doctest::test_suite("benchmark") * doctest::skip(
         int64_t sum = test.second(iterations, N);
         auto t1 = std::chrono::high_resolution_clock::now();
         bench_report(test.first,
-                     std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count(),
+                     std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count(),
                      iterations,
                      N);
         REQUIRE(sum == expected_sum);

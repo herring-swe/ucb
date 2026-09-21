@@ -104,3 +104,22 @@ endif()
 if(NOT CMAKE_CROSSCOMPILING)
     doctest_discover_tests(ucb_tests)
 endif()
+
+# ----------------------------------------------------------------------------
+# Separate internal bench library and sample runner
+# ----------------------------------------------------------------------------
+
+add_library(ucb_bench STATIC bench/microbench.cpp bench/microbench.h)
+ucb_target_init(ucb_bench LANGUAGE CXX)
+target_include_directories(ucb_bench PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/bench)
+
+ucb_add_executable(ucb_benchmarks LANGUAGE CXX)
+target_sources(ucb_benchmarks PRIVATE
+    bench/bench_main.cpp
+    bench/vector_bench_int.cpp
+    bench/vector_bench_ptr.cpp
+    bench/bench_c.c
+)
+target_link_libraries(ucb_benchmarks PRIVATE ucb_bench ucb)
+target_include_directories(ucb_benchmarks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bench)
+add_test(NAME ucb_benchmarks COMMAND ucb_benchmarks)
