@@ -30,8 +30,8 @@ Order: release first, priority second.
 - [x] Type-Generic Helpers: Type-generic helpers available
 
 #### P1
-- [ ] Build: Cross-platform build baseline fully validated
-- [ ] Documentation: Doxygen completeness baseline
+- [x] Build: Cross-platform build baseline fully validated
+- [x] Documentation: Doxygen completeness baseline
 
 ### 0.2.0
 
