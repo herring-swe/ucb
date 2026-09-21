@@ -39,7 +39,6 @@ Order: release first, priority second.
 - [x] Containers: Vector template and generation tool initial usable feature set
 - [ ] Threads: Thread/mutex robustness pass
 - [x] Error Handling: Error handling behavior pass
-- [ ] Build: ASAN/UBSAN integration in build/test flow
 - [x] Environment: Environment routines initial usable feature set
 - [x] Version: Generated version defines initial usable feature set
 
@@ -77,6 +76,7 @@ Order: release first, priority second.
 ### 1.0.0
 
 #### P0
+- [ ] Build: ASAN/UBSAN integration in build/test flow
 - [ ] Release: Release gates for stable API/ABI
 - [ ] Version: Generated version defines complete for 1.0.0 scope
 - [ ] File: File abstraction API complete for 1.0.0 scope
