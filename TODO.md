@@ -37,7 +37,7 @@ Order: release first, priority second.
 
 #### P0
 - [x] Containers: Vector template and generation tool initial usable feature set
-- [ ] Threads: Thread/mutex robustness pass
+- [x] Threads: Thread/mutex robustness pass
 - [x] Error Handling: Error handling behavior pass
 - [x] Environment: Environment routines initial usable feature set
 - [x] Version: Generated version defines initial usable feature set
@@ -136,9 +136,11 @@ For Documentation only Doxygen is considered necessary.
 - [x] Mutex and condition variable API
 - [x] One-time initialization primitive (`ucb_once`)
 - [x] Threadpool and task API
-- [ ] Error-path robustness under resource pressure
-- [ ] Testing
-- [ ] Documentation
+- [x] Public stack initialization for mutex/cond/once (opaque storage)
+- [x] Timed condition wait (`ucb_cond_timedwait`)
+- [x] Error-path robustness under resource pressure
+- [x] Testing
+- [x] Documentation
 
 ### Buffer - Buffer and Bufutil (Target: 0.1.0, refine in 0.2.0)
 - [x] Static/heap buffer baseline

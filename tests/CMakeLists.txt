@@ -34,6 +34,7 @@ ucb_target_sources(ucb_tests PRIVATE
     common.h
     test_cast.h
     test_tgfunc.h
+    test_threads.h
     test_types.h
 
     container/my_type.h
@@ -48,10 +49,13 @@ ucb_target_sources(ucb_tests PRIVATE
     buffer.cpp
     cast.cpp
     common.cpp
+    cond.cpp
     env.cpp
     envmap.cpp
     error.cpp
     memory.cpp
+    mutex.cpp
+    once.cpp
     string.cpp
     tgfunc.cpp
     threadpool.cpp
@@ -68,6 +72,7 @@ ucb_target_sources(ucb_tests PRIVATE
     # Pure C tests
     test_cast.c
     test_tgfunc.c
+    test_threads.c
     test_types.c
 
     ${NORM_TEST_FILE}

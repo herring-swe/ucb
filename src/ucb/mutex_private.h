@@ -5,7 +5,7 @@
  * - SPDX-FileCopyrightText: © 2026 Åke Svedin <ake@svedin.org>
  * - SPDX-License-Identifier: MIT
  *
- * @brief Private mutex type
+ * @brief Private mutex implementation layout
  */
 
 #ifndef UCB_MUTEX_PRIVATE_H
@@ -15,14 +15,19 @@
 #include "ucb/types.h"
 
 #if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 #else
 #include <pthread.h>
 #include <unistd.h>
 #endif
 
-struct ucb_mutex
+/**
+ * Platform-specific layout placed inside the opaque public ucb_mutex storage.
+ */
+struct ucb_mutex_impl
 {
 #if defined(_WIN32)
     CRITICAL_SECTION handle;
@@ -34,8 +39,7 @@ struct ucb_mutex
     bool recursive;
 };
 
-void ucb_mutex_init(ucb_mutex* mutex);
-void ucb_mutex_init_recursive(ucb_mutex* mutex);
-void ucb_mutex_release(ucb_mutex* mutex);
+#define UCB_MUTEX_IMPL(mutex) ((struct ucb_mutex_impl*)(void*)(mutex))
+#define UCB_MUTEX_IMPL_CONST(mutex) ((const struct ucb_mutex_impl*)(const void*)(mutex))
 
 #endif // UCB_MUTEX_PRIVATE_H

@@ -44,7 +44,7 @@ UCB_API ucb_threadpool* ucb_threadpool_new(size_t num_threads);
 /**
  * @brief Free's the threadpool
  *
- * Will stop the pool if it's running
+ * Will stop the pool if it's running. If UCB_NULL, this is a safe no-op.
  * @param pool the pool
  */
 UCB_API void ucb_threadpool_free(ucb_threadpool* pool);
@@ -94,10 +94,16 @@ UCB_API bool ucb_threadpool_add_task(ucb_threadpool* pool, const ucb_task* task)
  * This will start the threadpool for processing. Tasks can be queued
  * before or after it has started.
  *
- * If the threadpool is already running, this function does nothing.
+ * If the threadpool is already running, this function does nothing and
+ * returns true.
+ *
+ * If any worker thread could not be started, all started workers are stopped
+ * and the pool is left not running. Any queued tasks remain queued.
+ *
  * @param pool the pool
+ * @return true if the pool is running, false if it could not be started
  */
-UCB_API void ucb_threadpool_start(ucb_threadpool* pool);
+UCB_API bool ucb_threadpool_start(ucb_threadpool* pool);
 
 /**
  * @brief Get the number of running tasks
@@ -126,10 +132,11 @@ UCB_API void ucb_threadpool_wait_all(ucb_threadpool* pool);
 /**
  * @brief Signal a stop and wait for all threads to finish
  *
- * This will not start a non-running threadpool if it has queued tasks.
- * Instead it will set a stop flag, so any running threads will not pick up new tasks.
+ * This will not start a non-running threadpool. Instead it will set a stop
+ * flag, so any running threads will not pick up new tasks.
  *
- * Then it will wait for all threads to finish.
+ * It then waits for tasks that are already running to finish. Tasks that are
+ * still queued are discarded, not run.
  *
  * After this, the pool has to be restarted or free'd.
  * @param pool the pool

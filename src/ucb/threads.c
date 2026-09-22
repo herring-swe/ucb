@@ -17,6 +17,9 @@
 #include "ucb/memory.h"
 #include "ucb/sys_private.h"
 
+#include <errno.h>
+#include <limits.h>
+
 #if defined(_WIN32)
 
 #define WIN32_LEAN_AND_MEAN
@@ -26,7 +29,6 @@
 
 #else // POSIX
 
-#include <limits.h>
 #include <pthread.h>
 #include <sched.h>
 #include <unistd.h>
@@ -253,7 +255,8 @@ ucb_thread* ucb_thread_new_detached()
 
 void ucb_thread_free(ucb_thread* th)
 {
-    UCB_VERIFY_ARGS(th);
+    if (!th)
+        return;
     UCB_VERIFY(!th->running || (th->flags & UCB_THREAD_FLAG_JOINABLE),
                UCB_ERROR_INVALID_ARG,
                "Thread is running and not joinable");
@@ -270,10 +273,7 @@ void ucb_thread_set_name(ucb_thread* thread, const char* name)
 
     if (thread->name)
         ucb_free(thread->name);
-    thread->name = ucb_cstr_ndup(name, UCB_THREAD_NAME_MAX);
-
-    if (thread->running)
-        set_thread_name(thread);
+    thread->name = name ? ucb_cstr_ndup(name, UCB_THREAD_NAME_MAX) : UCB_NULL;
 }
 
 const char* ucb_thread_get_name(const ucb_thread* thread)
@@ -327,7 +327,6 @@ ucb_pid ucb_thread_get_id(ucb_thread* th)
 
 bool ucb_thread_start(ucb_thread* th, ucb_task task)
 {
-    // TODO: Needs error checking
     UCB_VERIFY_ARGS(th && task.func);
     UCB_VERIFY(!th->running, UCB_ERROR_THREAD_BUSY, "Thread is already running");
     if (!ucb_task_validate(&task))
@@ -345,11 +344,13 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
     th->id = UCB_PID_INVALID;
 #if defined(_WIN32)
     unsigned threadaddr;
-    int stack_size = (int)th->stack_size;
+    unsigned stack_size =
+        th->stack_size > (size_t)INT_MAX ? (unsigned)INT_MAX : (unsigned)th->stack_size;
     th->handle = (HANDLE)_beginthreadex(NULL, stack_size, win_thread_wrapper, th, 0, &threadaddr);
     if (!th->handle)
     {
         th->running = false;
+        UCB_REPORT_ERRNO(errno, "Failed to create thread");
         return false;
     }
     if (th->flags & UCB_THREAD_FLAG_DETACHED)
@@ -359,19 +360,27 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
     }
 #else
     pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setstacksize(&attr, th->stack_size);
-    if (th->priority != UCB_THREAD_PRIO_DEFAULT)
-        set_thread_prio_posix(th, &attr);
-    if (th->flags & UCB_THREAD_FLAG_DETACHED)
-        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-    else
-        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-    int ret = pthread_create(&th->handle, &attr, posix_thread_wrapper, th);
+    int ret = pthread_attr_init(&attr);
+    if (ret == 0)
+    {
+        ret = pthread_attr_setstacksize(&attr, th->stack_size);
+        if (ret == 0 && th->priority != UCB_THREAD_PRIO_DEFAULT)
+            set_thread_prio_posix(th, &attr);
+        if (ret == 0)
+        {
+            ret = pthread_attr_setdetachstate(&attr,
+                                              (th->flags & UCB_THREAD_FLAG_DETACHED)
+                                                  ? PTHREAD_CREATE_DETACHED
+                                                  : PTHREAD_CREATE_JOINABLE);
+        }
+        if (ret == 0)
+            ret = pthread_create(&th->handle, &attr, posix_thread_wrapper, th);
+        pthread_attr_destroy(&attr);
+    }
     if (ret != 0)
     {
-        pthread_attr_destroy(&attr);
         th->running = false;
+        UCB_REPORT_ERRNO(ret, "Failed to create thread");
         return false;
     }
 #endif

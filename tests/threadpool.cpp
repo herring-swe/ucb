@@ -75,6 +75,22 @@ static void callback_func(void* arg, int status)
     ucb_mutex_unlock(ft->mutex);
 }
 
+struct stress_arg
+{
+    std::atomic<int>* counter;
+    int increment;
+};
+
+static int stress_worker(void* arg)
+{
+    stress_arg* sa = reinterpret_cast<stress_arg*>(arg);
+    for (int i = 0; i < sa->increment; i++)
+    {
+        sa->counter->fetch_add(1);
+    }
+    return 0;
+}
+
 // --- Tests ---
 TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
 {
@@ -227,35 +243,82 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
     }
 }
 
-// TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool Stress Test")
-// {
-//     constexpr int num_tasks = 1000;
-//     constexpr int num_add   = 10;
-//     std::atomic<int> shared_counter{0};
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool start result")
+{
+    REQUIRE(ucb_threadpool_start(pool));
+    // Starting an already running pool is a no-op that reports success
+    REQUIRE(ucb_threadpool_start(pool));
+    ucb_threadpool_join(pool);
+}
 
-//     auto stress_worker = [](void* arg) {
-//         std::atomic<int>* counter = static_cast<std::atomic<int>*>(arg);
-//         for (int i = 0; i < num_add; i++)
-//         {
-//             counter->fetch_add(1);
-//         }
-//         return 0;
-//     };
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool stress test")
+{
+    constexpr int num_tasks = 500;
+    constexpr int num_inc = 10;
+    std::atomic<int> shared_counter{0};
+    stress_arg sarg = {&shared_counter, num_inc};
 
-//     std::vector<func_arg> fargs;
+    for (int i = 0; i < num_tasks; i++)
+    {
+        ucb_task task = ucb_task_make(stress_worker);
+        task.arg = &sarg;
+        REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
+    }
 
-//     for (int i = 0; i < num_tasks; i++)
-//     {
-//         ucb_task task;
-//         task.func = stress_worker;
-//         task.arg  = &shared_counter;
+    ucb_threadpool_wait_all(pool);
+    REQUIRE(shared_counter.load() == num_tasks * num_inc);
+}
 
-//         REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
-//     }
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool add while running")
+{
+    constexpr int num_threads = 4;
+    constexpr int per_thread = 50;
 
-//     ucb_threadpool_wait_all(pool);
-//     REQUIRE(shared_counter.load() == num_tasks * num_add);
-// }
+    std::atomic<int> shared_counter{0};
+    REQUIRE(ucb_threadpool_start(pool));
+
+    std::vector<std::thread> adders;
+    for (int a = 0; a < num_threads; a++)
+    {
+        adders.emplace_back([&] {
+            for (int i = 0; i < per_thread; i++)
+            {
+                ucb_task task = ucb_task_make([](void* arg) -> int {
+                    static_cast<std::atomic<int>*>(arg)->fetch_add(1);
+                    return 0;
+                });
+                task.arg = &shared_counter;
+                ucb_threadpool_add_task(pool, &task);
+            }
+        });
+    }
+    for (std::thread& t : adders)
+    {
+        t.join();
+    }
+
+    ucb_threadpool_wait_all(pool);
+    REQUIRE(shared_counter.load() == num_threads * per_thread);
+}
+
+TEST_CASE("threadpool free with queued tasks")
+{
+    ucb_threadpool* pool = ucb_threadpool_new(2);
+    REQUIRE(pool != nullptr);
+
+    ucb_task task = ucb_task_make([](void*) { return 0; });
+    for (int i = 0; i < 5; i++)
+    {
+        REQUIRE(ucb_threadpool_add_task(pool, &task) == true);
+    }
+
+    // The pool was never started. Freeing must discard the queued tasks
+    // instead of waiting for workers that do not exist.
+    ucb_threadpool_free(pool);
+
+    // Freeing UCB_NULL is a safe no-op
+    ucb_threadpool_free(nullptr);
+}
 
 TEST_CASE_FIXTURE(TestFailureFixture, "threadpool error handling")
 {

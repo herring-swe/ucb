@@ -13,15 +13,18 @@
 #include "ucb/cond.h"
 
 #if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 #else
 #include <pthread.h>
 #endif
 
-#include <stdbool.h>
-
-struct ucb_cond
+/**
+ * Platform-specific layout placed inside the opaque public ucb_cond storage.
+ */
+struct ucb_cond_impl
 {
 #if defined(_WIN32)
     CONDITION_VARIABLE handle;
@@ -30,7 +33,6 @@ struct ucb_cond
 #endif
 };
 
-bool ucb_cond_init(ucb_cond* cond);
-bool ucb_cond_release(ucb_cond* cond);
+#define UCB_COND_IMPL(cond) ((struct ucb_cond_impl*)(void*)(cond))
 
 #endif // UCB_COND_PRIVATE_H
