@@ -339,6 +339,7 @@ const char* status_color(const colors& palette, const std::string& status)
 struct run_options
 {
     bool list = false;
+    bool list_suites = false;
     bool quiet = false;
     bool verbose = false;
     bool progress = false;
@@ -358,6 +359,7 @@ void print_usage(std::ostream& out)
     out << "Usage: ucb_microbenchmarks [options]\n"
         << "\n"
         << "  -l, --list             list selected tests and exit\n"
+        << "      --list-suites      list selected suites and exit\n"
         << "  -q, --quiet            print only result rows\n"
         << "  -v, --verbose          show descriptions and reference rows\n"
         << "  -t, --test <sel>       select a test (repeatable); name | suite::name | :all\n"
@@ -432,6 +434,8 @@ bool parse_options(int argc, char** argv, run_options& options, std::string& err
 
         if (argument == "-l" || argument == "--list")
             options.list = true;
+        else if (argument == "--list-suites")
+            options.list_suites = true;
         else if (argument == "-q" || argument == "--quiet")
             options.quiet = true;
         else if (argument == "-v" || argument == "--verbose")
@@ -721,6 +725,29 @@ int benchmark::run(int argc, char** argv, std::ostream& out, std::ostream& err)
                                      : options.test_selectors[k - options.suite_selectors.size()];
         err << "error: selector matched nothing: " << bad << '\n';
         return 2;
+    }
+
+    if (options.list_suites)
+    {
+        // List each suite that has at least one selected test, once, in order.
+        for (const std::unique_ptr<suite>& suite_ptr : suites_)
+        {
+            bool has_selected = false;
+            for (std::size_t index = 0; index < all.size(); ++index)
+            {
+                if (all[index].suite_ptr == suite_ptr.get() && selected[index])
+                {
+                    has_selected = true;
+                    break;
+                }
+            }
+            if (!has_selected)
+                continue;
+            out << suite_ptr->name << '\n';
+            if (options.verbose && !suite_ptr->description.empty())
+                out << "  " << suite_ptr->description << '\n';
+        }
+        return 0;
     }
 
     if (options.list)

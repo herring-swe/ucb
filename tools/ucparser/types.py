@@ -232,6 +232,8 @@ class PropertyFlags(UcFlag):
     # fmt: off
     Default = ("No special flags")
     CompExcl = ("Excluded from composition")
+    CompMaybe = ("Can compose with a preceding starter (NFC/NFKC quick check maybe)")
+    NfkcNo = ("Not in NFKC form, i.e. NFKC(cp) != cp")
     # fmt: on
 
     @classmethod

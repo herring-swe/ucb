@@ -104,6 +104,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/mutex_private.h
     ucb/once_private.h
     ucb/sys_private.h
+    ucb/unicode_private.h
 
     ucb/container/common_private.h
     ucb/container/pqueue_private.h

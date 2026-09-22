@@ -15,7 +15,6 @@
 
 #include <doctest.h>
 
-#include <chrono>
 #include <climits>
 #include <cstring>
 #include <fstream>
@@ -24,12 +23,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-#ifdef USE_OPENMP
-#include <omp.h>
-
-#include <atomic>
-#endif
 
 #ifdef __INTELLISENSE__
 #define NORM_TEST_FILE "dummy"
@@ -228,24 +221,6 @@ static inline void test_mapping(const char* input,
             ucb_free(ucres.data);
         }
     }
-}
-
-static inline unsigned int test_norm_bench(const std::string& input,
-                                           const std::string& correct,
-                                           ucb_norm_form type)
-{
-    ucb_error* err = nullptr;
-    ucb_uc_result ucres = ucb_uc_normalize(input.c_str(), input.size(), type, &err);
-
-    unsigned int success = 0;
-    if (!UCB_IS_THROWN(err))
-    {
-        if (std::string(ucres.data) == correct)
-            success = 1;
-        ucb_free(ucres.data);
-    }
-    ucb_error_clear(&err);
-    return success;
 }
 
 static inline void test_norm(const char* input, const char* correct, ucb_norm_form type)
@@ -596,91 +571,6 @@ TEST_CASE("unicode official normalization test")
 
     std::cout << "Number of tests definitions: " << tests.size() << std::endl;
     std::cout << "Number of normalizations run: " << tests.size() * 20 << std::endl;
-}
-
-TEST_CASE("benchmark normalization" * doctest::test_suite("benchmark") * doctest::skip())
-{
-    constexpr int iterations = 1000;
-
-    std::vector<ucd_norm_test> tests;
-    read_ucd_norm_tests(tests);
-
-    auto start = std::chrono::high_resolution_clock::now();
-
-    std::string form;
-    uint64_t passed = 0;
-    uint64_t test_strlens = 0;
-    for (const auto& test : tests)
-    {
-        test_strlens += test.input.size();
-        test_strlens += test.nfc.size();
-        test_strlens += test.nfd.size();
-        test_strlens += test.nfkc.size();
-        test_strlens += test.nfkd.size();
-    }
-    UCB_DIAG_PUSH()
-    UCB_DIAG_IGN_IMPL_INT_FLOAT()
-    UCB_DIAG_CLANG_IGN("-Wsource-uses-openmp")
-    double test_avg_strlen = test_strlens / 5.0;
-
-#ifdef USE_OPENMP
-    omp_set_num_threads(8);
-#endif
-
-#pragma omp parallel for reduction(+ : passed)
-    for (int i = 0; i < iterations; i++)
-    {
-        for (const auto& test : tests)
-        {
-            // NFD
-            passed += test_norm_bench(test.input, test.nfd, UCB_NORM_NFD);
-            passed += test_norm_bench(test.nfc, test.nfd, UCB_NORM_NFD);
-            passed += test_norm_bench(test.nfd, test.nfd, UCB_NORM_NFD);
-            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_NORM_NFD);
-            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_NORM_NFD);
-
-            // NFC
-            passed += test_norm_bench(test.input, test.nfc, UCB_NORM_NFC);
-            passed += test_norm_bench(test.nfc, test.nfc, UCB_NORM_NFC);
-            passed += test_norm_bench(test.nfd, test.nfc, UCB_NORM_NFC);
-            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_NORM_NFC);
-            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_NORM_NFC);
-
-            // NFKD
-            passed += test_norm_bench(test.input, test.nfkd, UCB_NORM_NFKD);
-            passed += test_norm_bench(test.nfc, test.nfkd, UCB_NORM_NFKD);
-            passed += test_norm_bench(test.nfd, test.nfkd, UCB_NORM_NFKD);
-            passed += test_norm_bench(test.nfkc, test.nfkd, UCB_NORM_NFKD);
-            passed += test_norm_bench(test.nfkd, test.nfkd, UCB_NORM_NFKD);
-
-            // NFKC
-            passed += test_norm_bench(test.input, test.nfkc, UCB_NORM_NFKC);
-            passed += test_norm_bench(test.nfc, test.nfkc, UCB_NORM_NFKC);
-            passed += test_norm_bench(test.nfd, test.nfkc, UCB_NORM_NFKC);
-            passed += test_norm_bench(test.nfkc, test.nfkc, UCB_NORM_NFKC);
-            passed += test_norm_bench(test.nfkd, test.nfkc, UCB_NORM_NFKC);
-        }
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    uint64_t num_tests = tests.size() * iterations;
-    uint64_t num_ops = num_tests * 20;
-
-    std::cout << "Total time: " << duration << " ms" << std::endl;
-    std::cout << "Passed: " << std::fixed << std::setprecision(1)
-              << 100 * passed / static_cast<double>(num_ops) << " %" << std::endl;
-    std::cout << "Tests per second: " << std::fixed << std::setprecision(2)
-              << (num_tests * 1000) / static_cast<double>(duration) << " s" << std::endl;
-    std::cout << "Ops per second: " << std::fixed << std::setprecision(2)
-              << (num_ops * 1000) / static_cast<double>(duration) << " s" << std::endl;
-    std::cout << "Characters per second: " << std::fixed << std::setprecision(2)
-              << 1000 * test_avg_strlen * iterations / static_cast<double>(duration) << " s"
-              << std::endl;
-    std::cout << "Average test time: " << duration / static_cast<double>(iterations) << " ms"
-              << std::endl;
-
-    UCB_DIAG_POP()
 }
 
 TEST_SUITE_END();
