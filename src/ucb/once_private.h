@@ -13,13 +13,18 @@
 #include "ucb/once.h"
 
 #if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
 #include <Windows.h>
 #else
 #include <pthread.h>
 #endif
 
-struct ucb_once
+/**
+ * Platform-specific layout placed inside the opaque public ucb_once storage.
+ */
+struct ucb_once_impl
 {
 #if defined(_WIN32)
     INIT_ONCE handle;
@@ -28,12 +33,6 @@ struct ucb_once
 #endif
 };
 
-#if defined(_WIN32)
-#define UCB_ONCE_INIT {INIT_ONCE_STATIC_INIT}
-#else
-#define UCB_ONCE_INIT {PTHREAD_ONCE_INIT}
-#endif
-
-void ucb_once_init_common(ucb_once* once);
+#define UCB_ONCE_IMPL(once) ((struct ucb_once_impl*)(void*)(once))
 
 #endif // UCB_ONCE_PRIVATE_H

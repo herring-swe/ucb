@@ -31,7 +31,7 @@
 #define UCB_THREAD_PRIO_MIN UCB_TASK_PRIO_LOWEST
 #define UCB_THREAD_PRIO_LOW UCB_TASK_PRIO_LOW
 #define UCB_THREAD_PRIO_DEFAULT UCB_TASK_PRIO_NORMAL
-#define UCB_THREAD_PRIO_HIGH UCB_TASK_PRIO_LOWEST
+#define UCB_THREAD_PRIO_HIGH UCB_TASK_PRIO_HIGH
 #define UCB_THREAD_PRIO_MAX UCB_TASK_PRIO_HIGHEST
 
 #define UCB_THREAD_NAME_MAX 15
@@ -84,6 +84,17 @@ UCB_API ucb_thread* ucb_thread_new();
  * @return UCB_API*
  */
 UCB_API ucb_thread* ucb_thread_new_detached();
+
+/**
+ * @brief Free a thread
+ *
+ * If the thread is joinable it is joined first. If UCB_NULL, this is a safe
+ * no-op.
+ *
+ * @warning Must not be called on a detached thread pointer, since it may free
+ * itself at any time.
+ * @param thread the thread
+ */
 UCB_API void ucb_thread_free(ucb_thread* thread);
 
 /**
@@ -91,8 +102,9 @@ UCB_API void ucb_thread_free(ucb_thread* thread);
  *
  * The name will be truncated if longer than UCB_THREAD_NAME_MAX (excluding null).
  * Only valid before the thread is started.
+ * Passing UCB_NULL clears any previously set name.
  * @param thread the thread
- * @param name the name
+ * @param name the name, or UCB_NULL to clear
  */
 UCB_API void ucb_thread_set_name(ucb_thread* thread, const char* name);
 UCB_API const char* ucb_thread_get_name(const ucb_thread* thread);

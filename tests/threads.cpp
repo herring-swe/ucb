@@ -11,6 +11,7 @@
 #include "ucb/threads.h"
 
 #include "common.h"
+#include "test_threads.h"
 
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
@@ -179,8 +180,19 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread priorities")
     {
         th = ucb_thread_new();
         ucb_thread_set_priority(th, UCB_THREAD_PRIO_HIGH);
+        REQUIRE(ucb_thread_get_priority(th) == UCB_THREAD_PRIO_HIGH);
         REQUIRE(ucb_thread_start(th, task) == true);
         ucb_thread_join(th);
+    }
+
+    SUBCASE("Priority Mapping")
+    {
+        // UCB_THREAD_PRIO_HIGH must map to the high task priority, not low
+        REQUIRE(UCB_THREAD_PRIO_HIGH == UCB_TASK_PRIO_HIGH);
+        REQUIRE(UCB_THREAD_PRIO_LOW == UCB_TASK_PRIO_LOW);
+        REQUIRE(UCB_THREAD_PRIO_DEFAULT == UCB_TASK_PRIO_NORMAL);
+        REQUIRE(UCB_THREAD_PRIO_MIN == UCB_TASK_PRIO_LOWEST);
+        REQUIRE(UCB_THREAD_PRIO_MAX == UCB_TASK_PRIO_HIGHEST);
     }
 }
 
@@ -202,6 +214,55 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread names")
     REQUIRE(ucb_thread_start(th, task) == true);
     ucb_thread_join(th);
     // Name verification requires platform-specific APIs (omitted for brevity)
+}
+
+TEST_CASE_FIXTURE(ThreadFixture, "thread name truncation and clear")
+{
+    th = ucb_thread_new();
+
+    std::string long_name(UCB_THREAD_NAME_MAX + 20, 'x');
+    ucb_thread_set_name(th, long_name.c_str());
+    const char* name = ucb_thread_get_name(th);
+    REQUIRE(name != nullptr);
+    REQUIRE(std::string(name).size() == UCB_THREAD_NAME_MAX);
+
+    // UCB_NULL clears the name
+    ucb_thread_set_name(th, nullptr);
+    REQUIRE(ucb_thread_get_name(th) == nullptr);
+}
+
+TEST_CASE_FIXTURE(ThreadFixture, "thread restart after join")
+{
+    FuncArg fa = {this, 42};
+
+    ucb_task task = {0};
+    task.func = worker_func;
+    task.arg = reinterpret_cast<void*>(&fa);
+
+    th = ucb_thread_new();
+    REQUIRE(ucb_thread_start(th, task) == true);
+    ucb_thread_join(th);
+    REQUIRE_FALSE(ucb_thread_is_running(th));
+    REQUIRE(counter.load() == 1);
+
+    // The same thread object can be started again after joining
+    REQUIRE(ucb_thread_start(th, task) == true);
+    ucb_thread_join(th);
+    REQUIRE(counter.load() == 2);
+}
+
+TEST_CASE_FIXTURE(ThreadFixture, "thread join never started")
+{
+    th = ucb_thread_new();
+    REQUIRE_FALSE(ucb_thread_is_running(th));
+    // Joining a thread that was never started must be a no-op
+    ucb_thread_join(th);
+    REQUIRE_FALSE(ucb_thread_is_running(th));
+}
+
+TEST_CASE("C threads API")
+{
+    REQUIRE(test_c_threads() == 1);
 }
 
 TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
