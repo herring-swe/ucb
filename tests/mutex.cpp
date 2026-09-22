@@ -220,4 +220,47 @@ TEST_CASE_FIXTURE(TestFailureFixture, "mutex misuse")
         REQUIRE(num_error == 1);
         REQUIRE(errors[0].code == UCB_ERROR_MUTEX_LOCKED);
     }
+
+    SUBCASE("release while held by another thread")
+    {
+        ucb_mutex mutex;
+        REQUIRE(ucb_mutex_init(&mutex));
+
+        std::mutex hm;
+        std::condition_variable cv;
+        bool ready = false;
+        bool go = false;
+        MutexHandshake hs = {&mutex, &hm, &cv, &ready, &go};
+
+        ucb_thread* th = ucb_thread_new();
+        REQUIRE(th != nullptr);
+        ucb_task task = ucb_task_make(hold_mutex_worker);
+        task.arg = &hs;
+        REQUIRE(ucb_thread_start(th, task));
+
+        {
+            std::unique_lock<std::mutex> lk(hm);
+            cv.wait(lk, [&] { return ready; });
+        }
+
+        CHECK_ABORTS(ucb_mutex_release(&mutex));
+
+        {
+            std::lock_guard<std::mutex> lk(hm);
+            go = true;
+        }
+        cv.notify_all();
+
+        ucb_thread_join(th);
+        ucb_thread_free(th);
+
+        // The mutex is still usable after the failed release
+        REQUIRE(ucb_mutex_trylock(&mutex));
+        ucb_mutex_unlock(&mutex);
+        ucb_mutex_release(&mutex);
+
+        REQUIRE(num_aborts == 1);
+        REQUIRE(num_error == 1);
+        REQUIRE(errors[0].code == UCB_ERROR_MUTEX_LOCKED);
+    }
 }

@@ -27,6 +27,25 @@ static void once_inc(void)
     g_once_calls.fetch_add(1);
 }
 
+// A file-scope once object initialized with UCB_ONCE_INIT and shared by
+// several threads. This validates the static initializer outside function
+// scope.
+static std::atomic<int> g_global_once_calls{0};
+
+static void global_once_inc(void)
+{
+    g_global_once_calls.fetch_add(1);
+}
+
+static ucb_once g_global_once = UCB_ONCE_INIT;
+
+static int global_once_worker(void* arg)
+{
+    (void)arg;
+    ucb_once_run(&g_global_once, global_once_inc);
+    return 0;
+}
+
 struct OnceArg
 {
     ucb_once* once;
@@ -103,4 +122,28 @@ TEST_CASE("once")
 
         REQUIRE(g_once_calls.load() == 1);
     }
+}
+
+TEST_CASE("once global static across threads")
+{
+    constexpr int N = 8;
+    g_global_once_calls = 0;
+
+    std::vector<ucb_thread*> threads;
+    for (int i = 0; i < N; i++)
+    {
+        ucb_thread* th = ucb_thread_new();
+        REQUIRE(th != nullptr);
+        ucb_task task = ucb_task_make(global_once_worker);
+        REQUIRE(ucb_thread_start(th, task));
+        threads.push_back(th);
+    }
+
+    for (ucb_thread* th : threads)
+    {
+        ucb_thread_join(th);
+        ucb_thread_free(th);
+    }
+
+    REQUIRE(g_global_once_calls.load() == 1);
 }

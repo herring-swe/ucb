@@ -11,7 +11,7 @@ Project notes and rules for any LLM/agent working in this repository.
   If you notice something suspicious that was not part of the request, note it in
   your summary but do not act on it.
 - Make minimal, targeted changes. Match existing code conventions.
-- All files can be checked for formatting errors with tools/fix.py
+- All files can be checked for formatting errors with tools/format.py
   - `--type` can take value `c` or `python` for specific language checks
   - `--fix` will attempt to fix formatting errors
   - We call our own clang-format binary to avoid version mismatches

@@ -15,6 +15,14 @@
 _Static_assert(sizeof(struct ucb_once_impl) <= UCB_ONCE_STORAGE_SIZE,
                "ucb_once storage is too small for the platform once object");
 
+#if !defined(_WIN32)
+// UCB_ONCE_INIT is an all-zero initializer. Verify that the platform once
+// object has the same all-zero representation, so static initialization is
+// equivalent to ucb_once_init. The supported POSIX platforms (glibc/musl)
+// define PTHREAD_ONCE_INIT as 0.
+_Static_assert(PTHREAD_ONCE_INIT == 0, "UCB_ONCE_INIT assumes a zero-initialized pthread_once_t");
+#endif
+
 // Both PTHREAD_ONCE_INIT and INIT_ONCE_STATIC_INIT are all-zero, which is what
 // UCB_ONCE_INIT provides. This is asserted indirectly by ucb_once_init, which
 // assigns UCB_ONCE_INIT rather than relying on the platform macro.

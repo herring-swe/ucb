@@ -279,9 +279,15 @@ bool ucb_threadpool_add_task(ucb_threadpool* pool, const ucb_task* task)
     if (!ctask->callback && pool->dflt_callback)
         ctask->callback = pool->dflt_callback;
     bool success = ucb_pqueue_push(&pool->tasks, ctask, ctask->priority) != SIZE_MAX;
-    if (success && pool->running)
+    if (success)
     {
-        ucb_cond_signal(&pool->task_notify);
+        if (pool->running)
+            ucb_cond_signal(&pool->task_notify);
+    }
+    else
+    {
+        // The queue does not take ownership on failure.
+        ucb_task_free(ctask);
     }
     ucb_mutex_unlock(&pool->lock);
     return success;

@@ -139,6 +139,7 @@ For Documentation only Doxygen is considered necessary.
 - [x] Public stack initialization for mutex/cond/once (opaque storage)
 - [x] Timed condition wait (`ucb_cond_timedwait`)
 - [x] Error-path robustness under resource pressure
+- [x] Cross-platform validation (MSVC, clang-cl, GCC, Clang on Windows/Linux)
 - [x] Testing
 - [x] Documentation
 
