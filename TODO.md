@@ -45,7 +45,6 @@ Order: release first, priority second.
 #### P1
 - [ ] Memory: Memdbg quality improvements
 - [ ] Unicode: Grapheme and unicode quality improvements
-- [ ] Buffer: Buffer view semantics decision
 
 ### 0.3.0
 
@@ -146,7 +145,6 @@ For Documentation only Doxygen is considered necessary.
 ### Buffer - Buffer and Bufutil (Target: 0.1.0, refine in 0.2.0)
 - [x] Static/heap buffer baseline
 - [x] Grow/resize/transfer helpers
-- [ ] Buffer view behavior finalized
 - [ ] Testing
 - [ ] Documentation
 
