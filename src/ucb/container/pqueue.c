@@ -278,9 +278,12 @@ size_t ucb_pqueue_push(ucb_pqueue* pq, void* data, int prio)
 {
     UCB_VERIFY_ARGS(pq && data);
 
-    ucb_fwdlist_node* node;
-    node = ucb_malloc_type(1, ucb_fwdlist_node);
+    ucb_fwdlist_node* node = ucb_malloc_type(1, ucb_fwdlist_node);
+    if (!node)
+        return SIZE_MAX;
     node->next = UCB_NULL;
+
+    bool cloned = false;
     if (pq->data_clone)
     {
         node->data = pq->data_clone(data);
@@ -289,13 +292,23 @@ size_t ucb_pqueue_push(ucb_pqueue* pq, void* data, int prio)
             ucb_free(node);
             return SIZE_MAX;
         }
+        cloned = true;
     }
     else
     {
         node->data = data;
     }
 
-    return ucb_pqueue_push_node(pq, prio, node);
+    size_t ins_pos = ucb_pqueue_push_node(pq, prio, node);
+    if (ins_pos == SIZE_MAX)
+    {
+        // The item was not queued, so it is still owned by this function. Free
+        // the clone (if any); borrowed data remains the caller's responsibility.
+        if (cloned)
+            pq->data_free(node->data);
+        ucb_free(node);
+    }
+    return ins_pos;
 }
 
 void* ucb_pqueue_pop(ucb_pqueue* pq)

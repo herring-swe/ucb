@@ -81,7 +81,7 @@ UCB_API ucb_thread* ucb_thread_new();
 
 /**
  * @brief Allocates and initiates a new detached thread
- * @return UCB_API*
+ * @return the new thread
  */
 UCB_API ucb_thread* ucb_thread_new_detached();
 
@@ -107,6 +107,13 @@ UCB_API void ucb_thread_free(ucb_thread* thread);
  * @param name the name, or UCB_NULL to clear
  */
 UCB_API void ucb_thread_set_name(ucb_thread* thread, const char* name);
+
+/**
+ * @brief Get the thread name.
+ *
+ * @param thread the thread
+ * @return the thread name, or UCB_NULL if no name has been set
+ */
 UCB_API const char* ucb_thread_get_name(const ucb_thread* thread);
 
 /**
@@ -169,9 +176,9 @@ UCB_API bool ucb_thread_start(ucb_thread* thread, ucb_task task);
 /**
  * @brief Wait for the thread to finish
  *
- * Only allowed if the thread is joinable.
+ * Only allowed if the thread is joinable. Use @ref ucb_thread_get_task_status
+ * to retrieve the status code of the finished task.
  * @param thread the thread
- * @return the status code of the task
  */
 UCB_API void ucb_thread_join(ucb_thread* thread);
 

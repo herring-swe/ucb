@@ -98,7 +98,7 @@ static inline int map_prio(int val, int lowest, int highest)
 #ifdef _WIN32 // OS-specific thread priority handling
 
 /**
- * Must be called after creating the thread
+ * Must be called from the thread itself.
  */
 static void set_thread_prio_win32(ucb_thread* th)
 {
@@ -106,7 +106,7 @@ static void set_thread_prio_win32(ucb_thread* th)
         return;
 
     int prio = map_prio(th->priority, THREAD_PRIORITY_LOWEST, THREAD_PRIORITY_HIGHEST);
-    if (!SetThreadPriority(th->handle, prio))
+    if (!SetThreadPriority(GetCurrentThread(), prio))
     {
         UCB_WARN("Failed to set priority for thread");
     }
@@ -144,19 +144,26 @@ static void set_thread_prio_posix(ucb_thread* th, pthread_attr_t* attr)
 
 #endif // OS-specific thread priority handling
 
-static void set_thread_name(ucb_thread* th)
+/**
+ * Must be called from the thread itself.
+ *
+ * Uses the current thread handle/self rather than the stored handle so that a
+ * detached worker never reads the thread object fields that the starter writes
+ * after creation.
+ */
+static void set_thread_name(const char* name)
 {
 #ifdef _WIN32
     wchar_t wname[64];
-    int code = MultiByteToWideChar(CP_UTF8, 0, th->name, -1, wname, 64);
+    int code = MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, 64);
     UCB_UNUSED(code);
     UCB_ASSERT_WIN32(code == 0 ? GetLastError() : ERROR_SUCCESS,
                      "Could not convert thread name to UTF-16");
-    HRESULT hr = SetThreadDescription(th->handle, wname);
+    HRESULT hr = SetThreadDescription(GetCurrentThread(), wname);
     UCB_UNUSED(hr);
     UCB_ASSERT(SUCCEEDED(hr), UCB_ERRSYS_UNKNOWN, "Failed to set thread name");
 #else
-    int code = pthread_setname_np(th->handle, th->name);
+    int code = pthread_setname_np(pthread_self(), name);
     UCB_UNUSED(code);
     UCB_ASSERT_ERRNO(code, "Failed to set thread name");
 #endif
@@ -175,7 +182,7 @@ static unsigned __stdcall win_thread_wrapper(void* arg)
     ucb_thread* th = (ucb_thread*)arg;
     th->id = ucb_thread_id();
     if (th->name)
-        set_thread_name(th);
+        set_thread_name(th->name);
     if (th->priority != UCB_THREAD_PRIO_DEFAULT)
         set_thread_prio_win32(th);
 
@@ -193,7 +200,7 @@ static void* posix_thread_wrapper(void* arg)
     ucb_thread* th = (ucb_thread*)arg;
     th->id = ucb_thread_id();
     if (th->name)
-        set_thread_name(th);
+        set_thread_name(th->name);
 
     th->status[1] = ucb_task_run(&th->task);
     th->status[0] = 1;
@@ -342,22 +349,26 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
     th->running = true;
     th->status[0] = 0;
     th->id = UCB_PID_INVALID;
+    // A detached worker owns the thread object and frees it on exit. The
+    // starter must not touch the object after the thread has been created, so
+    // the handle is kept local until the thread is known to be joinable.
+    bool detached = (th->flags & UCB_THREAD_FLAG_DETACHED) != 0;
 #if defined(_WIN32)
     unsigned threadaddr;
     unsigned stack_size =
         th->stack_size > (size_t)INT_MAX ? (unsigned)INT_MAX : (unsigned)th->stack_size;
-    th->handle = (HANDLE)_beginthreadex(NULL, stack_size, win_thread_wrapper, th, 0, &threadaddr);
-    if (!th->handle)
+    HANDLE handle =
+        (HANDLE)_beginthreadex(NULL, stack_size, win_thread_wrapper, th, 0, &threadaddr);
+    if (!handle)
     {
         th->running = false;
         UCB_REPORT_ERRNO(errno, "Failed to create thread");
         return false;
     }
-    if (th->flags & UCB_THREAD_FLAG_DETACHED)
-    {
-        CloseHandle(th->handle);
-        th->handle = INVALID_HANDLE_VALUE;
-    }
+    if (detached)
+        CloseHandle(handle);
+    else
+        th->handle = handle;
 #else
     pthread_attr_t attr;
     int ret = pthread_attr_init(&attr);
@@ -368,13 +379,17 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
             set_thread_prio_posix(th, &attr);
         if (ret == 0)
         {
-            ret = pthread_attr_setdetachstate(&attr,
-                                              (th->flags & UCB_THREAD_FLAG_DETACHED)
-                                                  ? PTHREAD_CREATE_DETACHED
-                                                  : PTHREAD_CREATE_JOINABLE);
+            ret = pthread_attr_setdetachstate(
+                &attr,
+                detached ? PTHREAD_CREATE_DETACHED : PTHREAD_CREATE_JOINABLE);
         }
         if (ret == 0)
-            ret = pthread_create(&th->handle, &attr, posix_thread_wrapper, th);
+        {
+            pthread_t handle;
+            ret = pthread_create(&handle, &attr, posix_thread_wrapper, th);
+            if (ret == 0 && !detached)
+                th->handle = handle;
+        }
         pthread_attr_destroy(&attr);
     }
     if (ret != 0)

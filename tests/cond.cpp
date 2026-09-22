@@ -223,6 +223,83 @@ TEST_CASE("cond broadcast")
     ucb_mutex_release(&mutex);
 }
 
+TEST_CASE("cond recursive mutex wait")
+{
+    ucb_mutex mutex;
+    ucb_cond wait_cond;
+    ucb_cond ready_cond;
+    REQUIRE(ucb_mutex_init_recursive(&mutex));
+    REQUIRE(ucb_cond_init(&wait_cond));
+    REQUIRE(ucb_cond_init(&ready_cond));
+
+    int ready_count = 0;
+    bool go = false;
+    std::atomic<int> woken{0};
+    CondHandshake hs = {&mutex, &wait_cond, &ready_cond, &ready_count, &go, &woken};
+
+    ucb_thread* th = ucb_thread_new();
+    REQUIRE(th != nullptr);
+    ucb_task task = ucb_task_make(cond_waiter);
+    task.arg = &hs;
+    REQUIRE(ucb_thread_start(th, task));
+
+    // A recursive mutex locked once must be fully released while waiting and
+    // have its ownership restored afterwards (exercises the Win32 owner/count
+    // restore path).
+    ucb_mutex_lock(&mutex);
+    while (ready_count < 1)
+        ucb_cond_wait(&ready_cond, &mutex);
+    go = true;
+    ucb_cond_signal(&wait_cond);
+    ucb_mutex_unlock(&mutex);
+
+    ucb_thread_join(th);
+    ucb_thread_free(th);
+
+    REQUIRE(woken.load() == 1);
+
+    ucb_cond_release(&ready_cond);
+    ucb_cond_release(&wait_cond);
+    ucb_mutex_release(&mutex);
+}
+
+TEST_CASE("cond recursive mutex timedwait")
+{
+    ucb_mutex mutex;
+    ucb_cond wait_cond;
+    ucb_cond ready_cond;
+    REQUIRE(ucb_mutex_init_recursive(&mutex));
+    REQUIRE(ucb_cond_init(&wait_cond));
+    REQUIRE(ucb_cond_init(&ready_cond));
+
+    int ready_count = 0;
+    bool go = false;
+    std::atomic<int> woken{0};
+    CondHandshake hs = {&mutex, &wait_cond, &ready_cond, &ready_count, &go, &woken};
+
+    ucb_thread* th = ucb_thread_new();
+    REQUIRE(th != nullptr);
+    ucb_task task = ucb_task_make(cond_timed_waiter);
+    task.arg = &hs;
+    REQUIRE(ucb_thread_start(th, task));
+
+    ucb_mutex_lock(&mutex);
+    while (ready_count < 1)
+        ucb_cond_timedwait(&ready_cond, &mutex, 1000);
+    go = true;
+    ucb_cond_signal(&wait_cond);
+    ucb_mutex_unlock(&mutex);
+
+    ucb_thread_join(th);
+    ucb_thread_free(th);
+
+    REQUIRE(woken.load() == 1);
+
+    ucb_cond_release(&ready_cond);
+    ucb_cond_release(&wait_cond);
+    ucb_mutex_release(&mutex);
+}
+
 TEST_CASE_FIXTURE(TestFailureFixture, "cond error handling")
 {
     SUBCASE("null init")
