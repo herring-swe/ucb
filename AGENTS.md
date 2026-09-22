@@ -24,6 +24,7 @@ Project notes and rules for any LLM/agent working in this repository.
 ## Building
 
 - CMake is the build system. Conan *could* be used for dependency management (in that case presets are generated), otherwise the build is used with cmake kits via vscode and the build folder is `build`.
+- Work with the default debug build for the system (msvc on Windows, gcc on Linux). Only test other builds when requested.
 
 ## Debugging
 
