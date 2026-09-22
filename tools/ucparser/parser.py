@@ -136,6 +136,9 @@ class UnicodeDataParser(object):
         # Generated from parsing UCD
         self.data: Dict[Codepoint, CodepointInfo] = {}
         self.comp_exclusions: Set[Codepoint] = set()
+        # Codepoints that can act as the combiner of a valid composition.
+        # These correspond to the NFC_QC=Maybe / NFKC_QC=Maybe set.
+        self.comp_maybe: Set[Codepoint] = set()
 
         # Generated from primary data tables
         self.prop_table: List[CodepointInfo] = []
@@ -452,6 +455,7 @@ class UnicodeDataParser(object):
                 if starter not in combiners:
                     combiners[starter] = Combiners(starter)
                 combiners[starter].add_entry(combiner, composed)
+                self.comp_maybe.add(combiner)
                 max_combiner_vals = max(max_combiner_vals, combiners[starter].num_entries)
 
         clist = [x for x in combiners.values()]
@@ -463,12 +467,76 @@ class UnicodeDataParser(object):
         self.combiners = clist
         self.max_combiner_vals = max_combiner_vals
 
+        # NFC_QC=Maybe closure. A code point is "Maybe" if it is a combiner
+        # itself, or if its canonical decomposition starts with a Maybe code
+        # point: then a preceding starter could compose into this code point,
+        # so the string is not guaranteed to be in NFC/NFKC form.
+        raw_maybe = self.comp_maybe
+
+        def is_maybe(cp: Codepoint, cache: Dict[Codepoint, bool]) -> bool:
+            if cp in cache:
+                return cache[cp]
+            info = self.data.get(cp)
+            if info is None:
+                result = cp in raw_maybe
+            elif cp in raw_maybe:
+                result = True
+            elif (
+                info.decomp is not None
+                and info.decomp.dctype == DecompositionType.Canon
+                and not self._is_comp_excluded(info)
+            ):
+                result = is_maybe(info.decomp.dcvals[0], cache)
+            else:
+                result = False
+            cache[cp] = result
+            return result
+
+        maybe_cache: Dict[Codepoint, bool] = {}
+        self.comp_maybe = {cp for cp in self.data if is_maybe(cp, maybe_cache)}
+
+    def _is_comp_excluded(self, info: CodepointInfo) -> bool:
+        """
+        Full composition exclusion: the codepoint has a canonical decomposition
+        but cannot be (re)composed, so NFC(cp) != cp (NFC_QC=No).
+        """
+        if info.decomp is None or info.decomp.dctype != DecompositionType.Canon:
+            return False
+        return (
+            info.cp in self.comp_exclusions
+            or len(info.decomp.dcvals) == 1
+            or self.data[info.decomp.dcvals[0]].ccc != 0
+        )
+
+    def _is_nfkc_stable(self, cp: Codepoint, cache: Dict[Codepoint, bool]) -> bool:
+        """
+        Return True when NFKC(cp) == cp (NFKC_QC=Yes).
+
+        A codepoint is unstable when it has a compatibility decomposition, is a
+        composition exclusion, or canonically decomposes into unstable codepoints.
+        """
+        if cp in cache:
+            return cache[cp]
+
+        info = self.data.get(cp)
+        if info is None or info.decomp is None:
+            result = True
+        elif info.decomp.dctype != DecompositionType.Canon:
+            result = False
+        elif self._is_comp_excluded(info):
+            result = False
+        else:
+            result = all(self._is_nfkc_stable(v, cache) for v in info.decomp.dcvals)
+
+        cache[cp] = result
+        return result
+
     def _update_property_flags(self, info: CodepointInfo) -> None:
-        if info.cp in self.comp_exclusions or (
-            info.decomp
-            and (len(info.decomp.dcvals) == 1 or self.data[info.decomp.dcvals[0]].ccc != 0)
-        ):
+        if self._is_comp_excluded(info):
             info.flags |= PropertyFlags.CompExcl
+
+        if info.cp in self.comp_maybe:
+            info.flags |= PropertyFlags.CompMaybe
 
     def _create_property_table(self) -> None:
         """
@@ -489,6 +557,12 @@ class UnicodeDataParser(object):
         dataset[default.data_key] = default
 
         prop_index = 1
+
+        # Mark codepoints that are not in NFKC form (NFKC_QC=No)
+        nfkc_cache: Dict[Codepoint, bool] = {}
+        for info in self.data.values():
+            if not self._is_nfkc_stable(info.cp, nfkc_cache):
+                info.flags |= PropertyFlags.NfkcNo
 
         for info in self.data.values():
             # Update flags

@@ -126,7 +126,7 @@ For Documentation only Doxygen is considered necessary.
 ### Unicode - Unicode (Target: 0.1.0, improve in 0.2.0)
 - [x] Validate, iterate, normalize, map baseline
 - [ ] Proper Grapheme handling
-- [ ] Quick normalization paths
+- [x] Quick normalization paths
 - [ ] Testing
 - [ ] Documentation
 

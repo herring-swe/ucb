@@ -8,6 +8,7 @@
  */
 
 #include "microbench.h"
+#include "unicode_bench.h"
 #include "vector_bench.h"
 
 #include <cstdint>
@@ -75,6 +76,7 @@ int main(int argc, char** argv)
         register_wrapper(bench);
         register_vector_int_benchmarks(bench);
         register_vector_ptr_benchmarks(bench);
+        register_unicode_benchmarks(bench);
     }
     catch (const std::exception& error)
     {

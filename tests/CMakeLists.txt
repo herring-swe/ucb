@@ -124,8 +124,13 @@ target_sources(ucb_benchmarks PRIVATE
     bench/bench_main.cpp
     bench/vector_bench_int.cpp
     bench/vector_bench_ptr.cpp
+    bench/unicode_bench.cpp
     bench/bench_c.c
 )
 target_link_libraries(ucb_benchmarks PRIVATE ucb_bench ucb)
-target_include_directories(ucb_benchmarks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bench)
+target_include_directories(ucb_benchmarks PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/bench
+    ${CMAKE_SOURCE_DIR}/src
+)
+target_compile_definitions(ucb_benchmarks PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
 add_test(NAME ucb_benchmarks COMMAND ucb_benchmarks)

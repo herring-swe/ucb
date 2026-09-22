@@ -14,6 +14,7 @@
 #include "unicode_decomp.h"
 #include "unicode_defines.h"
 #include "unicode_mapping.h"
+#include "unicode_private.h"
 #include "unicode_props.h"
 
 #include "ucb/bufutil.h"
@@ -972,47 +973,87 @@ static bool normalize(norm_ctx_t* ctx,
     return ucb_buffer_push(&ctx->cp, "\0", 1);
 }
 
-static size_t ucb_uc_check_norm(const char* str, size_t size, bool* is_latin1, bool* must_decomp)
+/**
+ * @brief Quick check whether a string is already in the requested normalization form.
+ *
+ * The result is conservative: it only returns true when the string is guaranteed to be
+ * in the requested form. A false result means full normalization is required.
+ *
+ * This mirrors the Unicode quick check
+ * (https://unicode.org/reports/tr15/#Detecting_Normalization_Forms) using data we already carry in
+ * the property table:
+ *   - NFD:  no canonical decomposition and no Hangul syllable.
+ *   - NFKD: no decomposition at all and no Hangul syllable.
+ *   - NFC:  no composition exclusion (NFC_QC=No) and no code point that can compose
+ *           with a preceding starter (NFC_QC=Maybe).
+ *   - NFKC: no code point that is not in NFKC form (NFKC_QC=No) and no code point that
+ *           can compose with a preceding starter (NFKC_QC=Maybe).
+ * Canonical ordering is verified for all forms.
+ */
+static bool ucb_uc_is_normalized(const char* str, size_t size, ucb_norm_form form)
 {
-    size_t num = 0;
+    const bool decomp = (form == UCB_NORM_NFD || form == UCB_NORM_NFKD);
+    const bool compat = (form == UCB_NORM_NFKD || form == UCB_NORM_NFKC);
 
-    bool check_latin1 = true;
-    bool check_decomp = must_decomp ? false : true;
+    uint8_t last_ccc = 0;
     ucb_cp cp;
 
     FOR_EACH_CODEPOINT(cp, str, size)
     {
-        num++;
-        if (cp > 0x7F)
-            check_latin1 = false;
-        if (!check_decomp)
+        if (is_hangul_syllable(cp))
         {
-            const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
-            if (!prop)
-                continue;
-            if (prop->ccc > 0 || (prop->flags & UCB_UC_PROP_COMPEXCL))
+            // Hangul syllables are already composed (NFC/NFKC) but always decompose.
+            if (decomp)
+                return false;
+            last_ccc = 0; // Starter
+            continue;
+        }
+
+        const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
+        if (!prop)
+            return false;
+
+        if (decomp)
+        {
+            if (prop->decomp_idx)
             {
-                // Fast check failed, we need to do full normalization
-                check_decomp = true;
+                if (compat)
+                    return false;
+                const ucb_uc_decomp* d = ucb_uc_get_decomp(prop);
+                if (d && d->type == UCB_UC_DC_CANON)
+                    return false;
             }
         }
+        else
+        {
+            // NFC/NFKC quick check: reject NFC_QC/NFKC_QC = No and Maybe.
+            uint8_t reject = compat ? UCB_UC_PROP_NFKCNO : UCB_UC_PROP_COMPEXCL;
+            if (prop->flags & (reject | UCB_UC_PROP_COMPMAYBE))
+                return false;
+            // Hangul vowel/trailing jamo compose algorithmically
+            if (is_vowel_jamo(cp) || is_trailing_jamo(cp))
+                return false;
+        }
+
+        // Canonical ordering: combining classes must be non-decreasing.
+        uint8_t ccc = prop->ccc;
+        if (ccc != 0 && ccc < last_ccc)
+            return false;
+        last_ccc = ccc;
     }
     FOR_EACH_CODEPOINT_CHECK_RET();
 
-    if (is_latin1)
-        *is_latin1 = check_latin1;
-    if (must_decomp)
-        *must_decomp = check_decomp;
-    return num;
+    return true;
 }
 
-ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form, ucb_error** perr)
+static ucb_uc_result normalize_common(const char* str,
+                                      size_t size,
+                                      ucb_norm_form form,
+                                      bool quick,
+                                      ucb_error** perr)
 {
-    UCB_UNUSED(size);
     norm_ctx_t ctx = {0};
     ucb_uc_result ret = {0};
-
-    bool must_decomp = true;
 
     switch (form)
     {
@@ -1034,23 +1075,28 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
 
     UCB_VERIFY_ARGS(str);
 
-    // Find out how many codepoints we deal with and do fast checks
-    bool is_latin1 = false;
-    size_t numcp = ucb_uc_check_norm(str, size, &is_latin1, must_decomp ? NULL : &must_decomp);
+    if (size == UCB_NPOS)
+        size = strlen(str);
 
-    // FIXME: Implement quick check according to:
-    // https://unicode.org/reports/tr15/#Detecting_Normalization_Forms
-    // And parsing DerivedNormalizationProps.txt
-    // if ((ctx.flags & UC_FLAGS_COMPOSE) && is_latin1 && !must_decomp)
-    // {
-    //     char* res = ucb_malloc_type(size + 1, char);
-    //     memcpy(res, str, size);
-    //     res[size] = '\0';
-    //     return (ucb_uc_result){.error = UCB_OK, .data = res, .size = size};
-    // }
+    // Quick path: the string is already in the requested form, just copy it.
+    if (quick && ucb_uc_is_normalized(str, size, form))
+    {
+        ret.data = ucb_malloc_type(size + 1, char);
+        if (!ret.data)
+        {
+            ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate buffer");
+            return ret;
+        }
+        memcpy(ret.data, str, size);
+        ret.data[size] = '\0';
+        ret.size = size;
+        return ret;
+    }
 
-    // Allocate for worst case decompose. This can be adjusted once
-    // we can quick check the input.
+    // Find out how many codepoints we deal with for the worst case allocation
+    size_t numcp = ucb_uc_num_cp(str, size);
+
+    // Allocate for the worst case decomposition of the input
     if (!ucb_buffer_init_heap(&ctx.cp, 4 * numcp * sizeof(ucb_cp) + 1))
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate buffer");
@@ -1058,7 +1104,7 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
     }
     ctx.cp.grow_func = ucb_buffer_grow_double;
 
-    if (!normalize(&ctx, str, size, must_decomp, perr))
+    if (!normalize(&ctx, str, size, true, perr))
         return ret;
 
     ucb_buffer_fit(&ctx.cp);
@@ -1066,6 +1112,19 @@ ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form,
     ucb_buffer_release(&ctx.cp);
     ret.size -= 1; // Do not count null-terminator
     return ret;
+}
+
+ucb_uc_result ucb_uc_normalize(const char* str, size_t size, ucb_norm_form form, ucb_error** perr)
+{
+    return normalize_common(str, size, form, true, perr);
+}
+
+ucb_uc_result ucb_uc_normalize_full(const char* str,
+                                    size_t size,
+                                    ucb_norm_form form,
+                                    ucb_error** perr)
+{
+    return normalize_common(str, size, form, false, perr);
 }
 
 int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2)
