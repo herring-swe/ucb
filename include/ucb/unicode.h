@@ -91,23 +91,39 @@ UCB_API size_t ucb_uc_num_cp(const char* str, size_t len);
 /**
  * @brief Count the number of printable characters in a UTF-8 string.
  *
+ * Counts extended grapheme clusters as defined by UAX #29. This is the number
+ * of user-perceived characters, and is not the same as the number of
+ * codepoints (see @ref ucb_uc_num_cp).
+ *
  * The string must already have been validated as UTF-8.
  *
  * If @p len is specified, the string may contain multiple null characters.
  * If @p len is UCB_NPOS, the string must only be null-terminated.
  *
- * @note This only skips codepoints with the combining marks property.
- * @todo Implement proper grapheme cluster counter
  * @param str the string
  * @param len length of string or UCB_NPOS
  * @return number of printable characters in string
  */
 UCB_API size_t ucb_uc_num_char(const char* str, size_t len);
 
+/**
+ * @brief Get the byte offset just past the @p index-th printable character.
+ *
+ * Characters are extended grapheme clusters (UAX #29). The returned offset is a
+ * valid boundary that can be passed to @ref ucb_uc_next_char().
+ *
+ * @param str valid UTF-8 string
+ * @param len length of string
+ * @param index 1-based character index
+ * @return byte offset after the @p index-th character, or @p len if there is no
+ * such character
+ */
 UCB_API size_t ucb_uc_char_index(const char* str, size_t len, size_t index);
 
 /**
  * @brief Get the next character position
+ *
+ * Characters are extended grapheme clusters (UAX #29).
  *
  * Calls with @p from_byte >= string length (including UCB_NPOS) will return UCB_NPOS.
  *

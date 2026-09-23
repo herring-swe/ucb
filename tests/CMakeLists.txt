@@ -18,6 +18,7 @@
 get_target_property(UCB_SOURCE_DIR ucb BINARY_DIR)
 set(UNICODE_DATA_DIR "${UCB_SOURCE_DIR}/ucb_data")
 set(NORM_TEST_FILE "${UNICODE_DATA_DIR}/NormalizationTest.txt")
+set(GRAPHEME_TEST_FILE "${UNICODE_DATA_DIR}/GraphemeBreakTest.txt")
 
 # if(NOT EXISTS ${NORM_TEST_FILE})
 # message(FATAL_ERROR "Could not find ${NORM_TEST_FILE}")
@@ -76,9 +77,11 @@ ucb_target_sources(ucb_tests PRIVATE
     test_types.c
 
     ${NORM_TEST_FILE}
+    ${GRAPHEME_TEST_FILE}
 )
 
 target_compile_definitions(ucb_tests PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
+target_compile_definitions(ucb_tests PRIVATE GRAPHEME_TEST_FILE="${GRAPHEME_TEST_FILE}")
 
 target_link_libraries(ucb_tests PRIVATE ucb)
 

@@ -228,6 +228,52 @@ class DecompositionType(UcEnum):
         return "DC_"
 
 
+class GraphemeClusterBreak(UcEnum):
+    """
+    Grapheme_Cluster_Break property values (UAX #29).
+    Values match the short names used in GraphemeBreakProperty.txt.
+    """
+
+    # fmt: off
+    Other              = ("Other",              "Any other code point")
+    CR                 = ("CR",                 "Carriage return")
+    LF                 = ("LF",                 "Line feed")
+    Control            = ("Control",            "Control character")
+    Extend             = ("Extend",             "Grapheme extend")
+    ZWJ                = ("ZWJ",                "Zero width joiner")
+    Regional_Indicator = ("Regional_Indicator", "Regional indicator")
+    Prepend            = ("Prepend",            "Prepend character")
+    SpacingMark        = ("SpacingMark",        "Spacing combining mark")
+    L                  = ("L",                  "Hangul leading jamo")
+    V                  = ("V",                  "Hangul vowel jamo")
+    T                  = ("T",                  "Hangul trailing jamo")
+    LV                 = ("LV",                 "Hangul LV syllable")
+    LVT                = ("LVT",                "Hangul LVT syllable")
+    # fmt: on
+
+    @classmethod
+    def enum_prefix(cls):
+        return "GCB_"
+
+
+class IndicConjunctBreak(UcEnum):
+    """
+    Indic_Conjunct_Break property values (UAX #29, GB9c).
+    Values match the names used in DerivedCoreProperties.txt.
+    """
+
+    # fmt: off
+    NONE      = ("None",      "Not part of an Indic conjunct")
+    Consonant = ("Consonant", "Indic consonant")
+    Extend    = ("Extend",    "Indic conjunct extend")
+    Linker    = ("Linker",    "Indic conjunct linker")
+    # fmt: on
+
+    @classmethod
+    def enum_prefix(cls):
+        return "INCB_"
+
+
 class PropertyFlags(UcFlag):
     # fmt: off
     Default = ("No special flags")
@@ -591,6 +637,9 @@ class CodepointInfo(object):
         "gc",
         "flags",
         "ccc",
+        "gcb",
+        "incb",
+        "extpict",
         "mapping_idx",
         "decomp_idx",
         "combiner_idx",
@@ -610,6 +659,9 @@ class CodepointInfo(object):
         self.gc = gc
         self.flags: int = 0
         self.ccc: int = 0
+        self.gcb: GraphemeClusterBreak = GraphemeClusterBreak.Other
+        self.incb: IndicConjunctBreak = IndicConjunctBreak.NONE
+        self.extpict: bool = False
         self.mapping_idx: int = 0
         self.decomp_idx: int = 0
         self.combiner_idx: int = 0
@@ -629,7 +681,8 @@ class CodepointInfo(object):
     @property
     def data_key(self) -> str:
         return (
-            f"{self.flags}-{self.gc.value}-{self.ccc}-{self.mapping_idx}-"
+            f"{self.flags}-{self.gc.value}-{self.ccc}-{self.gcb.value}-"
+            f"{self.incb.value}-{int(self.extpict)}-{self.mapping_idx}-"
             f"{self.decomp_idx}-{self.combiner_idx}"
         )
 
@@ -721,7 +774,7 @@ class CodepointInfo(object):
 
     def equal_data(self, other: "CodepointInfo") -> bool:
         """Only compare data that will end up in property table"""
-        for key in ["gc", "ccc", "mapping_idx", "decomp_idx"]:
+        for key in ["gc", "ccc", "gcb", "incb", "extpict", "mapping_idx", "decomp_idx"]:
             if getattr(self, key) != getattr(other, key):
                 return False
         return True
@@ -736,6 +789,9 @@ class CodepointInfo(object):
         new = CodepointInfo(self.cp, self.gc)
         new.flags = self.flags
         new.ccc = self.ccc
+        new.gcb = self.gcb
+        new.incb = self.incb
+        new.extpict = self.extpict
         new.mapping_idx = self.mapping_idx
         new.decomp_idx = self.decomp_idx
         new.combiner_idx = self.combiner_idx

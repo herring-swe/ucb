@@ -92,6 +92,21 @@ static const ucb_uc_combiners* ucb_uc_get_combiners(const ucb_uc_prop* prop)
     return UCB_NULL;
 }
 
+static inline ucb_uc_gcb ucb_uc_prop_gcb(const ucb_uc_prop* prop)
+{
+    return prop ? (ucb_uc_gcb)prop->gcb : UCB_UC_GCB_OTHER;
+}
+
+static inline ucb_uc_incb ucb_uc_prop_incb(const ucb_uc_prop* prop)
+{
+    return prop ? (ucb_uc_incb)prop->incb : UCB_UC_INCB_NONE;
+}
+
+static inline bool ucb_uc_prop_extpict(const ucb_uc_prop* prop)
+{
+    return prop && prop->extpict;
+}
+
 // static bool is_combining_mark(ucb_uc_prop* prop)
 // {
 //     return prop && prop->ccc > 0;
@@ -408,24 +423,288 @@ size_t ucb_uc_num_cp(const char* str, size_t len)
     return num;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                          Extended grapheme clusters                        */
+/* -------------------------------------------------------------------------- */
+
+// State carried while scanning for grapheme cluster boundaries (UAX #29).
+typedef struct ucb_uc_grapheme_state
+{
+    bool ri_odd;      // Odd number of consecutive Regional_Indicator before current
+    uint8_t gb11;     // 0 none, 1 ExtPict, 2 ExtPict Extend*, 3 ExtPict Extend* ZWJ
+    bool incb_seq;    // Inside Consonant [Extend Linker]*
+    bool incb_linker; // A Linker has been seen since the consonant
+} ucb_uc_grapheme_state;
+
+static void ucb_uc_grapheme_update(ucb_uc_grapheme_state* st,
+                                   ucb_uc_gcb gcb,
+                                   bool extpict,
+                                   ucb_uc_incb incb)
+{
+    // GB11: track Extended_Pictographic Extend* ZWJ
+    if (extpict)
+        st->gb11 = 1;
+    else if (gcb == UCB_UC_GCB_EXTEND && (st->gb11 == 1 || st->gb11 == 2))
+        st->gb11 = 2;
+    else if (gcb == UCB_UC_GCB_ZWJ && (st->gb11 == 1 || st->gb11 == 2))
+        st->gb11 = 3;
+    else
+        st->gb11 = 0;
+
+    // GB12/GB13: parity of consecutive regional indicators
+    if (gcb == UCB_UC_GCB_REGIONAL_INDICATOR)
+        st->ri_odd = !st->ri_odd;
+    else
+        st->ri_odd = false;
+
+    // GB9c: track Consonant [Extend Linker]* with at least one Linker
+    if (incb == UCB_UC_INCB_CONSONANT)
+    {
+        st->incb_seq = true;
+        st->incb_linker = false;
+    }
+    else if (st->incb_seq && (incb == UCB_UC_INCB_EXTEND || incb == UCB_UC_INCB_LINKER))
+    {
+        if (incb == UCB_UC_INCB_LINKER)
+            st->incb_linker = true;
+    }
+    else
+    {
+        st->incb_seq = false;
+        st->incb_linker = false;
+    }
+}
+
+// Evaluate the UAX #29 boundary rules in order. Returns true when a break is
+// required between the previous codepoint (described by @p st) and the current.
+static bool ucb_uc_grapheme_should_break(const ucb_uc_grapheme_state* st,
+                                         ucb_uc_gcb a,
+                                         ucb_uc_gcb b,
+                                         bool cur_extpict,
+                                         ucb_uc_incb cur_incb)
+{
+    // GB3: CR x LF
+    if (a == UCB_UC_GCB_CR && b == UCB_UC_GCB_LF)
+        return false;
+    // GB4: (Control | CR | LF) ÷
+    if (a == UCB_UC_GCB_CONTROL || a == UCB_UC_GCB_CR || a == UCB_UC_GCB_LF)
+        return true;
+    // GB5: ÷ (Control | CR | LF)
+    if (b == UCB_UC_GCB_CONTROL || b == UCB_UC_GCB_CR || b == UCB_UC_GCB_LF)
+        return true;
+    // GB6: L x (L | V | LV | LVT)
+    if (a == UCB_UC_GCB_L &&
+        (b == UCB_UC_GCB_L || b == UCB_UC_GCB_V || b == UCB_UC_GCB_LV || b == UCB_UC_GCB_LVT))
+        return false;
+    // GB7: (LV | V) x (V | T)
+    if ((a == UCB_UC_GCB_LV || a == UCB_UC_GCB_V) && (b == UCB_UC_GCB_V || b == UCB_UC_GCB_T))
+        return false;
+    // GB8: (LVT | T) x T
+    if ((a == UCB_UC_GCB_LVT || a == UCB_UC_GCB_T) && b == UCB_UC_GCB_T)
+        return false;
+    // GB9: x (Extend | ZWJ)
+    if (b == UCB_UC_GCB_EXTEND || b == UCB_UC_GCB_ZWJ)
+        return false;
+    // GB9a: x SpacingMark
+    if (b == UCB_UC_GCB_SPACINGMARK)
+        return false;
+    // GB9b: Prepend x
+    if (a == UCB_UC_GCB_PREPEND)
+        return false;
+    // GB9c: Consonant [Extend Linker]* Linker [Extend Linker]* x Consonant
+    if (st->incb_seq && st->incb_linker && cur_incb == UCB_UC_INCB_CONSONANT)
+        return false;
+    // GB11: ExtPict Extend* ZWJ x ExtPict
+    if (st->gb11 == 3 && cur_extpict)
+        return false;
+    // GB12/GB13: RI x RI when preceded by an odd number of RI
+    if (a == UCB_UC_GCB_REGIONAL_INDICATOR && b == UCB_UC_GCB_REGIONAL_INDICATOR && st->ri_odd)
+        return false;
+    // GB999: Any ÷ Any
+    return true;
+}
+
+// Step back to the start of the codepoint ending just before @p pos.
+static const unsigned char* ucb_uc_prev_start(const unsigned char* base, const unsigned char* pos)
+{
+    pos--; // Last byte of the previous codepoint
+    while (pos > base && (*pos & 0xC0u) == 0x80u)
+        pos--;
+    return pos;
+}
+
+// Decode the codepoint at @p start and return its property entry. If @p end is
+// given, it receives the position after the codepoint.
+static const ucb_uc_prop* ucb_uc_prop_at(const unsigned char* start, const unsigned char** end)
+{
+    const unsigned char* iter = start;
+    ucb_cp cp = ucb_uc_next_valid(&iter);
+    if (end)
+        *end = iter;
+    return ucb_uc_get_prop(cp);
+}
+
+// Reconstruct the scanner state for a valid cluster boundary at @p from.
+static void ucb_uc_grapheme_state_at(const char* str, size_t from, ucb_uc_grapheme_state* st)
+{
+    memset(st, 0, sizeof(*st));
+    if (from == 0)
+        return;
+
+    const unsigned char* base = (const unsigned char*)str;
+    const unsigned char* pos = base + from;
+
+    // GB12/GB13: parity of the trailing run of Regional_Indicator.
+    {
+        bool odd = false;
+        const unsigned char* p = pos;
+        while (p > base)
+        {
+            const unsigned char* q = ucb_uc_prev_start(base, p);
+            const ucb_uc_prop* prop = ucb_uc_prop_at(q, UCB_NULL);
+            if (!prop || ucb_uc_prop_gcb(prop) != UCB_UC_GCB_REGIONAL_INDICATOR)
+                break;
+            odd = !odd;
+            p = q;
+        }
+        st->ri_odd = odd;
+    }
+
+    // GB11: does the sequence end with Extended_Pictographic Extend* ZWJ?
+    {
+        const unsigned char* p = pos;
+        if (p > base)
+        {
+            const unsigned char* q = ucb_uc_prev_start(base, p);
+            const ucb_uc_prop* prop = ucb_uc_prop_at(q, UCB_NULL);
+            if (prop && ucb_uc_prop_gcb(prop) == UCB_UC_GCB_ZWJ)
+            {
+                p = q;
+                while (p > base)
+                {
+                    q = ucb_uc_prev_start(base, p);
+                    prop = ucb_uc_prop_at(q, UCB_NULL);
+                    if (prop && ucb_uc_prop_extpict(prop))
+                    {
+                        st->gb11 = 3;
+                        break;
+                    }
+                    if (!prop || ucb_uc_prop_gcb(prop) != UCB_UC_GCB_EXTEND)
+                        break;
+                    p = q;
+                }
+            }
+        }
+    }
+
+    // GB9c: does the sequence end with Consonant [Extend Linker]* including a Linker?
+    {
+        bool linker = false;
+        const unsigned char* p = pos;
+        while (p > base)
+        {
+            const unsigned char* q = ucb_uc_prev_start(base, p);
+            const ucb_uc_prop* prop = ucb_uc_prop_at(q, UCB_NULL);
+            ucb_uc_incb incb = ucb_uc_prop_incb(prop);
+            if (incb == UCB_UC_INCB_LINKER)
+            {
+                linker = true;
+                p = q;
+            }
+            else if (incb == UCB_UC_INCB_EXTEND)
+            {
+                p = q;
+            }
+            else if (incb == UCB_UC_INCB_CONSONANT)
+            {
+                st->incb_seq = true;
+                st->incb_linker = linker;
+                break;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+// Find the next cluster boundary at or after @p start. @p st must describe the
+// position @p start, which itself must be a boundary.
+static size_t ucb_uc_grapheme_next_from(const char* str,
+                                        const unsigned char* start,
+                                        const unsigned char* last,
+                                        ucb_uc_grapheme_state* st)
+{
+    const unsigned char* iter = start;
+    const ucb_uc_prop* prop = ucb_uc_prop_at(iter, &iter);
+    UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
+    ucb_uc_grapheme_update(st,
+                           ucb_uc_prop_gcb(prop),
+                           ucb_uc_prop_extpict(prop),
+                           ucb_uc_prop_incb(prop));
+
+    while (iter < last)
+    {
+        const unsigned char* cp_start = iter;
+        const ucb_uc_prop* next_prop = ucb_uc_prop_at(iter, &iter);
+        UCB_VERIFY(next_prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
+
+        if (ucb_uc_grapheme_should_break(st,
+                                         ucb_uc_prop_gcb(prop),
+                                         ucb_uc_prop_gcb(next_prop),
+                                         ucb_uc_prop_extpict(next_prop),
+                                         ucb_uc_prop_incb(next_prop)))
+            return (size_t)(cp_start - (const unsigned char*)str);
+
+        ucb_uc_grapheme_update(st,
+                               ucb_uc_prop_gcb(next_prop),
+                               ucb_uc_prop_extpict(next_prop),
+                               ucb_uc_prop_incb(next_prop));
+        prop = next_prop;
+    }
+    return UCB_NPOS;
+}
+
 size_t ucb_uc_num_char(const char* str, size_t len)
 {
-    // Simple implementation before implementing grapheme clusters
     size_t num = 0;
 
     if (str)
     {
-        ucb_cp cp;
-        const ucb_uc_prop* prop;
+        if (len == UCB_NPOS)
+            len = strlen(str);
 
-        FOR_EACH_CODEPOINT(cp, str, len)
+        const unsigned char* iter = (const unsigned char*)str;
+        const unsigned char* last = iter + len;
+        if (iter < last)
         {
-            prop = ucb_uc_get_prop(cp);
+            ucb_uc_grapheme_state st = {0};
+            const ucb_uc_prop* prop = ucb_uc_prop_at(iter, &iter);
             UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
-            if (!UCB_UC_IS_MARK(prop->category))
-                num++;
+            ucb_uc_grapheme_update(&st,
+                                   ucb_uc_prop_gcb(prop),
+                                   ucb_uc_prop_extpict(prop),
+                                   ucb_uc_prop_incb(prop));
+            num = 1;
+
+            while (iter < last)
+            {
+                const ucb_uc_prop* next_prop = ucb_uc_prop_at(iter, &iter);
+                UCB_VERIFY(next_prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
+                if (ucb_uc_grapheme_should_break(&st,
+                                                 ucb_uc_prop_gcb(prop),
+                                                 ucb_uc_prop_gcb(next_prop),
+                                                 ucb_uc_prop_extpict(next_prop),
+                                                 ucb_uc_prop_incb(next_prop)))
+                    num++;
+                ucb_uc_grapheme_update(&st,
+                                       ucb_uc_prop_gcb(next_prop),
+                                       ucb_uc_prop_extpict(next_prop),
+                                       ucb_uc_prop_incb(next_prop));
+                prop = next_prop;
+            }
         }
-        FOR_EACH_CODEPOINT_CHECK_RET();
     }
     return num;
 }
@@ -437,49 +716,65 @@ size_t ucb_uc_next_char(const char* str, size_t len, size_t from_byte)
     if (from_byte >= len)
         return UCB_NPOS;
 
-    const unsigned char* iter = (const unsigned char*)str + from_byte;
+    ucb_uc_grapheme_state st;
+    ucb_uc_grapheme_state_at(str, from_byte, &st);
+
+    const unsigned char* start = (const unsigned char*)str + from_byte;
     const unsigned char* last = (const unsigned char*)str + len;
-
-    // Skip to the next base character (or end of string)
-    while (iter < last)
-    {
-        uint32_t cp = ucb_uc_next_valid(&iter);
-        const ucb_uc_prop* prop = ucb_uc_get_prop(cp);
-        UCB_VERIFY(prop, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8");
-
-        if (!UCB_UC_IS_MARK(prop->category))
-            return (size_t)(iter - (const unsigned char*)str);
-    }
-    return UCB_NPOS; // End of string
+    return ucb_uc_grapheme_next_from(str, start, last, &st);
 }
 
 size_t ucb_uc_char_index(const char* str, size_t len, size_t index)
 {
-    // Simple implementation before implementing grapheme clusters
-    size_t num = 0;
+    if (!str || index == 0)
+        return len;
 
-    if (str && index > 0)
+    const unsigned char* base = (const unsigned char*)str;
+    const unsigned char* iter = base;
+    const unsigned char* last = base + len;
+
+    if (iter >= last)
+        return len;
+
+    ucb_uc_grapheme_state st = {0};
+    const ucb_uc_prop* prop = ucb_uc_prop_at(iter, &iter);
+    if (!prop)
+        return len;
+    ucb_uc_grapheme_update(&st,
+                           ucb_uc_prop_gcb(prop),
+                           ucb_uc_prop_extpict(prop),
+                           ucb_uc_prop_incb(prop));
+
+    // `num` is the cluster currently being scanned (1-based). A break at the
+    // start of the next cluster completes `num` and yields its end boundary.
+    size_t num = 1;
+
+    while (iter < last)
     {
-        ucb_cp cp;
-        const ucb_uc_prop* prop;
+        const unsigned char* cp_start = iter;
+        const ucb_uc_prop* next_prop = ucb_uc_prop_at(iter, &iter);
+        if (!next_prop)
+            return len;
 
-        FOR_EACH_CODEPOINT(cp, str, len)
+        if (ucb_uc_grapheme_should_break(&st,
+                                         ucb_uc_prop_gcb(prop),
+                                         ucb_uc_prop_gcb(next_prop),
+                                         ucb_uc_prop_extpict(next_prop),
+                                         ucb_uc_prop_incb(next_prop)))
         {
-            prop = ucb_uc_get_prop(cp);
-            if (!prop)
-            {
-                // Invalid UTF-8
-                break;
-            }
-            if (!UCB_UC_IS_MARK(prop->category))
-            {
-                num++;
-                if (num == index)
-                    return CODEPOINT_BYTE_POS(str);
-            }
+            if (num == index)
+                return (size_t)(cp_start - base);
+            num++;
         }
-        FOR_EACH_CODEPOINT_CHECK_RET();
+
+        ucb_uc_grapheme_update(&st,
+                               ucb_uc_prop_gcb(next_prop),
+                               ucb_uc_prop_extpict(next_prop),
+                               ucb_uc_prop_incb(next_prop));
+        prop = next_prop;
     }
+
+    // The final cluster ends at the end of the string.
     return len;
 }
 
@@ -701,6 +996,9 @@ ucb_uc_result ucb_uc_casefold(const char* str, size_t size, ucb_error** perr)
 /*                                Normalization                               */
 /* -------------------------------------------------------------------------- */
 
+// Size of the on-stack canonical reordering window. Segments longer than this
+// grow to the heap; a canonical segment (starter + non-starters) has no upper
+// bound, so this must never be treated as a hard limit.
 #define NORM_CTX_BUFSIZE 18
 #define UC_FLAGS_COMPOSE 0x01
 #define UC_FLAGS_COMPAT 0x02
@@ -708,16 +1006,73 @@ ucb_uc_result ucb_uc_casefold(const char* str, size_t size, ucb_error** perr)
 typedef struct
 {
     ucb_buffer cp; // Codepoint buffer
-    ucb_cp cp_buf[NORM_CTX_BUFSIZE];
-    uint8_t ccc_buf[NORM_CTX_BUFSIZE];
+    ucb_cp cp_inline[NORM_CTX_BUFSIZE];
+    uint8_t ccc_inline[NORM_CTX_BUFSIZE];
+    ucb_cp* cp_buf;   // Reorder window, either cp_inline or a heap block
+    uint8_t* ccc_buf; // Reorder window, either ccc_inline or a heap block
     size_t len;
+    size_t cap;
     char* errpos;
     uint8_t flags;
 } norm_ctx_t;
 
-static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
+static void norm_ctx_init(norm_ctx_t* ctx)
 {
-    UCB_ASSERT_INTERNAL(ctx->len < NORM_CTX_BUFSIZE, "Buffer overflow");
+    ctx->cp_buf = ctx->cp_inline;
+    ctx->ccc_buf = ctx->ccc_inline;
+    ctx->cap = NORM_CTX_BUFSIZE;
+}
+
+static void norm_ctx_destroy(norm_ctx_t* ctx)
+{
+    if (ctx->cp_buf != ctx->cp_inline)
+        ucb_free(ctx->cp_buf);
+    norm_ctx_init(ctx);
+    ctx->len = 0;
+}
+
+// Slow path: grow the reorder window. Both arrays live in one allocation.
+static bool norm_ctx_grow_slow(norm_ctx_t* ctx, size_t needed, ucb_error** perr)
+{
+    const size_t unit = sizeof(ucb_cp) + sizeof(uint8_t);
+    size_t newcap = ctx->cap;
+    while (newcap < needed && newcap <= SIZE_MAX / 2)
+        newcap *= 2;
+    if (newcap < needed)
+        newcap = needed;
+    if (newcap > SIZE_MAX / unit)
+    {
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Normalization segment too long");
+        return false;
+    }
+
+    ucb_cp* mem = (ucb_cp*)ucb_malloc(newcap * unit);
+    if (!mem)
+    {
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "Could not grow normalization buffer");
+        return false;
+    }
+
+    ucb_cp* new_cp = mem;
+    uint8_t* new_ccc = (uint8_t*)(mem + newcap);
+    if (ctx->len > 0)
+    {
+        memcpy(new_cp, ctx->cp_buf, ctx->len * sizeof(ucb_cp));
+        memcpy(new_ccc, ctx->ccc_buf, ctx->len * sizeof(uint8_t));
+    }
+    if (ctx->cp_buf != ctx->cp_inline)
+        ucb_free(ctx->cp_buf);
+
+    ctx->cp_buf = new_cp;
+    ctx->ccc_buf = new_ccc;
+    ctx->cap = newcap;
+    return true;
+}
+
+static inline bool norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc, ucb_error** perr)
+{
+    if (ctx->len >= ctx->cap && !norm_ctx_grow_slow(ctx, ctx->len + 1, perr))
+        return false;
 
     ctx->cp_buf[ctx->len] = cp;
     ctx->ccc_buf[ctx->len] = ccc;
@@ -738,6 +1093,7 @@ static inline void norm_ctx_add(norm_ctx_t* ctx, ucb_cp cp, uint8_t ccc)
             i--;
         }
     }
+    return true;
 }
 
 static bool norm_ctx_flush(norm_ctx_t* ctx, ucb_error** perr)
@@ -781,7 +1137,7 @@ static inline bool is_trailing_jamo(ucb_cp c)
     return (c >= 0x11A8 && c <= 0x11C2);
 }
 
-static void norm_decompose_hangul(norm_ctx_t* ctx, ucb_cp syllable)
+static bool norm_decompose_hangul(norm_ctx_t* ctx, ucb_cp syllable, ucb_error** perr)
 {
     assert(is_hangul_syllable(syllable));
 
@@ -790,11 +1146,12 @@ static void norm_decompose_hangul(norm_ctx_t* ctx, ucb_cp syllable)
     const ucb_cp V_idx0 = ((S - T_idx1) % 588) / 28; // was = (S / 28) % 21;
     const ucb_cp L_idx0 = S / 588;                   // was = S / (28 * 21);
 
-    // No need to check error since buffer is assured.
-    norm_ctx_add(ctx, 0x1100 + L_idx0, 0);
-    norm_ctx_add(ctx, 0x1161 + V_idx0, 0);
-    if (T_idx1 != 0)
-        norm_ctx_add(ctx, 0x11A7 + T_idx1, 0);
+    if (!norm_ctx_add(ctx, 0x1100 + L_idx0, 0, perr) ||
+        !norm_ctx_add(ctx, 0x1161 + V_idx0, 0, perr))
+        return false;
+    if (T_idx1 != 0 && !norm_ctx_add(ctx, 0x11A7 + T_idx1, 0, perr))
+        return false;
+    return true;
 }
 
 static inline ucb_cp compose_hangul(ucb_cp L, ucb_cp V, ucb_cp T)
@@ -824,8 +1181,7 @@ static bool norm_decompose_cp(norm_ctx_t* ctx, ucb_cp cp, bool must_decomp, ucb_
         if (ccc == 0 && !norm_ctx_flush(ctx, perr))
             return false;
         // No decomposition or wrong type: append as-is
-        norm_ctx_add(ctx, cp, ccc);
-        return true;
+        return norm_ctx_add(ctx, cp, ccc, perr);
     }
 
     // Recursively decompose each codepoint
@@ -938,17 +1294,16 @@ static bool normalize(norm_ctx_t* ctx,
     {
         if (is_hangul_syllable(cp))
         {
-            norm_decompose_hangul(ctx, cp);
-            if (!norm_ctx_flush(ctx, perr))
+            if (!norm_decompose_hangul(ctx, cp, perr) || !norm_ctx_flush(ctx, perr))
                 return false;
         }
         else
         {
             if (!norm_decompose_cp(ctx, cp, must_decomp, perr))
-                return perr;
+                return false;
 
             // Only flush if last is a starter
-            if (ctx->ccc_buf[ctx->len - 1] == 0)
+            if (ctx->len > 0 && ctx->ccc_buf[ctx->len - 1] == 0)
             {
                 if (!norm_ctx_flush(ctx, perr))
                     return false;
@@ -1103,10 +1458,16 @@ static ucb_uc_result normalize_common(const char* str,
         return ret;
     }
     ctx.cp.grow_func = ucb_buffer_grow_double;
+    norm_ctx_init(&ctx);
 
     if (!normalize(&ctx, str, size, true, perr))
+    {
+        norm_ctx_destroy(&ctx);
+        ucb_buffer_release(&ctx.cp);
         return ret;
+    }
 
+    norm_ctx_destroy(&ctx);
     ucb_buffer_fit(&ctx.cp);
     ucb_buffer_transfer(&ctx.cp, (void**)&ret.data, &ret.size, UCB_NULL, UCB_NULL);
     ucb_buffer_release(&ctx.cp);

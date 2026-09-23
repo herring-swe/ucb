@@ -9,12 +9,16 @@ from .types import (
     Decomp,
     DecompositionType,
     GeneralCategory,
+    GraphemeClusterBreak,
+    IndicConjunctBreak,
     Mapping,
 )
 
 __all__ = [
     "GeneralCategory",
     "DecompositionType",
+    "GraphemeClusterBreak",
+    "IndicConjunctBreak",
     "Codepoint",
     "Decomp",
     "Mapping",
