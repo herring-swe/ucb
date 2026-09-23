@@ -68,6 +68,28 @@ typedef enum {{prefix_lc}}dctype
 {% endfor %}
 } {{prefix_lc}}dctype;
 
+/**
+ * Grapheme cluster break (UAX #29)
+ */
+{% set max_cname = enum_gcb.c_name_max() %}
+typedef enum {{prefix_lc}}gcb
+{
+{% for e_val in enum_gcb %}
+    {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
+{% endfor %}
+} {{prefix_lc}}gcb;
+
+/**
+ * Indic conjunct break (UAX #29, GB9c)
+ */
+{% set max_cname = enum_incb.c_name_max() %}
+typedef enum {{prefix_lc}}incb
+{
+{% for e_val in enum_incb %}
+    {{ e_val.c_ename()|ljust(max_cname) }} = {{ e_val.value|rjust(2) }}, // {{ e_val.description }}
+{% endfor %}
+} {{prefix_lc}}incb;
+
 // General category macros
 #define {{prefix_uc}}IS_LETTER(c)      ((c) >= {{enum_gc.prefix()}}LU && (c) <= {{enum_gc.prefix()}}LO)
 #define {{prefix_uc}}IS_MARK(c)        ((c) >= {{enum_gc.prefix()}}MN && (c) <= {{enum_gc.prefix()}}ME)

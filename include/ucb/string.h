@@ -91,6 +91,7 @@
  * This is the number of characters that is seen when the string is printed to the
  * console or other UTF-8 enabled outputs. Since in unicode, characters may be
  * represented in multiple codepoints, this is not the same as previous lengths.
+ * UCB measures these as extended grapheme clusters (UAX #29).
  *
  * This is important to know in order to truncate or split strings properly. It is
  * also useful as the measurement to check a certain column width when printing to

@@ -19,6 +19,8 @@ from .types import (
     Decomp,
     DecompositionType,
     GeneralCategory,
+    GraphemeClusterBreak,
+    IndicConjunctBreak,
     Mapping,
     PropertyFlags,
 )
@@ -335,6 +337,103 @@ class UnicodeDataParser(object):
             except Exception as e:
                 raise ParseError(
                     f"Could not parse codepoint(s) from line: {line}", filename, lineno
+                ) from e
+
+        return True
+
+    def _get_or_create(self, cp: Codepoint) -> CodepointInfo:
+        """
+        Look up a codepoint, creating a default (unassigned) entry when the
+        codepoint is not present in UnicodeData.txt.
+        """
+        info = self.data.get(cp)
+        if info is None:
+            info = CodepointInfo(cp, GeneralCategory.Cn)
+            self.data[cp] = info
+        return info
+
+    @staticmethod
+    def _iter_cp_range(field: str):
+        """Iterate a single codepoint or a `start..end` range field."""
+        field = field.strip()
+        if ".." in field:
+            start, end = field.split("..")
+            for cp in range(int(start, 16), int(end, 16) + 1):
+                yield Codepoint(cp)
+        else:
+            yield Codepoint(field)
+
+    def parse_grapheme_break_property(self, fd: TextIO, filename: str) -> bool:
+        """
+        Parse the Grapheme_Cluster_Break property from GraphemeBreakProperty.txt
+        """
+        lineno = 0
+
+        for line in fd:
+            lineno += 1
+            line = line.split("#", 1)[0].strip()
+            if not line:
+                continue
+
+            try:
+                cp_field, value = [part.strip() for part in line.split(";", 1)]
+                gcb = GraphemeClusterBreak.parse(value)
+                for cp in self._iter_cp_range(cp_field):
+                    self._get_or_create(cp).gcb = gcb
+            except Exception as e:
+                raise ParseError(
+                    f"Could not parse grapheme break property: {line}", filename, lineno
+                ) from e
+
+        return True
+
+    def parse_emoji_data(self, fd: TextIO, filename: str) -> bool:
+        """
+        Parse the Extended_Pictographic property from emoji-data.txt
+        """
+        lineno = 0
+
+        for line in fd:
+            lineno += 1
+            line = line.split("#", 1)[0].strip()
+            if not line:
+                continue
+
+            try:
+                cp_field, value = [part.strip() for part in line.split(";", 1)]
+                if value != "Extended_Pictographic":
+                    continue
+                for cp in self._iter_cp_range(cp_field):
+                    self._get_or_create(cp).extpict = True
+            except Exception as e:
+                raise ParseError(
+                    f"Could not parse emoji data: {line}", filename, lineno
+                ) from e
+
+        return True
+
+    def parse_derived_core_properties(self, fd: TextIO, filename: str) -> bool:
+        """
+        Parse the Indic_Conjunct_Break property from DerivedCoreProperties.txt
+        """
+        lineno = 0
+
+        for line in fd:
+            lineno += 1
+            line = line.split("#", 1)[0].strip()
+            if not line:
+                continue
+
+            try:
+                parts = [part.strip() for part in line.split(";")]
+                if len(parts) < 3 or parts[1] != "InCB":
+                    continue
+                incb = IndicConjunctBreak.parse(parts[2])
+                for cp in self._iter_cp_range(parts[0]):
+                    self._get_or_create(cp).incb = incb
+            except Exception as e:
+                raise ParseError(
+                    f"Could not parse derived core property: {line}", filename, lineno
                 ) from e
 
         return True
@@ -778,12 +877,24 @@ class UnicodeDataParser(object):
         elif path.name == "CompositionExclusions.txt":
             with open(filename, "r", encoding="utf-8") as fd:
                 return self.parse_composition_exclusions(fd, filename)
+        elif path.name == "GraphemeBreakProperty.txt":
+            with open(filename, "r", encoding="utf-8") as fd:
+                return self.parse_grapheme_break_property(fd, filename)
+        elif path.name == "emoji-data.txt":
+            with open(filename, "r", encoding="utf-8") as fd:
+                return self.parse_emoji_data(fd, filename)
+        elif path.name == "DerivedCoreProperties.txt":
+            with open(filename, "r", encoding="utf-8") as fd:
+                return self.parse_derived_core_properties(fd, filename)
         raise ParseError("Unknown file type", filename, -1)
 
     def parse_all(self) -> None:
         self.parse("UnicodeData.txt")
         self.parse("CaseFolding.txt")
         self.parse("CompositionExclusions.txt")
+        self.parse("GraphemeBreakProperty.txt")
+        self.parse("emoji-data.txt")
+        self.parse("DerivedCoreProperties.txt")
         self.parse_finalize()
 
     def _write_template(self, comp: str, tfile: Path, ofile: Path):
@@ -806,6 +917,8 @@ class UnicodeDataParser(object):
             # Enums and flags
             "enum_gc": GeneralCategory,
             "enum_decomp": DecompositionType,
+            "enum_gcb": GraphemeClusterBreak,
+            "enum_incb": IndicConjunctBreak,
             "flags_prop": PropertyFlags,
             # Data tables
             "props": self.prop_table,

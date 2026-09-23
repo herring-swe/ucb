@@ -24,6 +24,18 @@ list(APPEND DATA_HASHES "efc25faf19de21b92c1194c111c932e03d2a5eaf18194e33f1156e9
 list(APPEND DATA_URLS https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt)
 list(APPEND DATA_HASHES "5019ffd530751a741900c849c0e010332f142a3612234639bd200b82138a87db")
 
+list(APPEND DATA_URLS https://www.unicode.org/Public/17.0.0/ucd/auxiliary/GraphemeBreakProperty.txt)
+list(APPEND DATA_HASHES "d6b51d1d2ae5c33b451b7ed994b48f1f4dc62b2272a5831e7fd418514a6bae89")
+
+list(APPEND DATA_URLS https://www.unicode.org/Public/17.0.0/ucd/emoji/emoji-data.txt)
+list(APPEND DATA_HASHES "2cb2bb9455cda83e8481541ecf5b6dfda66a3bb89efa3fa7c5297eccf607b72b")
+
+list(APPEND DATA_URLS https://www.unicode.org/Public/17.0.0/ucd/DerivedCoreProperties.txt)
+list(APPEND DATA_HASHES "24c7fed1195c482faaefd5c1e7eb821c5ee1fb6de07ecdbaa64b56a99da22c08")
+
+list(APPEND DATA_URLS https://www.unicode.org/Public/17.0.0/ucd/auxiliary/GraphemeBreakTest.txt)
+list(APPEND DATA_HASHES "e2d134d2c52919bace503ebb6a551c1855fe1a1faec18478c78fff254a1793ec")
+
 
 # Output folder
 if(NOT UNICODE_DATA_DIR)

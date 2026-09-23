@@ -26,6 +26,7 @@
 
 #ifdef __INTELLISENSE__
 #define NORM_TEST_FILE "dummy"
+#define GRAPHEME_TEST_FILE "dummy"
 #endif
 
 typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, ucb_error** perr);
@@ -159,11 +160,7 @@ static inline void test_basics(const char* input, size_t len, size_t num_cp, siz
     CHECK(ucb_uc_num_char(input, len) == num_chars);
 }
 
-static inline void test_grapheme(const char* input,
-                                 size_t len,
-                                 size_t num_cp,
-                                 size_t num_chars,
-                                 size_t num_fail_chars)
+static inline void test_grapheme(const char* input, size_t len, size_t num_cp, size_t num_chars)
 {
     bool with_null = check_with_null(input, len);
 
@@ -175,11 +172,9 @@ static inline void test_grapheme(const char* input,
         CHECK(len == strlen(input));
     REQUIRE(ucb_uc_validate(input, len, UCB_NULL));
     CHECK(ucb_uc_num_cp(input, len) == num_cp);
-
-    // This should not fail with grapheme clusters
-    CHECK(ucb_uc_num_char(input, len) != num_chars);
-    // This is the wrong report
-    CHECK(ucb_uc_num_char(input, len) == num_fail_chars);
+    CHECK(ucb_uc_num_char(input, len) == num_chars);
+    if (!with_null)
+        CHECK(ucb_uc_num_cp(input, UCB_NPOS) == num_cp);
 }
 
 static inline void test_mapping(const char* input,
@@ -324,19 +319,25 @@ TEST_CASE("unicode grapheme")
 {
     UCB_MEMTRACK_PUSH();
 
-    test_grapheme("👨‍👩‍👧‍👦", 25, 7, 1, 7); // Family emoji (ZWJ sequences)
-    test_grapheme("🏳️‍🌈", 14, 4, 1, 3);            // Gaydar flag (ZWJ + emoji)
+    test_grapheme("👨‍👩‍👧‍👦", 25, 7, 1); // Family emoji (ZWJ sequences)
+    test_grapheme("🏳️‍🌈", 14, 4, 1);            // Gaydar flag (ZWJ + emoji)
     // Will not fail due to combining marks
-    test_basics("©\uFE0F", 5, 2, 1);           // '©' + emoji variation selector
-    test_basics("#\u20E3", 4, 2, 1);           // '#' + Combining Enclosing Keycap
-    test_grapheme("👩‍💻", 11, 3, 1, 3); // Woman technologist (ZWJ sequence)
-    test_grapheme("🇺🇸", 8, 2, 1, 2);           // US flag (regional indicator symbols)
-    test_grapheme("👨🏽", 8, 2, 1, 2);         // Man + medium skin tone modifier
+    test_basics("©\uFE0F", 5, 2, 1);        // '©' + emoji variation selector
+    test_basics("#\u20E3", 4, 2, 1);        // '#' + Combining Enclosing Keycap
+    test_grapheme("👩‍💻", 11, 3, 1); // Woman technologist (ZWJ sequence)
+    test_grapheme("🇺🇸", 8, 2, 1);           // US flag (regional indicator symbols)
+    test_grapheme("🇺🇸🇫", 12, 3, 2);         // RI RI RI: first pair joins, third does not
+    test_grapheme("👨🏽", 8, 2, 1);         // Man + medium skin tone modifier
     test_grapheme("\xF0\x9F\x91\xA8\xE2\x80\x8D\xF0\x9F\x91\xA9\xE2\x80\x8D\xF0\x9F\x91\xA6",
                   18,
                   5,
-                  1,
-                  5);
+                  1);
+
+    // Control characters
+    test_grapheme("a\r\nb", 4, 4, 3); // CRLF is a single cluster
+
+    // Indic conjunct: KA + VIRAMA (Linker) + SSA
+    test_grapheme("\xE0\xA4\x95\xE0\xA5\x8D\xE0\xA4\xB7", 9, 3, 1);
 
     UCB_MEMTRACK_POP();
 }
@@ -437,6 +438,36 @@ TEST_CASE("unicode normalization")
     test_norm("갛é각Åﬁ가́̀Ź̌한글LigaturesﬃﬄﬅℵἄΩﬂῴ",
               "갛é각Åfi가́̀Ź̌한글LigaturesffifflstאἄΩflῴ",
               UCB_NORM_NFKD);
+
+    // Regression: a canonical segment (starter + non-starters) has no upper bound
+    // and must not overflow the internal reorder window (previously a fixed 18).
+    {
+        std::string marks;
+        for (int i = 0; i < 19; ++i)
+            marks += "\xCC\x80"; // U+0300, ccc 230
+
+        // NFC routes a bare combining run through the full algorithm (NFC_QC=Maybe).
+        test_norm(marks.c_str(), marks.c_str(), UCB_NORM_NFC);
+
+        // NFD with a decomposable starter forces the full path too:
+        // U+00C0 -> 'A' + U+0300, then 19 more marks => 21 codepoint segment.
+        std::string input = "\xC3\x80" + marks;
+        std::string expected = "A";
+        for (int i = 0; i < 20; ++i)
+            expected += "\xCC\x80";
+        test_norm(input.c_str(), expected.c_str(), UCB_NORM_NFD);
+
+        // Canonical reordering across the window growth boundary:
+        // 'a' + 30x U+0300 (ccc 230) + U+0316 (ccc 220) -> 'a' + U+0316 + 30x U+0300
+        std::string order = "a";
+        for (int i = 0; i < 30; ++i)
+            order += "\xCC\x80"; // U+0300, ccc 230
+        order += "\xCC\x96";     // U+0316, ccc 220
+        std::string reordered = "a\xCC\x96";
+        for (int i = 0; i < 30; ++i)
+            reordered += "\xCC\x80";
+        test_norm(order.c_str(), reordered.c_str(), UCB_NORM_NFD);
+    }
 
     UCB_MEMTRACK_POP();
 }
@@ -571,6 +602,110 @@ TEST_CASE("unicode official normalization test")
 
     std::cout << "Number of tests definitions: " << tests.size() << std::endl;
     std::cout << "Number of normalizations run: " << tests.size() * 20 << std::endl;
+}
+
+struct ucd_grapheme_test
+{
+    int line_no;
+    int test_no;
+    std::string input;
+    std::vector<size_t> boundaries;
+};
+
+static void read_ucd_grapheme_tests(std::vector<ucd_grapheme_test>& tests)
+{
+    std::string line;
+    std::ifstream ifs(GRAPHEME_TEST_FILE, std::ios::in);
+    REQUIRE(ifs.is_open());
+
+    int line_no = 0;
+    int test_no = 0;
+
+    while (std::getline(ifs, line))
+    {
+        line_no++;
+        if (line.empty() || line.at(0) == '#')
+            continue;
+
+        size_t comment = line.find('#');
+        if (comment != std::string::npos)
+            line = line.substr(0, comment);
+
+        std::istringstream ss(line);
+        std::string token;
+
+        ucd_grapheme_test data;
+        data.line_no = line_no;
+        data.test_no = ++test_no;
+
+        size_t offset = 0;
+        bool break_next = false;
+
+        while (ss >> token)
+        {
+            if (token == "\xC3\xB7") // ÷ (U+00F7)
+            {
+                break_next = true;
+            }
+            else if (token == "\xC3\x97") // × (U+00D7)
+            {
+                break_next = false;
+            }
+            else
+            {
+                unsigned long cp = std::stoul(token, nullptr, 16);
+                char buf[4];
+                int n = ucb_uc_encode_codepoint(reinterpret_cast<uint8_t*>(buf),
+                                                static_cast<ucb_cp>(cp));
+                REQUIRE(n > 0);
+                if (break_next && offset > 0)
+                    data.boundaries.push_back(offset);
+                data.input.append(buf, static_cast<size_t>(n));
+                offset += static_cast<size_t>(n);
+                break_next = false;
+            }
+        }
+
+        if (!data.input.empty())
+            tests.push_back(data);
+    }
+}
+
+TEST_CASE("unicode official grapheme break test")
+{
+    std::vector<ucd_grapheme_test> tests;
+    read_ucd_grapheme_tests(tests);
+
+    for (const auto& test : tests)
+    {
+        CAPTURE(test.test_no);
+        CAPTURE(test.line_no);
+
+        const char* str = test.input.data();
+        size_t len = test.input.size();
+
+        REQUIRE(ucb_uc_validate(str, len, UCB_NULL));
+
+        std::vector<size_t> got;
+        size_t pos = 0;
+        size_t next;
+        while ((next = ucb_uc_next_char(str, len, pos)) != UCB_NPOS)
+        {
+            got.push_back(next);
+            pos = next;
+        }
+        CHECK(got == test.boundaries);
+
+        // One more cluster than interior boundaries
+        CHECK(ucb_uc_num_char(str, len) == test.boundaries.size() + 1);
+
+        // char_index(n) returns the boundary ending the n-th cluster
+        for (size_t i = 0; i < test.boundaries.size(); i++)
+            CHECK(ucb_uc_char_index(str, len, i + 1) == test.boundaries[i]);
+        CHECK(ucb_uc_char_index(str, len, test.boundaries.size() + 1) == len);
+    }
+
+    std::cout << "Number of grapheme break tests: " << tests.size() << std::endl;
 }
 
 TEST_SUITE_END();

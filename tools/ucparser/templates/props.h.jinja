@@ -31,6 +31,9 @@ typedef struct
     uint8_t flags : 3;    // Property flags (max 3 flags)
     uint8_t category : 5; // General category (max 31)
     uint8_t ccc;          // Canonical combining class
+    uint8_t gcb : 5;      // Grapheme cluster break (max 31)
+    uint8_t incb : 2;     // Indic conjunct break (max 3)
+    uint8_t extpict : 1;  // Extended_Pictographic
     {{cstduint(num_mapping_table+1)}} mapping_idx; // Index of mapping table + 1
     {{cstduint(num_decomp_table+1)}} decomp_idx;  // Index of decomposition table + 1
     {{cstduint(num_combiner_table+1)}} combiner_idx;  // Index of combiner table + 1
@@ -43,6 +46,9 @@ static const {{prefix_lc}}prop s_{{prefix_lc}}prop_table[{{prefix_uc}}NUM_PROPER
     {{- entry.flags|rjust(2) }}{{ ", " }}
     {{- (entry.gc.c_ename()~",")|ljust(14) }}{{ " " }} 
     {{- entry.ccc|rjust(3) }}{{ ", " }} 
+    {{- entry.gcb.value|rjust(2) }}{{ ", " }} 
+    {{- entry.incb.value|rjust(1) }}{{ ", " }} 
+    {{- (1 if entry.extpict else 0)|rjust(1) }}{{ ", " }} 
     {{- entry.mapping_idx|rjust(4) }}{{ ", " }} 
     {{- entry.decomp_idx|rjust(4) }}{{ "," }}
     {{- entry.combiner_idx|rjust(4) }}{{ " }," }}

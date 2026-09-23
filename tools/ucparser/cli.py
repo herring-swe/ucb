@@ -21,7 +21,13 @@ def main():
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    required_files = ["UnicodeData.txt", "CaseFolding.txt"]
+    required_files = [
+        "UnicodeData.txt",
+        "CaseFolding.txt",
+        "GraphemeBreakProperty.txt",
+        "emoji-data.txt",
+        "DerivedCoreProperties.txt",
+    ]
     if any(not os.path.exists(fn) for fn in required_files):
         print(
             f"Error: Required files not found. Please ensure "
