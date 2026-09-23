@@ -53,7 +53,7 @@
  *
  * ### Length of string
  *
- * - UCB use "len", "length" or simetimes "size" to denote the number of bytes in
+ * - UCB use "len", "length" or sometimes "size" to denote the number of bytes in
  * the string.
  * - UCB use "num_char" to represent the number of perceived characters.
  *
@@ -77,7 +77,7 @@
  * #### 1. Bytes:
  * This is the most natural choice to represent length or "len"
  *
- * For UCB, the term length or "len" is used  to represent the number of bytes in
+ * For UCB, the term length or "len" is used to represent the number of bytes in
  * the string. This would match C's strlen and probably the most expected behaviour.
  * This also matches for instance Rust, which also use UTF-8 encoded strings.
  *
@@ -560,7 +560,7 @@ UCB_API size_t ucb_str_len(const ucb_str* str);
  * into a single character.
  *
  * @note This is not the same as the number of unicode codepoints
- * @param str
+ * @param str string to query
  * @return length in printable characters
  */
 UCB_API size_t ucb_str_num_char(const ucb_str* str);
@@ -580,18 +580,79 @@ UCB_API size_t ucb_str_num_char(const ucb_str* str);
  * @{
  */
 
+/**
+ * @brief Check if two strings are equal.
+ *
+ * Comparison is a byte-wise (and therefore codepoint-wise) comparison. The
+ * strings should be in the same normalization form. This is a case sensitive
+ * comparison; use @ref ucb_str_icomp() for case-insensitive comparison.
+ *
+ * @param str1 first string
+ * @param str2 second string
+ * @return true if the strings have identical length and contents
+ */
 UCB_API bool ucb_str_equal(const ucb_str* str1, const ucb_str* str2);
 
+/**
+ * @brief Compare two strings byte-wise.
+ *
+ * @param str1 first string
+ * @param str2 second string
+ * @return 0 if equal, a negative value if @p str1 sorts before @p str2 and a
+ * positive value otherwise
+ */
 UCB_API int ucb_str_comp(const ucb_str* str1, const ucb_str* str2);
+
+/**
+ * @brief Compare two strings case-insensitively.
+ *
+ * Uses full case folding. For repeated comparisons, case fold the strings once
+ * with @ref ucb_str_casefold() and use @ref ucb_str_comp() instead.
+ *
+ * @param str1 first string
+ * @param str2 second string
+ * @return 0 if equal, a negative value if @p str1 sorts before @p str2 and a
+ * positive value otherwise
+ */
 UCB_API int ucb_str_icomp(const ucb_str* str1, const ucb_str* str2);
 
+/**
+ * @brief Comparison adapter for @c qsort and similar functions.
+ *
+ * @param a pointer to a @ref ucb_str
+ * @param b pointer to a @ref ucb_str
+ * @return as @ref ucb_str_comp()
+ */
 static inline int ucb_str_cmp_func(const void* a, const void* b)
 {
     return ucb_str_comp((const ucb_str*)a, (const ucb_str*)b);
 }
 
+/**
+ * @brief Check if a string starts with a prefix.
+ * @param str string to test
+ * @param prefix prefix to look for
+ * @return true if @p str starts with @p prefix
+ */
 UCB_API bool ucb_str_startswith(const ucb_str* str, const ucb_str* prefix);
+
+/**
+ * @brief Check if a string ends with a suffix.
+ * @param str string to test
+ * @param suffix suffix to look for
+ * @return true if @p str ends with @p suffix
+ */
 UCB_API bool ucb_str_endswith(const ucb_str* str, const ucb_str* suffix);
+
+/**
+ * @brief Find the first occurrence of a substring.
+ *
+ * @param str string to search
+ * @param substr substring to find
+ * @param pos byte offset to start searching from
+ * @return byte offset of the first occurrence at or after @p pos, or
+ * UCB_NPOS if not found
+ */
 UCB_API size_t ucb_str_find(const ucb_str* str, const ucb_str* substr, size_t pos);
 
 /**
@@ -628,7 +689,32 @@ UCB_API void ucb_str_clear(ucb_str* str);
  * @param append string to append
  */
 UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
+
+/**
+ * @brief Append an array of codepoints, encoded as UTF-8.
+ *
+ * On an invalid codepoint, @p perr is set and nothing is appended.
+ *
+ * @param str string to append to
+ * @param cp array of codepoints
+ * @param num_cp number of codepoints
+ * @param perr optional pointer that may be set on error
+ */
 UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr);
+
+/**
+ * @brief Append a C string of a given byte length.
+ *
+ * If @p len is 0, @p cstr must be null-terminated and its length is measured.
+ * Otherwise @p cstr may contain multiple null characters.
+ *
+ * This is safe when @p cstr points into this string (for example when appending
+ * a slice of the string to itself).
+ *
+ * @param str string to append to
+ * @param cstr C string to append
+ * @param len length in bytes, or 0 to measure @p cstr
+ */
 UCB_API void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len);
 static inline void ucb_str_append_c(ucb_str* str, const char* cstr)
 {
@@ -644,37 +730,155 @@ static inline void ucb_str_append_c(ucb_str* str, const char* cstr)
  * @param insert string to insert
  */
 UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
+
+/**
+ * @brief Insert an array of codepoints, encoded as UTF-8, at a character index.
+ *
+ * On an invalid codepoint, @p perr is set and nothing is inserted.
+ *
+ * @note Insert at character index, not byte index
+ * @param str string to insert into
+ * @param index character index to insert at
+ * @param cp array of codepoints
+ * @param num_cp number of codepoints
+ * @param perr optional pointer that may be set on error
+ */
 UCB_API void ucb_str_insert_cp(ucb_str* str,
                                size_t index,
                                const ucb_cp* cp,
                                size_t num_cp,
                                ucb_error** perr);
+
+/**
+ * @brief Insert a C string at a character index.
+ *
+ * If @p len is 0, @p cstr must be null-terminated and its length is measured.
+ * Otherwise @p cstr may contain multiple null characters.
+ *
+ * This is safe when @p cstr points into this string (for example when inserting
+ * a slice of the string into itself).
+ *
+ * @note Insert at character index, not byte index
+ * @param str string to insert into
+ * @param index character index to insert at
+ * @param cstr C string to insert
+ * @param len length in bytes, or 0 to measure @p cstr
+ */
 UCB_API void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t len);
 static inline void ucb_str_insert_c(ucb_str* str, size_t index, const char* cstr)
 {
     ucb_str_insert_cstr(str, index, cstr, strlen(cstr));
 }
 
+/**
+ * @brief Allocate and concatenate a list of strings.
+ *
+ * The argument list must be terminated with UCB_NULL.
+ *
+ * @param str first string (may not be UCB_NULL)
+ * @param args null-terminated va_list of @ref ucb_str pointers to append
+ * @return pointer to the new owned string or UCB_NULL on error
+ */
 UCB_API ucb_str* ucb_str_concatv(const ucb_str* str, va_list args);
+
+/**
+ * @brief Allocate and concatenate a list of strings.
+ *
+ * The variadic arguments must be @ref ucb_str pointers terminated with
+ * UCB_NULL.
+ *
+ * @code
+ * ucb_str* result = ucb_str_concat(a, b, c, UCB_NULL);
+ * @endcode
+ *
+ * @param str first string (may not be UCB_NULL)
+ * @param ... null-terminated list of @ref ucb_str pointers to append
+ * @return pointer to the new owned string or UCB_NULL on error
+ */
 UCB_API ucb_str* ucb_str_concat(const ucb_str* str, ...);
 
 /**
- * @brief Allocate and initialize a substring from a string
+ * @brief Allocate and initialize a substring from a string.
  *
- * The substring will be a wrapped string of the original @p str underlying
- * C string.
+ * The range is given as byte offsets: the result contains the bytes in
+ * <tt>[start, end)</tt>. If @p end is UCB_NPOS, the end of the string is used.
+ *
+ * The returned string always owns its data.
+ *
  * @param str string to copy from
- * @param index start index of character byte
- * @param count number of characters or UCB_NPOS until end of string
- * @return ucb_str*
+ * @param start start byte offset
+ * @param end end byte offset (exclusive), or UCB_NPOS for the end of @p str
+ * @return pointer to the new owned string or UCB_NULL on error
  */
-UCB_API ucb_str* ucb_str_substr(const ucb_str* str, size_t index, size_t count);
-UCB_API ucb_str* ucb_str_substr_wrapped(const ucb_str* str, size_t index, size_t count);
+UCB_API ucb_str* ucb_str_substr(const ucb_str* str, size_t start, size_t end);
 
+/**
+ * @brief Create a wrapped substring that references the original data.
+ *
+ * Behaves as @ref ucb_str_substr() but returns a wrapped string instead of
+ * copying the bytes. The returned string is only valid as long as the data of
+ * @p str stays valid and is not modified.
+ *
+ * @warning If @p end does not point at the end of @p str, the wrapped substring
+ * is not null-terminated.
+ *
+ * @param str string to reference
+ * @param start start byte offset
+ * @param end end byte offset (exclusive), or UCB_NPOS for the end of @p str
+ * @return pointer to the new wrapped string or UCB_NULL on error
+ */
+UCB_API ucb_str* ucb_str_substr_wrapped(const ucb_str* str, size_t start, size_t end);
+
+/**
+ * @brief Convert the string to lower case in place.
+ *
+ * The string is detached if it is a wrapped string. The case mapping may change
+ * the length of the string.
+ *
+ * @param str string to convert
+ * @return true on success
+ * @return false on error or out of memory
+ */
 UCB_API bool ucb_str_to_lower(ucb_str* str);
+
+/**
+ * @brief Convert the string to upper case in place.
+ * @see ucb_str_to_lower()
+ * @param str string to convert
+ * @return true on success
+ * @return false on error or out of memory
+ */
 UCB_API bool ucb_str_to_upper(ucb_str* str);
+
+/**
+ * @brief Convert the string to title case in place.
+ * @see ucb_str_to_lower()
+ * @param str string to convert
+ * @return true on success
+ * @return false on error or out of memory
+ */
 UCB_API bool ucb_str_to_title(ucb_str* str);
+
+/**
+ * @brief Case fold the string in place.
+ *
+ * Intended for case-insensitive comparisons, not for display.
+ *
+ * @see ucb_str_to_lower()
+ * @param str string to fold
+ * @return true on success
+ * @return false on error or out of memory
+ */
 UCB_API bool ucb_str_casefold(ucb_str* str);
+
+/**
+ * @brief Normalize the string in place.
+ *
+ * @param str string to normalize; must be valid UTF-8
+ * @param form the normalization form to apply
+ * @return true on success
+ * @return false on error or out of memory
+ */
 UCB_API bool ucb_str_normalize(ucb_str* str, ucb_norm_form form);
 
 /** @} */

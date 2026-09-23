@@ -38,15 +38,13 @@
 #define FOR_EACH_CODEPOINT(cp, str, len)                              \
     const unsigned char* _iter = (const unsigned char*)(str);         \
     const unsigned char* _last = (const unsigned char*)_iter + (len); \
-    (cp) = ucb_uc_next_valid(&_iter);                                 \
-    for (; _iter <= _last; (cp) = ucb_uc_next_valid(&_iter))
+    for (; ucb_uc_iter_next(&_iter, _last, &(cp));)
 
 #define FOR_EACH_CODEPOINT_CHECK_RET() \
-    UCB_VERIFY(_iter - 1 == _last, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8")
+    UCB_VERIFY(_iter == _last, UCB_ERROR_INVALID_UTF8, "Invalid UTF-8")
 
 #define CODEPOINT_BYTE_POS(str) (size_t)(_iter - (const unsigned char*)(str))
 
-#define UCB_MAX(a, b) ((a) > (b) ? (a) : (b))
 #define UCB_COMP(a, b) (((a) > (b)) ? 1 : ((a) < (b)) ? -1 : 0)
 
 /* -------------------------------------------------------------------------- */
@@ -174,6 +172,25 @@ ucb_cp ucb_uc_iter_utf8(const unsigned char** iter)
     return ucb_uc_next_valid(iter);
 }
 
+/**
+ * @brief Decode the next codepoint if it starts before @p last.
+ *
+ * Unlike @ref ucb_uc_next_valid(), this never reads at or past @p last, so it
+ * is safe for buffers that are not null-terminated.
+ *
+ * @param iter in/out pointer to the current position
+ * @param last pointer one past the end of the buffer
+ * @param out receives the decoded codepoint
+ * @return true if a codepoint was decoded, false if @p *iter reached @p last
+ */
+static bool ucb_uc_iter_next(const unsigned char** iter, const unsigned char* last, ucb_cp* out)
+{
+    if (*iter >= last)
+        return false;
+    *out = ucb_uc_next_valid(iter);
+    return true;
+}
+
 // static inline size_t ucb_uc_iter_pos(const unsigned char* iter, const char* src)
 // {
 //     return (size_t)(iter - (const unsigned char*)src);
@@ -193,6 +210,7 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
 
     bool success = false;
     size_t errpos = SIZE_MAX;
+    size_t expected = 0;
 
     ucb_cp cp;
     size_t i = 0;
@@ -207,7 +225,13 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
         }
         else if ((c & 0xE0u) == 0xC0u) // 110x xxxx, 2 bytes
         {
-            if (i + 1 >= len || (bytes[i + 1] & 0xC0u) != 0x80u)
+            if (i + 1 >= len) // Truncated
+            {
+                errpos = i;
+                expected = 2;
+                break;
+            }
+            if ((bytes[i + 1] & 0xC0u) != 0x80u)
             {
                 errpos = i;
                 break;
@@ -222,7 +246,13 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
         }
         else if ((c & 0xF0u) == 0xE0u) // 1110 xxxx, 3 bytes
         {
-            if (i + 2 >= len || (bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u)
+            if (i + 2 >= len) // Truncated
+            {
+                errpos = i;
+                expected = 3;
+                break;
+            }
+            if ((bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u)
             {
                 errpos = i;
                 break;
@@ -242,8 +272,14 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
         }
         else if ((c & 0xF8u) == 0xF0u) // 1111 xxxx, 4 bytes
         {
-            if (i + 3 >= len || (bytes[i + 1] & 0xC0u) != 0x80u ||
-                (bytes[i + 2] & 0xC0u) != 0x80u || (bytes[i + 3] & 0xC0u) != 0x80u)
+            if (i + 3 >= len) // Truncated
+            {
+                errpos = i;
+                expected = 4;
+                break;
+            }
+            if ((bytes[i + 1] & 0xC0u) != 0x80u || (bytes[i + 2] & 0xC0u) != 0x80u ||
+                (bytes[i + 3] & 0xC0u) != 0x80u)
             {
                 errpos = i;
                 break;
@@ -266,24 +302,24 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
     {
         success = true;
     }
-    else
+    else if (perr)
     {
-        if (i == 0 || errpos != UCB_NPOS)
+        if (expected)
         {
-            if (perr)
-                ucb_throw_format(perr,
-                                 UCB_ERROR_INVALID_UTF8,
-                                 "Invalid UTF-8 sequence at position %zu",
-                                 errpos);
+            ucb_throw_format(
+                perr,
+                UCB_ERROR_INVALID_UTF8,
+                "Truncated UTF-8 sequence at position %zu: expected %zu bytes, got %zu",
+                errpos,
+                expected,
+                len - errpos);
         }
         else
         {
-            // We only break with errpos, so this mean string was too short.
-            if (perr)
-                ucb_throw_format(perr,
-                                 UCB_ERROR_INVALID_UTF8,
-                                 "Invalid UTF-8 sequence at end of string. Expected %zu more bytes",
-                                 i - len);
+            ucb_throw_format(perr,
+                             UCB_ERROR_INVALID_UTF8,
+                             "Invalid UTF-8 sequence at position %zu",
+                             errpos);
         }
     }
     return success;
@@ -323,6 +359,9 @@ int ucb_uc_encode_codepoint(uint8_t* dst, const ucb_cp cp)
     }
     else if (cp <= 0xFFFF)
     {
+        // Surrogates are not valid Unicode scalar values
+        if (cp >= 0xD800 && cp <= 0xDFFF)
+            return -1;
         // 3-byte sequence (1110xxxx 10xxxxxx 10xxxxxx)
         if (dst)
         {
@@ -1488,66 +1527,91 @@ ucb_uc_result ucb_uc_normalize_full(const char* str,
     return normalize_common(str, size, form, false, perr);
 }
 
+// Streaming case-folding iterator used for case-insensitive comparison. A
+// single input codepoint can fold into several codepoints, so the folded
+// overflow is buffered until it has been consumed.
+typedef struct ucb_uc_fold_iter
+{
+    const unsigned char* pos;
+    const unsigned char* end;
+    casemap_ctx_t ctx;
+    ucb_cp pending[UCB_UC_MAX_MULTI_LEN];
+    size_t pending_pos;
+    size_t pending_len;
+} ucb_uc_fold_iter;
+
+static void ucb_uc_fold_iter_init(ucb_uc_fold_iter* iter, const char* str, size_t len)
+{
+    iter->pos = (const unsigned char*)str;
+    iter->end = iter->pos + len;
+    iter->ctx.last_cp = UCB_UC_NO_VALUE;
+    iter->ctx.last_prop = UCB_NULL;
+    iter->ctx.op = UCB_UC_CASE_FOLD;
+    iter->pending_pos = 0;
+    iter->pending_len = 0;
+}
+
+// Get the next folded codepoint. Returns false when the input is exhausted, or
+// on error (which is reported).
+static bool ucb_uc_fold_iter_next(ucb_uc_fold_iter* iter, ucb_cp* out)
+{
+    if (iter->pending_pos < iter->pending_len)
+    {
+        *out = iter->pending[iter->pending_pos++];
+        return true;
+    }
+    if (iter->pos >= iter->end)
+        return false;
+
+    iter->ctx.buf[0] = ucb_uc_next_valid(&iter->pos);
+
+    ucb_error* err = UCB_NULL;
+    if (!ucb_uc_case_map_cp(&iter->ctx, &err))
+    {
+        UCB_REPORT_ERROR(err); // Aborts
+    }
+
+    assert(iter->ctx.out_len > 0 && iter->ctx.out_len <= UCB_UC_MAX_MULTI_LEN);
+    iter->pending_len = iter->ctx.out_len;
+    for (size_t i = 0; i < iter->pending_len; i++)
+        iter->pending[i] = iter->ctx.buf[i];
+    iter->pending_pos = 0;
+
+    *out = iter->pending[iter->pending_pos++];
+    return true;
+}
+
 int ucb_uc_icomp(const char* str1, size_t len1, const char* str2, size_t len2)
 {
     UCB_VERIFY_ARGS(str1 && str2);
 
-    // Early out if the strings are identical, or if one is empty
+    // Early out if the strings are identical
     if (str1 == str2)
     {
         UCB_VERIFY_ARGS(len1 == len2);
         return 0;
     }
-    else if (len1 == 0 || len2 == 0)
+
+    ucb_uc_fold_iter iter1;
+    ucb_uc_fold_iter iter2;
+    ucb_uc_fold_iter_init(&iter1, str1, len1);
+    ucb_uc_fold_iter_init(&iter2, str2, len2);
+
+    for (;;)
     {
-        // Regular sign comparison from size_t to int
-        return UCB_COMP(len1, len2);
+        ucb_cp c1 = 0;
+        ucb_cp c2 = 0;
+        bool has1 = ucb_uc_fold_iter_next(&iter1, &c1);
+        bool has2 = ucb_uc_fold_iter_next(&iter2, &c2);
+
+        if (!has1 && !has2)
+            return 0;
+        if (!has1)
+            return -1;
+        if (!has2)
+            return 1;
+
+        if (c1 != c2)
+            return UCB_COMP(c1, c2);
     }
-
-    const unsigned char* p1 = (const unsigned char*)str1;
-    const unsigned char* p2 = (const unsigned char*)str2;
-    const unsigned char* end1 = p1 + len1;
-    const unsigned char* end2 = p2 + len2;
-
-    casemap_ctx_t ctx1;
-    ctx1.last_cp = UCB_UC_NO_VALUE;
-    ctx1.last_prop = UCB_NULL;
-    ctx1.op = UCB_UC_CASE_FOLD;
-
-    casemap_ctx_t ctx2;
-    ctx2.last_cp = UCB_UC_NO_VALUE;
-    ctx2.last_prop = UCB_NULL;
-    ctx2.op = UCB_UC_CASE_FOLD;
-
-    ucb_error* err = UCB_NULL;
-
-    while (p1 < end1 && p2 < end2)
-    {
-        // Decode the next codepoint from each string
-        ctx1.buf[0] = ucb_uc_next_valid(&p1);
-        ctx2.buf[0] = ucb_uc_next_valid(&p2);
-
-        // Case-fold both codepoints
-        if (!ucb_uc_case_map_cp(&ctx1, &err))
-        {
-            UCB_REPORT_ERROR(err);
-        }
-        if (!ucb_uc_case_map_cp(&ctx2, &err))
-        {
-            UCB_REPORT_ERROR(err);
-        }
-
-        // Compare the folded sequences
-        for (size_t i = 0; i < UCB_MAX(ctx1.out_len, ctx2.out_len); i++)
-        {
-            ucb_cp f1 = (i < ctx1.out_len) ? ctx1.buf[i] : 0;
-            ucb_cp f2 = (i < ctx2.out_len) ? ctx2.buf[i] : 0;
-            if (f1 != f2)
-                return UCB_COMP(f1, f2);
-        }
-    }
-
-    // If we get here, one or both strings ended
-    // Longer string is "greater"
-    return UCB_COMP(len1, len2);
 }

@@ -26,6 +26,16 @@
 #define STR_WRAP true
 #define STR_OWN false
 
+/**
+ * Internal helper. Returns true if @p ptr points into the owned allocation of
+ * @p str. Used to make mutating operations safe when the source aliases the
+ * destination (e.g. self-append or self-assign).
+ */
+static inline bool ucb_str_aliases(const ucb_str* str, const char* ptr)
+{
+    return str->alloc > 0 && ptr != UCB_NULL && ptr >= str->data && ptr < str->data + str->alloc;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                Construction                                */
 /* -------------------------------------------------------------------------- */
@@ -146,7 +156,12 @@ void ucb_str_free(ucb_str* str)
 
 bool ucb_str_copy(ucb_str* dst, const ucb_str* src)
 {
-    UCB_VERIFY_ARGS(dst);
+    UCB_VERIFY_ARGS(dst && src);
+
+    // Copying onto itself is a no-op and must not release the source data.
+    if (dst == src)
+        return true;
+
     ucb_str_release_common(dst);
     return ucb_str_init_common(dst, STR_OWN, src->data, src->size);
 }
@@ -154,6 +169,27 @@ bool ucb_str_copy(ucb_str* dst, const ucb_str* src)
 bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len)
 {
     UCB_VERIFY_ARGS(str);
+
+    // If the source points into the destination's own allocation, copy it out
+    // before releasing the old data.
+    if (ucb_str_aliases(str, cstr))
+    {
+        size_t real_len = len ? len : strlen(cstr);
+        char* tmp = UCB_NULL;
+        if (real_len)
+        {
+            tmp = ucb_malloc(real_len);
+            if (!tmp)
+                return false;
+            memcpy(tmp, cstr, real_len);
+        }
+
+        ucb_str_release_common(str);
+        bool ok = ucb_str_init_common(str, STR_OWN, tmp, real_len);
+        ucb_free(tmp);
+        return ok;
+    }
+
     ucb_str_release_common(str);
     return ucb_str_init_common(str, STR_OWN, cstr, len);
 }
@@ -360,12 +396,6 @@ const char* ucb_str_cstr(const ucb_str* str)
     return str->data;
 }
 
-size_t ucb_str_size(const ucb_str* str)
-{
-    UCB_VERIFY_ARGS(str);
-    return str->size;
-}
-
 size_t ucb_str_len(const ucb_str* str)
 {
     UCB_VERIFY_ARGS(str);
@@ -426,8 +456,8 @@ size_t ucb_str_find(const ucb_str* str, const ucb_str* substr, size_t pos)
 {
     if (substr->size == 0)
         return 0; // Empty substring
-    if (pos + substr->size > str->size)
-        return (size_t)-1;
+    if (pos > str->size || substr->size > str->size - pos)
+        return UCB_NPOS;
 
     const char* end = str->data + (str->size - substr->size);
     for (const char* p = str->data + pos; p <= end; p++)
@@ -435,7 +465,7 @@ size_t ucb_str_find(const ucb_str* str, const ucb_str* substr, size_t pos)
         if (memcmp(p, substr->data, substr->size) == 0)
             return (size_t)(p - str->data);
     }
-    return (size_t)-1;
+    return UCB_NPOS;
 }
 
 size_t ucb_str_next_char(const ucb_str* str, size_t from_byte)
@@ -494,6 +524,24 @@ void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len)
         len = strlen(cstr);
         if (!len)
             return;
+    }
+
+    // Appending a slice of the string to itself: copy it out first so the
+    // reserve/realloc below cannot invalidate the source.
+    if (ucb_str_aliases(str, cstr))
+    {
+        char* tmp = ucb_malloc(len);
+        if (!tmp)
+            return;
+        memcpy(tmp, cstr, len);
+        if (ucb_str_reserve(str, len))
+        {
+            memcpy(str->data + str->size, tmp, len);
+            str->size += len;
+            str->data[str->size] = '\0';
+        }
+        ucb_free(tmp);
+        return;
     }
 
     if (ucb_str_reserve(str, len))
@@ -560,6 +608,19 @@ void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t le
                        UCB_ERROR_INVALID_ARG,
                        "Invalid character position or invalid UTF-8");
         }
+
+        // Inserting a slice of the string into itself: copy it out before the
+        // reserve/memmove below can invalidate or shift the source.
+        char* tmp = UCB_NULL;
+        if (ucb_str_aliases(str, cstr))
+        {
+            tmp = ucb_malloc(len);
+            if (!tmp)
+                return;
+            memcpy(tmp, cstr, len);
+            cstr = tmp;
+        }
+
         if (ucb_str_reserve(str, len))
         {
             memmove(str->data + index + len, str->data + index, str->size - index);
@@ -567,6 +628,7 @@ void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t le
             str->size += len;
             str->data[str->size] = '\0';
         }
+        ucb_free(tmp);
     }
 }
 
