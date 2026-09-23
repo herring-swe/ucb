@@ -708,4 +708,318 @@ TEST_CASE("unicode official grapheme break test")
     std::cout << "Number of grapheme break tests: " << tests.size() << std::endl;
 }
 
+TEST_CASE("unicode validation")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("valid strings")
+    {
+        const char* valid[] = {
+            "",
+            "A",
+            "Hello, world",
+            "H\xC3\xA9llo",             // é
+            "\xE6\x97\xA5\xE6\x9C\xAC", // 日本
+            "\xF0\x9F\x98\x80",         // 😀
+        };
+        for (const char* s : valid)
+        {
+            CHECK(ucb_uc_validate(s, strlen(s), UCB_NULL));
+            CHECK(ucb_uc_validate(s, UCB_NPOS, UCB_NULL));
+        }
+
+        // Embedded null with explicit length
+        CHECK(ucb_uc_validate("a\0b", 3, UCB_NULL));
+    }
+
+    SUBCASE("invalid strings")
+    {
+        struct bad_case
+        {
+            const char* label;
+            const char* str;
+            size_t len;
+        };
+        const bad_case cases[] = {
+            {"overlong 2-byte", "\xC0\x80", 2},
+            {"overlong 3-byte", "\xE0\x80\x80", 3},
+            {"overlong 4-byte", "\xF0\x80\x80\x80", 4},
+            {"surrogate", "\xED\xA0\x80", 3},
+            {"out of range", "\xF4\x90\x80\x80", 4},
+            {"stray continuation", "\x80", 1},
+            {"invalid lead byte", "\xFF", 1},
+            {"truncated 2-byte", "\xC3", 1},
+            {"truncated 3-byte", "\xE2\x82", 2},
+            {"truncated 4-byte", "\xF0\x9F\x98", 3},
+            {"valid prefix then bad", "ab\xFF", 3},
+        };
+
+        for (const auto& c : cases)
+        {
+            CAPTURE(c.label);
+            ucb_error* err = nullptr;
+            CHECK(ucb_uc_validate(c.str, c.len, &err) == false);
+            REQUIRE(UCB_IS_THROWN(err));
+            CHECK(err->code == UCB_ERROR_INVALID_UTF8);
+            ucb_error_clear(&err);
+        }
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode codepoint encoding")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("encode boundaries")
+    {
+        struct enc_case
+        {
+            ucb_cp cp;
+            int len;
+        };
+        const enc_case cases[] = {
+            {0x0000, 1},
+            {0x007F, 1},
+            {0x0080, 2},
+            {0x07FF, 2},
+            {0x0800, 3},
+            {0xFFFF, 3},
+            {0x10000, 4},
+            {0x10FFFF, 4},
+        };
+
+        for (const auto& c : cases)
+        {
+            CAPTURE(c.cp);
+            uint8_t buf[4] = {0};
+            int len = ucb_uc_encode_codepoint(buf, c.cp);
+            CHECK(len == c.len);
+            // Query length without writing must match
+            CHECK(ucb_uc_encode_codepoint(nullptr, c.cp) == c.len);
+
+            // Round-trip through the iterator
+            const unsigned char* iter = buf;
+            CHECK(ucb_uc_iter_utf8(&iter) == c.cp);
+            CHECK(iter == buf + c.len);
+        }
+    }
+
+    SUBCASE("encode invalid codepoint")
+    {
+        uint8_t buf[4] = {0};
+        CHECK(ucb_uc_encode_codepoint(buf, 0x110000) == -1);
+        CHECK(ucb_uc_encode_codepoint(nullptr, 0x110000) == -1);
+        // Surrogates are not valid Unicode scalar values
+        CHECK(ucb_uc_encode_codepoint(buf, 0xD800) == -1);
+        CHECK(ucb_uc_encode_codepoint(buf, 0xDFFF) == -1);
+    }
+
+    SUBCASE("encode codepoints into buffer")
+    {
+        const ucb_cp cps[] = {0x41, 0xE9, 0x1F600}; // A, é, 😀
+        ucb_buffer buf;
+        REQUIRE(ucb_buffer_init_heap(&buf, 16));
+        REQUIRE(ucb_uc_encode_codepoints(&buf, cps, 3, nullptr));
+        CHECK(buf.size == 7);
+        CHECK(memcmp(buf.data, "A\xC3\xA9\xF0\x9F\x98\x80", 7) == 0);
+        ucb_buffer_release(&buf);
+    }
+
+    SUBCASE("encode codepoints invalid")
+    {
+        const ucb_cp bad[] = {0x41, 0x110000};
+        ucb_buffer buf;
+        REQUIRE(ucb_buffer_init_heap(&buf, 16));
+        ucb_error* err = nullptr;
+        CHECK(ucb_uc_encode_codepoints(&buf, bad, 2, &err) == false);
+        REQUIRE(UCB_IS_THROWN(err));
+        CHECK(err->code == UCB_ERROR_INVALID_CODEPOINT);
+        ucb_error_clear(&err);
+        ucb_buffer_release(&buf);
+    }
+
+    SUBCASE("iterator decodes multi-byte")
+    {
+        const unsigned char* iter =
+            reinterpret_cast<const unsigned char*>("A\xC3\xA9\xF0\x9F\x98\x80");
+        CHECK(ucb_uc_iter_utf8(&iter) == 0x41);
+        CHECK(ucb_uc_iter_utf8(&iter) == 0xE9);
+        CHECK(ucb_uc_iter_utf8(&iter) == 0x1F600);
+        CHECK(ucb_uc_iter_utf8(&iter) == 0x00); // Null terminator terminates the walk
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode counts")
+{
+    UCB_MEMTRACK_PUSH();
+
+    // Null input is tolerated and yields zero
+    CHECK(ucb_uc_num_cp(nullptr, 0) == 0);
+    CHECK(ucb_uc_num_char(nullptr, 0) == 0);
+
+    const char* str = "e\u0301\xF0\x9F\x98\x80"; // é (combining) + 😀
+    size_t len = strlen(str);
+    CHECK(ucb_uc_num_cp(str, len) == 3); // e, U+0301, U+1F600
+    CHECK(ucb_uc_num_cp(str, UCB_NPOS) == 3);
+    CHECK(ucb_uc_num_char(str, len) == 2); // one grapheme + emoji
+    CHECK(ucb_uc_num_char(str, UCB_NPOS) == 2);
+
+    // Embedded null with explicit length is counted
+    CHECK(ucb_uc_num_cp("a\0b", 3) == 3);
+    CHECK(ucb_uc_num_char("a\0b", 3) == 3);
+
+    // Regression: a buffer of exactly `len` bytes without a null terminator
+    // must not be read past the end.
+    {
+        const char* src = "a\xF0\x9F\x98\x80"; // 5 bytes
+        const size_t n = 5;
+        char* buf = (char*)ucb_malloc(n);
+        REQUIRE(buf != nullptr);
+        memcpy(buf, src, n);
+        CHECK(ucb_uc_num_cp(buf, n) == 2);
+        CHECK(ucb_uc_num_char(buf, n) == 2);
+        ucb_free(buf);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode character indexing")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("ucb_uc_char_index")
+    {
+        const char* str = "abcd";
+        size_t len = 4;
+        CHECK(ucb_uc_char_index(str, len, 1) == 1);
+        CHECK(ucb_uc_char_index(str, len, 2) == 2);
+        CHECK(ucb_uc_char_index(str, len, 4) == 4);
+        // Index 0 and out-of-range return the end of the string
+        CHECK(ucb_uc_char_index(str, len, 0) == len);
+        CHECK(ucb_uc_char_index(str, len, 99) == len);
+        // Null string returns len (which is 0 here)
+        CHECK(ucb_uc_char_index(nullptr, 0, 1) == 0);
+    }
+
+    SUBCASE("ucb_uc_next_char")
+    {
+        const char* str = "abcd";
+        size_t len = 4;
+        // Returns the boundary starting the *next* cluster
+        CHECK(ucb_uc_next_char(str, len, 0) == 1);
+        CHECK(ucb_uc_next_char(str, len, 1) == 2);
+        CHECK(ucb_uc_next_char(str, len, 2) == 3);
+        // The final cluster has no following boundary
+        CHECK(ucb_uc_next_char(str, len, 3) == UCB_NPOS);
+        CHECK(ucb_uc_next_char(str, len, 4) == UCB_NPOS);
+        CHECK(ucb_uc_next_char(str, len, UCB_NPOS) == UCB_NPOS);
+    }
+
+    SUBCASE("char_index and next_char agree on graphemes")
+    {
+        const char* str = "e\u0301x\xF0\x9F\x98\x80"; // é, x, 😀
+        size_t len = strlen(str);
+        CHECK(ucb_uc_num_char(str, len) == 3);
+        CHECK(ucb_uc_char_index(str, len, 1) == 3);
+        CHECK(ucb_uc_next_char(str, len, 0) == 3);
+        CHECK(ucb_uc_next_char(str, len, 3) == 4);
+        CHECK(ucb_uc_char_index(str, len, 3) == len);
+        // No following boundary for the last cluster
+        CHECK(ucb_uc_next_char(str, len, 4) == UCB_NPOS);
+        CHECK(ucb_uc_next_char(str, len, len) == UCB_NPOS);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode case-insensitive comparison")
+{
+    UCB_MEMTRACK_PUSH();
+
+    CHECK(ucb_uc_icomp("Hello", 5, "hello", 5) == 0);
+    CHECK(ucb_uc_icomp("ABC", 3, "abd", 3) < 0);
+    CHECK(ucb_uc_icomp("abd", 3, "ABC", 3) > 0);
+    CHECK(ucb_uc_icomp("ab", 2, "abc", 3) < 0);
+    CHECK(ucb_uc_icomp("abc", 3, "ab", 2) > 0);
+    CHECK(ucb_uc_icomp("H\xC3\xA9llo", 6, "h\xC3\xA9LLO", 6) == 0);
+    CHECK(ucb_uc_icomp("", 0, "", 0) == 0);
+
+    // Codepoints that fold into several codepoints must still compare equal
+    // 'ß' (U+00DF) folds to "ss"
+    CHECK(ucb_uc_icomp("stra\xC3\x9F"
+                       "e",
+                       7,
+                       "STRASSE",
+                       7) == 0);
+    CHECK(ucb_uc_icomp("stra\xC3\x9F"
+                       "e",
+                       7,
+                       "strasse",
+                       7) == 0);
+    // 'İ' (U+0130) folds to 'i' + U+0307
+    CHECK(ucb_uc_icomp("\xC4\xB0", 2, "i\xCC\x87", 3) == 0);
+
+    // Expansion ordering: "ß" folds to "ss", so it sorts after "s"
+    CHECK(ucb_uc_icomp("s", 1, "\xC3\x9F", 2) < 0);
+    CHECK(ucb_uc_icomp("\xC3\x9F", 2, "s", 1) > 0);
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode normalization forms")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("enum to and from string")
+    {
+        CHECK(std::string(ucb_uc_norm_form_to_str(UCB_NORM_NFC)) == "NFC");
+        CHECK(std::string(ucb_uc_norm_form_to_str(UCB_NORM_NFD)) == "NFD");
+        CHECK(std::string(ucb_uc_norm_form_to_str(UCB_NORM_NFKC)) == "NFKC");
+        CHECK(std::string(ucb_uc_norm_form_to_str(UCB_NORM_NFKD)) == "NFKD");
+        CHECK(std::string(ucb_uc_norm_form_to_str(UCB_NORM_INVALID)) == "");
+
+        CHECK(ucb_uc_norm_form_from_str("NFC") == UCB_NORM_NFC);
+        CHECK(ucb_uc_norm_form_from_str("nfd") == UCB_NORM_NFD);
+        CHECK(ucb_uc_norm_form_from_str("NfKc") == UCB_NORM_NFKC);
+        CHECK(ucb_uc_norm_form_from_str("NFKD") == UCB_NORM_NFKD);
+        CHECK(ucb_uc_norm_form_from_str("bogus") == UCB_NORM_INVALID);
+        CHECK(ucb_uc_norm_form_from_str("") == UCB_NORM_INVALID);
+    }
+
+    SUBCASE("normalize with UCB_NPOS length")
+    {
+        ucb_error* err = nullptr;
+        ucb_uc_result res = ucb_uc_normalize("He\u0301llo", UCB_NPOS, UCB_NORM_NFC, &err);
+        REQUIRE(!UCB_IS_THROWN(err));
+        REQUIRE(res.data != nullptr);
+        CHECK(std::string(res.data) == "H\xC3\xA9llo");
+        ucb_free(res.data);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("unicode mapping with explicit length")
+{
+    UCB_MEMTRACK_PUSH();
+
+    // Explicit length allows multiple null characters through the mapping.
+    ucb_error* err = nullptr;
+    ucb_uc_result res = ucb_uc_to_upper("a\0b", 3, &err);
+    REQUIRE(!UCB_IS_THROWN(err));
+    REQUIRE(res.data != nullptr);
+    CHECK(res.size == 3);
+    CHECK(res.data[0] == 'A');
+    CHECK(res.data[1] == '\0');
+    CHECK(res.data[2] == 'B');
+    ucb_free(res.data);
+
+    UCB_MEMTRACK_POP();
+}
+
 TEST_SUITE_END();

@@ -44,7 +44,7 @@ Order: release first, priority second.
 
 #### P1
 - [ ] Memory: Memdbg quality improvements
-- [ ] Unicode: Grapheme and unicode quality improvements
+- [x] Unicode: Grapheme and unicode quality improvements
 
 ### 0.3.0
 
@@ -120,15 +120,15 @@ For Documentation only Doxygen is considered necessary.
 - [x] Owned/wrapped string semantics
 - [x] Core manipulation APIs
 - [x] Case and normalization integration
-- [ ] Testing
-- [ ] Documentation
+- [x] Testing
+- [x] Documentation
 
 ### Unicode - Unicode (Target: 0.1.0, improve in 0.2.0)
 - [x] Validate, iterate, normalize, map baseline
 - [x] Proper Grapheme handling
 - [x] Quick normalization paths
-- [ ] Testing
-- [ ] Documentation
+- [x] Testing
+- [x] Documentation
 
 ### Threads - Threads and Concurrency (Target: 0.1.0, harden in 0.2.0)
 - [x] Threads API (create/join/config)

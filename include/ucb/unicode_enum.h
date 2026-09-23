@@ -41,7 +41,21 @@ typedef enum ucb_norm_form
     UCB_NORM_NFKC,
 } ucb_norm_form;
 
+/**
+ * @brief Get the short name of a normalization form.
+ * @param form the normalization form
+ * @return a string literal ("NFC", "NFD", "NFKC" or "NFKD"), or an empty
+ * string if @p form is not a known form
+ */
 UCB_API const char* ucb_uc_norm_form_to_str(ucb_norm_form form);
+
+/**
+ * @brief Parse a normalization form from its short name.
+ *
+ * The comparison is case-insensitive.
+ * @param str the name to parse ("NFC", "NFD", "NFKC" or "NFKD")
+ * @return the matching form, or UCB_NORM_INVALID if @p str is not recognized
+ */
 UCB_API ucb_norm_form ucb_uc_norm_form_from_str(const char* str);
 
 #endif // UCB_UNICODE_ENUM_H
