@@ -8,6 +8,8 @@
  */
 
 #include "microbench.h"
+#include "pqueue_bench.h"
+#include "threads_bench.h"
 #include "unicode_bench.h"
 #include "vector_bench.h"
 
@@ -74,6 +76,8 @@ int main(int argc, char** argv)
     {
         register_c_basics(bench);
         register_wrapper(bench);
+        register_pqueue_benchmarks(bench);
+        register_thread_benchmarks(bench);
         register_vector_int_benchmarks(bench);
         register_vector_ptr_benchmarks(bench);
         register_unicode_benchmarks(bench);

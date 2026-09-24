@@ -26,6 +26,20 @@ Project notes and rules for any LLM/agent working in this repository.
 - CMake is the build system. Conan *could* be used for dependency management (in that case presets are generated), otherwise the build is used with cmake kits via vscode and the build folder is `build`.
 - Work with the default debug build for the system (msvc on Windows, gcc on Linux). Only test other builds when requested.
 
+## Testing
+
+- Unit tests use doctest, live in `tests/` and are the `ucb_tests` target. Benchmarks live in
+  `tests/bench/` (`ucb_benchmarks`) and are **not** registered with CTest; run them manually.
+- Doctest test case names follow one nomenclature:
+  - Lowercase.
+  - Naming: <subject> - <aspect>
+  - Where:
+    - Subject: Short name on the subject. Corresponds to test file name.
+    - Aspect: Short description of the test case. A subject with a single test case use "general".
+- Code shared by the tests and the benchmarks belongs in a shared helper under `tests/`
+  (for example `tests/ucd_corpus.*`) and is compiled into both targets instead of being duplicated.
+  Does not apply to minimal static inline functions.
+
 ## Debugging
 
 Tests are checked against memory leaks (using ucb memory functions). To get the backtraces for leaks, use CMake option `UCB_MEMTRACK_BACKTRACE=ON` temporarily. This option is by default OFF since it has a significant performance impact.

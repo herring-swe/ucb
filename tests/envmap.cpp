@@ -17,7 +17,7 @@
 
 #include <string>
 
-TEST_CASE("envmap")
+TEST_CASE("envmap - general")
 {
     const char* _testKey = "__UCB_ENVMAP_TEST__";
     std::string val;

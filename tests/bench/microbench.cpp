@@ -356,7 +356,7 @@ struct run_options
 
 void print_usage(std::ostream& out)
 {
-    out << "Usage: ucb_microbenchmarks [options]\n"
+    out << "Usage: ucb_benchmarks [options]\n"
         << "\n"
         << "  -l, --list             list selected tests and exit\n"
         << "      --list-suites      list selected suites and exit\n"

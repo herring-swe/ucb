@@ -17,7 +17,7 @@
 
 #include <string>
 
-TEST_CASE("environment")
+TEST_CASE("env - general")
 {
     const char* _testKey = "__UCB_ENV_TEST__";
     std::string val;

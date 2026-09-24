@@ -28,7 +28,7 @@ static ucb_btrace* rec_func(int remain)
     }
 }
 
-TEST_CASE("backtrace")
+TEST_CASE("btrace - general")
 {
     SUBCASE("10 levels")
     {

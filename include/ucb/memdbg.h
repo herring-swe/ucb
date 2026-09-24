@@ -42,6 +42,27 @@ typedef struct ucb_mem_report_alloc
 } ucb_mem_alloc;
 
 /**
+ * @struct ucb_mem_report_free
+ * @brief Retained free log record
+ *
+ * Describes a single tracked ucb_free call, including where the block was
+ * allocated and where it was freed from. May carry a free-site backtrace when
+ * backtrace support is enabled in the configuration.
+ */
+typedef struct ucb_mem_report_free
+{
+    struct ucb_mem_report_free* next;
+    void* ptr;              ///< Freed user pointer
+    size_t size;            ///< Size of freed block
+    const char* alloc_file; ///< File where allocated
+    int alloc_line;         ///< Line where allocated
+    const char* free_file;  ///< File where freed
+    int free_line;          ///< Line where freed
+    int level;              ///< Tracepoint level when freed
+    ucb_btrace* bt;         ///< Free-site backtrace. UCB_NULL if not enabled in configuration
+} ucb_mem_free;
+
+/**
  * @struct ucb_mem_report
  * @brief Memory report
  *
@@ -61,6 +82,15 @@ typedef struct ucb_mem_report
     size_t peak_alloc_block; ///< Biggest memory block allocated
     size_t total_alloc;      ///< Total number of allocations
     size_t total_size;       ///< Total allocated memory
+    /**
+     * @brief Retained free log (global, bounded). May be UCB_NULL.
+     *
+     * This is a global log independent of the report level, capped at
+     * UCB_MEMTRACK_FREE_CAPACITY records with the oldest evicted first. The
+     * callback must not mutate or free the list.
+     */
+    ucb_mem_free* frees;
+    size_t free_count; ///< Number of retained free records
 } ucb_mem_report;
 UCB_DIAG_POP()
 
@@ -109,6 +139,12 @@ UCB_DIAG_POP()
  *
  * Allocations outside of ucb cannot be tracked.
  *
+ * The call site of every tracked free is recorded in a bounded global log
+ * (@ref ucb_mem_report::frees). Freeing a pointer that is already present in
+ * that log is reported as a fatal @ref UCB_ERROR_INVALID_ALLOC double free and
+ * the pointer is not freed again. Because the log is bounded, very old double
+ * frees may go undetected once their record has been evicted.
+ *
  * @see UCB_MEMTRACK_FINAL for the corresponding call before termination.
  * @note This is only available in debug builds.
  * @note This must be done before any memory allocations are made using ucb functions.
@@ -143,11 +179,18 @@ UCB_DIAG_POP()
 
 /**
  * @brief Push a new memory tracking level
+ *
+ * The maximum nesting depth is bounded by the @c UCB_MEMTRACK_MAX_TRACEPOINTS
+ * configuration value. Pushes beyond that depth are ignored.
  */
 #define UCB_MEMTRACK_PUSH() ucb_mem_tracking_push()
 
 /**
  * @brief Push a new memory tracking level with a name
+ *
+ * The name is truncated to @c UCB_MEMTRACK_MAX_TRACEPOINT_NAME characters.
+ * The maximum nesting depth is bounded by the @c UCB_MEMTRACK_MAX_TRACEPOINTS
+ * configuration value. Pushes beyond that depth are ignored.
  */
 #define UCB_MEMTRACK_PUSH_NAME(name) ucb_mem_tracking_push_name(name)
 

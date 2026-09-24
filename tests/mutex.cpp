@@ -49,7 +49,7 @@ static int hold_mutex_worker(void* arg)
     return 0;
 }
 
-TEST_CASE("mutex basics")
+TEST_CASE("mutex - basics")
 {
     SUBCASE("heap standard")
     {
@@ -101,7 +101,7 @@ TEST_CASE("mutex basics")
     }
 }
 
-TEST_CASE("mutex cross-thread trylock")
+TEST_CASE("mutex - cross-thread trylock")
 {
     ucb_mutex mutex;
     REQUIRE(ucb_mutex_init(&mutex));
@@ -138,7 +138,7 @@ TEST_CASE("mutex cross-thread trylock")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "mutex misuse")
+TEST_CASE_FIXTURE(TestFailureFixture, "mutex - misuse")
 {
     SUBCASE("null init")
     {

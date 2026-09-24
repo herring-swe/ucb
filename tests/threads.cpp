@@ -20,8 +20,6 @@
 #include <doctest.h>
 
 #include <atomic>
-#include <chrono>
-#include <cinttypes>
 #include <string>
 #include <thread>
 #include <vector>
@@ -103,7 +101,7 @@ static int dummy_worker(void* arg)
 }
 
 // --- Tests ---
-TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - basics")
 {
     FuncArg fa = {this, 42};
 
@@ -160,7 +158,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread basics")
     }
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread priorities")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - priorities")
 {
     FuncArg fa = {this, 42};
 
@@ -196,7 +194,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread priorities")
     }
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread names")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - names")
 {
     std::string in_name = "TestThread";
     std::string out_name;
@@ -216,7 +214,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread names")
     // Name verification requires platform-specific APIs (omitted for brevity)
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread name truncation and clear")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - name truncation and clear")
 {
     th = ucb_thread_new();
 
@@ -231,7 +229,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread name truncation and clear")
     REQUIRE(ucb_thread_get_name(th) == nullptr);
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread restart after join")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - restart after join")
 {
     FuncArg fa = {this, 42};
 
@@ -251,7 +249,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread restart after join")
     REQUIRE(counter.load() == 2);
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread join never started")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - join never started")
 {
     th = ucb_thread_new();
     REQUIRE_FALSE(ucb_thread_is_running(th));
@@ -260,12 +258,12 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread join never started")
     REQUIRE_FALSE(ucb_thread_is_running(th));
 }
 
-TEST_CASE("C threads API")
+TEST_CASE("threads - c api")
 {
     REQUIRE(test_c_threads() == 1);
 }
 
-TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
+TEST_CASE_FIXTURE(ThreadFixture, "threads - stress test")
 {
     constexpr int N_THREADS = 100;
     constexpr int N_ITERS = 1000;
@@ -299,7 +297,7 @@ TEST_CASE_FIXTURE(ThreadFixture, "thread stress test")
     REQUIRE(shared_counter.load() == N_THREADS * N_ITERS);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
+TEST_CASE_FIXTURE(TestFailureFixture, "threads - error handling")
 {
     ucb_thread* th = nullptr;
 
@@ -348,30 +346,4 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thread error handling")
         REQUIRE(errors[1].code == UCB_ERROR_INVALID_ARG);
         ucb_thread_free(th);
     }
-}
-
-// --- Performance Benchmark ---
-TEST_CASE("benchmark threads" * doctest::test_suite("benchmark") * doctest::skip())
-{
-    const int N = 1000;
-    auto start = std::chrono::high_resolution_clock::now();
-
-    ucb_task task = {0};
-    task.func = [](void*) { return 0; };
-    task.arg = nullptr;
-
-    for (int i = 0; i < N; i++)
-    {
-        ucb_thread* th = ucb_thread_new();
-        ucb_thread_start(th, task);
-        ucb_thread_join(th);
-        ucb_thread_free(th);
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    uint64_t ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    printf("Created/joined %d threads in %" PRIu64 " ms (%.1f threads/sec)\n",
-           N,
-           ms,
-           (N * 1000.0) / ms);
 }

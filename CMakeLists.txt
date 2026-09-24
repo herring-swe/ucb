@@ -24,6 +24,9 @@ option(UCB_DEVEL "Enables development logging and assertions for debug builds" O
 option(UCB_MEMTRACK_BACKTRACE "Enable backtrace support for memory tracking (SLOW)" OFF)
 option(UCB_FAST "Enable performance optimizations" ON)
 set(UCB_BTRACE_MAX_FRAMES 64 CACHE STRING "Maximum number of frames to capture in a backtrace")
+set(UCB_MEMTRACK_FREE_CAPACITY 1024 CACHE STRING "Max retained free records for memory tracking")
+set(UCB_MEMTRACK_MAX_TRACEPOINTS 10 CACHE STRING "Max nested memory tracking tracepoints")
+set(UCB_MEMTRACK_MAX_TRACEPOINT_NAME 64 CACHE STRING "Max length of a memory tracking tracepoint name")
 
 # External includes
 include(GNUInstallDirs)

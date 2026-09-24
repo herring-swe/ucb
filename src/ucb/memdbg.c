@@ -16,6 +16,7 @@
 
 #include "ucb/btrace.h"
 #include "ucb/config.h"
+#include "ucb/debug.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
 #include "ucb/mutex.h"
@@ -34,10 +35,6 @@
 #define DEALLOC_MAGIC 0x0DEADBEA
 #define META_SIZE sizeof(ucb_alloc_meta)
 
-// TODO: Should be configurable via CMake
-#define MAX_TRACEPOINTS 10
-#define MAX_TRACEPOINT_NAME 64
-
 typedef struct ucb_alloc_meta
 {
     struct ucb_alloc_meta* prev;
@@ -54,7 +51,7 @@ typedef struct ucb_alloc_meta
 
 typedef struct ucb_tracepoint
 {
-    char name[MAX_TRACEPOINT_NAME];
+    char name[UCB_MEMTRACK_MAX_TRACEPOINT_NAME];
     ucb_alloc_meta* alloc;
     size_t current_alloc;    // Current number of allocations
     size_t current_size;     // Current allocated memory
@@ -65,8 +62,32 @@ typedef struct ucb_tracepoint
     size_t total_size;       // Total allocated memory
 } ucb_tracepoint_t;
 
+/*
+ * Bounded, hash keyed free log. Retains the call site of tracked frees so that
+ * reports can list where memory was freed from and double frees can be detected.
+ * All memory for this table is raw stdlib allocation; this translation unit
+ * defines UCB_MEMORY_IMPL so no re-entrant tracking occurs.
+ */
+typedef struct ucb_free_meta
+{
+    void* ptr;              // User pointer that was freed
+    size_t size;            // Size of freed block
+    const char* alloc_file; // Allocation site
+    int alloc_line;
+    const char* free_file; // Free call site
+    int free_line;
+    int level; // tracepoint level at free time
+#ifdef UCB_MEMTRACK_BACKTRACE
+    ucb_btrace bt; // free-site backtrace
+#endif
+    struct ucb_free_meta* hash_next;
+    struct ucb_free_meta* age_prev;
+    struct ucb_free_meta* age_next;
+    struct ucb_free_meta* pool_next;
+} ucb_free_meta;
+
 // Global list of allocations
-static ucb_tracepoint_t* s_trace_points[MAX_TRACEPOINTS];
+static ucb_tracepoint_t* s_trace_points[UCB_MEMTRACK_MAX_TRACEPOINTS];
 static int s_trace_level = -1;
 static ucb_mem_report_func s_report_func = UCB_NULL;
 
@@ -74,6 +95,15 @@ static ucb_mutex s_mutex = {0};
 
 // Global setting
 static bool s_tracking_enabled = false;
+static bool s_trace_limit_reached = false;
+
+// Free log (guarded by s_mutex)
+static ucb_free_meta* s_free_pool = UCB_NULL;
+static ucb_free_meta* s_free_slots = UCB_NULL;
+static ucb_free_meta* s_free_buckets[UCB_MEMTRACK_FREE_CAPACITY];
+static ucb_free_meta* s_free_newest = UCB_NULL;
+static ucb_free_meta* s_free_oldest = UCB_NULL;
+static size_t s_free_count = 0;
 
 #define UCB_MAX(a, b) ((a) > (b) ? (a) : (b))
 
@@ -94,6 +124,173 @@ static inline int mem_sprintf(char* str, size_t size, const char* fmt, ...)
     UCB_DIAG_POP()
     va_end(args);
     return ret;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Free log table                              */
+/* -------------------------------------------------------------------------- */
+/*
+ * All helpers below assume s_mutex is held unless noted. All table memory is
+ * raw stdlib allocation and invisible to memory tracking.
+ */
+
+#define FREE_HASH(ptr) (((uintptr_t)(ptr) >> 4) % UCB_MEMTRACK_FREE_CAPACITY)
+
+static ucb_free_meta* free_table_find_locked(void* ptr)
+{
+    if (!s_free_pool)
+        return UCB_NULL;
+
+    for (ucb_free_meta* node = s_free_buckets[FREE_HASH(ptr)]; node; node = node->hash_next)
+    {
+        if (node->ptr == ptr)
+            return node;
+    }
+    return UCB_NULL;
+}
+
+// Unlink a node from its bucket and the age list, releasing any owned backtrace.
+static void free_table_detach_locked(ucb_free_meta* node)
+{
+    assert(node);
+
+    ucb_free_meta** link = &s_free_buckets[FREE_HASH(node->ptr)];
+    while (*link)
+    {
+        if (*link == node)
+        {
+            *link = node->hash_next;
+            break;
+        }
+        link = &(*link)->hash_next;
+    }
+
+    if (node->age_prev)
+        node->age_prev->age_next = node->age_next;
+    else
+        s_free_newest = node->age_next;
+    if (node->age_next)
+        node->age_next->age_prev = node->age_prev;
+    else
+        s_free_oldest = node->age_prev;
+
+    node->hash_next = UCB_NULL;
+    node->age_prev = UCB_NULL;
+    node->age_next = UCB_NULL;
+
+#ifdef UCB_MEMTRACK_BACKTRACE
+    ucb_btrace_release(&node->bt);
+#endif
+
+    s_free_count--;
+}
+
+// Return a detached node to the slot pool.
+static void free_slot_return_locked(ucb_free_meta* node)
+{
+    node->pool_next = s_free_slots;
+    s_free_slots = node;
+}
+
+static void free_table_remove_locked(void* ptr)
+{
+    ucb_free_meta* node = free_table_find_locked(ptr);
+    if (!node)
+        return;
+
+    free_table_detach_locked(node);
+    free_slot_return_locked(node);
+}
+
+// Takes ownership of @p bt, which is stored on success or released otherwise.
+static void free_table_insert_locked(void* ptr,
+                                     size_t size,
+                                     const char* alloc_file,
+                                     int alloc_line,
+                                     const char* free_file,
+                                     int free_line,
+                                     int level,
+                                     ucb_btrace* bt)
+{
+    if (!s_free_pool)
+    {
+#ifdef UCB_MEMTRACK_BACKTRACE
+        if (bt)
+            ucb_btrace_release(bt);
+#else
+        UCB_UNUSED(bt);
+#endif
+        return;
+    }
+
+    // An address can be reused before its old record was dropped
+    free_table_remove_locked(ptr);
+
+    ucb_free_meta* slot = s_free_slots;
+    if (slot)
+    {
+        s_free_slots = slot->pool_next;
+    }
+    else
+    {
+        // Evict the oldest record to make room
+        slot = s_free_oldest;
+        if (!slot)
+            return;
+        free_table_detach_locked(slot);
+    }
+
+    slot->ptr = ptr;
+    slot->size = size;
+    slot->alloc_file = alloc_file;
+    slot->alloc_line = alloc_line;
+    slot->free_file = free_file;
+    slot->free_line = free_line;
+    slot->level = level;
+#ifdef UCB_MEMTRACK_BACKTRACE
+    if (bt)
+        slot->bt = *bt;
+    else
+        ucb_btrace_init(&slot->bt);
+#else
+    UCB_UNUSED(bt);
+#endif
+    slot->hash_next = s_free_buckets[FREE_HASH(ptr)];
+    slot->age_prev = UCB_NULL;
+    slot->age_next = s_free_newest;
+    slot->pool_next = UCB_NULL;
+
+    s_free_buckets[FREE_HASH(ptr)] = slot;
+    if (s_free_newest)
+        s_free_newest->age_prev = slot;
+    else
+        s_free_oldest = slot;
+    s_free_newest = slot;
+    s_free_count++;
+}
+
+// Release every record and rebuild the slot pool.
+static void free_table_clear_locked(void)
+{
+    if (!s_free_pool)
+        return;
+
+#ifdef UCB_MEMTRACK_BACKTRACE
+    for (ucb_free_meta* node = s_free_newest; node; node = node->age_next)
+        ucb_btrace_release(&node->bt);
+#endif
+
+    memset(s_free_buckets, 0, sizeof(s_free_buckets));
+    s_free_newest = UCB_NULL;
+    s_free_oldest = UCB_NULL;
+    s_free_count = 0;
+
+    s_free_slots = UCB_NULL;
+    for (size_t i = 0; i < UCB_MEMTRACK_FREE_CAPACITY; i++)
+    {
+        s_free_pool[i].pool_next = s_free_slots;
+        s_free_slots = &s_free_pool[i];
+    }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -132,6 +329,23 @@ static void ucb_mem_tracking_default_report_func(const ucb_mem_report* const rep
             ucb_btrace_print(alloc->bt, stdout, 8);
         }
         printf("\n");
+    }
+
+    if (report->free_count > 0)
+    {
+        printf("\nFreed allocations (last %zu):\n\n", report->free_count);
+        for (ucb_mem_free* free_rec = report->frees; free_rec; free_rec = free_rec->next)
+        {
+            printf("    Address: %p of size %zu bytes\n", free_rec->ptr, free_rec->size);
+            printf("    Allocated at: %s:%d\n", free_rec->alloc_file, free_rec->alloc_line);
+            printf("    Freed at: %s:%d\n", free_rec->free_file, free_rec->free_line);
+            if (free_rec->bt)
+            {
+                printf("    Free backtrace:\n");
+                ucb_btrace_print(free_rec->bt, stdout, 8);
+            }
+            printf("\n");
+        }
     }
     printf("*** End of report *************************************************************\n");
 }
@@ -244,6 +458,38 @@ static int gen_tracepoint_report(int from_level, bool leaks)
         }
     }
 
+    // Retained free log is global, independent of the report level
+    ucb_mem_free* last_free = UCB_NULL;
+    for (ucb_free_meta* rec = s_free_newest; rec; rec = rec->age_next)
+    {
+        ucb_mem_free* node = (ucb_mem_free*)calloc(1, sizeof(ucb_mem_free));
+        if (!node)
+        {
+            ucb_mutex_unlock(&s_mutex);
+            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate memory for memory report");
+            from_level = -1;
+            goto cleanup;
+        }
+
+        node->ptr = rec->ptr;
+        node->size = rec->size;
+        node->alloc_file = rec->alloc_file;
+        node->alloc_line = rec->alloc_line;
+        node->free_file = rec->free_file;
+        node->free_line = rec->free_line;
+        node->level = rec->level;
+#ifdef UCB_MEMTRACK_BACKTRACE
+        node->bt = ucb_btrace_clone(&rec->bt);
+#endif
+
+        if (last_free)
+            last_free->next = node;
+        else
+            report->frees = node;
+        last_free = node;
+        report->free_count++;
+    }
+
     ucb_mutex_unlock(&s_mutex);
     s_report_func(report);
 
@@ -258,6 +504,18 @@ cleanup:
             free(cur);
             cur = last;
         }
+
+        ucb_mem_free* free_cur = report->frees;
+        while (free_cur)
+        {
+            ucb_mem_free* free_next = free_cur->next;
+#ifdef UCB_MEMTRACK_BACKTRACE
+            if (free_cur->bt)
+                ucb_btrace_free(free_cur->bt);
+#endif
+            free(free_cur);
+            free_cur = free_next;
+        }
         free(report);
     }
     return from_level;
@@ -269,15 +527,26 @@ void ucb_mem_tracking_enable(void)
         return;
 
     ucb_mutex_init(&s_mutex);
+
+    // Pre-allocate the free log pool. Raw allocation, tracking is still off and
+    // the mutex is not held, so a fatal report cannot deadlock or re-enter.
+    s_free_pool = (ucb_free_meta*)calloc(UCB_MEMTRACK_FREE_CAPACITY, sizeof(ucb_free_meta));
+    if (!s_free_pool)
+        UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY,
+                  "Failed to allocate memory for free tracking table, frees are not tracked");
+
     ucb_mutex_lock(&s_mutex);
     s_tracking_enabled = true;
+    s_trace_limit_reached = false;
+
+    free_table_clear_locked();
 
     s_report_func = ucb_mem_tracking_default_report_func;
     s_trace_level = 0;
     s_trace_points[0] = (ucb_tracepoint_t*)calloc(1, sizeof(ucb_tracepoint_t));
-    mem_sprintf(s_trace_points[0]->name, MAX_TRACEPOINT_NAME, "%s", "all memory");
+    mem_sprintf(s_trace_points[0]->name, UCB_MEMTRACK_MAX_TRACEPOINT_NAME, "%s", "all memory");
 
-    for (int i = 0; i < MAX_TRACEPOINTS; i++)
+    for (int i = 0; i < UCB_MEMTRACK_MAX_TRACEPOINTS; i++)
     {
         if (i <= s_trace_level)
             assert(s_trace_points[i]);
@@ -304,6 +573,7 @@ void ucb_mem_tracking_reset(void)
             tp->total_size = 0;
         }
     }
+    free_table_clear_locked();
     ucb_mutex_unlock(&s_mutex);
 }
 
@@ -335,20 +605,29 @@ void ucb_mem_tracking_push(void)
 void ucb_mem_tracking_push_name(const char* name)
 {
     ucb_mutex_lock(&s_mutex);
-    if (s_trace_level < MAX_TRACEPOINTS - 1)
+    if (s_trace_level < UCB_MEMTRACK_MAX_TRACEPOINTS - 1)
     {
         s_trace_level++;
         ucb_tracepoint_t* tp = (ucb_tracepoint_t*)calloc(1, sizeof(ucb_tracepoint_t));
         if (name && name[0])
         {
-            mem_sprintf(tp->name, MAX_TRACEPOINT_NAME, "%s", name);
+            mem_sprintf(tp->name, UCB_MEMTRACK_MAX_TRACEPOINT_NAME, "%s", name);
         }
         else
         {
-            mem_sprintf(tp->name, MAX_TRACEPOINT_NAME, "Tracepoint %02d", s_trace_level);
+            mem_sprintf(tp->name,
+                        UCB_MEMTRACK_MAX_TRACEPOINT_NAME,
+                        "Tracepoint %02d",
+                        s_trace_level);
         }
 
         s_trace_points[s_trace_level] = tp;
+    }
+    else if (!s_trace_limit_reached)
+    {
+        s_trace_limit_reached = true;
+        UCB_DPRINT("Memory tracking: tracepoint limit (%d) reached, further pushes are ignored\n",
+                   UCB_MEMTRACK_MAX_TRACEPOINTS);
     }
     ucb_mutex_unlock(&s_mutex);
 }
@@ -467,6 +746,9 @@ static inline void* register_alloc(ucb_alloc_meta* entry)
 
     ucb_mutex_lock(&s_mutex);
 
+    // Drop any stale free record for a reused address, prevents false double frees
+    free_table_remove_locked((void*)(entry + 1));
+
     ucb_tracepoint_t* tp = s_trace_points[s_trace_level];
     assert(tp);
 
@@ -498,10 +780,8 @@ static inline void* register_alloc(ucb_alloc_meta* entry)
     return (void*)(entry + 1);
 }
 
-static inline void unregister_alloc(ucb_alloc_meta* entry)
+static inline void unregister_alloc_locked(ucb_alloc_meta* entry)
 {
-    ucb_mutex_lock(&s_mutex);
-
     assert(entry && entry->magic == ALLOC_MAGIC);
     entry->magic = DEALLOC_MAGIC;
 
@@ -525,7 +805,38 @@ static inline void unregister_alloc(ucb_alloc_meta* entry)
         assert(entry->next->magic == ALLOC_MAGIC);
         entry->next->prev = entry->prev;
     }
+}
 
+static inline void unregister_alloc(ucb_alloc_meta* entry)
+{
+    ucb_mutex_lock(&s_mutex);
+    unregister_alloc_locked(entry);
+    ucb_mutex_unlock(&s_mutex);
+}
+
+// Record a free event. Captures the free-site backtrace outside the lock.
+static void record_free(void* ptr,
+                        size_t size,
+                        const char* alloc_file,
+                        int alloc_line,
+                        const char* free_file,
+                        int free_line)
+{
+    ucb_btrace bt = {UCB_NULL, 0};
+#ifdef UCB_MEMTRACK_BACKTRACE
+    ucb_btrace_init(&bt);
+    ucb_btrace_capture(&bt);
+#endif
+
+    ucb_mutex_lock(&s_mutex);
+    free_table_insert_locked(ptr,
+                             size,
+                             alloc_file,
+                             alloc_line,
+                             free_file,
+                             free_line,
+                             s_trace_level,
+                             &bt);
     ucb_mutex_unlock(&s_mutex);
 }
 
@@ -600,6 +911,10 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
     }
 
     ucb_alloc_meta* old_entry = entry;
+    void* old_ptr = (void*)(entry + 1);
+    size_t old_size = entry->size;
+    const char* old_file = entry->file;
+    int old_line = entry->line;
 
     // Always remove entry first or we may use invalid memory
     unregister_alloc(entry);
@@ -617,9 +932,12 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
         if (!entry && free_on_failure)
             ucb_btrace_release(&old_bt);
 #endif
+        if (!entry && free_on_failure)
+            record_free(old_ptr, old_size, old_file, old_line, file, line);
     }
     else // Regular free
     {
+        record_free(old_ptr, old_size, old_file, old_line, file, line);
 #ifdef UCB_MEMTRACK_BACKTRACE
         ucb_btrace_release(&entry->bt);
 #endif
@@ -647,12 +965,6 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
 
 void ucb_free_debug(void* ptr, const char* file, int line)
 {
-    /*
-     * TODO Use file and line to track where free was called from.
-     *      For this we need another tracking list or table.
-     */
-    UCB_UNUSED(file);
-    UCB_UNUSED(line);
     if (!s_tracking_enabled)
     {
         ucb_free(ptr);
@@ -662,17 +974,44 @@ void ucb_free_debug(void* ptr, const char* file, int line)
     if (!ptr)
         return;
 
-    ucb_alloc_meta* entry = ((ucb_alloc_meta*)ptr) - 1;
-    if (entry->magic == ALLOC_MAGIC)
-    {
-        unregister_alloc(entry);
+    ucb_btrace bt = {UCB_NULL, 0};
 #ifdef UCB_MEMTRACK_BACKTRACE
-        ucb_btrace_release(&entry->bt);
+    ucb_btrace_init(&bt);
+    ucb_btrace_capture(&bt);
 #endif
-        ucb_free(entry);
-    }
-    else
+
+    ucb_alloc_meta* entry = ((ucb_alloc_meta*)ptr) - 1;
+
+    ucb_mutex_lock(&s_mutex);
+
+    // The free log is checked before the magic because free() overwrites the
+    // header of an already freed block.
+    ucb_free_meta* prev = free_table_find_locked(ptr);
+    if (prev)
     {
+        const char* prev_file = prev->free_file;
+        int prev_line = prev->free_line;
+        ucb_mutex_unlock(&s_mutex);
+#ifdef UCB_MEMTRACK_BACKTRACE
+        ucb_btrace_release(&bt);
+#endif
+        UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
+                  "Double free at %p, previously freed from: %s:%d, now called from: %s:%d",
+                  ptr,
+                  prev_file,
+                  prev_line,
+                  file,
+                  line);
+        // Do not free again, rather leak than corrupt the heap.
+        return;
+    }
+
+    if (entry->magic != ALLOC_MAGIC)
+    {
+        ucb_mutex_unlock(&s_mutex);
+#ifdef UCB_MEMTRACK_BACKTRACE
+        ucb_btrace_release(&bt);
+#endif
         UCB_FATAL(UCB_ERROR_INVALID_ALLOC,
                   "Invalid allocation, possible memory corruption at %p\n"
                   "Current free called from: %s:%d",
@@ -680,7 +1019,23 @@ void ucb_free_debug(void* ptr, const char* file, int line)
                   file,
                   line);
         // In this case, rather leak than free possibly invalid memory.
+        return;
     }
+
+    size_t size = entry->size;
+    const char* alloc_file = entry->file;
+    int alloc_line = entry->line;
+
+    unregister_alloc_locked(entry);
+
+    free_table_insert_locked(ptr, size, alloc_file, alloc_line, file, line, s_trace_level, &bt);
+
+    ucb_mutex_unlock(&s_mutex);
+
+#ifdef UCB_MEMTRACK_BACKTRACE
+    ucb_btrace_release(&entry->bt);
+#endif
+    ucb_free(entry);
 }
 
 #endif // NDEBUG

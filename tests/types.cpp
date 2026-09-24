@@ -14,7 +14,7 @@
 
 #include <cstdio>
 
-TEST_CASE("types")
+TEST_CASE("types - general")
 {
     CHECK(test_types() == 0);
 }

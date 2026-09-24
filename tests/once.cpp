@@ -58,7 +58,7 @@ static int once_worker(void* arg)
     return 0;
 }
 
-TEST_CASE("once")
+TEST_CASE("once - basics")
 {
     SUBCASE("stack static init")
     {
@@ -124,7 +124,7 @@ TEST_CASE("once")
     }
 }
 
-TEST_CASE("once global static across threads")
+TEST_CASE("once - global static across threads")
 {
     constexpr int N = 8;
     g_global_once_calls = 0;
