@@ -14,10 +14,6 @@
 
 #include <doctest.h>
 
-#include <chrono>
-#include <iostream>
-#include <random>
-
 /* -------------------------------------------------------------------------- */
 /*                                    Data                                    */
 /* -------------------------------------------------------------------------- */
@@ -60,7 +56,7 @@ struct PQueueFixture
 /*                                    Tests                                   */
 /* -------------------------------------------------------------------------- */
 
-TEST_CASE_FIXTURE(PQueueFixture, "container pqueue")
+TEST_CASE_FIXTURE(PQueueFixture, "pqueue - general")
 {
     int val1 = 1;
     int val2 = 2;
@@ -120,46 +116,4 @@ TEST_CASE_FIXTURE(PQueueFixture, "container pqueue")
         ucb_pqueue_clear(pq_owned);
         REQUIRE(ucb_pqueue_size(pq_owned) == 0);
     }
-}
-
-TEST_CASE_FIXTURE(PQueueFixture, "container pqueue benchmark")
-{
-    // Use fixed default seed.
-    std::mt19937 rng;
-    std::uniform_int_distribution<std::mt19937::result_type> randval(1, 10);
-
-    constexpr int num_items = 100000;
-    std::vector<int> items(num_items);
-    for (int i = 0; i < num_items; ++i)
-    {
-        items[i] = randval(rng);
-    }
-
-    auto start = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < num_items; ++i)
-    {
-        ucb_pqueue_push(pq_shared, &items[i], items[i]);
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    uint64_t push_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-    start = std::chrono::high_resolution_clock::now();
-
-    for (int i = 0; i < num_items; ++i)
-    {
-        ucb_pqueue_pop(pq_shared);
-    }
-
-    end = std::chrono::high_resolution_clock::now();
-
-    uint64_t pop_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-    std::cout << "Num items: " << num_items << std::endl;
-    std::cout << "Total time: " << push_ms + pop_ms << " ms" << std::endl;
-    std::cout << "Push: " << push_ms << " ms";
-    std::cout << ", " << num_items / static_cast<double>(push_ms) << " items/ms" << std::endl;
-    std::cout << "Pop: " << pop_ms << "ms";
-    std::cout << ", " << num_items / static_cast<double>(pop_ms) << " items/ms" << std::endl;
 }

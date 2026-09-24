@@ -111,10 +111,10 @@ For Documentation only Doxygen is considered necessary.
 ### Memory - Memory and Memdbg (Target: 0.1.0, improve in 0.2.0)
 - [x] malloc/calloc/realloc/free wrappers
 - [x] Memory tracking and leak report baseline
-- [ ] Free call tracking improvements
-- [ ] Configurability and diagnostics refinements
-- [ ] Testing
-- [ ] Documentation
+- [x] Free call tracking improvements
+- [x] Configurability and diagnostics refinements
+- [x] Testing
+- [x] Documentation
 
 ### String - UTF-8 String Type (Target: 0.1.0)
 - [x] Owned/wrapped string semantics

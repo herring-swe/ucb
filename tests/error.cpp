@@ -18,7 +18,6 @@
 
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
-#include "ucb/once.h"
 
 #include <doctest.h>
 
@@ -41,12 +40,6 @@ static void dummy_handler(ucb_errlvl lvl, const ucb_error* e)
     UCB_UNUSED(e);
 }
 
-static int s_once_count = 0;
-static void once_func(void)
-{
-    s_once_count++;
-}
-
 static int s_reentry_calls = 0;
 static void reentrant_handler(ucb_errlvl lvl, const ucb_error* e)
 {
@@ -60,7 +53,7 @@ static void reentrant_handler(ucb_errlvl lvl, const ucb_error* e)
     }
 }
 
-TEST_CASE("error code and level strings")
+TEST_CASE("error - code and level strings")
 {
     CHECK(std::string(ucb_error_codestr(UCB_OK)) == "SUCCESS");
     CHECK(std::string(ucb_error_codestr(UCB_ERROR_INVALID_ARG)) == "ERROR_INVALID_ARG");
@@ -75,7 +68,7 @@ TEST_CASE("error code and level strings")
     CHECK(std::string(ucb_error_lvlstr((ucb_errlvl)99)) == "UNKNOWN");
 }
 
-TEST_CASE("error handler set and get")
+TEST_CASE("error - handler set and get")
 {
     ucb_error_func prev = ucb_error_set_func(dummy_handler);
     CHECK(ucb_error_get_func() == dummy_handler);
@@ -83,7 +76,7 @@ TEST_CASE("error handler set and get")
     CHECK(ucb_error_get_func() == prev);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "thrown errors")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - throw")
 {
     SUBCASE("throw and clear")
     {
@@ -131,7 +124,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "thrown errors")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "error copy and free")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - copy and free")
 {
     const ucb_error* src = ucb_error_format(UCB_ERROR_INVALID_ARG, "copy me");
     REQUIRE(src != nullptr);
@@ -166,7 +159,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error copy and free")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "error format")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - format")
 {
     SUBCASE("format truncates")
     {
@@ -194,7 +187,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error format")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "error print")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - print")
 {
     SUBCASE("print NULL aborts")
     {
@@ -212,7 +205,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error print")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "error report")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - report")
 {
     SUBCASE("report NULL aborts")
     {
@@ -249,7 +242,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error report")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "errno wrappers")
+TEST_CASE_FIXTURE(TestFailureFixture, "error - errno wrappers")
 {
     SUBCASE("zero status is a no-op")
     {
@@ -297,7 +290,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "errno wrappers")
     }
 }
 
-TEST_CASE("error reentrancy guard")
+TEST_CASE("error - reentrancy guard")
 {
     ucb_error_func prev = ucb_error_set_func(reentrant_handler);
     s_reentry_calls = 0;
@@ -310,28 +303,7 @@ TEST_CASE("error reentrancy guard")
     CHECK(s_reentry_calls == 1);
 }
 
-TEST_CASE("once")
-{
-    s_once_count = 0;
-    ucb_once* once = ucb_once_new();
-    REQUIRE(once != nullptr);
-
-    ucb_once_run(once, once_func);
-    ucb_once_run(once, once_func);
-    CHECK(s_once_count == 1);
-
-    const int num_threads = 8;
-    std::vector<std::thread> threads;
-    for (int i = 0; i < num_threads; i++)
-        threads.emplace_back([once]() { ucb_once_run(once, once_func); });
-    for (auto& t : threads)
-        t.join();
-    CHECK(s_once_count == 1);
-
-    ucb_once_free(once);
-}
-
-TEST_CASE("error reporting is thread safe")
+TEST_CASE("error - reporting is thread safe")
 {
     // Exercise the default handler path (report mutex + one-time init).
     ucb_error_func prev = ucb_error_set_func(nullptr);
@@ -353,7 +325,7 @@ TEST_CASE("error reporting is thread safe")
 }
 
 #ifdef _WIN32
-TEST_CASE("win32 error mapping")
+TEST_CASE("error - win32 mapping")
 {
     CHECK(ucb_err_wrap_win32(ERROR_SUCCESS) == UCB_OK);
     CHECK(ucb_err_wrap_win32(ERROR_TIMEOUT) == UCB_ERRSYS_ETIMEDOUT);

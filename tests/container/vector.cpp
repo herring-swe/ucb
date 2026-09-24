@@ -10,7 +10,6 @@
 #include "ucb/container/vector.h"
 
 #include "my_type.h"
-#include "test_vector.h"
 
 #include "ucb/container/vector_generic.h"
 #include "ucb/memory.h"
@@ -18,10 +17,7 @@
 
 #include <doctest.h>
 
-#include <chrono>
-#include <iomanip>
 #include <iostream>
-#include <vector>
 
 /* -------------------------------------------------------------------------- */
 /*                                    Data                                    */
@@ -74,7 +70,7 @@ struct VectorFixture
 /*                                    Tests                                   */
 /* -------------------------------------------------------------------------- */
 
-TEST_CASE("container vector")
+TEST_CASE("vector - basics")
 {
     // Basic lifetime. No fixture involved.
 
@@ -141,7 +137,7 @@ TEST_CASE("container vector")
     ucb_vector_free(vec2);
 }
 
-TEST_CASE("container vector custom element")
+TEST_CASE("vector - custom element")
 {
     MyType item1 = {1, "one"};
     MyType item2 = {2, "two"};
@@ -180,7 +176,7 @@ TEST_CASE("container vector custom element")
     ucb_vector_free(vec);
 }
 
-TEST_CASE("container vector owning pointer")
+TEST_CASE("vector - owning pointer")
 {
     MyType item1 = {1, "one"};
     MyType item2 = {2, "two"};
@@ -223,7 +219,7 @@ TEST_CASE("container vector owning pointer")
     ucb_vector_free(vec);
 }
 
-TEST_CASE("container vector non-owning pointer")
+TEST_CASE("vector - non-owning pointer")
 {
     MyType item1 = {1, "one"};
     MyType item2 = {2, "two"};
@@ -265,7 +261,7 @@ TEST_CASE("container vector non-owning pointer")
     ucb_vector_free(vec);
 }
 
-TEST_CASE("container vector pop and peek")
+TEST_CASE("vector - pop and peek")
 {
     int ival1 = 10, ival2 = 20, ival3 = 30;
     int out = 0;
@@ -319,7 +315,7 @@ TEST_CASE("container vector pop and peek")
     ucb_vector_free(vec);
 }
 
-TEST_CASE("container vector set")
+TEST_CASE("vector - set")
 {
     MyType item1 = {1, "one"};
     MyType item2 = {2, "two"};
@@ -373,7 +369,7 @@ TEST_CASE("container vector set")
     ucb_vector_free(ovec); // frees remaining cloned items
 }
 
-TEST_CASE("container vector copy and move")
+TEST_CASE("vector - copy and move")
 {
     int ival1 = 1, ival2 = 2, ival3 = 3;
     int out = 0;
@@ -478,7 +474,7 @@ static inline bool check_sort_str(ucb_str* pval, size_t index, void* user_data)
     return true;
 }
 
-TEST_CASE("container vector sort and find")
+TEST_CASE("vector - sort and find")
 {
     size_t pos;
 
@@ -540,100 +536,4 @@ TEST_CASE("container vector sort and find")
 
     ucb_str_release(&tstr);
     ucb_vector_str_free_full(vstr);
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 Benchmarks                                 */
-/* -------------------------------------------------------------------------- */
-
-static void bench_report(const std::string& label, long long ns, int iterations, int n)
-{
-    double ops = static_cast<double>(iterations) * n * 2; // inserts + removes
-    std::cout << std::left << std::setw(34) << label << " " << std::right << std::setw(6) << ns
-              << " μs   " << std::fixed << std::setprecision(2)
-              << (ops * 1000000.0 / static_cast<double>(ns)) / 1e6 << " Mops/s" << std::endl;
-}
-
-static int64_t test_stdvector_direct(int iterations, int n_elem)
-{
-    std::vector<int> arr;
-    arr.reserve(n_elem);
-    int64_t sum = 0;
-
-    for (int it = 0; it < iterations; ++it)
-    {
-        for (int i = 0; i < n_elem; ++i)
-            arr.push_back(i);
-        for (size_t i = 0; i < arr.size(); ++i)
-            sum += arr[i];
-        arr.clear();
-    }
-    return sum;
-}
-
-static int64_t test_stdvector_iter(int iterations, int n_elem)
-{
-    std::vector<int> arr;
-    arr.reserve(n_elem);
-    int64_t sum = 0;
-
-    for (int it = 0; it < iterations; ++it)
-    {
-        for (int i = 0; i < n_elem; ++i)
-            arr.push_back(i);
-        for (std::vector<int>::const_iterator p = arr.begin(); p != arr.end(); ++p)
-            sum += *p;
-        arr.clear();
-    }
-    return sum;
-}
-
-TEST_CASE("benchmark vector" * doctest::test_suite("benchmark") * doctest::skip())
-{
-    constexpr int N = 10000;
-    constexpr int iterations = 500;
-    // Sum of 0..N-1 per iteration. N*(N-1)/2 * iterations overflows int32,
-    // so accumulate into long long.
-    constexpr int64_t expected_sum = static_cast<int64_t>(iterations) * N * (N - 1) / 2;
-
-    std::cout << "\n=== vector benchmark  (N=" << N << "  iter=" << iterations
-              << ") ===" << std::endl;
-
-    typedef int64_t (*test_func)(int iterations, int n_elem);
-
-    std::vector<std::pair<std::string, test_func>> tests = {
-        {"C array (direct)", test_carr_direct},
-        {"C array (iterator)", test_carr_iter},
-        {"std::vector (direct)", test_stdvector_direct},
-        {"std::vector (iterator)", test_stdvector_iter},
-        {"ucb_vector (direct)", test_vector1_direct},
-        {"ucb_vector (foreach)", test_vector1_foreach},
-        {"ucb_vector_int (direct, int)", test_vector_int_direct},
-        {"ucb_vector_int (foreach, int)", test_vector_int_foreach},
-        {"ucb_vector_ptr (direct, size_t)", test_vector_ptr_direct},
-        {"ucb_vector_ptr (foreach, size_t)", test_vector_ptr_foreach},
-    };
-
-    for (const auto& test : tests)
-    {
-        auto t0 = std::chrono::high_resolution_clock::now();
-        int64_t sum = test.second(iterations, N);
-        auto t1 = std::chrono::high_resolution_clock::now();
-        bench_report(test.first,
-                     std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count(),
-                     iterations,
-                     N);
-        REQUIRE(sum == expected_sum);
-    }
-
-    ucb_vector_str* str_vec = ucb_vector_str_new();
-    ucb_vector_str_push_back(str_vec, ucb_str_new_c("hello"));
-    ucb_vector_str_push_back(str_vec, ucb_str_new_c("world"));
-    for (size_t i = 0; i < ucb_vector_str_size(str_vec); ++i)
-    {
-        ucb_str* str = ucb_vector_str_get(str_vec, i);
-        printf("%s\n", ucb_str_cstr(str));
-        ucb_str_free(str);
-    }
-    ucb_vector_str_free(str_vec);
 }

@@ -49,7 +49,7 @@ static int tls_worker(void* arg)
     return 0;
 }
 
-TEST_CASE("tls key basics")
+TEST_CASE("tls - key basics")
 {
     ucb_tls_key* key = ucb_tls_key_new(tls_free_dtor);
     REQUIRE(key != nullptr);
@@ -57,7 +57,7 @@ TEST_CASE("tls key basics")
     ucb_tls_key_free(nullptr); // Must be a safe no-op
 }
 
-TEST_CASE("tls get/set")
+TEST_CASE("tls - get and set")
 {
     s_dtor_calls.store(0);
     ucb_tls_key* key = ucb_tls_key_new(tls_free_dtor);
@@ -80,7 +80,7 @@ TEST_CASE("tls get/set")
     REQUIRE(s_dtor_calls.load() == 0);
 }
 
-TEST_CASE("tls destructor runs at thread exit")
+TEST_CASE("tls - destructor runs at thread exit")
 {
     s_dtor_calls.store(0);
     ucb_tls_key* key = ucb_tls_key_new(tls_free_dtor);
@@ -106,7 +106,7 @@ TEST_CASE("tls destructor runs at thread exit")
     ucb_tls_key_free(key);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "tls error handling")
+TEST_CASE_FIXTURE(TestFailureFixture, "tls - error handling")
 {
     CHECK_ABORTS(ucb_tls_set(nullptr, (void*)0x1));
     REQUIRE(num_aborts == 1);

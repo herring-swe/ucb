@@ -37,13 +37,14 @@ ucb_target_sources(ucb_tests PRIVATE
     test_tgfunc.h
     test_threads.h
     test_types.h
+    ucd_corpus.h
 
     container/my_type.h
-    container/test_vector.h
 )
 
 ucb_target_sources(ucb_tests PRIVATE
     main_doctest.cpp
+    ucd_corpus.cpp
 
     # Actual tests
     btrace.cpp
@@ -67,7 +68,6 @@ ucb_target_sources(ucb_tests PRIVATE
 
     container/my_type.c
     container/pqueue.cpp
-    container/test_vector.c
     container/vector.cpp
 
     # Pure C tests
@@ -125,15 +125,21 @@ target_include_directories(ucb_bench PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/bench)
 ucb_add_executable(ucb_benchmarks LANGUAGE CXX)
 target_sources(ucb_benchmarks PRIVATE
     bench/bench_main.cpp
+    bench/pqueue_bench.cpp
+    bench/threads_bench.cpp
     bench/vector_bench_int.cpp
     bench/vector_bench_ptr.cpp
     bench/unicode_bench.cpp
     bench/bench_c.c
+    ucd_corpus.cpp
 )
 target_link_libraries(ucb_benchmarks PRIVATE ucb_bench ucb)
 target_include_directories(ucb_benchmarks PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/bench
     ${CMAKE_SOURCE_DIR}/src
 )
 target_compile_definitions(ucb_benchmarks PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
-add_test(NAME ucb_benchmarks COMMAND ucb_benchmarks)
+
+# Intentionally not registered with CTest: benchmarks are run manually, not as
+# part of the default test suite.

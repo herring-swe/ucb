@@ -39,7 +39,7 @@ UCB_DIAG_POP()
 
 TEST_SUITE_BEGIN("buffer");
 
-TEST_CASE("buffer utils")
+TEST_CASE("buffer - general")
 {
     UCB_MEMTRACK_PUSH();
 

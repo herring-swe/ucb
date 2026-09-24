@@ -8,6 +8,8 @@
  * @brief unicode tests
  */
 
+#include "ucd_corpus.h"
+
 #include <ucb/errcodes.h>
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
@@ -15,7 +17,6 @@
 
 #include <doctest.h>
 
-#include <climits>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
@@ -30,96 +31,6 @@
 #endif
 
 typedef ucb_uc_result (*mapping_func)(const char* str, size_t size, ucb_error** perr);
-
-static int split_line(const std::string& line,
-                      char c,
-                      std::vector<std::string>& result,
-                      int max = -1)
-{
-    result.clear();
-    size_t start = 0;
-    if (max == -1)
-        max = INT_MAX;
-    int count = 0; // Number of splits
-    while (count < max)
-    {
-        size_t end = line.find(c, start);
-        if (end == std::string::npos)
-            break;
-        result.push_back(line.substr(start, end - start));
-        start = end + 1;
-        count++;
-    }
-    result.push_back(line.substr(start));
-    return count;
-}
-
-static std::string trim(const std::string& str)
-{
-    size_t start = str.find_first_not_of(" \t\n\r");
-    if (start == std::string::npos)
-        return "";
-    size_t end = str.find_last_not_of(" \t\n\r");
-    return str.substr(start, end - start + 1);
-}
-
-/**
- * Converts string of form "41 325 61" to utf-8 encoded string
- */
-static inline void hexstr_to_utf8(const char* input, char** output)
-{
-    size_t in_len = strlen(input);
-
-    ucb_buffer buf;
-    ucb_buffer_init_heap(&buf, in_len);
-
-    // Decode whitespace separated hex string (without 0x prefix) into ucb_buffer
-    const unsigned char* ptr = reinterpret_cast<const unsigned char*>(input);
-    while (*ptr)
-    {
-        // Skip whitespace
-        while (isspace(*ptr))
-        {
-            ptr++;
-        }
-        if (!*ptr)
-            break;
-
-        // Parse a single codepoint (1–6 hex digits)
-        uint32_t cp = 0;
-        int digits = 0;
-        while (*ptr && isxdigit(*ptr) && digits < 6)
-        {
-            cp = (cp << 4) |
-                 static_cast<uint32_t>((isdigit(*ptr) ? (*ptr - '0') : (tolower(*ptr) - 'a' + 10)));
-            ptr++;
-            digits++;
-        }
-
-        // Store the codepoint
-        ucb_buffer_push(&buf, &cp, sizeof(uint32_t));
-    }
-
-    size_t count = buf.size / sizeof(uint32_t);
-    buf.size = 0; // reset buffer
-    ucb_uc_encode_codepoints(&buf, reinterpret_cast<uint32_t*>(buf.data), count, nullptr);
-    ucb_buffer_push(&buf, "\0", 1);
-    ucb_buffer_transfer(&buf, reinterpret_cast<void**>(output), nullptr, nullptr, nullptr);
-    ucb_buffer_release(&buf);
-}
-
-static std::string hexstr_to_utf8(std::string& cp_str)
-{
-    std::string result;
-    char* output = nullptr;
-    hexstr_to_utf8(cp_str.c_str(), &output);
-    if (output)
-    {
-        result = output;
-        ucb_free(output);
-    }
-    return result;
-}
 
 static inline bool check_with_null(const char* input, size_t len)
 {
@@ -285,15 +196,13 @@ static inline void test_norm(const char* input, const char* correct, ucb_norm_fo
 
 static inline void test_norm_hex(const char* input, const char* hex_correct, ucb_norm_form type)
 {
-    char* correct = nullptr;
-    hexstr_to_utf8(hex_correct, &correct);
-    test_norm(input, correct, type);
-    ucb_free(correct);
+    const std::string correct = ucd_hex_to_utf8(hex_correct);
+    test_norm(input, correct.c_str(), type);
 }
 
 TEST_SUITE_BEGIN("unicode");
 
-TEST_CASE("unicode basics")
+TEST_CASE("unicode - basics")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -315,7 +224,7 @@ TEST_CASE("unicode basics")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode grapheme")
+TEST_CASE("unicode - grapheme")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -342,7 +251,7 @@ TEST_CASE("unicode grapheme")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode mapping")
+TEST_CASE("unicode - mapping")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -365,7 +274,7 @@ TEST_CASE("unicode mapping")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode normalization")
+TEST_CASE("unicode - normalization")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -472,75 +381,10 @@ TEST_CASE("unicode normalization")
     UCB_MEMTRACK_POP();
 }
 
-struct ucd_norm_test
+TEST_CASE("unicode - official normalization test")
 {
-    int line_no;
-    int test_no;
-    std::string part_name;
-    std::string input;
-    std::string nfc;
-    std::string nfd;
-    std::string nfkc;
-    std::string nfkd;
-    std::string form;
-    std::string comment;
-};
-
-static void read_ucd_norm_tests(std::vector<ucd_norm_test>& tests)
-{
-    std::string line;
-    std::vector<std::string> parts;
-
-    std::ifstream ifs(NORM_TEST_FILE, std::ios::in);
-    REQUIRE(ifs.is_open());
-
-    int part_index = -1;
-    ucd_norm_test data;
-    data.line_no = 0;
-    data.test_no = 0;
-
-    while (std::getline(ifs, line))
-    {
-        data.line_no++;
-        if (line.empty() || line.at(0) == '#')
-            continue;
-
-        if (line.at(0) == '@')
-        {
-            part_index++;
-            // New part, first is just index @Part0, @Part1, etc.
-            split_line(line, '#', parts, 1);
-            REQUIRE(parts.size() == 2);
-            data.part_name = "Part " + std::to_string(part_index) + " - " + trim(parts[1]);
-            continue;
-        }
-
-        data.test_no++;
-
-        split_line(line, ';', parts, 5);
-        REQUIRE(parts.size() >= 4);
-
-        // parts 0 is input
-        // parts 1 is NFC
-        // parts 2 is NFD
-        // parts 3 is NFKC
-        // parts 4 is NFKD
-        // parts 5 is comment, including initial #
-        data.input = hexstr_to_utf8(parts[0]);
-        data.nfc = hexstr_to_utf8(parts[1]);
-        data.nfd = hexstr_to_utf8(parts[2]);
-        data.nfkc = hexstr_to_utf8(parts[3]);
-        data.nfkd = hexstr_to_utf8(parts[4]);
-        data.comment = parts.size() > 5 ? trim(parts[5]) : "";
-
-        tests.push_back(data);
-    }
-}
-
-TEST_CASE("unicode official normalization test")
-{
-    std::vector<ucd_norm_test> tests;
-    read_ucd_norm_tests(tests);
+    std::vector<ucd_norm_case> tests;
+    REQUIRE(ucd_load_normalization_tests(NORM_TEST_FILE, tests));
 
     std::string form;
     for (const auto& test : tests)
@@ -671,7 +515,7 @@ static void read_ucd_grapheme_tests(std::vector<ucd_grapheme_test>& tests)
     }
 }
 
-TEST_CASE("unicode official grapheme break test")
+TEST_CASE("unicode - official grapheme break test")
 {
     std::vector<ucd_grapheme_test> tests;
     read_ucd_grapheme_tests(tests);
@@ -708,7 +552,7 @@ TEST_CASE("unicode official grapheme break test")
     std::cout << "Number of grapheme break tests: " << tests.size() << std::endl;
 }
 
-TEST_CASE("unicode validation")
+TEST_CASE("unicode - validation")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -768,7 +612,7 @@ TEST_CASE("unicode validation")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode codepoint encoding")
+TEST_CASE("unicode - codepoint encoding")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -853,7 +697,7 @@ TEST_CASE("unicode codepoint encoding")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode counts")
+TEST_CASE("unicode - counts")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -888,7 +732,7 @@ TEST_CASE("unicode counts")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode character indexing")
+TEST_CASE("unicode - character indexing")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -937,7 +781,7 @@ TEST_CASE("unicode character indexing")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode case-insensitive comparison")
+TEST_CASE("unicode - case-insensitive comparison")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -971,7 +815,7 @@ TEST_CASE("unicode case-insensitive comparison")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode normalization forms")
+TEST_CASE("unicode - normalization forms")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -1004,7 +848,7 @@ TEST_CASE("unicode normalization forms")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("unicode mapping with explicit length")
+TEST_CASE("unicode - mapping with explicit length")
 {
     UCB_MEMTRACK_PUSH();
 

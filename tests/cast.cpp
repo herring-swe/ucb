@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <iostream>
 
-TEST_CASE("void casts")
+TEST_CASE("cast - general")
 {
     size_t i;
     int int_vals[] = {1234, INT_MIN, INT_MAX, 0, INT_MIN + 1, INT_MAX - 1};

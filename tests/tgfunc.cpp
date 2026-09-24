@@ -14,7 +14,7 @@
 
 #include <cstdio>
 
-TEST_CASE("tgfunc")
+TEST_CASE("tgfunc - general")
 {
     CHECK(test_tgfunc() == 0);
 }

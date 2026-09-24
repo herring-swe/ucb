@@ -25,7 +25,7 @@
 
 TEST_SUITE_BEGIN("string");
 
-TEST_CASE("string lifetime")
+TEST_CASE("string - lifetime")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -190,7 +190,7 @@ TEST_CASE("string lifetime")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string destruction")
+TEST_CASE("string - destruction")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -217,7 +217,7 @@ TEST_CASE("string destruction")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string assignment and updating")
+TEST_CASE("string - assignment and updating")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -330,7 +330,7 @@ TEST_CASE("string assignment and updating")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string querying")
+TEST_CASE("string - querying")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -432,7 +432,7 @@ TEST_CASE("string querying")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string comparison and lookup")
+TEST_CASE("string - comparison and lookup")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -518,7 +518,7 @@ TEST_CASE("string comparison and lookup")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string modification")
+TEST_CASE("string - modification")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -616,7 +616,7 @@ TEST_CASE("string modification")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string utf-8 handling")
+TEST_CASE("string - utf-8 handling")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -660,7 +660,7 @@ TEST_CASE("string utf-8 handling")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string adopt and abandon")
+TEST_CASE("string - adopt and abandon")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -745,7 +745,7 @@ TEST_CASE("string adopt and abandon")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string case-insensitive comparison")
+TEST_CASE("string - case-insensitive comparison")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -780,7 +780,7 @@ TEST_CASE("string case-insensitive comparison")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string next char")
+TEST_CASE("string - next char")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -798,7 +798,7 @@ TEST_CASE("string next char")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string append and insert variants")
+TEST_CASE("string - append and insert variants")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -860,7 +860,7 @@ TEST_CASE("string append and insert variants")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string concatenation")
+TEST_CASE("string - concatenation")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -902,7 +902,7 @@ TEST_CASE("string concatenation")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string substring semantics")
+TEST_CASE("string - substring semantics")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -940,7 +940,7 @@ TEST_CASE("string substring semantics")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string lookup with position")
+TEST_CASE("string - lookup with position")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -964,7 +964,7 @@ TEST_CASE("string lookup with position")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string capacity querying")
+TEST_CASE("string - capacity querying")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -1017,7 +1017,7 @@ TEST_CASE("string capacity querying")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string case and normalization modification")
+TEST_CASE("string - case and normalization modification")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -1075,7 +1075,7 @@ TEST_CASE("string case and normalization modification")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("string self aliasing")
+TEST_CASE("string - self aliasing")
 {
     UCB_MEMTRACK_PUSH();
 
@@ -1148,7 +1148,7 @@ TEST_CASE("string self aliasing")
 }
 
 #ifdef _WIN32
-TEST_CASE("string wide string conversion")
+TEST_CASE("string - wide string conversion")
 {
     UCB_MEMTRACK_PUSH();
 

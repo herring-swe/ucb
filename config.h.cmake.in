@@ -19,4 +19,19 @@
  */
 #define UCB_BTRACE_MAX_FRAMES @UCB_BTRACE_MAX_FRAMES@
 
+/**
+ * @brief Maximum number of retained free records for memory tracking
+ */
+#define UCB_MEMTRACK_FREE_CAPACITY @UCB_MEMTRACK_FREE_CAPACITY@
+
+/**
+ * @brief Maximum number of nested memory tracking tracepoints
+ */
+#define UCB_MEMTRACK_MAX_TRACEPOINTS @UCB_MEMTRACK_MAX_TRACEPOINTS@
+
+/**
+ * @brief Maximum length of a memory tracking tracepoint name
+ */
+#define UCB_MEMTRACK_MAX_TRACEPOINT_NAME @UCB_MEMTRACK_MAX_TRACEPOINT_NAME@
+
 #endif // UCB_CONFIG_H

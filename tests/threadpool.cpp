@@ -92,7 +92,7 @@ static int stress_worker(void* arg)
 }
 
 // --- Tests ---
-TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool - basics")
 {
     SUBCASE("Create/Free")
     {
@@ -243,7 +243,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool basics")
     }
 }
 
-TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool start result")
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool - start result")
 {
     REQUIRE(ucb_threadpool_start(pool));
     // Starting an already running pool is a no-op that reports success
@@ -251,7 +251,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool start result")
     ucb_threadpool_join(pool);
 }
 
-TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool stress test")
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool - stress test")
 {
     constexpr int num_tasks = 500;
     constexpr int num_inc = 10;
@@ -269,7 +269,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool stress test")
     REQUIRE(shared_counter.load() == num_tasks * num_inc);
 }
 
-TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool add while running")
+TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool - add while running")
 {
     constexpr int num_threads = 4;
     constexpr int per_thread = 50;
@@ -301,7 +301,7 @@ TEST_CASE_FIXTURE(ThreadPoolFixture, "threadpool add while running")
     REQUIRE(shared_counter.load() == num_threads * per_thread);
 }
 
-TEST_CASE("threadpool free with queued tasks")
+TEST_CASE("threadpool - free with queued tasks")
 {
     ucb_threadpool* pool = ucb_threadpool_new(2);
     REQUIRE(pool != nullptr);
@@ -320,7 +320,7 @@ TEST_CASE("threadpool free with queued tasks")
     ucb_threadpool_free(nullptr);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "threadpool error handling")
+TEST_CASE_FIXTURE(TestFailureFixture, "threadpool - error handling")
 {
     SUBCASE("Null Arguments")
     {

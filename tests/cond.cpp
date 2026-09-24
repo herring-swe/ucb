@@ -65,7 +65,7 @@ static int cond_timed_waiter(void* arg)
     return 0;
 }
 
-TEST_CASE("cond basics")
+TEST_CASE("cond - basics")
 {
     SUBCASE("heap")
     {
@@ -102,7 +102,7 @@ TEST_CASE("cond basics")
     }
 }
 
-TEST_CASE("cond wait and signal")
+TEST_CASE("cond - wait and signal")
 {
     ucb_mutex mutex;
     ucb_cond wait_cond;
@@ -139,7 +139,7 @@ TEST_CASE("cond wait and signal")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE("cond timedwait signalled")
+TEST_CASE("cond - timedwait signalled")
 {
     ucb_mutex mutex;
     ucb_cond wait_cond;
@@ -176,7 +176,7 @@ TEST_CASE("cond timedwait signalled")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE("cond broadcast")
+TEST_CASE("cond - broadcast")
 {
     constexpr int N = 4;
 
@@ -223,7 +223,7 @@ TEST_CASE("cond broadcast")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE("cond recursive mutex wait")
+TEST_CASE("cond - recursive mutex wait")
 {
     ucb_mutex mutex;
     ucb_cond wait_cond;
@@ -263,7 +263,7 @@ TEST_CASE("cond recursive mutex wait")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE("cond recursive mutex timedwait")
+TEST_CASE("cond - recursive mutex timedwait")
 {
     ucb_mutex mutex;
     ucb_cond wait_cond;
@@ -300,7 +300,7 @@ TEST_CASE("cond recursive mutex timedwait")
     ucb_mutex_release(&mutex);
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "cond error handling")
+TEST_CASE_FIXTURE(TestFailureFixture, "cond - error handling")
 {
     SUBCASE("null init")
     {
