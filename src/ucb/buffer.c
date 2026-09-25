@@ -228,7 +228,13 @@ int ucb_buffer_push_format(ucb_buffer* buf, const char* fmt, ...)
 int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
 {
     UCB_VERIFY_ARGS(buf && fmt);
-    int size = vsnprintf(UCB_NULL, 0, fmt, args);
+
+    // Measure using a copy; vsnprintf consumes the va_list on some ABIs.
+    va_list args_copy;
+    va_copy(args_copy, args);
+    int size = vsnprintf(UCB_NULL, 0, fmt, args_copy);
+    va_end(args_copy);
+
     if (size < 0)
     {
         UCB_REPORT_ERRNO(errno, "Failed to format string for buffer");
