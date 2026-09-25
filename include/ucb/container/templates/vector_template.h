@@ -149,9 +149,11 @@ int _fake_cmp(const void*, const void*);
 #ifdef UCB_T_IS_POD
 #define _UCB_T_CONST
 #define _UCB_T_PTR _UCB_T*
+#define _UCB_T_IS_POD 1
 #else
 #define _UCB_T_CONST const
 #define _UCB_T_PTR _UCB_T
+#define _UCB_T_IS_POD 0
 #endif
 
 // Includes needed for this template header
@@ -240,7 +242,7 @@ int _fake_cmp(const void*, const void*);
  * @brief vector containing type T.
  *
  * This is a generated vector for type T.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The vector does not by default manage the lifetime of the elements. Please review
  * the function documentation for details.
  * @endif
@@ -254,7 +256,7 @@ typedef struct _UCB_T_TYPE
 
 /**
  * @brief Function callback for foreach.
- * @if defined(UCB_T_IS_POD)
+ * @if _UCB_T_IS_POD
  * @param pval The element pointer to process.
  * @else
  * @param val The element to process.
@@ -301,7 +303,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @def UCB_VECTOR_T_FREE
  * @brief Frees the vector.
  * @param vec The vector to free.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @warning The element pointers are not freed.
  * @endif
  */
@@ -323,13 +325,13 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param dst The vector to copy to.
  * @param src The vector to copy from.
  * @return true if the copy was successful, false on memory allocation failure.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note This is a shallow copy.
  * @endif
  */
 #define UCB_VECTOR_T_COPY _UCB_T_FUNC(copy)
 
-#if defined(UCB_T_CLONE_FUNC)
+#if defined(UCB_T_COPY_FUNC)
 /**
  * @def UCB_VECTOR_T_COPY_FULL
  * @brief Deep copies the contents with elements from one vector to another.
@@ -347,13 +349,13 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Creates a vector as a copy of the source vector.
  * @param src The original vector to clone.
  * @return A new vector or NULL if the allocation failed.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note This is a shallow clone.
  * @endif
  */
 #define UCB_VECTOR_T_CLONE _UCB_T_FUNC(clone)
 
-#if defined(UCB_T_CLONE_FUNC)
+#if defined(UCB_T_COPY_FUNC)
 /**
  * @def UCB_VECTOR_T_CLONE_FULL
  * @brief Creates a vector as a deep copy of the source vector.
@@ -420,7 +422,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @def UCB_VECTOR_T_CLEAR
  * @brief Clears the vector by setting size to 0.
  * @param vec The vector to clear.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @warning The element pointers are not freed.
  * @endif
  */
@@ -453,7 +455,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param index The position at which to insert the element.
  * @param data The element to insert.
  * @note The index can be equal to the current size, effectively appending the element.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
  * @endif
@@ -466,7 +468,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param vec The vector to modify.
  * @param index The position of the element to remove.
  * @return the element at the specified index.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @warning The element is not freed. The caller must manually free the returned pointer.
  * @endif
  */
@@ -477,7 +479,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Appends an element to the end of the vector, resizing if necessary.
  * @param vec The vector to append to.
  * @param data The element to append.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
  * @endif
@@ -489,7 +491,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Inserts an element at the front of the vector, shifting existing elements.
  * @param vec The vector to modify.
  * @param data The element to insert.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
  * @endif
@@ -501,7 +503,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Removes and returns the last element of the vector.
  * @param vec The vector to pop from.
  * @return The element that was removed.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @warning The element is not freed. The caller must manually free the returned pointer.
  * @endif
  */
@@ -512,7 +514,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Removes and returns the first element of the vector.
  * @param vec The vector to pop from.
  * @return The element that was removed.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @warning The element is not freed. The caller must manually free the returned pointer.
  * @endif
  */
@@ -523,7 +525,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Returns a reference to the last element without modifying the vector.
  * @param vec The vector to peek.
  * @return A reference to the last element.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The pointer to the element is returned and must not be freed by the caller.
  * @endif
  */
@@ -534,7 +536,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @brief Returns a reference to the first element without modifying the vector.
  * @param vec The vector to peek.
  * @return A reference to the first element.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The pointer to the element is returned and must not be freed by the caller.
  * @endif
  */
@@ -546,7 +548,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param vec The vector to query.
  * @param index The index of the element to retrieve.
  * @return A reference to the element at index.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The pointer to the element is returned and must not be freed by the caller.
  * @endif
  */
@@ -558,7 +560,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param vec The vector to modify.
  * @param index The index of the element to set.
  * @param data The new value for the element.
- * @if !defined(UCB_T_IS_POD)
+ * @if !_UCB_T_IS_POD
  * @note The element pointer is set as-is and must remain valid through the lifetime of the
  * container. The previous pointer is not freed.
  * @endif
@@ -581,7 +583,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
  * @param func The function to apply to each element.
  * @param user_data Optional user data passed to the function.
  * @return number of elements processed.
- * @if defined(UCB_T_IS_POD)
+ * @if _UCB_T_IS_POD
  * @note The function receives a pointer to the element.
  * @endif
  */
@@ -624,7 +626,7 @@ typedef bool (*_UCB_T_FUNC(iter_func))(_UCB_T val, size_t index, void* user_data
 #endif
 
 /**
- * @def UCB_VECTOR_T_INSERT_SORT
+ * @def UCB_VECTOR_T_INSERT_SORTED_WITH
  * @brief Insert an element into the vector in sorted order using a custom comparison function.
  *
  * The vector must be sorted with the same comparison function before calling this function or the
@@ -929,11 +931,12 @@ bool UCB_VECTOR_T_COPY_FULL(_UCB_T_TYPE* dst, const _UCB_T_TYPE* src)
 
     for (size_t i = 0; i < src->size; i++)
     {
-        dst->data[i] = (_UCB_T)calloc(1, sizeof(void*));
+        dst->data[i] = (_UCB_T)ucb_calloc(1, sizeof(void*));
         if (!dst->data[i])
         {
+            // Free the elements copied so far. The destination buffer and the
+            // vector struct are owned by the caller and must be released by it.
             UCB_VECTOR_T_CLEAR_FULL(dst);
-            ucb_free(dst);
             return false;
         }
         UCB_T_COPY_FUNC(dst->data[i], src->data[i]);
@@ -970,8 +973,8 @@ _UCB_T_TYPE* UCB_VECTOR_T_CLONE_FULL(const _UCB_T_TYPE* src)
     {
         if (!UCB_VECTOR_T_COPY_FULL(dst, src))
         {
-            // Elements are already freed by UCB_VECTOR_T_COPY_FULL
-            ucb_free(dst);
+            // COPY_FULL freed the elements it copied; release the rest
+            UCB_VECTOR_T_FREE_FULL(dst);
             return UCB_NULL;
         }
     }
@@ -1353,6 +1356,7 @@ ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec, const _UCB_T_PTR val, u
 #undef _UCB_T_TYPE
 #undef _UCB_T_CONST
 #undef _UCB_T_PTR
+#undef _UCB_T_IS_POD
 #undef _UCB_T
 
 // Cleanup calling macros to prevent accidental reuse in other contexts

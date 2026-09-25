@@ -20,8 +20,8 @@
  * - Keys are created with @ref ucb_tls_key_new and are intended to be
  *   process-lifetime objects, typically created once at program start.
  * - The value stored for a thread is valid until a new value is set with
- *   @ref ucb_tls_set, the key is cleared with @ref ucb_tls_set(..., UCB_NULL),
- *   or the thread exits.
+ *   @ref ucb_tls_set, the key is cleared by calling @ref ucb_tls_set with
+ *   UCB_NULL, or the thread exits.
  * - The destructor is run exactly once per thread that had a value set,
  *   when that thread exits. The destructor is responsible for freeing the
  *   value.

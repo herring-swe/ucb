@@ -17,7 +17,6 @@
 
 #include <doctest.h>
 
-#include <cstdint>
 #include <iostream>
 
 /* -------------------------------------------------------------------------- */
@@ -553,13 +552,6 @@ static bool foreach_stop_int(int* pval, size_t index, void* user_data)
     return index != state->stop_at;
 }
 
-static int ptr_cmp(const void* a, const void* b)
-{
-    uintptr_t ua = reinterpret_cast<uintptr_t>(a);
-    uintptr_t ub = reinterpret_cast<uintptr_t>(b);
-    return (ua > ub) - (ua < ub);
-}
-
 TEST_CASE("vector - typed")
 {
     // float
@@ -607,26 +599,19 @@ TEST_CASE("vector - typed")
 
     ucb_vector_dbl_free(vdbl);
 
-    // pointer (not using the built-in pointer comparator; see notes below)
+    // pointer (ordered by address via the default pointer comparator)
     int arr[5] = {0};
     ucb_vector_ptr* vptr = ucb_vector_ptr_new();
     REQUIRE(vptr != nullptr);
     for (int i = 4; i >= 0; i--)
         ucb_vector_ptr_push_back(vptr, &arr[i]);
 
+    ucb_vector_ptr_sort(vptr);
     REQUIRE(ucb_vector_ptr_size(vptr) == 5);
-    CHECK(ucb_vector_ptr_get(vptr, 0) == &arr[4]);
-    CHECK(ucb_vector_ptr_get(vptr, 4) == &arr[0]);
-
-    ucb_vector_ptr_swap(vptr, 0, 4);
-    CHECK(ucb_vector_ptr_get(vptr, 0) == &arr[0]);
-    CHECK(ucb_vector_ptr_get(vptr, 4) == &arr[4]);
-
-    ucb_vector_ptr_sort_with(vptr, ptr_cmp);
     for (int i = 0; i < 5; i++)
         CHECK(ucb_vector_ptr_get(vptr, (size_t)i) == &arr[i]);
 
-    CHECK(ucb_vector_ptr_find_with(vptr, &arr[2], ptr_cmp) == 2);
+    CHECK(ucb_vector_ptr_find(vptr, &arr[2]) == 2);
 
     ucb_vector_ptr_free(vptr);
 }

@@ -23,9 +23,6 @@
  * @brief vector containing float.
  *
  * This is a generated vector for float.
- * @note The vector does not by default manage the lifetime of the elements. Please review
- * the function documentation for details.
- * @endif
  */
 typedef struct ucb_vector_flt
 {
@@ -36,6 +33,7 @@ typedef struct ucb_vector_flt
 
 /**
  * @brief Function callback for foreach.
+ * @param pval The element pointer to process.
  * @param index The index of the element.
  * @param user_data User data passed to the function.
  * @return true to continue, false to stop iteration.
@@ -57,8 +55,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @fn ucb_vector_flt_free
  * @brief Frees the vector.
  * @param vec The vector to free.
- * @warning The element pointers are not freed.
- * @endif
  */
 
 /**
@@ -69,8 +65,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param dst The vector to copy to.
  * @param src The vector to copy from.
  * @return true if the copy was successful, false on memory allocation failure.
- * @note This is a shallow copy.
- * @endif
  */
 
 /**
@@ -78,8 +72,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Creates a vector as a copy of the source vector.
  * @param src The original vector to clone.
  * @return A new vector or NULL if the allocation failed.
- * @note This is a shallow clone.
- * @endif
  */
 
 /**
@@ -134,8 +126,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @fn ucb_vector_flt_clear
  * @brief Clears the vector by setting size to 0.
  * @param vec The vector to clear.
- * @warning The element pointers are not freed.
- * @endif
  */
 
 /**
@@ -155,9 +145,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param index The position at which to insert the element.
  * @param data The element to insert.
  * @note The index can be equal to the current size, effectively appending the element.
- * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
- * container.
- * @endif
  */
 
 /**
@@ -166,8 +153,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param vec The vector to modify.
  * @param index The position of the element to remove.
  * @return the element at the specified index.
- * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -175,9 +160,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Appends an element to the end of the vector, resizing if necessary.
  * @param vec The vector to append to.
  * @param data The element to append.
- * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
- * container.
- * @endif
  */
 
 /**
@@ -185,9 +167,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Inserts an element at the front of the vector, shifting existing elements.
  * @param vec The vector to modify.
  * @param data The element to insert.
- * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
- * container.
- * @endif
  */
 
 /**
@@ -195,8 +174,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Removes and returns the last element of the vector.
  * @param vec The vector to pop from.
  * @return The element that was removed.
- * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -204,8 +181,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Removes and returns the first element of the vector.
  * @param vec The vector to pop from.
  * @return The element that was removed.
- * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -213,8 +188,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Returns a reference to the last element without modifying the vector.
  * @param vec The vector to peek.
  * @return A reference to the last element.
- * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -222,8 +195,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @brief Returns a reference to the first element without modifying the vector.
  * @param vec The vector to peek.
  * @return A reference to the first element.
- * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -232,8 +203,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param vec The vector to query.
  * @param index The index of the element to retrieve.
  * @return A reference to the element at index.
- * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -242,9 +211,6 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param vec The vector to modify.
  * @param index The index of the element to set.
  * @param data The new value for the element.
- * @note The element pointer is set as-is and must remain valid through the lifetime of the
- * container. The previous pointer is not freed.
- * @endif
  */
 
 /**
@@ -262,6 +228,7 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  * @param func The function to apply to each element.
  * @param user_data Optional user data passed to the function.
  * @return number of elements processed.
+ * @note The function receives a pointer to the element.
  */
 
 /// @}
@@ -294,7 +261,7 @@ typedef bool (*ucb_vector_flt_iter_func)(float* pval, size_t index, void* user_d
  */
 
 /**
- * @fn UCB_VECTOR_T_INSERT_SORT
+ * @fn ucb_vector_flt_insert_sorted_with
  * @brief Insert an element into the vector in sorted order using a custom comparison function.
  *
  * The vector must be sorted with the same comparison function before calling this function or the

@@ -70,8 +70,9 @@ static inline int ucb_comp_func_dbl(const void* a, const void* b)
 
 static inline int ucb_comp_func_ptr(const void* a, const void* b)
 {
-    uintptr_t diff = (uintptr_t)a - (uintptr_t)b;
-    return (diff > 0) ? 1 : (diff < 0) ? -1 : 0;
+    uintptr_t ua = (uintptr_t)a;
+    uintptr_t ub = (uintptr_t)b;
+    return (ua > ub) ? 1 : (ua < ub) ? -1 : 0;
 }
 
 #endif // UCB_CONTAINER_COMMON_H
