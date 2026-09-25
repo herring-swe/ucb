@@ -117,3 +117,82 @@ TEST_CASE_FIXTURE(PQueueFixture, "pqueue - general")
         REQUIRE(ucb_pqueue_size(pq_owned) == 0);
     }
 }
+
+TEST_CASE("pqueue - owned clear")
+{
+    UCB_MEMTRACK_PUSH();
+
+    ucb_pqueue_args args = {0};
+    args.data_clone = int_clone;
+    args.data_free = int_free;
+
+    ucb_pqueue* pq = ucb_pqueue_new(args);
+    REQUIRE(pq != nullptr);
+
+    int vals[5] = {0, 1, 2, 3, 4};
+    for (int i = 0; i < 5; i++)
+        REQUIRE(ucb_pqueue_push(pq, &vals[i], i) != (size_t)-1);
+
+    REQUIRE(ucb_pqueue_size(pq) == 5);
+
+    // clear must free every cloned element
+    ucb_pqueue_clear(pq);
+    REQUIRE(ucb_pqueue_size(pq) == 0);
+    REQUIRE(ucb_pqueue_empty(pq));
+
+    ucb_pqueue_free(pq);
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("pqueue - capacity and mt")
+{
+    UCB_MEMTRACK_PUSH();
+
+    // Many distinct priorities grow the internal bucket list
+    int vals[20];
+    ucb_pqueue* pq = ucb_pqueue_new({0});
+    REQUIRE(pq != nullptr);
+    for (int i = 0; i < 20; i++)
+    {
+        vals[i] = i;
+        REQUIRE(ucb_pqueue_push(pq, &vals[i], i) != (size_t)-1);
+    }
+    REQUIRE(ucb_pqueue_size(pq) == 20);
+
+    // fit is a no-op on ordering and contents
+    ucb_pqueue_fit(pq);
+    REQUIRE(ucb_pqueue_size(pq) == 20);
+
+    for (int i = 19; i >= 0; i--)
+    {
+        int* item = reinterpret_cast<int*>(ucb_pqueue_pop(pq));
+        REQUIRE(item != nullptr);
+        CHECK(*item == i);
+    }
+    REQUIRE(ucb_pqueue_size(pq) == 0);
+    REQUIRE(ucb_pqueue_empty(pq));
+    ucb_pqueue_free(pq);
+
+    // Thread-safe constructor smoke test
+    ucb_pqueue* mt = ucb_pqueue_new_mt({0});
+    REQUIRE(mt != nullptr);
+    int val = 7;
+    REQUIRE(ucb_pqueue_push(mt, &val, 1) != (size_t)-1);
+    REQUIRE(ucb_pqueue_size(mt) == 1);
+    REQUIRE(ucb_pqueue_peek(mt) == &val);
+    REQUIRE(reinterpret_cast<int*>(ucb_pqueue_pop(mt)) == &val);
+    REQUIRE(ucb_pqueue_size(mt) == 0);
+    ucb_pqueue_free(mt);
+
+    // Empty queue operations
+    ucb_pqueue* empty = ucb_pqueue_new({0});
+    REQUIRE(empty != nullptr);
+    CHECK(ucb_pqueue_pop(empty) == nullptr);
+    CHECK(ucb_pqueue_peek(empty) == nullptr);
+    CHECK(ucb_pqueue_size(empty) == 0);
+    CHECK(ucb_pqueue_empty(empty));
+    ucb_pqueue_free(empty);
+
+    UCB_MEMTRACK_POP();
+}

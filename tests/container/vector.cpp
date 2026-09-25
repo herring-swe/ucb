@@ -17,6 +17,7 @@
 
 #include <doctest.h>
 
+#include <cstdint>
 #include <iostream>
 
 /* -------------------------------------------------------------------------- */
@@ -536,4 +537,177 @@ TEST_CASE("vector - sort and find")
 
     ucb_str_release(&tstr);
     ucb_vector_str_free_full(vstr);
+}
+
+struct ForeachStop
+{
+    size_t stop_at;
+    size_t calls;
+};
+
+static bool foreach_stop_int(int* pval, size_t index, void* user_data)
+{
+    (void)pval;
+    ForeachStop* state = static_cast<ForeachStop*>(user_data);
+    state->calls++;
+    return index != state->stop_at;
+}
+
+static int ptr_cmp(const void* a, const void* b)
+{
+    uintptr_t ua = reinterpret_cast<uintptr_t>(a);
+    uintptr_t ub = reinterpret_cast<uintptr_t>(b);
+    return (ua > ub) - (ua < ub);
+}
+
+TEST_CASE("vector - typed")
+{
+    // float
+    ucb_vector_flt* vflt = ucb_vector_flt_new();
+    REQUIRE(vflt != nullptr);
+    ucb_vector_flt_push_back(vflt, 4.0f);
+    ucb_vector_flt_push_back(vflt, 1.5f);
+    ucb_vector_flt_push_back(vflt, 6.0f);
+    ucb_vector_flt_push_back(vflt, 2.0f);
+    ucb_vector_flt_push_back(vflt, 3.0f);
+
+    ucb_vector_flt_sort(vflt);
+    REQUIRE(ucb_vector_flt_size(vflt) == 5);
+    CHECK(ucb_vector_flt_get(vflt, 0) == 1.5f);
+    CHECK(ucb_vector_flt_get(vflt, 1) == 2.0f);
+    CHECK(ucb_vector_flt_get(vflt, 4) == 6.0f);
+
+    float f5 = 5.0f;
+    CHECK(ucb_vector_flt_find(vflt, &f5) == -(4 + 1));
+    CHECK(ucb_vector_flt_insert_sorted(vflt, 5.0f) == 4);
+    float f4 = 4.0f;
+    CHECK(ucb_vector_flt_find(vflt, &f4) == 3);
+
+    ucb_vector_flt_free(vflt);
+
+    // double
+    ucb_vector_dbl* vdbl = ucb_vector_dbl_new();
+    REQUIRE(vdbl != nullptr);
+    ucb_vector_dbl_push_back(vdbl, 4.0);
+    ucb_vector_dbl_push_back(vdbl, 1.5);
+    ucb_vector_dbl_push_back(vdbl, 6.0);
+    ucb_vector_dbl_push_back(vdbl, 2.0);
+    ucb_vector_dbl_push_back(vdbl, 3.0);
+
+    ucb_vector_dbl_sort(vdbl);
+    REQUIRE(ucb_vector_dbl_size(vdbl) == 5);
+    CHECK(ucb_vector_dbl_get(vdbl, 0) == 1.5);
+    CHECK(ucb_vector_dbl_get(vdbl, 4) == 6.0);
+
+    double d5 = 5.0;
+    CHECK(ucb_vector_dbl_find(vdbl, &d5) == -(4 + 1));
+    CHECK(ucb_vector_dbl_insert_sorted(vdbl, 5.0) == 4);
+    double d4 = 4.0;
+    CHECK(ucb_vector_dbl_find(vdbl, &d4) == 3);
+
+    ucb_vector_dbl_free(vdbl);
+
+    // pointer (not using the built-in pointer comparator; see notes below)
+    int arr[5] = {0};
+    ucb_vector_ptr* vptr = ucb_vector_ptr_new();
+    REQUIRE(vptr != nullptr);
+    for (int i = 4; i >= 0; i--)
+        ucb_vector_ptr_push_back(vptr, &arr[i]);
+
+    REQUIRE(ucb_vector_ptr_size(vptr) == 5);
+    CHECK(ucb_vector_ptr_get(vptr, 0) == &arr[4]);
+    CHECK(ucb_vector_ptr_get(vptr, 4) == &arr[0]);
+
+    ucb_vector_ptr_swap(vptr, 0, 4);
+    CHECK(ucb_vector_ptr_get(vptr, 0) == &arr[0]);
+    CHECK(ucb_vector_ptr_get(vptr, 4) == &arr[4]);
+
+    ucb_vector_ptr_sort_with(vptr, ptr_cmp);
+    for (int i = 0; i < 5; i++)
+        CHECK(ucb_vector_ptr_get(vptr, (size_t)i) == &arr[i]);
+
+    CHECK(ucb_vector_ptr_find_with(vptr, &arr[2], ptr_cmp) == 2);
+
+    ucb_vector_ptr_free(vptr);
+}
+
+TEST_CASE("vector - capacity and iteration")
+{
+    ucb_vector_int* vec = ucb_vector_int_new();
+    REQUIRE(vec != nullptr);
+    CHECK(ucb_vector_int_is_empty(vec));
+    CHECK(ucb_vector_int_capacity(vec) == 0);
+
+    REQUIRE(ucb_vector_int_reserve(vec, 8));
+    CHECK(ucb_vector_int_capacity(vec) == 8);
+
+    // Reserve below current capacity is a no-op
+    REQUIRE(ucb_vector_int_reserve(vec, 4));
+    CHECK(ucb_vector_int_capacity(vec) == 8);
+
+    ucb_vector_int_push_back(vec, 10);
+    ucb_vector_int_push_back(vec, 20);
+    ucb_vector_int_push_back(vec, 30);
+    REQUIRE(ucb_vector_int_size(vec) == 3);
+
+    // insert in the middle shifts existing elements
+    ucb_vector_int_insert(vec, 1, 15);
+    REQUIRE(ucb_vector_int_size(vec) == 4);
+    CHECK(ucb_vector_int_get(vec, 0) == 10);
+    CHECK(ucb_vector_int_get(vec, 1) == 15);
+    CHECK(ucb_vector_int_get(vec, 2) == 20);
+    CHECK(ucb_vector_int_get(vec, 3) == 30);
+
+    // swap two elements
+    ucb_vector_int_swap(vec, 0, 3);
+    CHECK(ucb_vector_int_get(vec, 0) == 30);
+    CHECK(ucb_vector_int_get(vec, 3) == 10);
+
+    // fit shrinks capacity to the used size
+    ucb_vector_int_fit(vec);
+    CHECK(ucb_vector_int_capacity(vec) == 4);
+    CHECK(ucb_vector_int_capacity(vec) == ucb_vector_int_size(vec));
+
+    // foreach stops at the requested index and returns that index
+    ForeachStop state = {2, 0};
+    size_t processed = ucb_vector_int_foreach(vec, foreach_stop_int, &state);
+    CHECK(processed == 2);
+    CHECK(state.calls == 3);
+
+    // foreach without stopping returns the number of elements
+    state = {99, 0};
+    processed = ucb_vector_int_foreach(vec, foreach_stop_int, &state);
+    CHECK(processed == 4);
+    CHECK(state.calls == 4);
+
+    ucb_vector_int_free(vec);
+}
+
+TEST_CASE("vector - owned pop frees")
+{
+    MyType item1 = {1, "one"};
+    MyType item2 = {2, "two"};
+    MyType item3 = {3, "three"};
+
+    ucb_vector_args args = {0};
+    args.data_clone = (ucb_clone_func)mytype_clone;
+    args.data_free = (ucb_free_func)mytype_free;
+    args.data_cmp = (ucb_cmp_func)mytype_cmp;
+
+    ucb_vector* vec = ucb_vector_new(args);
+    REQUIRE(vec != nullptr);
+    ucb_vector_push_back(vec, &item1);
+    ucb_vector_push_back(vec, &item2);
+    ucb_vector_push_back(vec, &item3);
+
+    // Passing UCB_NULL as out_data makes the vector free the popped element
+    REQUIRE(ucb_vector_pop_back(vec, UCB_NULL));
+    REQUIRE(ucb_vector_pop_front(vec, UCB_NULL));
+    REQUIRE(ucb_vector_size(vec) == 1);
+
+    MyType* out = UCB_NULL;
+    ucb_vector_get(vec, 0, &out);
+    REQUIRE(mytype_cmp(out, &item2) == 0);
+
+    ucb_vector_free(vec); // frees the remaining element
 }

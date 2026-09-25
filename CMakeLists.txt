@@ -60,6 +60,7 @@ endif()
 configure_file(${CMAKE_SOURCE_DIR}/cmake/headers/config.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/config.h)
 
 # Public version.h
+set(UCB_BUILD_SHARED ${BUILD_SHARED_LIBS})
 configure_file(${CMAKE_SOURCE_DIR}/cmake/headers/version.h.cmake.in ${CMAKE_BINARY_DIR}/include/ucb/version.h)
 install(
     FILES ${CMAKE_BINARY_DIR}/include/ucb/version.h

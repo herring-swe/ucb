@@ -5,6 +5,16 @@
  * - SPDX-License-Identifier: MIT
  *
  * @brief Helper macros for generic implementations
+ *
+ * This header provides the C11 @c _Generic based dispatch macros used to implement the
+ * public type-generic functions in @ref tgfunc.h, along with the @c UCB_TYPE, @c UCB_FMT
+ * and @c UCB_FMTS type/format selection helpers.
+ *
+ * These macros are implementation details of @ref tgfunc.h. They are kept in a separate
+ * header so they can also be reused internally by other generic code, and are documented
+ * under @c INTERNAL. Prefer the public wrappers in @ref tgfunc.h.
+ *
+ * This header is C only; it is safe to include from C++ but expands to nothing there.
  */
 
 #ifndef UCB_GENERICS_H

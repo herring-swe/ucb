@@ -161,6 +161,7 @@ UCB_API bool ucb_buffer_init_heap(ucb_buffer* buf, size_t initial_capacity);
 /**
  * @brief Free all resources within buffer
  * The buffer struct itself is not free'd
+ * @param buf the buffer to release
  */
 UCB_API void ucb_buffer_release(ucb_buffer* buf);
 
@@ -173,6 +174,8 @@ UCB_API void ucb_buffer_free(ucb_buffer* buf);
 
 /**
  * @brief Check if the buffer can be transferred
+ * @param buf the buffer to check
+ * @return true if the buffer supports ucb_buffer_transfer
  */
 UCB_API bool ucb_buffer_can_transfer(ucb_buffer* buf);
 
@@ -180,6 +183,12 @@ UCB_API bool ucb_buffer_can_transfer(ucb_buffer* buf);
  * Release the buffer from being managed, if allowed.
  * The buffer will then become invalid. Either call ucb_free_buffer or
  * reinitialize it.
+ * @param buf the buffer to transfer
+ * @param out_data where to store the transferred data pointer
+ * @param out_size where to store the transferred used size, may be UCB_NULL
+ * @param out_capacity where to store the transferred capacity, may be UCB_NULL
+ * @param perr optional location to store the error on failure
+ * @return true on success
  */
 UCB_API bool ucb_buffer_transfer(ucb_buffer* buf,
                                  void** out_data,
@@ -189,6 +198,8 @@ UCB_API bool ucb_buffer_transfer(ucb_buffer* buf,
 
 /**
  * @brief Check if the buffer can be resized
+ * @param buf the buffer to check
+ * @return true if the buffer supports ucb_buffer_resize
  */
 UCB_API bool ucb_buffer_can_resize(ucb_buffer* buf);
 
@@ -272,17 +283,20 @@ UCB_API int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list ar
  * Does not shrink the buffers capacity or modify it's data
  * @param buf the buffer
  * @param out_data pointer to data that will be set
- * @param size number of bytes to read
+ * @param size number of bytes to pop
  */
 UCB_API void ucb_buffer_pop(ucb_buffer* buf, void* out_data, size_t size);
 
 /**
  * Marks the buffer as unused but does not shrink the buffer capacity.
+ * @param buf the buffer
  */
 UCB_API void ucb_buffer_clear(ucb_buffer* buf);
 
 /**
  * Resize the capacity of the buffer to the size of the data
+ * @param buf the buffer
+ * @return true on success
  */
 UCB_API bool ucb_buffer_fit(ucb_buffer* buf);
 
@@ -290,6 +304,12 @@ UCB_API bool ucb_buffer_fit(ucb_buffer* buf);
 /*                               Grow functions                               */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * @brief Default grow function that doubles the capacity as needed.
+ * @param buf the buffer to grow
+ * @param size_needed number of additional bytes required
+ * @return the new total capacity for ucb_buffer_resize
+ */
 static inline size_t ucb_buffer_grow_double(ucb_buffer* buf, size_t size_needed)
 {
     size_t cap = buf->alloc * 2;

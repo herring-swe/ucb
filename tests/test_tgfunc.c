@@ -168,6 +168,69 @@
         }                                                           \
     } while (0)
 
+static int test_str(const char* got, const char* expected, const char* what)
+{
+    if (strcmp(got, expected) != 0)
+    {
+        printf("generics: %s: got \"%s\", expected \"%s\"\n", what, got, expected);
+        return 1;
+    }
+    return 0;
+}
+
+int test_tgfunc_generics(void)
+{
+    int errs = 0;
+
+    // UCB_TYPE string selection
+    errs += test_str(UCB_TYPE((char)0), "char", "UCB_TYPE char");
+    errs += test_str(UCB_TYPE((signed char)0), "signed char", "UCB_TYPE signed char");
+    errs += test_str(UCB_TYPE((unsigned char)0), "unsigned char", "UCB_TYPE unsigned char");
+    errs += test_str(UCB_TYPE((short)0), "short", "UCB_TYPE short");
+    errs += test_str(UCB_TYPE((unsigned short)0), "unsigned short", "UCB_TYPE unsigned short");
+    errs += test_str(UCB_TYPE((int)0), "int", "UCB_TYPE int");
+    errs += test_str(UCB_TYPE((unsigned int)0), "unsigned int", "UCB_TYPE unsigned int");
+    errs += test_str(UCB_TYPE((long)0), "long", "UCB_TYPE long");
+    errs += test_str(UCB_TYPE((unsigned long)0), "unsigned long", "UCB_TYPE unsigned long");
+    errs += test_str(UCB_TYPE((long long)0), "long long", "UCB_TYPE long long");
+    errs += test_str(UCB_TYPE((unsigned long long)0),
+                     "unsigned long long",
+                     "UCB_TYPE unsigned long long");
+    errs += test_str(UCB_TYPE((float)0), "float", "UCB_TYPE float");
+    errs += test_str(UCB_TYPE((double)0), "double", "UCB_TYPE double");
+    errs += test_str(UCB_TYPE((long double)0), "ldouble", "UCB_TYPE long double");
+    errs += test_str(UCB_TYPE((void*)0), "pointer", "UCB_TYPE pointer");
+    errs += test_str(UCB_TYPE((char*)0), "string", "UCB_TYPE string");
+    errs += test_str(UCB_TYPE((wchar_t*)0), "wstring", "UCB_TYPE wstring");
+
+    // UCB_FMT format selection
+    errs += test_str(UCB_FMT((char)0), "%hhi", "UCB_FMT char");
+    errs += test_str(UCB_FMT((signed char)0), "%hhi", "UCB_FMT signed char");
+    errs += test_str(UCB_FMT((unsigned char)0), "%hhu", "UCB_FMT unsigned char");
+    errs += test_str(UCB_FMT((short)0), "%hi", "UCB_FMT short");
+    errs += test_str(UCB_FMT((unsigned short)0), "%hu", "UCB_FMT unsigned short");
+    errs += test_str(UCB_FMT((int)0), "%i", "UCB_FMT int");
+    errs += test_str(UCB_FMT((unsigned int)0), "%u", "UCB_FMT unsigned int");
+    errs += test_str(UCB_FMT((long)0), "%li", "UCB_FMT long");
+    errs += test_str(UCB_FMT((unsigned long)0), "%lu", "UCB_FMT unsigned long");
+    errs += test_str(UCB_FMT((long long)0), "%lli", "UCB_FMT long long");
+    errs += test_str(UCB_FMT((unsigned long long)0), "%llu", "UCB_FMT unsigned long long");
+    errs += test_str(UCB_FMT((float)0), "%g", "UCB_FMT float");
+    errs += test_str(UCB_FMT((double)0), "%g", "UCB_FMT double");
+    errs += test_str(UCB_FMT((void*)0), "%p", "UCB_FMT pointer");
+    errs += test_str(UCB_FMT((char*)0), "%s", "UCB_FMT string");
+    errs += test_str(UCB_FMT((wchar_t*)0), "%ls", "UCB_FMT wstring");
+
+    // UCB_FMTS single-character / string format selection
+    errs += test_str(UCB_FMTS((char)0), "%c", "UCB_FMTS char");
+    errs += test_str(UCB_FMTS((wchar_t)0), "%lc", "UCB_FMTS wchar_t");
+    errs += test_str(UCB_FMTS((unsigned char)0), "%c", "UCB_FMTS unsigned char");
+    errs += test_str(UCB_FMTS((char*)0), "%s", "UCB_FMTS string");
+    errs += test_str(UCB_FMTS((wchar_t*)0), "%ls", "UCB_FMTS wstring");
+
+    return errs;
+}
+
 int test_tgfunc(void)
 {
     UCB_DIAG_PUSH()

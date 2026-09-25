@@ -18,3 +18,8 @@ TEST_CASE("tgfunc - general")
 {
     CHECK(test_tgfunc() == 0);
 }
+
+TEST_CASE("tgfunc - generics")
+{
+    CHECK(test_tgfunc_generics() == 0);
+}

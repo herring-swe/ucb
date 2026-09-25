@@ -16,6 +16,7 @@ extern "C" {
 #endif
 
 int test_tgfunc(void);
+int test_tgfunc_generics(void);
 
 #ifdef __cplusplus
 }
