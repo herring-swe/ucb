@@ -120,23 +120,47 @@ def parse_template(
 
     # Further pre-process comments
     # Replace @def MACRO with @fn MACRO_EXPANDED
+    # Evaluate Doxygen-style @if/@else/@endif conditionals. The preprocessor
+    # expands the condition macros (e.g. _UCB_T_IS_POD to 0/1) before this step.
 
     re_cdef = re.compile(r"(\s*\*\s*@def\s+)(\w+)(.*)")
-    re_cif = re.compile(r"\s*\*\s*@if\s+(.+)\s*")
-    re_cendif = re.compile(r"\s*\*\s*@endif.*")
+    re_cif = re.compile(r"\s*\*\s*@if\s+(.+?)\s*$")
+    re_celse = re.compile(r"\s*\*\s*@else\s*$")
+    re_cendif = re.compile(r"\s*\*\s*@endif\s*$")
 
     t_type = pp.expand("_UCB_T")
 
+    def branch_ignore(entry: dict) -> bool:
+        if entry["parent_ignore"]:
+            return True
+        return entry["taken"] if entry["in_else"] else not entry["taken"]
+
     lines = []
-    in_ignore = False
     first_include = False
+    cond_stack: List[dict] = []
     for _, line in enumerate(pp.source_lines):
         line = line.rstrip()
-        if in_ignore:
-            m = re_cendif.match(line)
-            if m:
-                in_ignore = False
+
+        m = re_cif.match(line)
+        if m:
+            parent_ignore = bool(cond_stack) and branch_ignore(cond_stack[-1])
+            taken = False if parent_ignore else bool(pp.evaluate(m.group(1)))
+            cond_stack.append(
+                {"parent_ignore": parent_ignore, "taken": taken, "in_else": False}
+            )
             continue
+        if re_celse.match(line):
+            if cond_stack:
+                cond_stack[-1]["in_else"] = True
+            continue
+        if re_cendif.match(line):
+            if cond_stack:
+                cond_stack.pop()
+            continue
+
+        if cond_stack and branch_ignore(cond_stack[-1]):
+            continue
+
         line = line.replace("type T", t_type)
         m = re_cdef.match(line)
         if m:
@@ -144,10 +168,6 @@ def parse_template(
             fn = pp.expand(m.group(2)) or ""
             suffix = m.group(3) or ""
             lines.append(prefix + fn + suffix)
-            continue
-        m = re_cif.match(line)
-        if m:
-            in_ignore = not pp.evaluate(m.group(1))
             continue
 
         # Skip all

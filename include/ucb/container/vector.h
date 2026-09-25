@@ -7,6 +7,8 @@
  * @brief Includes all implemented vector types
  */
 
+#pragma once
+
 #include <ucb/container/impl/vector_dbl.h>
 #include <ucb/container/impl/vector_flt.h>
 #include <ucb/container/impl/vector_int.h>

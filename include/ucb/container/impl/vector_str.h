@@ -26,7 +26,6 @@
  * This is a generated vector for struct ucb_str*.
  * @note The vector does not by default manage the lifetime of the elements. Please review
  * the function documentation for details.
- * @endif
  */
 typedef struct ucb_vector_str
 {
@@ -37,6 +36,7 @@ typedef struct ucb_vector_str
 
 /**
  * @brief Function callback for foreach.
+ * @param val The element to process.
  * @param index The index of the element.
  * @param user_data User data passed to the function.
  * @return true to continue, false to stop iteration.
@@ -59,7 +59,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @brief Frees the vector.
  * @param vec The vector to free.
  * @warning The element pointers are not freed.
- * @endif
  */
 
 /**
@@ -76,17 +75,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param src The vector to copy from.
  * @return true if the copy was successful, false on memory allocation failure.
  * @note This is a shallow copy.
- * @endif
- */
-
-/**
- * @fn ucb_vector_str_copy_full
- * @brief Deep copies the contents with elements from one vector to another.
- *
- * @p dst must be empty before calling this.
- * @param dst The vector to copy to.
- * @param src The vector to copy from.
- * @return true if the copy was successful, false on memory allocation failure.
  */
 
 /**
@@ -95,14 +83,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param src The original vector to clone.
  * @return A new vector or NULL if the allocation failed.
  * @note This is a shallow clone.
- * @endif
- */
-
-/**
- * @fn ucb_vector_str_clone_full
- * @brief Creates a vector as a deep copy of the source vector.
- * @param src The original vector to clone.
- * @return A new vector or NULL if the allocation failed.
  */
 
 /**
@@ -158,7 +138,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @brief Clears the vector by setting size to 0.
  * @param vec The vector to clear.
  * @warning The element pointers are not freed.
- * @endif
  */
 
 /**
@@ -186,7 +165,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @note The index can be equal to the current size, effectively appending the element.
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
- * @endif
  */
 
 /**
@@ -196,7 +174,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param index The position of the element to remove.
  * @return the element at the specified index.
  * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -206,7 +183,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param data The element to append.
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
- * @endif
  */
 
 /**
@@ -216,7 +192,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param data The element to insert.
  * @note The element pointer is inserted as-is and must remain valid through the lifetime of the
  * container.
- * @endif
  */
 
 /**
@@ -225,7 +200,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param vec The vector to pop from.
  * @return The element that was removed.
  * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -234,7 +208,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param vec The vector to pop from.
  * @return The element that was removed.
  * @warning The element is not freed. The caller must manually free the returned pointer.
- * @endif
  */
 
 /**
@@ -243,7 +216,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param vec The vector to peek.
  * @return A reference to the last element.
  * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -252,7 +224,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param vec The vector to peek.
  * @return A reference to the first element.
  * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -262,7 +233,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param index The index of the element to retrieve.
  * @return A reference to the element at index.
  * @note The pointer to the element is returned and must not be freed by the caller.
- * @endif
  */
 
 /**
@@ -273,7 +243,6 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  * @param data The new value for the element.
  * @note The element pointer is set as-is and must remain valid through the lifetime of the
  * container. The previous pointer is not freed.
- * @endif
  */
 
 /**
@@ -323,7 +292,7 @@ typedef bool (*ucb_vector_str_iter_func)(struct ucb_str* val, size_t index, void
  */
 
 /**
- * @fn UCB_VECTOR_T_INSERT_SORT
+ * @fn ucb_vector_str_insert_sorted_with
  * @brief Insert an element into the vector in sorted order using a custom comparison function.
  *
  * The vector must be sorted with the same comparison function before calling this function or the
