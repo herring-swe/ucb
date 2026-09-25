@@ -184,4 +184,169 @@ TEST_CASE("buffer - general")
     UCB_MEMTRACK_POP();
 }
 
+TEST_CASE("buffer - heap")
+{
+    UCB_MEMTRACK_PUSH();
+
+    const size_t initial_capacity = 16;
+    ucb_buffer* buf = ucb_buffer_new_heap(initial_capacity);
+    REQUIRE(buf != nullptr);
+    REQUIRE(buf->data != nullptr);
+    CHECK(buf->size == 0);
+    CHECK(buf->alloc == initial_capacity);
+    CHECK(ucb_buffer_can_resize(buf));
+    CHECK(ucb_buffer_can_transfer(buf));
+
+    SUBCASE("push read pop")
+    {
+        const char payload[] = "hello";
+        REQUIRE(ucb_buffer_push(buf, payload, sizeof(payload)));
+        CHECK(buf->size == sizeof(payload));
+        CHECK(buf->size <= buf->alloc);
+
+        char out[16] = {0};
+        ucb_buffer_read(buf, out, sizeof(payload), 0);
+        CHECK(memcmp(out, payload, sizeof(payload)) == 0);
+
+        // Pushing beyond the capacity grows the buffer
+        char big[64];
+        memset(big, 'A', sizeof(big));
+        REQUIRE(ucb_buffer_push(buf, big, sizeof(big)));
+        CHECK(buf->size == sizeof(payload) + sizeof(big));
+        CHECK(buf->alloc >= buf->size);
+
+        // pop returns the last bytes and reduces the used size
+        char pop_out[8];
+        ucb_buffer_pop(buf, pop_out, sizeof(pop_out));
+        CHECK(buf->size == sizeof(payload) + sizeof(big) - sizeof(pop_out));
+        CHECK(memcmp(pop_out, big + sizeof(big) - sizeof(pop_out), sizeof(pop_out)) == 0);
+
+        // clear resets the used size but keeps the capacity
+        const size_t cap_before_clear = buf->alloc;
+        ucb_buffer_clear(buf);
+        CHECK(buf->size == 0);
+        CHECK(buf->alloc == cap_before_clear);
+    }
+
+    SUBCASE("push_format")
+    {
+        int written = ucb_buffer_push_format(buf, "value=%d", 42);
+        CHECK(written == 8);
+        CHECK(buf->size == 9); // formatted text plus null terminator
+        CHECK(std::string(buf->data) == "value=42");
+
+        // Empty format still appends a null terminator
+        written = ucb_buffer_push_format(buf, "%s", "");
+        CHECK(written == 0);
+        CHECK(buf->size == 10);
+    }
+
+    ucb_buffer_free(buf);
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("buffer - static")
+{
+    UCB_MEMTRACK_PUSH();
+
+    char storage[8];
+    memset(storage, 0, sizeof(storage));
+
+    ucb_buffer buf;
+    REQUIRE(ucb_buffer_init_static(&buf, storage, sizeof(storage)));
+    CHECK(buf.data == storage);
+    CHECK(buf.size == 0);
+    CHECK(buf.alloc == sizeof(storage));
+    CHECK(!ucb_buffer_can_resize(&buf));
+    CHECK(!ucb_buffer_can_transfer(&buf));
+
+    const char text[] = "abc";
+    REQUIRE(ucb_buffer_push(&buf, text, sizeof(text)));
+    CHECK(buf.size == sizeof(text));
+    CHECK(memcmp(storage, text, sizeof(text)) == 0);
+
+    // read a subrange
+    char out[8] = {0};
+    ucb_buffer_read(&buf, out, 3, 1);
+    CHECK(memcmp(out, "bc\0", 3) == 0);
+
+    ucb_buffer_clear(&buf);
+    CHECK(buf.size == 0);
+    CHECK(buf.alloc == sizeof(storage));
+
+    // Static buffer has no owned data; release is a no-op
+    ucb_buffer_release(&buf);
+
+    // Heap allocated buffer struct wrapping static storage
+    ucb_buffer* heap_static = ucb_buffer_new_static(storage, sizeof(storage));
+    REQUIRE(heap_static != nullptr);
+    CHECK(heap_static->data == storage);
+    CHECK(!ucb_buffer_can_transfer(heap_static));
+    ucb_buffer_free(heap_static); // frees the struct only, not storage
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("buffer - grow")
+{
+    UCB_MEMTRACK_PUSH();
+
+    char data[32];
+    memset(data, 'x', sizeof(data));
+
+    ucb_buffer* buf = ucb_buffer_new_heap(8);
+    REQUIRE(buf != nullptr);
+    CHECK(buf->alloc == 8);
+
+    // Explicit grow adds to the current capacity
+    REQUIRE(ucb_buffer_grow(buf, 8));
+    CHECK(buf->alloc == 16);
+
+    // ensure is a no-op when enough free space is already available
+    size_t cap = buf->alloc;
+    REQUIRE(ucb_buffer_ensure(buf, 4));
+    CHECK(buf->alloc == cap);
+
+    // Fill part of the buffer, then ensure forces a grow
+    REQUIRE(ucb_buffer_push(buf, data, 12));
+    REQUIRE(buf->size == 12);
+    REQUIRE(ucb_buffer_ensure(buf, 8));
+    CHECK(buf->alloc >= buf->size + 8);
+
+    // Shrinking below the used size clamps the used size
+    REQUIRE(ucb_buffer_resize(buf, 10));
+    CHECK(buf->alloc == 10);
+    CHECK(buf->size == 10);
+
+    // Growing again
+    REQUIRE(ucb_buffer_resize(buf, 20));
+    CHECK(buf->alloc == 20);
+
+    // fit shrinks capacity to the used size
+    REQUIRE(ucb_buffer_fit(buf));
+    CHECK(buf->alloc == buf->size);
+
+    ucb_buffer_free(buf);
+
+    SUBCASE("grow_double helper")
+    {
+        ucb_buffer* dbl = ucb_buffer_new_heap(8);
+        REQUIRE(dbl != nullptr);
+        REQUIRE(ucb_buffer_push(dbl, data, 8)); // fill to capacity
+
+        const size_t expected = ucb_buffer_grow_double(dbl, 1);
+        CHECK(expected >= dbl->alloc * 2);
+
+        dbl->grow_func = ucb_buffer_grow_double;
+        REQUIRE(ucb_buffer_grow(dbl, 1));
+        CHECK(dbl->alloc == expected);
+        CHECK(dbl->alloc >= dbl->size + 1);
+
+        ucb_buffer_free(dbl);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
 TEST_SUITE_END();

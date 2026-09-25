@@ -65,6 +65,7 @@ ucb_target_sources(ucb_tests PRIVATE
     tls.cpp
     types.cpp
     unicode.cpp
+    version.cpp
 
     container/my_type.c
     container/pqueue.cpp
@@ -82,6 +83,7 @@ ucb_target_sources(ucb_tests PRIVATE
 
 target_compile_definitions(ucb_tests PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
 target_compile_definitions(ucb_tests PRIVATE GRAPHEME_TEST_FILE="${GRAPHEME_TEST_FILE}")
+target_compile_definitions(ucb_tests PRIVATE UCB_TEST_EXPECTED_VERSION="${PROJECT_VERSION}")
 
 target_link_libraries(ucb_tests PRIVATE ucb)
 

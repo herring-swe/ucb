@@ -191,7 +191,7 @@ bool ucb_buffer_ensure(ucb_buffer* buf, size_t size)
 void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_t offset)
 {
     UCB_VERIFY_ARGS(buf && out_data);
-    UCB_VERIFY(offset + size > buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Read out of bounds");
+    UCB_VERIFY(offset + size <= buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Read out of bounds");
 
     if (size > 0)
     {

@@ -12,6 +12,7 @@
 #define UCB_UCB_H
 
 #include <ucb/export.h>
+#include <ucb/version.h>
 
 UCB_API const char* ucb_get_version(void);
 

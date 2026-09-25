@@ -44,6 +44,11 @@ UCB_API void* ucb_bufcast_align(void* buf,
  * - If a new buffer is allocated, the user must free it with ucb_free.
  *   Compare the pointer to the original.
  * - The new buffer may be truncated to only contain complete elements.
+ *
+ * @param type the element type to cast to
+ * @param buf the original buffer
+ * @param size size of the original buffer in bytes
+ * @param out_count the number of elements that fit into the buffer
  */
 #ifdef __cplusplus
 #define UCB_BUFCAST(type, buf, size, out_count) \

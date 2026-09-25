@@ -27,7 +27,7 @@ UCB_THREAD_LOCAL ucb_config s_config = {
 
 const char* ucb_get_version(void)
 {
-    return "0.1.0";
+    return UCB_VER_STRING;
 }
 
 void ucb_init_console(void)
