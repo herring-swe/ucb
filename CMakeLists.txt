@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.26)
 # Come before project call
 include(cmake/setup.cmake)
 
-project(ucb VERSION 0.2.1 LANGUAGES C)
+project(ucb VERSION 0.3.0 LANGUAGES C)
 
 # clangd, clang-tidy, and other tools. The Visual Studio generator still
 # will not write this file; use Ninja or a Makefile generator for that.
