@@ -21,6 +21,18 @@ Project notes and rules for any LLM/agent working in this repository.
     - Outputs: `include/ucb/container/impl/*`, `src/ucb/container/container/impl/*`
   - Unicode data is downloaded by CMake and processed by `tools/ucparser.py` into the build as headers and source files.
 
+## Header conventions
+
+- Public headers live in `include/ucb/` and must be registered in
+  `ucb_target_public_headers` in `src/CMakeLists.txt`.
+- `_ex.h` is the convention for **optional, extended API** packaged as a
+  companion to a main header.
+  - An `_ex.h` header includes its main header first, then adds the extended
+    declarations and macros.
+  - The main header must **not** include its `_ex.h`.
+  - Use it for additions that do not fit cleanly into a section of the main
+    header, or for extra functions that most users do not need.
+
 ## Building
 
 - CMake is the build system. Conan *could* be used for dependency management (in that case presets are generated), otherwise the build is used with cmake kits via vscode and the build folder is `build`.

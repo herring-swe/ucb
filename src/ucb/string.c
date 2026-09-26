@@ -23,9 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define STR_WRAP true
-#define STR_OWN false
-
 /**
  * Internal helper. Returns true if @p ptr points into the owned allocation of
  * @p str. Used to make mutating operations safe when the source aliases the
@@ -36,6 +33,17 @@ static inline bool ucb_str_aliases(const ucb_str* str, const char* ptr)
     return str->alloc > 0 && ptr != UCB_NULL && ptr >= str->data && ptr < str->data + str->alloc;
 }
 
+/**
+ * Internal helper. Reports a user error (which aborts) when an explicit-length
+ * string contains an embedded null character. ucb_str never carries interior
+ * nulls, so this is always misuse.
+ */
+static void ucb_str_check_no_nul(const char* cstr, size_t len)
+{
+    if (len && memchr(cstr, '\0', len) != UCB_NULL)
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "Embedded null character");
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                Construction                                */
 /* -------------------------------------------------------------------------- */
@@ -43,40 +51,41 @@ static inline bool ucb_str_aliases(const ucb_str* str, const char* ptr)
 /**
  * Internal function.
  * str must have been verified (non-null)
- * cstr is allowed to be NULL
- * len is allowed to be 0
+ *
+ * If cstr is UCB_NULL, str is set to the interned empty string. Otherwise an
+ * owned allocation is made. When len is non-zero it must not contain an
+ * embedded null character.
  */
-static bool ucb_str_init_common(ucb_str* str, bool wrap, const char* cstr, size_t len)
+static bool ucb_str_init_common(ucb_str* str, const char* cstr, size_t len)
 {
     if (!cstr)
     {
-        cstr = "";
-        len = 0;
+        // Interned empty string: no allocation, never freed
+        str->data = (char*)"";
+        str->size = 0;
+        str->alloc = 0;
+        return true;
     }
-    else if (len == 0)
+
+    if (len == 0)
     {
         // If the string is ment to be larger than size_t then
         // then I'll eat my hat
         len = strlen(cstr);
     }
-
-    if (wrap)
-    {
-        str->data = (char*)cstr;
-        str->size = len;
-        str->alloc = 0;
-    }
     else
     {
-        str->data = ucb_malloc(len + 1);
-        if (str->data)
-        {
-            memcpy(str->data, cstr, len);
-            str->data[len] = '\0';
+        ucb_str_check_no_nul(cstr, len);
+    }
 
-            str->size = len;
-            str->alloc = len + 1;
-        }
+    str->data = ucb_malloc(len + 1);
+    if (str->data)
+    {
+        memcpy(str->data, cstr, len);
+        str->data[len] = '\0';
+
+        str->size = len;
+        str->alloc = len + 1;
     }
     return str->data != UCB_NULL;
 }
@@ -93,18 +102,7 @@ static inline void ucb_str_release_common(ucb_str* str)
 ucb_str* ucb_str_new(const char* cstr, size_t len)
 {
     ucb_str* str = ucb_malloc_type(1, ucb_str);
-    if (str && !ucb_str_init_common(str, STR_OWN, cstr, len))
-    {
-        ucb_free(str);
-        str = UCB_NULL;
-    }
-    return str;
-}
-
-ucb_str* ucb_str_new_wrap(const char* cstr, size_t len)
-{
-    ucb_str* str = ucb_malloc_type(1, ucb_str);
-    if (str && !ucb_str_init_common(str, STR_WRAP, cstr, len))
+    if (str && !ucb_str_init_common(str, cstr, len))
     {
         ucb_free(str);
         str = UCB_NULL;
@@ -121,13 +119,7 @@ ucb_str* ucb_str_clone(const ucb_str* src)
 bool ucb_str_init(ucb_str* str, const char* cstr, size_t len)
 {
     UCB_VERIFY_ARGS(str);
-    return ucb_str_init_common(str, STR_OWN, cstr, len);
-}
-
-void ucb_str_init_wrap(ucb_str* str, const char* cstr, size_t len)
-{
-    UCB_VERIFY_ARGS(str);
-    ucb_str_init_common(str, STR_WRAP, cstr, len);
+    return ucb_str_init_common(str, cstr, len);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -163,12 +155,15 @@ bool ucb_str_copy(ucb_str* dst, const ucb_str* src)
         return true;
 
     ucb_str_release_common(dst);
-    return ucb_str_init_common(dst, STR_OWN, src->data, src->size);
+    return ucb_str_init_common(dst, src->data, src->size);
 }
 
 bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len)
 {
     UCB_VERIFY_ARGS(str);
+
+    if (cstr && len)
+        ucb_str_check_no_nul(cstr, len);
 
     // If the source points into the destination's own allocation, copy it out
     // before releasing the old data.
@@ -185,34 +180,13 @@ bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len)
         }
 
         ucb_str_release_common(str);
-        bool ok = ucb_str_init_common(str, STR_OWN, tmp, real_len);
+        bool ok = ucb_str_init_common(str, tmp, real_len);
         ucb_free(tmp);
         return ok;
     }
 
     ucb_str_release_common(str);
-    return ucb_str_init_common(str, STR_OWN, cstr, len);
-}
-
-bool ucb_str_detach(ucb_str* str)
-{
-    UCB_VERIFY_ARGS(str);
-
-    bool modified = false;
-    if (str->alloc == 0)
-    {
-        char* data = ucb_malloc(str->size + 1);
-        if (data)
-        {
-            memcpy(data, str->data, str->size);
-            data[str->size] = '\0';
-
-            str->data = data;
-            str->alloc = str->size + 1;
-            modified = true;
-        }
-    }
-    return modified;
+    return ucb_str_init_common(str, cstr, len);
 }
 
 bool ucb_str_fit(ucb_str* str)
@@ -274,7 +248,7 @@ bool ucb_str_reserve(ucb_str* str, size_t size)
     }
     else
     {
-        // detach
+        // Interned empty string: allocate now that it needs storage
         char* data = ucb_malloc(str->size + size + 1);
         if (data)
         {
@@ -288,25 +262,21 @@ bool ucb_str_reserve(ucb_str* str, size_t size)
     return has_free;
 }
 
-void ucb_str_wrap(ucb_str* str, const char* cstr, size_t len)
-{
-    UCB_VERIFY_ARGS(str);
-    ucb_str_release_common(str);
-    ucb_str_init_common(str, STR_WRAP, cstr, len);
-}
-
 void ucb_str_adopt(ucb_str* str, char* data, size_t len, size_t alloc)
 {
     UCB_VERIFY_ARGS(str && data);
 
-    ucb_str_release_common(str);
-
     if (!len)
         len = strlen(data);
-    if (!alloc)
-        alloc = len;
     else
-        UCB_VERIFY(alloc >= len, UCB_ERROR_INVALID_ARG, "alloc < len");
+        ucb_str_check_no_nul(data, len);
+
+    UCB_VERIFY(alloc >= len + 1, UCB_ERROR_INVALID_ARG, "alloc must be at least len + 1");
+    UCB_VERIFY(data[len] == '\0',
+               UCB_ERROR_INVALID_ARG,
+               "data must be null-terminated at data[len]");
+
+    ucb_str_release_common(str);
 
     str->data = data;
     str->size = len;
@@ -349,12 +319,6 @@ bool ucb_str_abandon(ucb_str* str, char** data, size_t* len, size_t* alloc)
 /* -------------------------------------------------------------------------- */
 /*                                  Querying                                  */
 /* -------------------------------------------------------------------------- */
-
-bool ucb_str_is_owned(const ucb_str* str)
-{
-    UCB_VERIFY_ARGS(str);
-    return str->alloc > 0;
-}
 
 bool ucb_str_is_empty(const ucb_str* str)
 {
@@ -498,6 +462,12 @@ void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error*
 {
     UCB_VERIFY_ARGS(str && cp);
 
+    for (size_t i = 0; i < num_cp; i++)
+    {
+        if (cp[i] == 0)
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "Zero codepoint is not allowed");
+    }
+
     size_t max_size = 4 * num_cp;
     if (ucb_str_reserve(str, max_size))
     {
@@ -524,6 +494,10 @@ void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len)
         len = strlen(cstr);
         if (!len)
             return;
+    }
+    else
+    {
+        ucb_str_check_no_nul(cstr, len);
     }
 
     // Appending a slice of the string to itself: copy it out first so the
@@ -567,6 +541,12 @@ void ucb_str_insert_cp(ucb_str* str,
 {
     UCB_VERIFY_ARGS(str && (cp || !num_cp));
 
+    for (size_t i = 0; i < num_cp; i++)
+    {
+        if (cp[i] == 0)
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "Zero codepoint is not allowed");
+    }
+
     if (num_cp)
     {
         size_t max_size = 4 * num_cp;
@@ -593,6 +573,10 @@ void ucb_str_insert_cstr(ucb_str* str, size_t index, const char* cstr, size_t le
         len = strlen(cstr);
         if (!len)
             return;
+    }
+    else
+    {
+        ucb_str_check_no_nul(cstr, len);
     }
 
     if (index == str->size || index == UCB_NPOS)
@@ -652,24 +636,30 @@ ucb_str* ucb_str_concatv(const ucb_str* str, va_list args)
         return ucb_str_new_empty();
 
     ucb_str* dst = ucb_malloc_type(1, ucb_str);
-    if (dst)
+    if (!dst)
+        return UCB_NULL;
+
+    dst->data = ucb_malloc(size + 1);
+    if (!dst->data)
     {
-        dst->size = size;
-        dst->alloc = size + 1;
-        dst->data = ucb_malloc(dst->alloc);
-
-        memcpy(dst->data, str->data, str->size);
-
-        size_t offset = str->size;
-        next = va_arg(args, ucb_str*);
-        while (next)
-        {
-            memcpy(dst->data + offset, next->data, next->size);
-            offset += next->size;
-            next = va_arg(args, ucb_str*);
-        }
-        dst->data[dst->size] = '\0';
+        ucb_free(dst);
+        return UCB_NULL;
     }
+
+    dst->size = size;
+    dst->alloc = size + 1;
+
+    memcpy(dst->data, str->data, str->size);
+
+    size_t offset = str->size;
+    next = va_arg(args, ucb_str*);
+    while (next)
+    {
+        memcpy(dst->data + offset, next->data, next->size);
+        offset += next->size;
+        next = va_arg(args, ucb_str*);
+    }
+    dst->data[dst->size] = '\0';
     return dst;
 }
 
@@ -700,25 +690,6 @@ ucb_str* ucb_str_substr(const ucb_str* str, size_t start, size_t end)
     else
     {
         dst = ucb_str_new(str->data + start, end - start);
-    }
-    return dst;
-}
-
-ucb_str* ucb_str_substr_wrapped(const ucb_str* str, size_t start, size_t end)
-{
-    UCB_VERIFY_ARGS(str && start <= end && (end <= str->size || end == UCB_NPOS));
-
-    if (end == UCB_NPOS)
-        end = str->size;
-
-    ucb_str* dst;
-    if (start > end)
-    {
-        dst = ucb_str_new_empty();
-    }
-    else
-    {
-        dst = ucb_str_new_wrap(str->data + start, end - start);
     }
     return dst;
 }
