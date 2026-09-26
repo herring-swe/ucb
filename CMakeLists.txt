@@ -31,6 +31,12 @@ set(UCB_MEMTRACK_MAX_TRACEPOINT_NAME 64 CACHE STRING "Max length of a memory tra
 # External includes
 include(GNUInstallDirs)
 
+if(UNIX)
+    # Threads (libpthread on GLIBC < 2.34, folded into libc after)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+endif()
+find_package(Threads REQUIRED)
+
 # Internal includes
 include(cmake/functions.cmake)
 include(cmake/sanitizers.cmake)

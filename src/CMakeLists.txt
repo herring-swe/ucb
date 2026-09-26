@@ -171,4 +171,6 @@ elseif(UNIX)
     # target_compile_options(ucb PRIVATE -rdynamic)
 endif()
 
+target_link_libraries(ucb PUBLIC Threads::Threads)
+
 ucb_install(ucb)
