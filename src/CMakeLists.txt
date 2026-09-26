@@ -81,10 +81,12 @@ ucb_target_public_headers(ucb FILES
     ucb/env.h
     ucb/envmap.h
     ucb/error.h
+    ucb/file.h
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h
     ucb/once.h
+    ucb/pipe.h
     ucb/string.h
     ucb/task.h
     ucb/tgfunc.h
@@ -101,6 +103,7 @@ ucb_target_sources(ucb PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     ucb/buffer_private.h
     ucb/cond_private.h
+    ucb/file_private.h
     ucb/mutex_private.h
     ucb/once_private.h
     ucb/sys_private.h
@@ -135,6 +138,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/error_enum.c
     ucb/error_errno.c
     ucb/error.c
+    ucb/file.c
     ucb/memdbg.c
     ucb/memory.c
     ucb/mutex.c
@@ -156,12 +160,13 @@ if(WIN32)
         ucb/cstring_win32.c
         ucb/string_win32.c
         ucb/error_win32.c
+        ucb/file_win32.c
     )
     target_link_libraries(ucb PRIVATE dbghelp.lib)
 elseif(UNIX)
-    # target_sources(ucb PRIVATE
-    # unix/string_unix.c
-    # )
+    ucb_target_sources(ucb PRIVATE
+        ucb/file_unix.c
+    )
     # target_compile_options(ucb PRIVATE -rdynamic)
 endif()
 
