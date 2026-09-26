@@ -124,6 +124,9 @@ For Documentation only Doxygen is considered necessary.
 - [x] Case and normalization integration
 - [x] Testing
 - [x] Documentation
+- [ ] Future: `ucb_str_view`, a strictly borrowed, non-owning view for zero-copy
+      slicing. Not part of `ucb_str` and not a priority; the owned-only `ucb_str`
+      is the current model.
 
 ### Unicode - Unicode (Target: 0.1.0, improve in 0.2.0)
 - [x] Validate, iterate, normalize, map baseline

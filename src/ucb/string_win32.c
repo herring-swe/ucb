@@ -29,6 +29,20 @@ ucb_str* ucb_str_from_wchar(const wchar_t* wstr, size_t wlen, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(wstr);
 
+    // An explicit length must not contain an embedded wide null; ucb_str never
+    // carries interior nulls.
+    if (wlen != 0)
+    {
+        for (size_t i = 0; i < wlen; i++)
+        {
+            if (wstr[i] == L'\0')
+            {
+                ucb_throw(perr, UCB_ERROR_INVALID_ARG, "Embedded null in wide string");
+                return UCB_NULL;
+            }
+        }
+    }
+
     // Check string length if needed, once
     // Include NULL character in query and the output will also include it
     if (wlen == 0)

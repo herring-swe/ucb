@@ -2,46 +2,50 @@
 
 The string type `ucb_str` is a UTF-8 string that keeps track of its own length
 and capacity. It is designed around [UTF-8 everywhere](https://utf8everywhere.org/)
-and is null-terminated internally so it can be passed to C functions, while
-still allowing embedded null characters when an explicit length is used.
+and is always null-terminated with no embedded null characters, so it can be
+passed directly to C functions.
 
 ## Ownership model
 
-A `ucb_str` is either *owned* or *wrapped*:
+A `ucb_str` is always owned, with one special case:
 
 - **Owned** (`alloc > 0`): the string owns `data`. The data is freed when the
   string is released or freed.
-- **Wrapped** (`alloc == 0`): `data` points to memory owned elsewhere (for
-  example a string literal). The data is never freed, and any modifying
-  operation first detaches (copies) the data so that the literal is never
-  written to.
+- **Interned empty** (`alloc == 0`): `data` is the shared `""` literal, `size`
+  is 0. It requires no deallocation.
 
-The helper `ucb_str_is_owned()` reports the current state.
+There is no borrowed/wrapped state. Every explicit-length constructor and
+mutator rejects an embedded null character as a user error.
+
+Use `UCB_CSTR(x)` to coerce a C string, a `ucb_str` pointer, or (in C++) a type
+exposing `c_str()` such as `std::string` to a `const char*`. It is part of the
+optional extended API; include `<ucb/string_ex.h>` instead of `<ucb/string.h>`
+when you need it (see the `_ex.h` header convention).
 
 ## Construction and lifetime
 
 | Pattern        | Stack                                     | Heap                                  |
 |----------------|-------------------------------------------|---------------------------------------|
 | Owned copy     | `ucb_str_init(&s, cstr, len)`             | `ucb_str_new(cstr, len)`              |
-| Wrapped        | `ucb_str_init_wrap(&s, cstr, len)`        | `ucb_str_new_wrap(cstr, len)`         |
-| Empty wrapped  | `ucb_str_make()` / `ucb_str_init_empty()` | `ucb_str_new_empty()`                 |
+| Empty          | `ucb_str_make()` / `ucb_str_init_empty()` | `ucb_str_new_empty()`                 |
 | Deep copy      | `ucb_str_copy(&dst, &src)`                | `ucb_str_clone(&src)`                 |
 | Adopt buffer   | `ucb_str_adopt(&s, data, len, alloc)`     | –                                     |
-| Detach/release | `ucb_str_release(&s)`                     | `ucb_str_free(s)`                     |
+| Release/free   | `ucb_str_release(&s)`                     | `ucb_str_free(s)`                     |
 
 `ucb_str_adopt()` takes ownership of memory allocated with the UCB allocator.
-`ucb_str_abandon()` releases ownership back to the caller without freeing and
-zeroes the `ucb_str`.
+The allocation must be null-terminated at `data[len]` and at least `len + 1`
+bytes. `ucb_str_abandon()` releases ownership back to the caller without freeing
+and zeroes the `ucb_str`; an interned empty returns `false` and must not be
+freed.
 
 A stack `ucb_str` must always be initialized before use and released when done.
-`ucb_str_release()` on a wrapped string only zeroes the struct; on an owned
-string it also frees the data.
+`ucb_str_release()` on an interned empty string only zeroes the struct; on an
+owned string it also frees the data.
 
 ## Length semantics
 
-`ucb_str_len()` returns the number of **bytes**, which matches `strlen` for
-strings without embedded null characters. It is not the number of visible
-characters.
+`ucb_str_len()` returns the number of **bytes**, which always matches
+`strlen(ucb_str_cstr(s))`. It is not the number of visible characters.
 
 - `ucb_str_num_char()` returns the number of *perceived characters* (extended
   grapheme clusters, UAX #29). Use this for cursor movement, truncation and
@@ -82,9 +86,8 @@ destination, so the following are well defined:
 - `ucb_str_append(&s, &s)` and `ucb_str_append_cstr(&s, s.data, ...)`
 - `ucb_str_insert(&s, index, &s)` and `ucb_str_insert_cstr(&s, index, s.data, ...)`
 
-`ucb_str_wrap()` and `ucb_str_adopt()` are not guarded against being handed a
-pointer into the same string's allocation; do not re-wrap or re-adopt a string's
-own buffer.
+`ucb_str_adopt()` is not guarded against being handed a pointer into the same
+string's allocation; do not re-adopt a string's own buffer.
 
 ## Resolution of earlier findings
 
@@ -94,8 +97,11 @@ The issues found during the string/unicode review have been fixed:
 - `ucb_str_find()` now returns `UCB_NPOS` for "not found", consistent with the
   rest of the API.
 - The undeclared `ucb_str_size()` duplicate of `ucb_str_len()` was removed.
-- The `ucb_str_substr()`/`ucb_str_substr_wrapped()` documentation now correctly
-  describes byte offsets and the ownership of the result.
+- The `ucb_str_substr()` documentation now correctly describes byte offsets and
+  the ownership of the result.
+- Borrowed/wrapped strings were removed; `ucb_str` is owned-only, always
+  null-terminated and free of embedded nulls. `ucb_str_detach()` and
+  `ucb_str_is_owned()` no longer exist.
 
 ## Proposed additions
 

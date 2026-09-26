@@ -83,10 +83,10 @@ static void envmap_entries_free(ucb_envmap* map)
 
 /* ---- Helper: split "NAME=VALUE" string into name/value entry ---- */
 
-static ucb_envmap_entry* envmap_entry_from_nv(const ucb_str* nv_str)
+static ucb_envmap_entry* envmap_entry_from_nv(const char* nv)
 {
     /* Find the '=' sign in the NV string */
-    const char* cstr = ucb_str_cstr(nv_str);
+    const char* cstr = nv;
     const char* eq = strchr(cstr, '=');
     if (!eq)
         return UCB_NULL;
@@ -108,7 +108,7 @@ static ucb_envmap_entry* envmap_entry_from_nv(const ucb_str* nv_str)
     }
 
     /* Value starts after '=', length is total - name_len - 1 (for '=') */
-    size_t val_len = ucb_str_len(nv_str) - name_len - 1;
+    size_t val_len = strlen(nv) - name_len - 1;
     entry->value = ucb_str_new(eq + 1, val_len);
     if (!entry->value)
     {
@@ -219,7 +219,7 @@ void ucb_envmap_init_from_current(ucb_envmap* map)
             ucb_str* nv = ucb_str_from_wchar(curr, 0, UCB_NULL);
             if (nv)
             {
-                ucb_envmap_entry* entry = envmap_entry_from_nv(nv);
+                ucb_envmap_entry* entry = envmap_entry_from_nv(ucb_str_cstr(nv));
                 if (entry)
                     ucb_vector_ptr_push_back(map->entries, entry);
 
@@ -238,15 +238,10 @@ void ucb_envmap_init_from_current(ucb_envmap* map)
     {
         for (char** env = environ; *env != UCB_NULL; ++env)
         {
-            /* Wrap the entire "NAME=VALUE" string */
-            ucb_str nv = ucb_str_make();
-            ucb_str_init_wrap_c(&nv, *env);
-
-            ucb_envmap_entry* entry = envmap_entry_from_nv(&nv);
+            /* Split the entire "NAME=VALUE" string */
+            ucb_envmap_entry* entry = envmap_entry_from_nv(*env);
             if (entry)
                 ucb_vector_ptr_push_back(map->entries, entry);
-
-            ucb_str_release(&nv);
         }
     }
 #endif
@@ -384,7 +379,8 @@ bool ucb_envmap_prepend(ucb_envmap* map, const char* name, const char* value, co
 
         /* Build new value: value + sep + old_value */
         ucb_str new_val;
-        ucb_str_init_wrap_c(&new_val, value);
+        if (!ucb_str_init(&new_val, value, 0))
+            return false;
 
         if (sep && !ucb_str_is_empty(entry->value))
             ucb_str_append_c(&new_val, sep);

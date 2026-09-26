@@ -520,17 +520,17 @@ TEST_CASE("vector - sort and find")
     ucb_str tstr = ucb_str_make();
     REQUIRE(ucb_vector_str_foreach(vstr, check_sort_str, &tstr) == 5);
 
-    ucb_str_wrap_c(&tstr, "5");
+    ucb_str_assign_c(&tstr, "5");
     pos = ucb_vector_str_find(vstr, &tstr);
     REQUIRE(pos == -(4 + 1));
 
     pos = ucb_vector_str_insert_sorted(vstr, ucb_str_new_c("5"));
     REQUIRE(pos == 4);
 
-    ucb_str_wrap_c(&tstr, "");
+    ucb_str_assign_c(&tstr, "");
     REQUIRE(ucb_vector_str_foreach(vstr, check_sort_str, &tstr) == 6);
 
-    ucb_str_wrap_c(&tstr, "4");
+    ucb_str_assign_c(&tstr, "4");
     pos = ucb_vector_str_find(vstr, &tstr);
     REQUIRE(pos == 3);
 

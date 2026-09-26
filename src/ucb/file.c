@@ -18,6 +18,7 @@
 #include <ucb/errcodes.h>
 #include <ucb/memory.h>
 #include <ucb/once.h>
+#include <ucb/pipe.h>
 
 #include <string.h>
 

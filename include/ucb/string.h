@@ -28,40 +28,42 @@
  * @brief Represents a UTF-8 string type.
  *
  * It keeps track of the string length and capacity and can be used to
- * manipulate the string. The underlying string itself does not need to
- * be null terminated.
+ * manipulate the string.
  *
  * Strings are always expected to be valid UTF-8 encoded unless when
  * explicitly documented and it's up to the user to validate them before
  * passing them to ucb_str functions.
  *
- * ### Owned strings
+ * ### Ownership
  *
- * Owned (regular) strings are strings that owns it's data pointer. Denoted
- * by alloc > 0. The string data is freed when the ucb_str is
- * released or freed.
+ * A @ref ucb_str is either an owned string or the interned empty string:
  *
- * ### Wrapped strings
+ * - Owned strings (alloc > 0) own their data pointer. The data is freed when
+ *   the ucb_str is released or freed.
+ * - The interned empty string (alloc == 0, data == "" and size == 0) is a
+ *   shared, non-owned literal used by @ref ucb_str_make(), @ref ucb_str_new_empty()
+ *   and @ref ucb_str_init_empty(). It requires no deallocation.
  *
- * Wrapped strings are strings that are not owned by the ucb_str instance.
- * Denoted by alloc = 0. The string data is not freed when the ucb_str is
- * released or freed.
+ * Apart from the interned empty string, every ucb_str owns its data.
  *
- * The data pointer in a wrapped string will never be manipulated. Any
- * manipulations on the ucb_str will first make a copy of the data and
- * change ucb_str to an owned string.
+ * ### Invariants
+ *
+ * For every valid ucb_str:
+ * - @c data is never UCB_NULL.
+ * - The data is null-terminated: data[size] == '\0'.
+ * - There is no embedded null character: memchr(data, '\0', size) == NULL.
+ *
+ * This makes @ref ucb_str_cstr() directly usable with C functions that expect
+ * null-terminated strings.
+ *
+ * Passing an explicit length that contains an embedded null character, or
+ * appending or inserting one, is a user error and always aborts.
  *
  * ### Length of string
  *
  * - UCB use "len", "length" or sometimes "size" to denote the number of bytes in
  * the string.
  * - UCB use "num_char" to represent the number of perceived characters.
- *
- * @warning When using strings with multiple null characters, the length of the
- * underlying string @ref ucb_str_cstr() will not match strlen. This string is
- * not suitable to pass directly to printf or other C functions that strictly
- * expects null-terminated strings. The length from @ref ucb_str_len() will
- * be the actual length of the string.
  *
  * Details:
  *
@@ -71,8 +73,7 @@
  * 3. Number of perceived characters.
  * 4. Number of code units *(honorable mention)*.
  *
- * Remark: For UTF-8 encoded ASCII only strings, all of the above are equal. Given
- * that it is only null-terminated at the end.
+ * Remark: For UTF-8 encoded ASCII only strings, all of the above are equal.
  *
  * #### 1. Bytes:
  * This is the most natural choice to represent length or "len"
@@ -109,45 +110,41 @@
  *
  * Stack allocations
  * @code
- * ucb_str str = ucb_str_make();        // Wrapped string around "" string literal
- * ucb_str str2, str3;                  // Invalid state
+ * ucb_str str = ucb_str_make();        // Interned empty string ("" literal)
+ * ucb_str str2;                        // Invalid state
  * ucb_str_init_c(&str2, "my string");  // Owned string with "my string" copied
- * ucb_str_init_wrap_c(&str3, "wrap");  // Wrapped string around "wrap" string literal
- * ucb_str_release(&str);               // Only zeroes the struct
+ * ucb_str_release(&str);               // Only zeroes the struct (interned empty)
  * ucb_str_release(&str2);              // Frees its data and zeroes the struct
- * ucb_str_release(&str3);              // Only zeroes the struct
  *
- * // Example of bad initialization
- * ucb_str_init_c(&str2, "my string");  // Okay since str2 was released.
- * ucb_str_init_c(&str, "my string");   // Memory leak. str data is not verified.
+ * // Reinitialization is only safe after a release
+ * ucb_str_init_c(&str2, "again");      // Okay, str2 was released above
+ * ucb_str_init_c(&str2, "again");      // Memory leak. str2 data is not verified.
  * @endcode
  *
  * Stack copies
  * @code
- * ucb_str str = ucb_str_make();        // Initialize wrapped string around "" string literal
+ * ucb_str str = ucb_str_make();        // Interned empty string
  * ucb_str str2 = {0};                  // Invalid until intialized
- * ucb_str_copy(&str2, &str);           // Explicit copy, always make str2 an owned string.
- * ucb_str_release(&str2);              // Free heap allocated "" and zeroes str2
+ * ucb_str_copy(&str2, &str);           // Explicit copy, always makes str2 an owned string.
+ * ucb_str_release(&str2);              // Frees its data and zeroes str2
  * ucb_str_release(&str);               // No heap deallocation needed, only zeroes the struct
  * @endcode
  *
  * Heap allocation
  * @code
- * ucb_str* str = ucb_str_new_empty();         // New wrapped string around "" string literal
+ * ucb_str* str = ucb_str_new_empty();         // Interned empty string
  * ucb_str* str2 = ucb_str_new_c("my string"); // New owned string with "my string" copied
- * ucb_str* str3 = ucb_str_new_wrap_c("wrap")  // New wrapped string around "wrap" string literal
- * ucb_str_free(str);                          // Frees ucb_str but not its data
+ * ucb_str_free(str);                          // Frees ucb_str but not its data (interned empty)
  * ucb_str_free(str2);                         // Frees ucb_str and its data
- * ucb_str_free(str3);                         // Frees ucb_str but not its data
  * @endcode
  *
  * Heap copies
  * @code
- * ucb_str* str = ucb_str_new_empty();    // New wrapped string around "" string literal();
- * ucb_str* str2 = ucb_str_clone(str);    // Deep-copy, returns new string that owns data
- * ucb_str* str3 = ucb_str_new_empty();   // New wrapped string around "" string literal
- * ucb_str_copy(str3, str);               // Explicit copy, releases str3 and turn into owned string
- * ucb_str_free(str);                     // Frees ucb_str but not its data
+ * ucb_str* str = ucb_str_new_empty();    // Interned empty string
+ * ucb_str* str2 = ucb_str_clone(str);    // Deep-copy, returns new owned string
+ * ucb_str* str3 = ucb_str_new_empty();   // Interned empty string
+ * ucb_str_copy(str3, str);               // Explicit copy, releases str3 and makes it owned
+ * ucb_str_free(str);                     // Frees ucb_str but not its data (interned empty)
  * ucb_str_free(str2);                    // Frees ucb_str and its data
  * ucb_str_free(str3);                    // Frees ucb_str and its data
  * @endcode
@@ -184,7 +181,8 @@ static inline ucb_str ucb_str_make()
  * ignored.
  *
  * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string may contain multiple null characters.
+ * If @p len is non-zero, the string must not contain an embedded null
+ * character; passing one is a user error and always aborts.
  *
  * The returned pointer must always be freed with @ref ucb_str_free()
  *
@@ -199,28 +197,12 @@ static inline ucb_str* ucb_str_new_c(const char* cstr)
 }
 
 /**
- * @brief Allocate and initialize a wrapped string from a C string without copying data.
- *
- * Otherwise behaves same as same as @ref ucb_str_new()
- *
- * @note If the string is not null-terminated, it will become an owned string.
- * @param cstr a C string or literal
- * @param len length of string excluding null-terminator, or 0
- * @return pointer to new ucb_str or UCB_NULL on error.
- */
-UCB_API ucb_str* ucb_str_new_wrap(const char* cstr, size_t len);
-static inline ucb_str* ucb_str_new_wrap_c(const char* cstr)
-{
-    return ucb_str_new_wrap(cstr, 0);
-}
-
-/**
- * @brief Allocate and initialize an empty wrapped string around "" string literal.
+ * @brief Allocate and initialize an empty string (interned "" literal).
  * @return pointer to new ucb_str or UCB_NULL on error.
  */
 static inline ucb_str* ucb_str_new_empty(void)
 {
-    return ucb_str_new_wrap("", 0);
+    return ucb_str_new(UCB_NULL, 0);
 }
 
 /**
@@ -239,7 +221,8 @@ UCB_API ucb_str* ucb_str_clone(const ucb_str* src);
  * ignored.
  *
  * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string may contain multiple null characters.
+ * If @p len is non-zero, the string must not contain an embedded null
+ * character; passing one is a user error and always aborts.
  *
  * str must always be released with @ref ucb_str_release().
  *
@@ -257,26 +240,11 @@ static inline void ucb_str_init_c(ucb_str* str, const char* cstr)
 }
 
 /**
- * @brief Initialize a wrapped string around a C string.
- *
- * Otherwise behaves same as same as @ref ucb_str_init()
- *
- * @param str string to initialize
- * @param cstr a C string or literal or UCB_NULL
- * @param len 0 or length of string excluding null-terminator
- */
-UCB_API void ucb_str_init_wrap(ucb_str* str, const char* cstr, size_t len);
-static inline void ucb_str_init_wrap_c(ucb_str* str, const char* cstr)
-{
-    ucb_str_init_wrap(str, cstr, 0);
-}
-
-/**
- * @brief Initialize an empty wrapped string around "" string literal.
+ * @brief Initialize an empty string (interned "" literal).
  */
 static inline void ucb_str_init_empty(ucb_str* str)
 {
-    ucb_str_init_wrap(str, "", 0);
+    ucb_str_init(str, UCB_NULL, 0);
 }
 
 /** @} */
@@ -327,6 +295,10 @@ UCB_API bool ucb_str_copy(ucb_str* dst, const ucb_str* src);
  * @brief Assign a C string.
  *
  * Behaves as if calling @ref ucb_str_release() followed by @ref ucb_str_init().
+ *
+ * If @p len is zero, the string must be null-terminated and will be measured.
+ * If @p len is non-zero, the string must not contain an embedded null
+ * character; passing one is a user error and always aborts.
  */
 UCB_API bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len);
 static inline bool ucb_str_assign_c(ucb_str* str, const char* cstr)
@@ -335,25 +307,12 @@ static inline bool ucb_str_assign_c(ucb_str* str, const char* cstr)
 }
 
 /**
- * @brief Creates own copy of the underlying string, null-terminated.
- *
- * If @p str is an owned string, this call is a no-op
- * If @p str is a wrapped string, a new allocation will be made,
- * and the string will be owned and null-terminated.
- *
- * @param str string to detach
- * @return true if the string was modified
- * @return false if the string is already owned or on out of memory
- */
-UCB_API bool ucb_str_detach(ucb_str* str);
-
-/**
  * @brief Shrink data allocation to fit the string.
  *
  * If the current capacity is larger than the string length, the allocation will
  * keep shrink to length + 1 and set the null-terminator.
  *
- * This is a no-op for wrapped strings or if the allocation is already fitted.
+ * This is a no-op if the allocation is already fitted.
  * @param str string to shrink
  * @return true if the string was modified
  */
@@ -365,8 +324,6 @@ UCB_API bool ucb_str_fit(ucb_str* str);
  * The current size is always the string length, regardless of null-terminator.
  * It will add an extra byte when reallocating to ensure null-termination.
  *
- * Wrapped strings will be detached and the current string copied over.
- *
  * This is a no-op if the string is already large enough.
  * @param str string to update
  * @param size bytes of free space to ensure.
@@ -374,17 +331,6 @@ UCB_API bool ucb_str_fit(ucb_str* str);
  * @return false if out of memory
  */
 UCB_API bool ucb_str_reserve(ucb_str* str, size_t size);
-
-/**
- * @brief Wrap a C string pointer.
- *
- * Behaves as if calling @ref ucb_str_release() followed by @ref ucb_str_init_wrap().
- */
-UCB_API void ucb_str_wrap(ucb_str* str, const char* cstr, size_t len);
-static inline void ucb_str_wrap_c(ucb_str* str, const char* cstr)
-{
-    ucb_str_wrap(str, cstr, 0);
-}
 
 /**
  * @brief Adopt memory as a string.
@@ -395,17 +341,20 @@ static inline void ucb_str_wrap_c(ucb_str* str, const char* cstr)
  * The @p data must be allocated with ucb functions.
  * The caller must not manipulate @p data after this call.
  *
- * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string may contain multiple null characters.
+ * If @p len is zero, the string must be null-terminated and will be measured
+ * with strlen.
  *
- * If @p alloc is zero, the allocation size is assumed to be @p len bytes.
+ * @p data must be null-terminated at @c data[len] and must be large enough to
+ * hold it: @p alloc must be at least <tt>len + 1</tt>. In addition, the string
+ * up to @p len must not contain an embedded null character. Violating any of
+ * these is a user error and always aborts.
  *
  * @todo Add pointer verification in <ucb/memdbg.h> for debug builds
  *
  * @param str string to update
  * @param data string data to adopt
  * @param len 0 or length of string excluding null-terminator
- * @param alloc 0 or size of allocation
+ * @param alloc size of allocation, must be at least <tt>len + 1</tt>
  */
 UCB_API void ucb_str_adopt(ucb_str* str, char* data, size_t len, size_t alloc);
 
@@ -429,14 +378,15 @@ UCB_API void ucb_str_adopt_c(ucb_str* str, char* cstr);
  * heap allocated it must be followed by @ref ucb_str_free(). It can be Reinitialized
  * with any @ref ucb_str_init function.
  *
- * @note This call will abandon the string, owned or not. Take a note of the return value.
+ * @note This call will abandon the string. Take a note of the return value:
+ * only owned data may be freed by the caller.
  *
  * @param str the string
  * @param data output pointer to string data
  * @param len optional output pointer to C string length
  * @param alloc optional output pointer to C string allocated size
  * @return true if the string was owned (caller must free)
- * @return false if the string was wrapped
+ * @return false if the string was the interned empty (caller must not free)
  */
 UCB_API bool ucb_str_abandon(ucb_str* str, char** data, size_t* len, size_t* alloc);
 
@@ -489,14 +439,6 @@ UCB_API wchar_t* ucb_str_to_wchar(const ucb_str* str, size_t* wlen_out, ucb_erro
  */
 
 /**
- * @brief Check if the underlying data is owned by @p str.
- * @param str string to query
- * @return true if str is an owned string
- * @return false if str is a wrapped string
- */
-UCB_API bool ucb_str_is_owned(const ucb_str* str);
-
-/**
  * @brief Check if the string is empty
  * @param str string to query
  * @return true if the string is empty
@@ -506,7 +448,7 @@ UCB_API bool ucb_str_is_empty(const ucb_str* str);
 /**
  * @brief Get the allocated size of the underlying data
  *
- * This returns 0 for wrapped strings.
+ * This returns 0 for the interned empty string.
  * @param str string to query
  * @return size in bytes
  */
@@ -515,8 +457,8 @@ UCB_API size_t ucb_str_capacity(const ucb_str* str);
 /**
  * @brief Get the used capacity of the underlying data
  *
- * This return 0 for wrapped strings.
- * This includes any eventual null-terminator.
+ * This includes the null-terminator for owned strings and is 0 for the
+ * interned empty string.
  * @param str string to query
  * @return size in bytes
  */
@@ -525,7 +467,7 @@ UCB_API size_t ucb_str_used(const ucb_str* str);
 /**
  * @brief Get the free capacity of the underlying data
  *
- * This excludes any eventual null-terminator
+ * This excludes the null-terminator.
  * @param str string to query
  * @return size in bytes
  */
@@ -533,6 +475,10 @@ UCB_API size_t ucb_str_avail(const ucb_str* str);
 
 /**
  * @brief Get a pointer to the underlying C string
+ *
+ * The returned pointer is guaranteed to be null-terminated with no embedded
+ * null characters, so it can be passed directly to C functions. It is borrowed
+ * and remains valid until the string is modified or released.
  *
  * @note Do not manipulate this string.
  * @param str string to query
@@ -543,9 +489,8 @@ UCB_API const char* ucb_str_cstr(const ucb_str* str);
 /**
  * @brief Get the length of the underlying string
  *
- * This is the number of bytes in the UTF-8 encoded string.
- * If properly null-terminated strings with no embedded null characters,
- * this is same as strlen.
+ * This is the number of bytes in the UTF-8 encoded string, and is always equal
+ * to <tt>strlen(ucb_str_cstr(str))</tt>.
  *
  * @param str string to query
  * @return length in bytes
@@ -669,16 +614,14 @@ UCB_API size_t ucb_str_next_char(const ucb_str* str, size_t from_byte);
 
 /**
  * @name Modification
- *
- * All of the functions in this group will detach the string if it's
- * a wrapped string.
  * @{
  */
 
 /**
  * @brief Clear the string
  *
- * Set the string to empty without modifying the allocation.
+ * Frees the current allocation and resets the string to the interned empty
+ * string (alloc == 0, data == "", size == 0).
  * @param str string to update
  */
 UCB_API void ucb_str_clear(ucb_str* str);
@@ -695,6 +638,9 @@ UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
  *
  * On an invalid codepoint, @p perr is set and nothing is appended.
  *
+ * A codepoint of zero (U+0000) is rejected as a user error and always aborts,
+ * since ucb_str never contains embedded null characters.
+ *
  * @param str string to append to
  * @param cp array of codepoints
  * @param num_cp number of codepoints
@@ -706,7 +652,8 @@ UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, uc
  * @brief Append a C string of a given byte length.
  *
  * If @p len is 0, @p cstr must be null-terminated and its length is measured.
- * Otherwise @p cstr may contain multiple null characters.
+ * If @p len is non-zero, @p cstr must not contain an embedded null character;
+ * passing one is a user error and always aborts.
  *
  * This is safe when @p cstr points into this string (for example when appending
  * a slice of the string to itself).
@@ -736,6 +683,9 @@ UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
  *
  * On an invalid codepoint, @p perr is set and nothing is inserted.
  *
+ * A codepoint of zero (U+0000) is rejected as a user error and always aborts,
+ * since ucb_str never contains embedded null characters.
+ *
  * @note Insert at character index, not byte index
  * @param str string to insert into
  * @param index character index to insert at
@@ -753,7 +703,8 @@ UCB_API void ucb_str_insert_cp(ucb_str* str,
  * @brief Insert a C string at a character index.
  *
  * If @p len is 0, @p cstr must be null-terminated and its length is measured.
- * Otherwise @p cstr may contain multiple null characters.
+ * If @p len is non-zero, @p cstr must not contain an embedded null character;
+ * passing one is a user error and always aborts.
  *
  * This is safe when @p cstr points into this string (for example when inserting
  * a slice of the string into itself).
@@ -813,27 +764,9 @@ UCB_API ucb_str* ucb_str_concat(const ucb_str* str, ...);
 UCB_API ucb_str* ucb_str_substr(const ucb_str* str, size_t start, size_t end);
 
 /**
- * @brief Create a wrapped substring that references the original data.
- *
- * Behaves as @ref ucb_str_substr() but returns a wrapped string instead of
- * copying the bytes. The returned string is only valid as long as the data of
- * @p str stays valid and is not modified.
- *
- * @warning If @p end does not point at the end of @p str, the wrapped substring
- * is not null-terminated.
- *
- * @param str string to reference
- * @param start start byte offset
- * @param end end byte offset (exclusive), or UCB_NPOS for the end of @p str
- * @return pointer to the new wrapped string or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_str_substr_wrapped(const ucb_str* str, size_t start, size_t end);
-
-/**
  * @brief Convert the string to lower case in place.
  *
- * The string is detached if it is a wrapped string. The case mapping may change
- * the length of the string.
+ * The case mapping may change the length of the string.
  *
  * @param str string to convert
  * @return true on success

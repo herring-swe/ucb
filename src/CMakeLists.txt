@@ -88,6 +88,7 @@ ucb_target_public_headers(ucb FILES
     ucb/once.h
     ucb/pipe.h
     ucb/string.h
+    ucb/string_ex.h
     ucb/task.h
     ucb/tgfunc.h
     ucb/threadpool.h

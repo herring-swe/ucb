@@ -8,9 +8,13 @@
  * @brief String tests
  */
 
+#include "common.h"
+#include "test_string_c.h"
+
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
 #include <ucb/string.h>
+#include <ucb/string_ex.h>
 
 #include <doctest.h>
 
@@ -34,9 +38,10 @@ TEST_CASE("string - lifetime")
     {
         ucb_str str = ucb_str_make();
         CHECK(ucb_str_cstr(&str) != nullptr);
+        CHECK(strcmp(ucb_str_cstr(&str), "") == 0);
         CHECK(ucb_str_len(&str) == 0);
         CHECK(ucb_str_is_empty(&str) == true);
-        CHECK(ucb_str_is_owned(&str) == false);
+        CHECK(ucb_str_capacity(&str) == 0);
         ucb_str_release(&str);
     }
 
@@ -48,14 +53,15 @@ TEST_CASE("string - lifetime")
         CHECK(strcmp(ucb_str_cstr(str), "hello") == 0);
         CHECK(ucb_str_len(str) == 5);
         CHECK(ucb_str_is_empty(str) == false);
-        CHECK(ucb_str_is_owned(str) == true);
+        CHECK(strlen(ucb_str_cstr(str)) == ucb_str_len(str));
         ucb_str_free(str);
 
-        // Test with nullptr
+        // Test with nullptr -> interned empty string
         str = ucb_str_new(nullptr, 0);
         REQUIRE(str != nullptr);
         CHECK(ucb_str_len(str) == 0);
         CHECK(ucb_str_is_empty(str) == true);
+        CHECK(strcmp(ucb_str_cstr(str), "") == 0);
         ucb_str_free(str);
 
         // Test with length 0 (null-terminated)
@@ -76,36 +82,6 @@ TEST_CASE("string - lifetime")
         ucb_str_free(str);
     }
 
-    // Test ucb_str_new_wrap
-    SUBCASE("ucb_str_new_wrap")
-    {
-        ucb_str* str = ucb_str_new_wrap("wrapped", 7);
-        REQUIRE(str != nullptr);
-        CHECK(strcmp(ucb_str_cstr(str), "wrapped") == 0);
-        CHECK(ucb_str_len(str) == 7);
-        CHECK(ucb_str_is_owned(str) == false);
-        ucb_str_free(str);
-
-        // Test with length 0 (null-terminated)
-        str = ucb_str_new_wrap("test", 0);
-        REQUIRE(str != nullptr);
-        CHECK(strcmp(ucb_str_cstr(str), "test") == 0);
-        CHECK(ucb_str_len(str) == 4);
-        CHECK(ucb_str_is_owned(str) == false);
-        ucb_str_free(str);
-    }
-
-    // Test ucb_str_new_wrap_c
-    SUBCASE("ucb_str_new_wrap_c")
-    {
-        ucb_str* str = ucb_str_new_wrap_c("wrapped_string");
-        REQUIRE(str != nullptr);
-        CHECK(strcmp(ucb_str_cstr(str), "wrapped_string") == 0);
-        CHECK(ucb_str_len(str) == 14);
-        CHECK(ucb_str_is_owned(str) == false);
-        ucb_str_free(str);
-    }
-
     // Test ucb_str_new_empty
     SUBCASE("ucb_str_new_empty")
     {
@@ -113,7 +89,7 @@ TEST_CASE("string - lifetime")
         REQUIRE(str != nullptr);
         CHECK(ucb_str_len(str) == 0);
         CHECK(ucb_str_is_empty(str) == true);
-        CHECK(ucb_str_is_owned(str) == false);
+        CHECK(strcmp(ucb_str_cstr(str), "") == 0);
         ucb_str_free(str);
     }
 
@@ -126,7 +102,7 @@ TEST_CASE("string - lifetime")
         ucb_str* cloned = ucb_str_clone(orig);
         REQUIRE(cloned != nullptr);
         CHECK(ucb_str_equal(orig, cloned));
-        CHECK(ucb_str_is_owned(cloned) == true);
+        CHECK(ucb_str_capacity(cloned) > 0);
 
         ucb_str_free(orig);
         ucb_str_free(cloned);
@@ -140,7 +116,7 @@ TEST_CASE("string - lifetime")
         REQUIRE(result == true);
         CHECK(strcmp(ucb_str_cstr(&str), "initialized") == 0);
         CHECK(ucb_str_len(&str) == 11);
-        CHECK(ucb_str_is_owned(&str) == true);
+        CHECK(ucb_str_capacity(&str) == 12);
         ucb_str_release(&str);
     }
 
@@ -154,28 +130,6 @@ TEST_CASE("string - lifetime")
         ucb_str_release(&str);
     }
 
-    // Test ucb_str_init_wrap
-    SUBCASE("ucb_str_init_wrap")
-    {
-        ucb_str str;
-        ucb_str_init_wrap(&str, "wrapped_init", 12);
-        CHECK(strcmp(ucb_str_cstr(&str), "wrapped_init") == 0);
-        CHECK(ucb_str_len(&str) == 12);
-        CHECK(ucb_str_is_owned(&str) == false);
-        ucb_str_release(&str);
-    }
-
-    // Test ucb_str_init_wrap_c
-    SUBCASE("ucb_str_init_wrap_c")
-    {
-        ucb_str str;
-        ucb_str_init_wrap_c(&str, "wrapped_init_c");
-        CHECK(strcmp(ucb_str_cstr(&str), "wrapped_init_c") == 0);
-        CHECK(ucb_str_len(&str) == 14);
-        CHECK(ucb_str_is_owned(&str) == false);
-        ucb_str_release(&str);
-    }
-
     // Test ucb_str_init_empty
     SUBCASE("ucb_str_init_empty")
     {
@@ -183,7 +137,8 @@ TEST_CASE("string - lifetime")
         ucb_str_init_empty(&str);
         CHECK(ucb_str_len(&str) == 0);
         CHECK(ucb_str_is_empty(&str) == true);
-        CHECK(ucb_str_is_owned(&str) == false);
+        CHECK(strcmp(ucb_str_cstr(&str), "") == 0);
+        CHECK(ucb_str_capacity(&str) == 0);
         ucb_str_release(&str);
     }
 
@@ -230,7 +185,7 @@ TEST_CASE("string - assignment and updating")
         bool result = ucb_str_copy(&dest, &src);
         REQUIRE(result == true);
         CHECK(ucb_str_equal(&src, &dest));
-        CHECK(ucb_str_is_owned(&dest) == true);
+        CHECK(ucb_str_capacity(&dest) > 0);
 
         ucb_str_release(&src);
         ucb_str_release(&dest);
@@ -261,19 +216,6 @@ TEST_CASE("string - assignment and updating")
         ucb_str_release(&str);
     }
 
-    SUBCASE("ucb_str_detach")
-    {
-        ucb_str str;
-        ucb_str_init_wrap_c(&str, "detach_test");
-        CHECK(ucb_str_is_owned(&str) == false);
-
-        bool modified = ucb_str_detach(&str);
-        CHECK(modified == true);
-        CHECK(ucb_str_is_owned(&str) == true);
-
-        ucb_str_release(&str);
-    }
-
     SUBCASE("ucb_str_fit")
     {
         ucb_str* str = ucb_str_new_c("fit_test");
@@ -299,54 +241,12 @@ TEST_CASE("string - assignment and updating")
         ucb_str_release(&str);
     }
 
-    SUBCASE("ucb_str_wrap")
-    {
-        ucb_str str;
-        ucb_str_init_c(&str, "old_value");
-        CHECK(ucb_str_is_owned(&str) == true);
-
-        ucb_str_wrap(&str, "new_wrapped", 11);
-        CHECK(strcmp(ucb_str_cstr(&str), "new_wrapped") == 0);
-        CHECK(ucb_str_len(&str) == 11);
-        CHECK(ucb_str_is_owned(&str) == false);
-
-        ucb_str_release(&str);
-    }
-
-    SUBCASE("ucb_str_wrap_c")
-    {
-        ucb_str str;
-        ucb_str_init_c(&str, "old_value");
-        CHECK(ucb_str_is_owned(&str) == true);
-
-        ucb_str_wrap_c(&str, "new_wrapped_c");
-        CHECK(strcmp(ucb_str_cstr(&str), "new_wrapped_c") == 0);
-        CHECK(ucb_str_len(&str) == 13); // "new_wrapped_c" length is 13
-        CHECK(ucb_str_is_owned(&str) == false);
-
-        ucb_str_release(&str);
-    }
-
     UCB_MEMTRACK_POP();
 }
 
 TEST_CASE("string - querying")
 {
     UCB_MEMTRACK_PUSH();
-
-    SUBCASE("ucb_str_is_owned")
-    {
-        ucb_str owned_str;
-        ucb_str_init_c(&owned_str, "owned");
-        CHECK(ucb_str_is_owned(&owned_str) == true);
-
-        ucb_str wrapped_str;
-        ucb_str_init_wrap_c(&wrapped_str, "wrapped");
-        CHECK(ucb_str_is_owned(&wrapped_str) == false);
-
-        ucb_str_release(&owned_str);
-        ucb_str_release(&wrapped_str);
-    }
 
     SUBCASE("ucb_str_is_empty")
     {
@@ -369,12 +269,12 @@ TEST_CASE("string - querying")
         CHECK(cap > 0);
         CHECK(cap >= ucb_str_len(&str));
 
-        ucb_str wrapped;
-        ucb_str_init_wrap_c(&wrapped, "wrapped");
-        CHECK(ucb_str_capacity(&wrapped) == 0); // Wrapped strings have 0 capacity
+        ucb_str empty;
+        ucb_str_init_empty(&empty);
+        CHECK(ucb_str_capacity(&empty) == 0);
 
         ucb_str_release(&str);
-        ucb_str_release(&wrapped);
+        ucb_str_release(&empty);
     }
 
     SUBCASE("ucb_str_used")
@@ -384,12 +284,12 @@ TEST_CASE("string - querying")
         size_t used = ucb_str_used(&str);
         CHECK(used >= ucb_str_len(&str));
 
-        ucb_str wrapped;
-        ucb_str_init_wrap_c(&wrapped, "wrapped");
-        CHECK(ucb_str_used(&wrapped) == 0); // Wrapped strings have 0 used
+        ucb_str empty;
+        ucb_str_init_empty(&empty);
+        CHECK(ucb_str_used(&empty) == 0);
 
         ucb_str_release(&str);
-        ucb_str_release(&wrapped);
+        ucb_str_release(&empty);
     }
 
     SUBCASE("ucb_str_avail")
@@ -399,12 +299,12 @@ TEST_CASE("string - querying")
         size_t avail = ucb_str_avail(&str);
         CHECK(avail >= 0);
 
-        ucb_str wrapped;
-        ucb_str_init_wrap_c(&wrapped, "wrapped");
-        CHECK(ucb_str_avail(&wrapped) == 0); // Wrapped strings have 0 available
+        ucb_str empty;
+        ucb_str_init_empty(&empty);
+        CHECK(ucb_str_avail(&empty) == 0);
 
         ucb_str_release(&str);
-        ucb_str_release(&wrapped);
+        ucb_str_release(&empty);
     }
 
     SUBCASE("ucb_str_cstr")
@@ -415,6 +315,7 @@ TEST_CASE("string - querying")
 
         const char* cstr = ucb_str_cstr(&str);
         CHECK(strcmp(cstr, test_str) == 0);
+        CHECK(strlen(cstr) == ucb_str_len(&str));
 
         ucb_str_release(&str);
     }
@@ -532,6 +433,8 @@ TEST_CASE("string - modification")
         ucb_str_clear(&str);
         CHECK(ucb_str_len(&str) == 0);
         CHECK(ucb_str_is_empty(&str) == true);
+        CHECK(strcmp(ucb_str_cstr(&str), "") == 0);
+        CHECK(ucb_str_capacity(&str) == 0);
 
         ucb_str_release(&str);
     }
@@ -599,20 +502,6 @@ TEST_CASE("string - modification")
         ucb_str_free(substr);
     }
 
-    SUBCASE("ucb_str_substr_wrapped")
-    {
-        ucb_str* str = ucb_str_new_c("substring_wrapped_test");
-        REQUIRE(str != nullptr);
-
-        ucb_str* substr = ucb_str_substr_wrapped(str, 10, 17); // Extract "wrapped"
-        REQUIRE(substr != nullptr);
-        CHECK(strncmp(substr->data, "wrapped", 7) == 0);
-        CHECK(ucb_str_is_owned(substr) == false); // Should be wrapped
-
-        ucb_str_free(str);
-        ucb_str_free(substr);
-    }
-
     UCB_MEMTRACK_POP();
 }
 
@@ -631,20 +520,6 @@ TEST_CASE("string - utf-8 handling")
         CHECK(ucb_str_num_char(&str) == 8); // "Hello " (6) + 2 unicode characters
 
         ucb_str_release(&str);
-    }
-
-    SUBCASE("embedded null")
-    {
-        // A non-zero length allows multiple null characters.
-        ucb_str* str = ucb_str_new("a\0b", 3);
-        REQUIRE(str != nullptr);
-        CHECK(ucb_str_len(str) == 3);
-        CHECK(ucb_str_is_empty(str) == false);
-        CHECK(ucb_str_cstr(str)[0] == 'a');
-        CHECK(ucb_str_cstr(str)[1] == '\0');
-        CHECK(ucb_str_cstr(str)[2] == 'b');
-        CHECK(ucb_str_num_char(str) == 3);
-        ucb_str_free(str);
     }
 
     SUBCASE("num_char with combining marks")
@@ -674,7 +549,6 @@ TEST_CASE("string - adopt and abandon")
         ucb_str_init_empty(&str);
         ucb_str_adopt(&str, data, 5, 6);
 
-        CHECK(ucb_str_is_owned(&str) == true);
         CHECK(ucb_str_len(&str) == 5);
         CHECK(ucb_str_capacity(&str) == 6);
         CHECK(strcmp(ucb_str_cstr(&str), "hello") == 0);
@@ -691,7 +565,6 @@ TEST_CASE("string - adopt and abandon")
         ucb_str_init_empty(&str);
         ucb_str_adopt_c(&str, data);
 
-        CHECK(ucb_str_is_owned(&str) == true);
         CHECK(ucb_str_len(&str) == 5);
         CHECK(ucb_str_capacity(&str) == 6);
         CHECK(strcmp(ucb_str_cstr(&str), "world") == 0);
@@ -713,22 +586,25 @@ TEST_CASE("string - adopt and abandon")
         CHECK(strcmp(data, "abandon_me") == 0);
         // The string must now be zeroed
         CHECK(ucb_str_len(&str) == 0);
-        CHECK(ucb_str_is_owned(&str) == false);
+        CHECK(ucb_str_capacity(&str) == 0);
         ucb_free(data);
     }
 
-    SUBCASE("ucb_str_abandon wrapped")
+    SUBCASE("ucb_str_abandon interned empty")
     {
-        const char* literal = "wrapped_literal";
         ucb_str str;
-        ucb_str_init_wrap_c(&str, literal);
+        ucb_str_init_empty(&str);
 
         char* data = nullptr;
-        bool owned = ucb_str_abandon(&str, &data, nullptr, nullptr);
+        size_t len = 99;
+        size_t alloc = 99;
+        bool owned = ucb_str_abandon(&str, &data, &len, &alloc);
         CHECK(owned == false);
-        CHECK(data == literal);
-        CHECK(ucb_str_is_owned(&str) == false);
-        // No freeing of literal
+        CHECK(data != nullptr);
+        CHECK(strcmp(data, "") == 0);
+        CHECK(len == 0);
+        CHECK(alloc == 0);
+        // Interned "" must not be freed by the caller
     }
 
     SUBCASE("ucb_str_abandon_c")
@@ -873,7 +749,7 @@ TEST_CASE("string - concatenation")
         ucb_str* result = ucb_str_concat(a, b, c, nullptr);
         REQUIRE(result != nullptr);
         CHECK(strcmp(ucb_str_cstr(result), "Hello, UCB!") == 0);
-        CHECK(ucb_str_is_owned(result) == true);
+        CHECK(ucb_str_capacity(result) > 0);
         ucb_str_free(result);
     }
 
@@ -908,11 +784,11 @@ TEST_CASE("string - substring semantics")
 
     ucb_str* str = ucb_str_new_c("substring_test");
 
-    SUBCASE("ucb_str_substr byte range is owned")
+    SUBCASE("ucb_str_substr byte range")
     {
         ucb_str* sub = ucb_str_substr(str, 3, 10);
         REQUIRE(sub != nullptr);
-        CHECK(ucb_str_is_owned(sub) == true);
+        CHECK(ucb_str_capacity(sub) > 0);
         CHECK(ucb_str_len(sub) == 7);
         CHECK(strncmp(ucb_str_cstr(sub), "string_", 7) == 0);
         ucb_str_free(sub);
@@ -923,15 +799,6 @@ TEST_CASE("string - substring semantics")
         ucb_str* sub = ucb_str_substr(str, 10, UCB_NPOS);
         REQUIRE(sub != nullptr);
         CHECK(strcmp(ucb_str_cstr(sub), "test") == 0);
-        ucb_str_free(sub);
-    }
-
-    SUBCASE("ucb_str_substr_wrapped is wrapped")
-    {
-        ucb_str* sub = ucb_str_substr_wrapped(str, 0, 3);
-        REQUIRE(sub != nullptr);
-        CHECK(ucb_str_is_owned(sub) == false);
-        CHECK(strncmp(ucb_str_cstr(sub), "sub", 3) == 0);
         ucb_str_free(sub);
     }
 
@@ -991,27 +858,27 @@ TEST_CASE("string - capacity querying")
         ucb_str_free(str);
     }
 
-    SUBCASE("detach makes wrapped string owned")
+    SUBCASE("reserve on interned empty allocates")
     {
         ucb_str str;
-        ucb_str_init_wrap_c(&str, "detach_me");
+        ucb_str_init_empty(&str);
         CHECK(ucb_str_capacity(&str) == 0);
-        CHECK(ucb_str_detach(&str) == true);
-        CHECK(ucb_str_capacity(&str) == ucb_str_len(&str) + 1);
-        CHECK(strcmp(ucb_str_cstr(&str), "detach_me") == 0);
+        CHECK(ucb_str_reserve(&str, 8) == true);
+        CHECK(ucb_str_capacity(&str) == ucb_str_len(&str) + 8 + 1);
+        CHECK(strcmp(ucb_str_cstr(&str), "") == 0);
         ucb_str_release(&str);
     }
 
-    SUBCASE("clone of wrapped string is owned")
+    SUBCASE("clone of interned empty is owned")
     {
-        ucb_str wrapped;
-        ucb_str_init_wrap_c(&wrapped, "wrapped_source");
-        ucb_str* clone = ucb_str_clone(&wrapped);
+        ucb_str empty;
+        ucb_str_init_empty(&empty);
+        ucb_str* clone = ucb_str_clone(&empty);
         REQUIRE(clone != nullptr);
-        CHECK(ucb_str_is_owned(clone) == true);
-        CHECK(ucb_str_equal(clone, &wrapped));
+        CHECK(ucb_str_capacity(clone) > 0);
+        CHECK(ucb_str_equal(clone, &empty));
         ucb_str_free(clone);
-        ucb_str_release(&wrapped);
+        ucb_str_release(&empty);
     }
 
     UCB_MEMTRACK_POP();
@@ -1142,6 +1009,138 @@ TEST_CASE("string - self aliasing")
         CHECK(ucb_str_find(&str, &sub, 10) == UCB_NPOS);
         ucb_str_release(&str);
         ucb_str_release(&sub);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("string - UCB_CSTR (C)")
+{
+    CHECK(test_string_c() == 0);
+}
+
+TEST_CASE("string - UCB_CSTR")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("ucb_str pointer")
+    {
+        ucb_str* s = ucb_str_new_c("hello");
+        REQUIRE(s != nullptr);
+        const char* p = UCB_CSTR(s);
+        CHECK(strcmp(p, "hello") == 0);
+        CHECK(p == ucb_str_cstr(s));
+        ucb_str_free(s);
+    }
+
+    SUBCASE("const ucb_str pointer")
+    {
+        ucb_str* s = ucb_str_new_c("world");
+        const ucb_str* cs = s;
+        const char* p = UCB_CSTR(cs);
+        CHECK(strcmp(p, "world") == 0);
+        ucb_str_free(s);
+    }
+
+    SUBCASE("char pointers and literal")
+    {
+        char buf[] = "buffer";
+        const char* cstr = "const";
+        CHECK(strcmp(UCB_CSTR(buf), "buffer") == 0);
+        CHECK(strcmp(UCB_CSTR(cstr), "const") == 0);
+        CHECK(strcmp(UCB_CSTR("literal"), "literal") == 0);
+    }
+
+    SUBCASE("std::string")
+    {
+        std::string s("std_string");
+        const char* p = UCB_CSTR(s);
+        CHECK(strcmp(p, "std_string") == 0);
+        CHECK(p == s.c_str());
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("init with embedded null")
+    {
+        ucb_str str;
+        CHECK_ABORTS(ucb_str_init(&str, "a\0b", 3));
+        CHECK(num_aborts == 1);
+        REQUIRE(num_error == 1);
+        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
+    }
+
+    SUBCASE("assign with embedded null")
+    {
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        CHECK_ABORTS(ucb_str_assign(&str, "a\0b", 3));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("append_cstr with embedded null")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "abc");
+        CHECK_ABORTS(ucb_str_append_cstr(&str, "a\0b", 3));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert_cstr with embedded null")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "abcdef");
+        CHECK_ABORTS(ucb_str_insert_cstr(&str, 3, "a\0b", 3));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("append_cp zero codepoint")
+    {
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        const ucb_cp cps[] = {0x41, 0x0};
+        CHECK_ABORTS(ucb_str_append_cp(&str, cps, 2, nullptr));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert_cp zero codepoint")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "hello");
+        const ucb_cp cps[] = {0x0};
+        CHECK_ABORTS(ucb_str_insert_cp(&str, 2, cps, 1, nullptr));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("adopt missing terminator")
+    {
+        char* data = (char*)ucb_malloc(6);
+        REQUIRE(data != nullptr);
+        memcpy(data, "hello", 6);
+        data[5] = 'x'; // No terminator at data[len]
+
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 6));
+        // Aborted before taking ownership; caller still owns data
+        ucb_free(data);
+    }
+
+    SUBCASE("adopt alloc too small")
+    {
+        char* data = (char*)ucb_malloc(5);
+        REQUIRE(data != nullptr);
+        memcpy(data, "hello", 5); // No room for a terminator
+
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 5));
+        ucb_free(data);
     }
 
     UCB_MEMTRACK_POP();
