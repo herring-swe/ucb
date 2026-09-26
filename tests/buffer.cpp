@@ -16,6 +16,7 @@
 #include <doctest.h>
 
 #include <array>
+#include <cstdint>
 #include <cstring>
 #include <string>
 
@@ -36,6 +37,12 @@ typedef struct test_struct
     int16_t i16;
 } test_struct;
 UCB_DIAG_POP()
+
+static size_t grow_half(ucb_buffer* buf, size_t size_needed)
+{
+    (void)size_needed;
+    return buf->alloc / 2;
+}
 
 TEST_SUITE_BEGIN("buffer");
 
@@ -239,6 +246,21 @@ TEST_CASE("buffer - heap")
         written = ucb_buffer_push_format(buf, "%s", "");
         CHECK(written == 0);
         CHECK(buf->size == 10);
+        CHECK(buf->data[9] == '\0');
+
+        // Empty format on a buffer that is exactly full must still grow and
+        // append the terminator
+        ucb_buffer* exact = ucb_buffer_new_heap(4);
+        REQUIRE(exact != nullptr);
+        REQUIRE(ucb_buffer_push_format(exact, "%s", "abc") == 3);
+        CHECK(exact->size == 4);
+        CHECK(exact->alloc == 4);
+        REQUIRE(ucb_buffer_push_format(exact, "%s", "") == 0);
+        CHECK(exact->size == 5);
+        CHECK(exact->alloc >= 5);
+        CHECK(exact->data[3] == '\0');
+        CHECK(exact->data[4] == '\0');
+        ucb_buffer_free(exact);
     }
 
     ucb_buffer_free(buf);
@@ -270,6 +292,13 @@ TEST_CASE("buffer - static")
     char out[8] = {0};
     ucb_buffer_read(&buf, out, 3, 1);
     CHECK(memcmp(out, "bc\0", 3) == 0);
+
+    // zero scrubs used bytes only and keeps the borrowed storage
+    ucb_buffer_zero(&buf);
+    CHECK(buf.data == storage);
+    CHECK(buf.size == sizeof(text));
+    for (size_t i = 0; i < sizeof(text); i++)
+        CHECK(storage[i] == 0);
 
     ucb_buffer_clear(&buf);
     CHECK(buf.size == 0);
@@ -344,6 +373,179 @@ TEST_CASE("buffer - grow")
         CHECK(dbl->alloc >= dbl->size + 1);
 
         ucb_buffer_free(dbl);
+    }
+
+    SUBCASE("grow_double zero capacity")
+    {
+        // A zero-capacity buffer must not spin forever and must still grow.
+        ucb_buffer* dbl = ucb_buffer_new_heap(8);
+        REQUIRE(dbl != nullptr);
+        REQUIRE(ucb_buffer_resize(dbl, 0));
+        CHECK(dbl->alloc == 0);
+        CHECK(dbl->data == nullptr);
+
+        CHECK(ucb_buffer_grow_double(dbl, 1) > 0);
+        CHECK(ucb_buffer_grow_double(dbl, 32) >= 32);
+
+        dbl->grow_func = ucb_buffer_grow_double;
+        REQUIRE(ucb_buffer_grow(dbl, 1));
+        CHECK(dbl->alloc >= 1);
+        CHECK(dbl->data != nullptr);
+
+        ucb_buffer_free(dbl);
+    }
+
+    SUBCASE("grow_double overflow clamp")
+    {
+        // Pure math: must terminate and clamp instead of overflowing.
+        ucb_buffer fake;
+        memset(&fake, 0, sizeof(fake));
+        fake.alloc = SIZE_MAX / 2 + 1;
+        fake.size = 0;
+        CHECK(ucb_buffer_grow_double(&fake, SIZE_MAX) == SIZE_MAX);
+    }
+
+    SUBCASE("grow_func below capacity does not shrink")
+    {
+        ucb_buffer* bad = ucb_buffer_new_heap(16);
+        REQUIRE(bad != nullptr);
+        const size_t before = bad->alloc;
+
+        bad->grow_func = grow_half;
+        REQUIRE(ucb_buffer_grow(bad, 8));
+        CHECK(bad->alloc == before);
+
+        ucb_buffer_free(bad);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("buffer - can_ensure")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("null")
+    {
+        CHECK(!ucb_buffer_can_ensure(nullptr, 1));
+        CHECK(!ucb_buffer_can_ensure(nullptr, 0));
+    }
+
+    SUBCASE("static")
+    {
+        char storage[8];
+        ucb_buffer buf;
+        REQUIRE(ucb_buffer_init_static(&buf, storage, sizeof(storage)));
+
+        CHECK(ucb_buffer_can_ensure(&buf, 8));
+        CHECK(!ucb_buffer_can_ensure(&buf, 9));
+
+        ucb_buffer_release(&buf);
+    }
+
+    SUBCASE("heap")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(8);
+        REQUIRE(buf != nullptr);
+        CHECK(ucb_buffer_can_ensure(buf, 8));
+
+        // One used byte means SIZE_MAX additional bytes would overflow.
+        REQUIRE(ucb_buffer_push(buf, "x", 1));
+        CHECK(!ucb_buffer_can_ensure(buf, SIZE_MAX));
+
+        ucb_buffer_free(buf);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("buffer - capacity zero")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("resize to zero")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        REQUIRE(ucb_buffer_push(buf, "abcdef", 6));
+
+        REQUIRE(ucb_buffer_resize(buf, 0));
+        CHECK(buf->alloc == 0);
+        CHECK(buf->size == 0);
+        CHECK(buf->data == nullptr);
+        CHECK(ucb_buffer_can_resize(buf));
+
+        // Can grow again from zero
+        REQUIRE(ucb_buffer_push(buf, "xyz", 3));
+        CHECK(buf->size == 3);
+        CHECK(buf->alloc >= 3);
+        CHECK(memcmp(buf->data, "xyz", 3) == 0);
+
+        ucb_buffer_free(buf);
+    }
+
+    SUBCASE("fit empty buffer")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        REQUIRE(ucb_buffer_fit(buf));
+        CHECK(buf->alloc == 0);
+        CHECK(buf->data == nullptr);
+
+        ucb_buffer_free(buf);
+    }
+
+    SUBCASE("grow from zero with double")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        REQUIRE(ucb_buffer_resize(buf, 0));
+
+        buf->grow_func = ucb_buffer_grow_double;
+        REQUIRE(ucb_buffer_push(buf, "abcd", 4));
+        CHECK(buf->size == 4);
+        CHECK(buf->alloc >= 4);
+
+        ucb_buffer_free(buf);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("buffer - zero")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("scrubs used bytes only")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        REQUIRE(ucb_buffer_push(buf, "secret", 6));
+        const size_t cap = buf->alloc;
+        char* data = buf->data;
+
+        ucb_buffer_zero(buf);
+        CHECK(buf->data == data);
+        CHECK(buf->size == 6);
+        CHECK(buf->alloc == cap);
+        for (size_t i = 0; i < 6; i++)
+            CHECK(buf->data[i] == 0);
+
+        ucb_buffer_free(buf);
+    }
+
+    SUBCASE("no-op when empty")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        ucb_buffer_zero(buf);
+        CHECK(buf->size == 0);
+        CHECK(buf->alloc == 16);
+
+        ucb_buffer* null_buf = nullptr;
+        ucb_buffer_zero(null_buf); // must not crash
+
+        ucb_buffer_free(buf);
     }
 
     UCB_MEMTRACK_POP();

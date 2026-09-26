@@ -55,6 +55,7 @@ ucb_target_sources(ucb_tests PRIVATE
     env.cpp
     envmap.cpp
     error.cpp
+    file.cpp
     memory.cpp
     mutex.cpp
     once.cpp

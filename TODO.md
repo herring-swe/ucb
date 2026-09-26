@@ -49,7 +49,8 @@ Order: release first, priority second.
 ### 0.3.0
 
 #### P0
-- [ ] File: File abstraction API initial usable feature set
+- [x] Path: Path abstraction API initial usable feature set
+- [x] IO: File/Stream I/O abstraction initial usable feature set
 - [ ] Filesystem: Filesystem API initial usable feature set
 - [ ] Process: Process launching API initial usable feature set
 
@@ -78,7 +79,8 @@ Order: release first, priority second.
 - [ ] Build: ASAN/UBSAN integration in build/test flow
 - [ ] Release: Release gates for stable API/ABI
 - [ ] Version: Generated version defines complete for 1.0.0 scope
-- [ ] File: File abstraction API complete for 1.0.0 scope
+- [ ] Path: Path abstraction API complete for 1.0.0 scope
+- [ ] IO: File/Stream I/O abstraction complete for 1.0.0 scope
 - [ ] Filesystem: Filesystem API complete for 1.0.0 scope
 - [ ] Process: Process launching complete for 1.0.0 scope
 - [ ] Argument Parsing: Argument parsing complete for 1.0.0 scope
@@ -177,8 +179,8 @@ For Documentation only Doxygen is considered necessary.
 - [x] Testing
 - [x] Documentation
 
-### File - File Abstraction API (Target: 0.3.0, required by 1.0.0)
-- [ ] File object model (path, name, extension)
+### Path - Path Abstraction API (Target: 0.3.0, required by 1.0.0)
+- [ ] Path object model (`ucb_path`: path, name, extension)
 - [ ] Common operations (append path, join, split, parent)
 - [ ] Name/stem/extension helpers
 - [ ] Normalize and compare behavior contract
@@ -186,9 +188,20 @@ For Documentation only Doxygen is considered necessary.
 - [ ] Testing
 - [ ] Documentation
 
+### IO - File/Stream I/O Abstraction (Target: 0.3.0, required by 1.0.0)
+- [ ] Unified `ucb_file` handle model with kind and capability flags
+- [ ] Open/close/read/write/seek/flush/sync over regular files
+- [ ] Standard streams (stdin/stdout/stderr) as non-owning views
+- [ ] Anonymous pipes and wait/readiness helpers
+- [ ] Native handle interop (`fd` / Windows `HANDLE`)
+- [ ] Nonblocking handles and wait helpers
+- [ ] Process redirection integration (`ucb_file_dup`, inheritance)
+- [ ] Testing
+- [ ] Documentation
+
 ### Filesystem - Filesystem API (Target: 0.3.0, required by 1.0.0)
-- [ ] Path operations via File abstraction
-- [ ] File operations (exists, stat, read/write, copy, move, remove)
+- [ ] Path operations via `ucb_path`
+- [ ] File operations via `ucb_file` (exists, stat, read/write, copy, move, remove)
 - [ ] Directory operations (create, list, iterate, remove)
 - [ ] Error integration with unified error model
 - [ ] Cross-platform behavior contract defined
@@ -199,9 +212,9 @@ For Documentation only Doxygen is considered necessary.
 - [ ] Process spawn/start
 - [ ] Exit code and wait handling
 - [ ] Environment controls (integrates with Environment)
-- [ ] Working directory controls (via File)
-- [ ] Stdout/stderr capture and redirection
-- [ ] Executable/redirection path handling via File
+- [ ] Working directory controls (via `ucb_path`)
+- [ ] Stdout/stderr capture and redirection (via `ucb_file`)
+- [ ] Executable/redirection path handling via `ucb_path`
 - [ ] Error integration with unified error model
 - [ ] Testing
 - [ ] Documentation

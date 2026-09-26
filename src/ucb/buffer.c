@@ -56,6 +56,14 @@ ucb_buffer* ucb_buffer_new_heap(size_t initial_capacity)
 static bool ucb_buffer_resize_heap(ucb_buffer* buf, size_t new_capacity)
 {
     assert(buf);
+    if (new_capacity == 0)
+    {
+        ucb_free(buf->data);
+        buf->data = UCB_NULL;
+        buf->alloc = 0;
+        return true;
+    }
+
     char* tmp = (char*)ucb_realloc2(buf->data, new_capacity, false);
     if (!tmp)
         return false;
@@ -157,6 +165,21 @@ bool ucb_buffer_can_resize(ucb_buffer* buf)
     return buf && buf->_impl_resize;
 }
 
+bool ucb_buffer_can_ensure(const ucb_buffer* buf, size_t size)
+{
+    if (!buf)
+        return false;
+
+    size_t spare = buf->alloc - buf->size;
+    if (size <= spare)
+        return true;
+
+    if (!buf->_impl_resize)
+        return false;
+
+    return size <= SIZE_MAX - buf->size;
+}
+
 bool ucb_buffer_resize(ucb_buffer* buf, size_t new_capacity)
 {
     UCB_VERIFY_ARGS(buf);
@@ -176,22 +199,31 @@ bool ucb_buffer_grow(ucb_buffer* buf, size_t inc_capacity)
 {
     UCB_VERIFY_ARGS(buf);
     if (buf->grow_func)
-        inc_capacity = buf->grow_func(buf, inc_capacity) - buf->alloc;
+    {
+        size_t new_capacity = buf->grow_func(buf, inc_capacity);
+        if (new_capacity < buf->alloc)
+            new_capacity = buf->alloc;
+        return ucb_buffer_resize(buf, new_capacity);
+    }
+    UCB_VERIFY(inc_capacity <= SIZE_MAX - buf->alloc, UCB_ERROR_INVALID_ARG, "Capacity overflow");
     return ucb_buffer_resize(buf, buf->alloc + inc_capacity);
 }
 
 bool ucb_buffer_ensure(ucb_buffer* buf, size_t size)
 {
     UCB_VERIFY_ARGS(buf);
-    if (buf->size + size <= buf->alloc)
+    size_t spare = buf->alloc - buf->size;
+    if (size <= spare)
         return true;
-    return ucb_buffer_grow(buf, buf->size + size - buf->alloc);
+    return ucb_buffer_grow(buf, size - spare);
 }
 
 void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_t offset)
 {
     UCB_VERIFY_ARGS(buf && out_data);
-    UCB_VERIFY(offset + size <= buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Read out of bounds");
+    UCB_VERIFY(offset <= buf->size && size <= buf->size - offset,
+               UCB_ERROR_OUT_OF_BOUNDS,
+               "Read out of bounds");
 
     if (size > 0)
     {
@@ -204,9 +236,10 @@ bool ucb_buffer_push(ucb_buffer* buf, const void* data, size_t size)
     UCB_VERIFY_ARGS(buf && data);
     if (size > 0)
     {
-        if (buf->size + size > buf->alloc)
+        size_t spare = buf->alloc - buf->size;
+        if (size > spare)
         {
-            if (!ucb_buffer_grow(buf, buf->size + size - buf->alloc))
+            if (!ucb_buffer_grow(buf, size - spare))
                 return false;
         }
 
@@ -241,15 +274,16 @@ int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
     }
     else if (size == 0)
     {
-        ucb_buffer_ensure(buf, 1);
+        if (!ucb_buffer_ensure(buf, 1))
+            return -1;
         buf->data[buf->size++] = '\0';
     }
-    if (size > 0)
+    else
     {
-        if (!ucb_buffer_ensure(buf, size + 1))
+        if (!ucb_buffer_ensure(buf, (size_t)size + 1))
             return -1;
-        vsnprintf((char*)buf->data + buf->size, size + 1, fmt, args);
-        buf->size += size + 1;
+        vsnprintf((char*)buf->data + buf->size, (size_t)size + 1, fmt, args);
+        buf->size += (size_t)size + 1;
     }
     return size;
 }
@@ -271,6 +305,12 @@ void ucb_buffer_clear(ucb_buffer* buf)
 {
     UCB_VERIFY_ARGS(buf);
     buf->size = 0;
+}
+
+void ucb_buffer_zero(ucb_buffer* buf)
+{
+    if (buf && buf->data && buf->size > 0)
+        memset(buf->data, 0, buf->size);
 }
 
 bool ucb_buffer_fit(ucb_buffer* buf)

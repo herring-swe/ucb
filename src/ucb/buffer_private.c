@@ -15,15 +15,20 @@
 #include <string.h>
 
 /* -------------------------------------------------------------------------- */
-/*                             Plain malloc buffer                            */
+/*                            Untracked malloc buffer                         */
 /* -------------------------------------------------------------------------- */
 
-ucb_buffer* ucb_buffer_new_malloc(size_t initial_capacity)
+/*
+ * Raw allocators on purpose: see buffer_private.h. This path is used from
+ * within memdbg and must not call ucb_malloc/ucb_calloc/ucb_realloc/ucb_free.
+ */
+
+ucb_buffer* ucb_buffer_new_untracked(size_t initial_capacity)
 {
     ucb_buffer* buf = calloc(1, sizeof(ucb_buffer));
     if (buf)
     {
-        if (!ucb_buffer_init_malloc(buf, initial_capacity))
+        if (!ucb_buffer_init_untracked(buf, initial_capacity))
         {
             free(buf);
             buf = UCB_NULL;
@@ -35,6 +40,14 @@ ucb_buffer* ucb_buffer_new_malloc(size_t initial_capacity)
 static bool ucb_buffer_resize_malloc(ucb_buffer* buf, size_t new_capacity)
 {
     assert(buf);
+    if (new_capacity == 0)
+    {
+        free(buf->data);
+        buf->data = UCB_NULL;
+        buf->alloc = 0;
+        return true;
+    }
+
     char* tmp = (char*)realloc(buf->data, new_capacity);
     if (!tmp)
         return false;
@@ -69,7 +82,7 @@ static bool ucb_buffer_transfer_malloc(ucb_buffer* buf,
     return true;
 }
 
-bool ucb_buffer_init_malloc(ucb_buffer* buf, size_t initial_capacity)
+bool ucb_buffer_init_untracked(ucb_buffer* buf, size_t initial_capacity)
 {
     UCB_VERIFY_ARGS(buf && initial_capacity > 0);
 
