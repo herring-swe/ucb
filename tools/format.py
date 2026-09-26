@@ -58,8 +58,8 @@ def resolve_clang_format(override: str | None = None) -> str:
         print(f"Could not determine clang-format version from: {version_output!r}")
         sys.exit(1)
     major = int(m.group(1))
-    if major != 21:
-        print(f"clang-format version 21.x.x required, got: {version_output}")
+    if major != 23:
+        print(f"clang-format version 23.x.x required, got: {version_output}")
         sys.exit(1)
 
     print(f"clang-format: {version_output} ({path})")
