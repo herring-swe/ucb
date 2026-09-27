@@ -189,9 +189,6 @@ int _fake_cmp(const void*, const void*);
 /* -------------------------------------------------------------------------- */
 
 #ifdef _GEN_TEMPLATE_PARSER
-#ifdef UCB_T_DECLARE
-#pragma once
-#endif
 
 /**
  * @file _GEN_FILENAME
@@ -203,6 +200,10 @@ int _fake_cmp(const void*, const void*);
  *
  * @note This is generated from ucb/container/vector/template.h
  */
+
+#ifdef _GEN_HEADER
+_UCB_GEN_GUARD_OPEN
+#endif
 
 #endif
 
@@ -1369,3 +1370,9 @@ ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec, const _UCB_T_PTR val, u
 #undef UCB_T_FREE_FUNC
 #undef UCB_T_COPY_FUNC
 #undef UCB_T_CMP_FUNC
+
+#ifdef _GEN_TEMPLATE_PARSER
+#ifdef _GEN_HEADER
+_UCB_GEN_GUARD_CLOSE
+#endif
+#endif

@@ -7,8 +7,8 @@
  * @brief Generic dynamic array (vector)
  */
 
-#ifndef UCB_CONTAINER_VECTOR_H
-#define UCB_CONTAINER_VECTOR_H
+#ifndef UCB_CONTAINER_VECTOR_GENERIC_H
+#define UCB_CONTAINER_VECTOR_GENERIC_H
 
 #include <ucb/container/common.h>
 #include <ucb/export.h>
@@ -281,4 +281,4 @@ UCB_API size_t ucb_vector_foreach(ucb_vector* vec, ucb_vector_iter_func func, vo
 }
 #endif
 
-#endif // UCB_CONTAINER_VECTOR_H
+#endif // UCB_CONTAINER_VECTOR_GENERIC_H

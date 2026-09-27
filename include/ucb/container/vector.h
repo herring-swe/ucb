@@ -7,10 +7,13 @@
  * @brief Includes all implemented vector types
  */
 
-#pragma once
+#ifndef UCB_CONTAINER_VECTOR_H
+#define UCB_CONTAINER_VECTOR_H
 
 #include <ucb/container/impl/vector_dbl.h>
 #include <ucb/container/impl/vector_flt.h>
 #include <ucb/container/impl/vector_int.h>
 #include <ucb/container/impl/vector_ptr.h>
 #include <ucb/container/impl/vector_str.h>
+
+#endif // UCB_CONTAINER_VECTOR_H

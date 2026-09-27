@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file vector_str.h
  * This file is part of the UCB project
@@ -10,6 +8,9 @@
  *
  * @note This is generated from ucb/container/vector/template.h
  */
+
+#ifndef UCB_CONTAINER_IMPL_VECTOR_STR_H
+#define UCB_CONTAINER_IMPL_VECTOR_STR_H
 
 #include <ucb/container/common.h>
 #include <ucb/error.h>
@@ -457,3 +458,5 @@ UCB_API ucb_ssize ucb_vector_str_find(const ucb_vector_str* vec, const struct uc
 UCB_API ucb_ssize ucb_vector_str_find_with(const ucb_vector_str* vec,
                                            const struct ucb_str* val,
                                            ucb_cmp_func func);
+
+#endif // UCB_CONTAINER_IMPL_VECTOR_STR_H

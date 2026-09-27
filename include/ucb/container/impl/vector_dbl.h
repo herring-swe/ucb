@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file vector_dbl.h
  * This file is part of the UCB project
@@ -10,6 +8,9 @@
  *
  * @note This is generated from ucb/container/vector/template.h
  */
+
+#ifndef UCB_CONTAINER_IMPL_VECTOR_DBL_H
+#define UCB_CONTAINER_IMPL_VECTOR_DBL_H
 
 #include <ucb/container/common.h>
 #include <ucb/error.h>
@@ -422,3 +423,5 @@ UCB_API ucb_ssize ucb_vector_dbl_find(const ucb_vector_dbl* vec, const double* v
 UCB_API ucb_ssize ucb_vector_dbl_find_with(const ucb_vector_dbl* vec,
                                            const double* val,
                                            ucb_cmp_func func);
+
+#endif // UCB_CONTAINER_IMPL_VECTOR_DBL_H
