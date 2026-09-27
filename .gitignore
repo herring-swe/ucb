@@ -6,7 +6,7 @@
 .ruff_cache/
 __pycache__/
 build/
-build_*/
+build[_-]*/
 install/
 external/
 
@@ -15,6 +15,7 @@ doc/doxygen/html/
 
 # Local ignore files
 local_ignore/
+/AGENTS-WS.md
 
 # CMake. Never commit user override's
 CMakeUserPresets.json
