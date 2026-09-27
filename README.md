@@ -60,6 +60,10 @@ Anything not listed above is not tested and is not a priority. Please help out i
 - Threading
   - Threading and mutex
 - Buffer helpers
+- Filesystem
+  - Lexical path abstraction, file/stream I/O and a portable filesystem API.
+  - Queries (exists/kind/stat), copy, move, remove and directory iteration.
+  - Optional extended helpers in the `_ex.h` companion headers.
 
 ## Minor Features
 
@@ -70,7 +74,6 @@ Anything not listed above is not tested and is not a priority. Please help out i
 ## Future plans
 
 - Add more string operations
-- File system functions
 - Process launching
 - Argument parsing
 - Settings helper

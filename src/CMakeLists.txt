@@ -78,10 +78,13 @@ ucb_target_public_headers(ucb FILES
     ucb/cstring.h
     ucb/debug.h
     ucb/defines.h
+    ucb/dir.h
     ucb/env.h
     ucb/envmap.h
     ucb/error.h
     ucb/file.h
+    ucb/fs.h
+    ucb/fs_ex.h
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h
@@ -105,7 +108,9 @@ ucb_target_sources(ucb PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     ucb/buffer_private.h
     ucb/cond_private.h
+    ucb/dir_private.h
     ucb/file_private.h
+    ucb/fs_private.h
     ucb/mutex_private.h
     ucb/once_private.h
     ucb/sys_private.h
@@ -135,12 +140,14 @@ ucb_target_sources(ucb PRIVATE
     ucb/bufutil.c
     ucb/cond.c
     ucb/cstring.c
+    ucb/dir.c
     ucb/env.c
     ucb/envmap.c
     ucb/error_enum.c
     ucb/error_errno.c
     ucb/error.c
     ucb/file.c
+    ucb/fs.c
     ucb/memdbg.c
     ucb/memory.c
     ucb/mutex.c
@@ -164,11 +171,15 @@ if(WIN32)
         ucb/string_win32.c
         ucb/error_win32.c
         ucb/file_win32.c
+        ucb/fs_win32.c
+        ucb/dir_win32.c
     )
     target_link_libraries(ucb PRIVATE dbghelp.lib)
 elseif(UNIX)
     ucb_target_sources(ucb PRIVATE
         ucb/file_unix.c
+        ucb/fs_unix.c
+        ucb/dir_unix.c
     )
     # target_compile_options(ucb PRIVATE -rdynamic)
 endif()
