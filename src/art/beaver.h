@@ -6,7 +6,8 @@
  * @brief
  */
 
-#pragma once
+#ifndef UCB_BEAVER_H
+#define UCB_BEAVER_H
 
 /*
  * This is such an ugly beaver to not include for error messages
@@ -16,3 +17,5 @@ static const char* ucb_error =
     "   ( •ㅅ•)"
     "   /     \\  UCB ERROR: %s"
     "  /       \\";
+
+#endif // UCB_BEAVER_H

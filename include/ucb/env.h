@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file env.h
  * This file is part of the UCB project
@@ -10,6 +8,9 @@
  *
  * All strings are UTF-8 encoded.
  */
+
+#ifndef UCB_ENV_H
+#define UCB_ENV_H
 
 #include <ucb/export.h>
 
@@ -72,3 +73,5 @@ UCB_API bool ucb_env_append(const char* name, const char* value, const char* sep
  * @return true if the variable was set
  */
 UCB_API bool ucb_env_prepend(const char* name, const char* value, const char* sep);
+
+#endif // UCB_ENV_H

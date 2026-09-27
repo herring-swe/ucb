@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file vector_int.h
  * This file is part of the UCB project
@@ -10,6 +8,9 @@
  *
  * @note This is generated from ucb/container/vector/template.h
  */
+
+#ifndef UCB_CONTAINER_IMPL_VECTOR_INT_H
+#define UCB_CONTAINER_IMPL_VECTOR_INT_H
 
 #include <ucb/container/common.h>
 #include <ucb/error.h>
@@ -420,3 +421,5 @@ UCB_API ucb_ssize ucb_vector_int_find(const ucb_vector_int* vec, const int* val)
 UCB_API ucb_ssize ucb_vector_int_find_with(const ucb_vector_int* vec,
                                            const int* val,
                                            ucb_cmp_func func);
+
+#endif // UCB_CONTAINER_IMPL_VECTOR_INT_H

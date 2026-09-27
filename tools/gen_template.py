@@ -106,6 +106,21 @@ def parse_template(
     pp.define("_GEN_FILENAME", gen_filename)
     pp.define("UCB_SNAKE", "a##_##b", ["a", "b"])
 
+    if is_header:
+        pp.define("_GEN_HEADER")
+
+        # Create header guard name, relative to root include dir
+        # Parse path up to "include" and convert
+        inc_dir = Path(output_file)
+        while inc_dir.name != "include" and inc_dir.parent != inc_dir:
+            inc_dir = inc_dir.parent
+        if inc_dir.name != "include":
+            raise ValueError(f"Could not find include dir in {output_file}")
+        guard_path = Path(output_file).relative_to(inc_dir)
+        guard = guard_path.as_posix().upper().replace("/", "_").replace(".", "_")
+        pp.define("_UCB_GEN_GUARD_OPEN", f"#ifndef {guard}\n#define {guard}")
+        pp.define("_UCB_GEN_GUARD_CLOSE", f"#endif // {guard}")
+
     for d in defines:
         if "=" in d:
             name, value = d.split("=", 1)
@@ -145,9 +160,7 @@ def parse_template(
         if m:
             parent_ignore = bool(cond_stack) and branch_ignore(cond_stack[-1])
             taken = False if parent_ignore else bool(pp.evaluate(m.group(1)))
-            cond_stack.append(
-                {"parent_ignore": parent_ignore, "taken": taken, "in_else": False}
-            )
+            cond_stack.append({"parent_ignore": parent_ignore, "taken": taken, "in_else": False})
             continue
         if re_celse.match(line):
             if cond_stack:

@@ -1,5 +1,3 @@
-#pragma once
-
 /**
  * @file envmap.h
  * This file is part of the UCB project
@@ -10,6 +8,9 @@
  *
  * All strings are UTF-8 encoded.
  */
+
+#ifndef UCB_ENVMAP_H
+#define UCB_ENVMAP_H
 
 #include <ucb/export.h>
 
@@ -135,3 +136,5 @@ UCB_API bool ucb_envmap_prepend(ucb_envmap* map,
  * @param map The environment map to apply
  */
 UCB_API void ucb_envmap_apply(const ucb_envmap* map);
+
+#endif // UCB_ENVMAP_H
