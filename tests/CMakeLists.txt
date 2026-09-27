@@ -33,6 +33,7 @@ ucb_add_executable(ucb_tests LANGUAGE CXX)
 ucb_target_sources(ucb_tests PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     common.h
+    fs_tmp.h
     test_cast.h
     test_string_c.h
     test_tgfunc.h
@@ -53,10 +54,13 @@ ucb_target_sources(ucb_tests PRIVATE
     cast.cpp
     common.cpp
     cond.cpp
+    dir.cpp
     env.cpp
     envmap.cpp
     error.cpp
     file.cpp
+    fs.cpp
+    fs_tmp.cpp
     memory.cpp
     mutex.cpp
     once.cpp

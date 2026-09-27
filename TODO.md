@@ -51,7 +51,7 @@ Order: release first, priority second.
 #### P0
 - [x] Path: Path abstraction API initial usable feature set
 - [x] IO: File/Stream I/O abstraction initial usable feature set
-- [ ] Filesystem: Filesystem API initial usable feature set
+- [x] Filesystem: Filesystem API initial usable feature set
 - [ ] Process: Process launching API initial usable feature set
 
 #### P1
@@ -187,8 +187,8 @@ For Documentation only Doxygen is considered necessary.
 - [x] Common operations (append path, join, split, parent)
 - [x] Name/stem/extension helpers
 - [x] Normalize and compare behavior contract
-- [ ] Used by Filesystem and Process APIs
-- [ ] Testing
+- [x] Used by Filesystem API (Process tracking still pending)
+- [x] Testing
 - [ ] Documentation
 
 ### IO - File/Stream I/O Abstraction (Target: 0.3.0, required by 1.0.0)
@@ -203,13 +203,13 @@ For Documentation only Doxygen is considered necessary.
 - [ ] Documentation
 
 ### Filesystem - Filesystem API (Target: 0.3.0, required by 1.0.0)
-- [ ] Path operations via `ucb_path`
-- [ ] File operations via `ucb_file` (exists, stat, read/write, copy, move, remove)
-- [ ] Directory operations (create, list, iterate, remove)
-- [ ] Error integration with unified error model
-- [ ] Cross-platform behavior contract defined
-- [ ] Testing
-- [ ] Documentation
+- [x] Path operations via `ucb_path`
+- [x] File operations via `ucb_file` (exists, stat, read/write, copy, move, remove)
+- [x] Directory operations (create, list, iterate, remove)
+- [x] Error integration with unified error model
+- [x] Cross-platform behavior contract defined
+- [x] Testing
+- [x] Documentation
 
 ### Process - Process Launching API (Target: 0.3.0, required by 1.0.0)
 - [ ] Process spawn/start

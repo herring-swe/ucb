@@ -25,6 +25,7 @@ int test_string_c(void)
     const char* cstr = "const";
     ucb_str* heap = ucb_str_new_c("heap");
     ucb_str stack = ucb_str_make();
+    ucb_path* path = ucb_path_new_c("some/path");
 
     const char* p_buf = UCB_CSTR(buf);
     const char* p_cstr = UCB_CSTR(cstr);
@@ -32,6 +33,8 @@ int test_string_c(void)
     const char* p_heap = UCB_CSTR(heap);
     const char* p_heap_const = UCB_CSTR((const ucb_str*)heap);
     const char* p_stack = UCB_CSTR(&stack);
+    const char* p_path = UCB_CSTR(path);
+    const char* p_path_const = UCB_CSTR((const ucb_path*)path);
 
     if (strcmp(p_buf, "buffer") != 0)
         errs++;
@@ -45,9 +48,12 @@ int test_string_c(void)
         errs++;
     if (strcmp(p_stack, "") != 0)
         errs++;
+    if (p_path != p_path_const)
+        errs++;
 
     ucb_str_release(&stack);
     ucb_str_free(heap);
+    ucb_path_free(path);
 
     return errs;
 }
