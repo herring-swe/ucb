@@ -86,6 +86,7 @@ ucb_target_public_headers(ucb FILES
     ucb/memory.h
     ucb/mutex.h
     ucb/once.h
+    ucb/path.h
     ucb/pipe.h
     ucb/string.h
     ucb/string_ex.h
@@ -144,6 +145,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/memory.c
     ucb/mutex.c
     ucb/once.c
+    ucb/path.c
     ucb/string.c
     ucb/sys_private.c
     ucb/task.c
