@@ -9,8 +9,12 @@
 
 #include "ucb/envmap.h"
 
+#include "envmap_private.h"
+
 #include "ucb/container/impl/vector_ptr.h"
 #include "ucb/env.h"
+#include "ucb/error.h"
+#include "ucb/memory.h"
 #include "ucb/string.h"
 #include "ucb/types.h"
 
@@ -418,4 +422,65 @@ void ucb_envmap_apply(const ucb_envmap* map)
             ucb_env_set(name, value, true);
         }
     }
+}
+
+/* ===================================================================== */
+/*  Private API                                                          */
+/* ===================================================================== */
+
+char** ucb_envmap_to_envp(const ucb_envmap* map, ucb_error** perr)
+{
+    UCB_VERIFY_ARGS(map);
+
+    size_t count = map->entries ? ucb_vector_ptr_size(map->entries) : 0;
+
+    char** envp = (char**)ucb_calloc(count + 1, sizeof(char*));
+    if (!envp)
+    {
+        ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_envmap_to_envp: allocation failed");
+        return UCB_NULL;
+    }
+
+    size_t out = 0;
+    for (size_t i = 0; i < count; ++i)
+    {
+        const ucb_envmap_entry* entry =
+            (const ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, i);
+        if (!entry || !entry->name || !entry->value)
+            continue;
+
+        const char* name = ucb_str_cstr(entry->name);
+        const char* value = ucb_str_cstr(entry->value);
+        size_t name_len = strlen(name);
+        size_t value_len = strlen(value);
+        size_t total = name_len + 1 + value_len + 1;
+
+        char* nv = (char*)ucb_malloc(total);
+        if (!nv)
+        {
+            ucb_envmap_envp_free(envp);
+            ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_envmap_to_envp: allocation failed");
+            return UCB_NULL;
+        }
+
+        memcpy(nv, name, name_len);
+        nv[name_len] = '=';
+        memcpy(nv + name_len + 1, value, value_len);
+        nv[name_len + 1 + value_len] = '\0';
+
+        envp[out++] = nv;
+    }
+    envp[out] = UCB_NULL;
+
+    return envp;
+}
+
+void ucb_envmap_envp_free(char** envp)
+{
+    if (!envp)
+        return;
+
+    for (char** p = envp; *p; ++p)
+        ucb_free(*p);
+    ucb_free(envp);
 }

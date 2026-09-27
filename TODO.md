@@ -52,7 +52,7 @@ Order: release first, priority second.
 - [x] Path: Path abstraction API initial usable feature set
 - [x] IO: File/Stream I/O abstraction initial usable feature set
 - [x] Filesystem: Filesystem API initial usable feature set
-- [ ] Process: Process launching API initial usable feature set
+- [x] Process: Process launching API initial usable feature set
 
 #### P1
 - [ ] Samples: Project integration samples for new features
@@ -187,7 +187,7 @@ For Documentation only Doxygen is considered necessary.
 - [x] Common operations (append path, join, split, parent)
 - [x] Name/stem/extension helpers
 - [x] Normalize and compare behavior contract
-- [x] Used by Filesystem API (Process tracking still pending)
+- [x] Used by Filesystem API (Process API consumes UTF-8 paths)
 - [x] Testing
 - [ ] Documentation
 
@@ -212,15 +212,15 @@ For Documentation only Doxygen is considered necessary.
 - [x] Documentation
 
 ### Process - Process Launching API (Target: 0.3.0, required by 1.0.0)
-- [ ] Process spawn/start
-- [ ] Exit code and wait handling
-- [ ] Environment controls (integrates with Environment)
-- [ ] Working directory controls (via `ucb_path`)
-- [ ] Stdout/stderr capture and redirection (via `ucb_file`)
-- [ ] Executable/redirection path handling via `ucb_path`
-- [ ] Error integration with unified error model
-- [ ] Testing
-- [ ] Documentation
+- [x] Process spawn/start
+- [x] Exit code and wait handling
+- [x] Environment controls (integrates with Environment)
+- [x] Working directory controls (UTF-8 path, `ucb_path` composable via `UCB_CSTR`)
+- [x] Stdout/stderr capture and redirection (via `ucb_file`)
+- [x] Executable/redirection path handling via UTF-8 paths (`ucb_path` composable via `UCB_CSTR`)
+- [x] Error integration with unified error model
+- [x] Testing
+- [x] Documentation
 
 ### Argument Parsing - Argument Parsing API (Target: 0.4.0, required by 1.0.0)
 - [ ] Option/flag declaration model

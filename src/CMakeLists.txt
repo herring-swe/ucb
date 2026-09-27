@@ -91,6 +91,7 @@ ucb_target_public_headers(ucb FILES
     ucb/once.h
     ucb/path.h
     ucb/pipe.h
+    ucb/process.h
     ucb/string.h
     ucb/string_ex.h
     ucb/task.h
@@ -109,10 +110,12 @@ ucb_target_sources(ucb PRIVATE
     ucb/buffer_private.h
     ucb/cond_private.h
     ucb/dir_private.h
+    ucb/envmap_private.h
     ucb/file_private.h
     ucb/fs_private.h
     ucb/mutex_private.h
     ucb/once_private.h
+    ucb/process_private.h
     ucb/sys_private.h
     ucb/unicode_private.h
 
@@ -153,6 +156,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/mutex.c
     ucb/once.c
     ucb/path.c
+    ucb/process.c
     ucb/string.c
     ucb/sys_private.c
     ucb/task.c
@@ -171,6 +175,7 @@ if(WIN32)
         ucb/string_win32.c
         ucb/error_win32.c
         ucb/file_win32.c
+        ucb/process_win32.c
         ucb/fs_win32.c
         ucb/dir_win32.c
     )
@@ -178,6 +183,7 @@ if(WIN32)
 elseif(UNIX)
     ucb_target_sources(ucb PRIVATE
         ucb/file_unix.c
+        ucb/process_unix.c
         ucb/fs_unix.c
         ucb/dir_unix.c
     )
