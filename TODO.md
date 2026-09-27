@@ -189,18 +189,18 @@ For Documentation only Doxygen is considered necessary.
 - [x] Normalize and compare behavior contract
 - [x] Used by Filesystem API (Process API consumes UTF-8 paths)
 - [x] Testing
-- [ ] Documentation
+- [x] Documentation
 
 ### IO - File/Stream I/O Abstraction (Target: 0.3.0, required by 1.0.0)
-- [ ] Unified `ucb_file` handle model with kind and capability flags
-- [ ] Open/close/read/write/seek/flush/sync over regular files
-- [ ] Standard streams (stdin/stdout/stderr) as non-owning views
-- [ ] Anonymous pipes and wait/readiness helpers
-- [ ] Native handle interop (`fd` / Windows `HANDLE`)
-- [ ] Nonblocking handles and wait helpers
-- [ ] Process redirection integration (`ucb_file_dup`, inheritance)
-- [ ] Testing
-- [ ] Documentation
+- [x] Unified `ucb_file` handle model with kind and capability flags
+- [x] Open/close/read/write/seek/flush/sync over regular files
+- [x] Standard streams (stdin/stdout/stderr) as non-owning views
+- [x] Anonymous pipes and wait/readiness helpers
+- [x] Native handle interop (`fd` / Windows `HANDLE`)
+- [x] Nonblocking handles and wait helpers
+- [x] Process redirection integration (`ucb_file_dup`, inheritance)
+- [x] Testing
+- [x] Documentation
 
 ### Filesystem - Filesystem API (Target: 0.3.0, required by 1.0.0)
 - [x] Path operations via `ucb_path`
