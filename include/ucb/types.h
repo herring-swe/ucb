@@ -44,4 +44,18 @@ typedef uint32_t ucb_cp;
  */
 typedef ptrdiff_t ucb_ssize;
 
+/**
+ * @brief Path separator style.
+ *
+ * Controls how a @ref ucb_path is composed into a string. Parsing always
+ * accepts `/` and, on Windows, also `\` regardless of the style.
+ */
+typedef enum ucb_path_style
+{
+    UCB_PATH_STYLE_DEFAULT = 0, ///< Resolve from @ref ucb_config at compose time
+    UCB_PATH_STYLE_NATIVE,      ///< `\` on Windows, `/` elsewhere
+    UCB_PATH_STYLE_POSIX,       ///< Always `/`
+    UCB_PATH_STYLE_WINDOWS,     ///< Emit `\`; parsing also accepts `\` on Windows
+} ucb_path_style;
+
 #endif // UCB_TYPES_H

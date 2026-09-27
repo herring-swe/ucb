@@ -12,6 +12,7 @@
 #define UCB_UCB_H
 
 #include <ucb/export.h>
+#include <ucb/types.h>
 #include <ucb/version.h>
 
 UCB_API const char* ucb_get_version(void);
@@ -35,7 +36,7 @@ UCB_API void ucb_init_console(void);
  */
 typedef struct ucb_config
 {
-    int _placeholder; // Add actual configuration when needed
+    ucb_path_style default_path_style; ///< Default style for new paths
 } ucb_config;
 
 /**

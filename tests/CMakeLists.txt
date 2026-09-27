@@ -60,6 +60,7 @@ ucb_target_sources(ucb_tests PRIVATE
     memory.cpp
     mutex.cpp
     once.cpp
+    path.cpp
     string.cpp
     tgfunc.cpp
     threadpool.cpp

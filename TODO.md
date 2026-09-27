@@ -183,10 +183,10 @@ For Documentation only Doxygen is considered necessary.
 - [x] Documentation
 
 ### Path - Path Abstraction API (Target: 0.3.0, required by 1.0.0)
-- [ ] Path object model (`ucb_path`: path, name, extension)
-- [ ] Common operations (append path, join, split, parent)
-- [ ] Name/stem/extension helpers
-- [ ] Normalize and compare behavior contract
+- [x] Path object model (`ucb_path`: path, name, extension)
+- [x] Common operations (append path, join, split, parent)
+- [x] Name/stem/extension helpers
+- [x] Normalize and compare behavior contract
 - [ ] Used by Filesystem and Process APIs
 - [ ] Testing
 - [ ] Documentation

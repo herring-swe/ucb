@@ -22,7 +22,7 @@
 #endif
 
 UCB_THREAD_LOCAL ucb_config s_config = {
-    ._placeholder = 0,
+    .default_path_style = UCB_PATH_STYLE_DEFAULT,
 };
 
 const char* ucb_get_version(void)
@@ -51,7 +51,7 @@ void ucb_conf_set(const ucb_config* config)
     else
     {
         s_config = (ucb_config){
-            ._placeholder = 0,
+            .default_path_style = UCB_PATH_STYLE_DEFAULT,
         };
     }
 }
