@@ -1,3 +1,16 @@
+# Root folders and files
+/build/
+/build[_-]*/
+/install/
+/external/
+/Testing/
+/local_ignore/
+/te?mp/
+/AGENTS-WS.md
+
+# Don't push doxygen
+/doc/doxygen/html/
+
 # Basic folders
 .vscode/
 .kilo/
@@ -5,17 +18,6 @@
 .mypy_cache/
 .ruff_cache/
 __pycache__/
-build/
-build[_-]*/
-install/
-external/
-
-# Don't push doxygen
-doc/doxygen/html/
-
-# Local ignore files
-local_ignore/
-/AGENTS-WS.md
 
 # CMake. Never commit user override's
 CMakeUserPresets.json
@@ -43,7 +45,7 @@ CMakeUserPresets.json
 *.app
 
 # Bundled tool binaries (force-track even if .exe)
-!tools/clang-format/clang-format.exe
+!/tools/clang-format/clang-format.exe
 
 # Editor temp/backup files
 *~
