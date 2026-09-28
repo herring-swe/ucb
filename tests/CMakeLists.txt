@@ -49,6 +49,7 @@ ucb_target_sources(ucb_tests PRIVATE
     ucd_corpus.cpp
 
     # Actual tests
+    argparse.cpp
     btrace.cpp
     buffer.cpp
     cast.cpp
