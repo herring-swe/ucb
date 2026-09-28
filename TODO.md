@@ -61,7 +61,7 @@ Order: release first, priority second.
 ### 0.4.0
 
 #### P0
-- [ ] Argument Parsing: Argument parsing API initial usable feature set
+- [x] Argument Parsing: Argument parsing API initial usable feature set
 
 ### 0.5.0
 
@@ -223,13 +223,13 @@ For Documentation only Doxygen is considered necessary.
 - [x] Documentation
 
 ### Argument Parsing - Argument Parsing API (Target: 0.4.0, required by 1.0.0)
-- [ ] Option/flag declaration model
-- [ ] Parse flow and validation
-- [ ] Help/usage generation
-- [ ] Typed value conversion and defaults
-- [ ] Error integration with unified error model
-- [ ] Testing
-- [ ] Documentation
+- [x] Option/flag declaration model
+- [x] Parse flow and validation
+- [x] Help/usage generation
+- [x] Typed value conversion and defaults
+- [x] Error integration with unified error model
+- [x] Testing
+- [x] Documentation
 
 ### Settings - Settings Helper API (Target: 0.5.0, required by 1.0.0)
 - NOTE: May require external libraries for JSON, XML, YAML

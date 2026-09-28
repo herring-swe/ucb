@@ -378,7 +378,7 @@ static inline size_t ucb_buffer_grow_double(ucb_buffer* buf, size_t size_needed)
     else
         cap = SIZE_MAX;
 
-    while (size_needed > cap - buf->size)
+    while (size_needed > cap - buf->alloc)
     {
         if (cap > SIZE_MAX / 2)
             return SIZE_MAX;

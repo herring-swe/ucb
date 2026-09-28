@@ -375,6 +375,24 @@ TEST_CASE("buffer - grow")
         ucb_buffer_free(dbl);
     }
 
+    SUBCASE("grow_double covers request larger than capacity")
+    {
+        // Regression: growth must be computed from the current capacity, not the
+        // used size, or a request exceeding twice the capacity under-allocates.
+        ucb_buffer* dbl = ucb_buffer_new_heap(64);
+        REQUIRE(dbl != nullptr);
+        dbl->grow_func = ucb_buffer_grow_double;
+
+        std::array<char, 300> payload;
+        payload.fill('z');
+        REQUIRE(ucb_buffer_push(dbl, payload.data(), payload.size()));
+        CHECK(dbl->size == payload.size());
+        CHECK(dbl->alloc >= dbl->size);
+        CHECK(memcmp(dbl->data, payload.data(), payload.size()) == 0);
+
+        ucb_buffer_free(dbl);
+    }
+
     SUBCASE("grow_double zero capacity")
     {
         // A zero-capacity buffer must not spin forever and must still grow.

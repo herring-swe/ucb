@@ -71,6 +71,7 @@ ucb_target_public_headers(ucb FILES
     ucb/container/vector.h
     
     ucb/algorithm.h
+    ucb/argparse.h
     ucb/btrace.h
     ucb/buffer.h
     ucb/bufutil.h
@@ -137,6 +138,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/container/vector_generic.c
 
     ucb/algorithm.c
+    ucb/argparse.c
     ucb/btrace.c
     ucb/buffer_private.c
     ucb/buffer.c
