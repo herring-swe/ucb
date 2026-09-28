@@ -479,7 +479,7 @@ static void opt_impl_free(ucb_arg_opt_impl* o)
     ucb_free(o);
 }
 
-UCB_API ucb_arg_parser* ucb_arg_parser_new(const char* prog, ucb_error** perr)
+ucb_arg_parser* ucb_arg_parser_new(const char* prog, ucb_error** perr)
 {
     UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(prog);
@@ -505,7 +505,7 @@ UCB_API ucb_arg_parser* ucb_arg_parser_new(const char* prog, ucb_error** perr)
     return p;
 }
 
-UCB_API void ucb_arg_parser_free(ucb_arg_parser* p)
+void ucb_arg_parser_free(ucb_arg_parser* p)
 {
     if (!p)
         return;
@@ -529,7 +529,7 @@ UCB_API void ucb_arg_parser_free(ucb_arg_parser* p)
 /*                                   Metadata                                 */
 /* -------------------------------------------------------------------------- */
 
-UCB_API bool ucb_arg_parser_set_usage(ucb_arg_parser* p, const char* usage)
+bool ucb_arg_parser_set_usage(ucb_arg_parser* p, const char* usage)
 {
     UCB_VERIFY_ARGS(p);
     if (!usage)
@@ -540,7 +540,7 @@ UCB_API bool ucb_arg_parser_set_usage(ucb_arg_parser* p, const char* usage)
     return ucb_str_assign_c(&p->usage, usage);
 }
 
-UCB_API bool ucb_arg_parser_set_description(ucb_arg_parser* p, const char* description)
+bool ucb_arg_parser_set_description(ucb_arg_parser* p, const char* description)
 {
     UCB_VERIFY_ARGS(p);
     if (!description)
@@ -551,7 +551,7 @@ UCB_API bool ucb_arg_parser_set_description(ucb_arg_parser* p, const char* descr
     return ucb_str_assign_c(&p->description, description);
 }
 
-UCB_API bool ucb_arg_parser_set_version(ucb_arg_parser* p, const char* version)
+bool ucb_arg_parser_set_version(ucb_arg_parser* p, const char* version)
 {
     UCB_VERIFY_ARGS(p);
     if (!version)
@@ -566,7 +566,7 @@ UCB_API bool ucb_arg_parser_set_version(ucb_arg_parser* p, const char* version)
     return true;
 }
 
-UCB_API void ucb_arg_parser_set_width(ucb_arg_parser* p, int width)
+void ucb_arg_parser_set_width(ucb_arg_parser* p, int width)
 {
     UCB_VERIFY_ARGS(p);
     p->width = width < 20 ? 20 : width;
@@ -618,7 +618,7 @@ static bool is_reserved(char short_name, const char* long_name)
 /*                              Option declaration                            */
 /* -------------------------------------------------------------------------- */
 
-UCB_API bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_error** perr)
+bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p && opt);
 
@@ -775,10 +775,10 @@ UCB_API bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_e
     return true;
 }
 
-UCB_API bool ucb_arg_parser_add_options(ucb_arg_parser* p,
-                                        const ucb_arg_opt* opts,
-                                        size_t count,
-                                        ucb_error** perr)
+bool ucb_arg_parser_add_options(ucb_arg_parser* p,
+                                const ucb_arg_opt* opts,
+                                size_t count,
+                                ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p);
     if (count && !opts)
@@ -892,11 +892,11 @@ static bool push_positional(ucb_vector_str* positionals, const char* arg, ucb_er
     return true;
 }
 
-UCB_API ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
-                                            int argc,
-                                            const char* const* argv,
-                                            ucb_vector_str* positionals,
-                                            ucb_error** perr)
+ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
+                                    int argc,
+                                    const char* const* argv,
+                                    ucb_vector_str* positionals,
+                                    ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p);
     UCB_VERIFY_ARGS(argc >= 0);
@@ -1482,14 +1482,14 @@ static bool write_str(ucb_file* out, const ucb_str* s, ucb_error** perr)
     return ucb_file_write_full(out, s->data, s->size, perr);
 }
 
-UCB_API ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p, ucb_error** perr)
 {
     UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
     return build_help(p);
 }
 
-UCB_API ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** perr)
 {
     UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
@@ -1500,7 +1500,7 @@ UCB_API ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** p
     return out;
 }
 
-UCB_API ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error** perr)
 {
     UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
@@ -1525,7 +1525,7 @@ UCB_API ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error**
     return out;
 }
 
-UCB_API bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p && out);
     ucb_str* s = build_help(p);
@@ -1536,7 +1536,7 @@ UCB_API bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out, u
     return ok;
 }
 
-UCB_API bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p && out);
     ucb_str* s = ucb_arg_parser_usage_str(p, perr);
@@ -1547,7 +1547,7 @@ UCB_API bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out, 
     return ok;
 }
 
-UCB_API bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p && out);
     ucb_str* s = ucb_arg_parser_version_str(p, perr);
@@ -1558,10 +1558,10 @@ UCB_API bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out
     return ok;
 }
 
-UCB_API bool ucb_arg_parser_print_error(const ucb_arg_parser* p,
-                                        const ucb_error* err,
-                                        ucb_file* out,
-                                        ucb_error** perr)
+bool ucb_arg_parser_print_error(const ucb_arg_parser* p,
+                                const ucb_error* err,
+                                ucb_file* out,
+                                ucb_error** perr)
 {
     UCB_VERIFY_ARGS(p && err && out);
 
