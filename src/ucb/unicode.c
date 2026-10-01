@@ -998,7 +998,7 @@ static ucb_uc_result ucb_uc_case_map(const char* str,
     if (own_buffer)
     {
         ucb_buffer_fit(dstbuf);
-        ucb_buffer_transfer(dstbuf, (void**)&ret.data, &ret.size, UCB_NULL, UCB_NULL);
+        ucb_buffer_transfer(dstbuf, (void**)&ret.data, &ret.size, UCB_NULL);
         ucb_buffer_free(dstbuf);
         ret.size -= 1; // Do not count null-terminator
     }
@@ -1508,7 +1508,7 @@ static ucb_uc_result normalize_common(const char* str,
 
     norm_ctx_destroy(&ctx);
     ucb_buffer_fit(&ctx.cp);
-    ucb_buffer_transfer(&ctx.cp, (void**)&ret.data, &ret.size, UCB_NULL, UCB_NULL);
+    ucb_buffer_transfer(&ctx.cp, (void**)&ret.data, &ret.size, UCB_NULL);
     ucb_buffer_release(&ctx.cp);
     ret.size -= 1; // Do not count null-terminator
     return ret;

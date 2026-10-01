@@ -143,6 +143,26 @@ typedef enum ucb_arg_action
      * @ref ucb_vector_str pointed to by @c dest.
      */
     UCB_ARG_ACTION_APPEND,
+    /**
+     * @brief Print help and end parsing with @ref UCB_ARG_HELP
+     *
+     * Does not consume a value and ignores @c dest and @c type. When the option
+     * is encountered, the parser writes the full help text to stdout and returns
+     * @ref UCB_ARG_HELP immediately, so the caller only needs to clean up and
+     * exit. Declare this on whichever option should act as help, for example
+     * @c -h/--help. Use @ref ucb_arg_parser_print_help directly to write to
+     * another destination.
+     */
+    UCB_ARG_ACTION_HELP,
+    /**
+     * @brief Print the version and end parsing with @ref UCB_ARG_VERSION
+     *
+     * Like @ref UCB_ARG_ACTION_HELP but writes the version line to stdout and
+     * returns @ref UCB_ARG_VERSION immediately. Declare it on your version
+     * option. Use @ref ucb_arg_parser_print_version directly to write to another
+     * destination.
+     */
+    UCB_ARG_ACTION_VERSION,
 } ucb_arg_action;
 
 /**
@@ -151,8 +171,10 @@ typedef enum ucb_arg_action
  * This is a plain value that may live on the stack. @ref ucb_arg_parser_add
  * deep-copies every field, so the descriptor may be a temporary.
  *
- * At least one of @ref short_name or @ref long_name must be provided. The names
- * @c -h, @c --help and @c --version are reserved.
+ * At least one of @ref short_name or @ref long_name must be provided. There are
+ * no reserved names: @c -h, @c --help and @c --version are ordinary options that
+ * the caller declares like any other and wires to @ref UCB_ARG_ACTION_HELP or
+ * @ref UCB_ARG_ACTION_VERSION, which print and stop parsing automatically.
  */
 typedef struct ucb_arg_opt
 {
@@ -171,7 +193,8 @@ typedef struct ucb_arg_opt
      *
      * Required for @ref UCB_ARG_ACTION_STORE, @ref UCB_ARG_ACTION_STORE_TRUE,
      * @ref UCB_ARG_ACTION_STORE_FALSE, @ref UCB_ARG_ACTION_COUNT and
-     * @ref UCB_ARG_ACTION_APPEND. The pointer type follows the action and type;
+     * @ref UCB_ARG_ACTION_APPEND, and ignored by @ref UCB_ARG_ACTION_HELP and
+     * @ref UCB_ARG_ACTION_VERSION. The pointer type follows the action and type;
      * see @ref ucb_arg_action and @ref ucb_arg_type.
      */
     void* dest;
@@ -208,10 +231,20 @@ static inline ucb_arg_opt ucb_arg_opt_make(void)
  */
 typedef enum ucb_arg_status
 {
-    UCB_ARG_OK = 0,  ///< Parsing completed successfully
-    UCB_ARG_HELP,    ///< @c --help was requested before parsing finished
-    UCB_ARG_VERSION, ///< @c --version was requested before parsing finished
-    UCB_ARG_ERROR,   ///< A parse or validation error was thrown into @c perr
+    UCB_ARG_OK = 0, ///< Parsing completed successfully
+    /**
+     * @brief An option declared with @ref UCB_ARG_ACTION_HELP was encountered
+     *
+     * Parsing stopped early after the parser wrote the help text to stdout.
+     */
+    UCB_ARG_HELP,
+    /**
+     * @brief An option declared with @ref UCB_ARG_ACTION_VERSION was encountered
+     *
+     * Parsing stopped early after the parser wrote the version line to stdout.
+     */
+    UCB_ARG_VERSION,
+    UCB_ARG_ERROR, ///< A parse or validation error was thrown into @c perr
 } ucb_arg_status;
 
 /* -------------------------------------------------------------------------- */
@@ -226,10 +259,9 @@ typedef enum ucb_arg_status
  * recognized.
  *
  * @param prog program name, must be non-NULL
- * @param perr optional location to store the error on failure
  * @return a new owning handle, or UCB_NULL on failure
  */
-UCB_API ucb_arg_parser* ucb_arg_parser_new(const char* prog, ucb_error** perr);
+UCB_API ucb_arg_parser* ucb_arg_parser_new(const char* prog);
 
 /**
  * @brief Release a parser and all owned descriptors and strings
@@ -268,11 +300,12 @@ UCB_API bool ucb_arg_parser_set_usage(ucb_arg_parser* p, const char* usage);
 UCB_API bool ucb_arg_parser_set_description(ucb_arg_parser* p, const char* description);
 
 /**
- * @brief Set the version string and register @c --version
+ * @brief Set the version string
  *
- * Once set, @c --version makes @ref ucb_arg_parser_parse return
- * @ref UCB_ARG_VERSION and @ref ucb_arg_parser_print_version renders
- * @c "<prog> version <version>".
+ * The string is used by @ref ucb_arg_parser_version_str and
+ * @ref ucb_arg_parser_print_version, which renders @c "<prog> version <version>".
+ * This does not register any option; declare an option such as @c --version with
+ * @ref UCB_ARG_ACTION_VERSION yourself.
  *
  * @param p the parser, must be non-NULL
  * @param version the version string, or NULL to clear it
@@ -297,33 +330,31 @@ UCB_API void ucb_arg_parser_set_width(ucb_arg_parser* p, int width);
 /**
  * @brief Add a single option
  *
- * The descriptor and all of its strings are deep-copied. Duplicate short or long
- * names and the reserved names @c -h, @c --help and @c --version are rejected
- * with @ref UCB_ERROR_INVALID_ARG.
+ * The descriptor and all of its strings are deep-copied. This does not parse
+ * command line input, so a malformed descriptor is a programming error: it is
+ * reported with @ref UCB_VERIFY / @ref UCB_REPORT and aborts. That includes an
+ * empty @ref ucb_arg_opt::name, a missing short and long name, duplicate names
+ * and an action whose required @ref ucb_arg_opt::type or @ref ucb_arg_opt::dest
+ * is missing.
  *
  * @param p the parser, must be non-NULL
  * @param opt the option descriptor, must be non-NULL
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation failure
  */
-UCB_API bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_error** perr);
+UCB_API bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt);
 
 /**
  * @brief Add a table of options
  *
- * A thin loop over @ref ucb_arg_parser_add. Parsing stops at the first option
- * that fails to add; the options added before it remain registered.
+ * A thin loop over @ref ucb_arg_parser_add. Since a malformed descriptor aborts,
+ * the loop either completes or does not return.
  *
  * @param p the parser, must be non-NULL
  * @param opts array of @p count descriptors, must be non-NULL when @p count > 0
  * @param count number of descriptors
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation failure
  */
-UCB_API bool ucb_arg_parser_add_options(ucb_arg_parser* p,
-                                        const ucb_arg_opt* opts,
-                                        size_t count,
-                                        ucb_error** perr);
+UCB_API bool ucb_arg_parser_add_options(ucb_arg_parser* p, const ucb_arg_opt* opts, size_t count);
 
 /* -------------------------------------------------------------------------- */
 /*                                   Parsing                                  */
@@ -340,8 +371,12 @@ UCB_API bool ucb_arg_parser_add_options(ucb_arg_parser* p,
  * - Short options may be bundled (@c -ab) and a value taking option consumes the
  *   rest of the token (@c -ovalue) or the next token (@c -o value).
  * - A lone @c - and tokens that look like negative numbers are positional.
- * - @c -h and @c --help return @ref UCB_ARG_HELP immediately; @c --version
- *   returns @ref UCB_ARG_VERSION immediately when a version string is set.
+ * - No option name is handled implicitly. An option declared with
+ *   @ref UCB_ARG_ACTION_HELP writes the help text to stdout and returns
+ *   @ref UCB_ARG_HELP immediately; one declared with
+ *   @ref UCB_ARG_ACTION_VERSION writes the version line to stdout and returns
+ *   @ref UCB_ARG_VERSION immediately. They apply wherever the caller attached
+ *   them (@c -h/--help and @c --version are the usual choices).
  *
  * At the start of the call every destination is initialized: numeric and bool
  * destinations are zeroed and then receive their string default (if any),
@@ -382,10 +417,9 @@ UCB_API ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
  * list. It is owned by the caller and must be released with @ref ucb_str_free.
  *
  * @param p the parser, must be non-NULL
- * @param perr optional location to store the error on failure
  * @return a new string, or UCB_NULL on failure
  */
-UCB_API ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p, ucb_error** perr);
+UCB_API ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p);
 
 /**
  * @brief Render the usage line into a new string
@@ -393,10 +427,9 @@ UCB_API ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p, ucb_error** pe
  * The result is owned by the caller and must be released with @ref ucb_str_free.
  *
  * @param p the parser, must be non-NULL
- * @param perr optional location to store the error on failure
  * @return a new string, or UCB_NULL on failure
  */
-UCB_API ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** perr);
+UCB_API ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p);
 
 /**
  * @brief Render the version line into a new string
@@ -404,40 +437,39 @@ UCB_API ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** p
  * The result is owned by the caller and must be released with @ref ucb_str_free.
  *
  * @param p the parser, must be non-NULL
- * @param perr optional location to store the error on failure
  * @return a new string, or UCB_NULL on failure
  */
-UCB_API ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error** perr);
+UCB_API ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p);
 
 /**
  * @brief Write the full help text to a file handle
  *
  * @param p the parser, must be non-NULL
  * @param out writable destination, must be non-NULL
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation or write failure
  */
-UCB_API bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr);
+UCB_API bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out);
 
 /**
  * @brief Write the usage line to a file handle
  *
  * @param p the parser, must be non-NULL
  * @param out writable destination, must be non-NULL
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation or write failure
  */
-UCB_API bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr);
+UCB_API bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out);
 
 /**
  * @brief Write the version line to a file handle
  *
- * @param p the parser, must be non-NULL
+ * A version string must have been set with @ref ucb_arg_parser_set_version;
+ * omitting it is a programming error and aborts via @ref UCB_VERIFY_ARGS.
+ *
+ * @param p the parser, must be non-NULL and have a version string set
  * @param out writable destination, must be non-NULL
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation or write failure
  */
-UCB_API bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr);
+UCB_API bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out);
 
 /**
  * @brief Write a usage line followed by a formatted error
@@ -447,12 +479,10 @@ UCB_API bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out
  * @param p the parser, must be non-NULL
  * @param err the error to report, must be non-NULL
  * @param out writable destination, must be non-NULL
- * @param perr optional location to store the error on failure
- * @return true on success
+ * @return true on success, false only on an internal allocation or write failure
  */
 UCB_API bool ucb_arg_parser_print_error(const ucb_arg_parser* p,
                                         const ucb_error* err,
-                                        ucb_file* out,
-                                        ucb_error** perr);
+                                        ucb_file* out);
 
 #endif // UCB_ARGPARSE_H

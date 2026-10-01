@@ -82,10 +82,8 @@ static void ucb_buffer_free_heap(ucb_buffer* buf)
 static bool ucb_buffer_transfer_heap(ucb_buffer* buf,
                                      void** out_data,
                                      size_t* out_used,
-                                     size_t* out_capacity,
-                                     const ucb_error** perr)
+                                     size_t* out_capacity)
 {
-    UCB_UNUSED(perr);
     *out_data = buf->data;
     if (out_used)
         *out_used = buf->size;
@@ -143,16 +141,12 @@ bool ucb_buffer_can_transfer(ucb_buffer* buf)
     return buf && buf->_impl_transfer;
 }
 
-bool ucb_buffer_transfer(ucb_buffer* buf,
-                         void** out_data,
-                         size_t* out_size,
-                         size_t* out_capacity,
-                         const ucb_error** perr)
+bool ucb_buffer_transfer(ucb_buffer* buf, void** out_data, size_t* out_size, size_t* out_capacity)
 {
     UCB_VERIFY_ARGS(buf && out_data);
     UCB_VERIFY(buf->_impl_transfer, UCB_ERROR_BUFFER, "Buffer does not support transfer");
 
-    bool success = buf->_impl_transfer(buf, out_data, out_size, out_capacity, perr);
+    bool success = buf->_impl_transfer(buf, out_data, out_size, out_capacity);
     if (success)
     {
         memset(buf, 0, sizeof(ucb_buffer));

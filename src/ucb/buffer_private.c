@@ -70,10 +70,8 @@ static void ucb_buffer_free_malloc(ucb_buffer* buf)
 static bool ucb_buffer_transfer_malloc(ucb_buffer* buf,
                                        void** out_data,
                                        size_t* out_used,
-                                       size_t* out_capacity,
-                                       const ucb_error** perr)
+                                       size_t* out_capacity)
 {
-    UCB_UNUSED(perr);
     *out_data = buf->data;
     if (out_used)
         *out_used = buf->size;

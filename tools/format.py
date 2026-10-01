@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Iterable, List, Sequence
 
 C_SUFFIXES = {".c", ".cpp", ".h", ".hpp"}
-C_DIRS = sorted(["src", "include", "tests", "!tests/doctest"])
+C_DIRS = sorted(["src", "include", "tests", "samples", "!tests/doctest"])
 
 PYTHON_SUFFIXES = {".py"}
 PYTHON_DIRS = sorted(["tools"])

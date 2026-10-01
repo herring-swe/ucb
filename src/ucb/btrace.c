@@ -226,7 +226,7 @@ void ucb_btrace_capture(ucb_btrace* bt)
         {
             ucb_buffer_fit(&buf);
             // UCB_DPRINT("Backtrace buffer initial: %zu, final: %zu\n", total_size, buf.alloc);
-            ucb_buffer_transfer(&buf, (void**)&strs, &total_size, UCB_NULL, UCB_NULL);
+            ucb_buffer_transfer(&buf, (void**)&strs, &total_size, UCB_NULL);
             ucb_buffer_release(&buf);
 
             // Update all pointers
