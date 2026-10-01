@@ -418,7 +418,7 @@ bool ucb_uc_encode_codepoints(ucb_buffer* buf,
             if (perr)
                 ucb_throw_format(perr,
                                  UCB_ERROR_INVALID_CODEPOINT,
-                                 "Invalid codepoint: " PRIu32,
+                                 "Invalid codepoint: %" PRIu32,
                                  codepoints[i]);
             return false;
         }

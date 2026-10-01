@@ -266,6 +266,7 @@ bool ucb_file_read_full(ucb_file* file,
                         ucb_error** perr)
 {
     UCB_VERIFY_ARGS(file);
+    UCB_VERIFY_ARGS(buf);
     UCB_VERIFY_ARGS(out_size);
 
     if (!ucb_file_is_valid(file))
@@ -308,12 +309,6 @@ bool ucb_file_read_full(ucb_file* file,
                          UCB_ERROR_OUT_OF_BOUNDS,
                          "ucb_file_read_full: buffer too small (%zu bytes required)",
                          remaining);
-        return false;
-    }
-
-    if (remaining > 0 && !buf)
-    {
-        UCB_REPORT(UCB_ERROR_INVALID_ARG, "ucb_file_read_full: buffer is NULL");
         return false;
     }
 
