@@ -1354,7 +1354,6 @@ ucb_str* ucb_path_part(const ucb_path* path, size_t index)
     }
 
     UCB_REPORT(UCB_ERROR_OUT_OF_BOUNDS, "Part index %zu out of range", index);
-    return UCB_NULL;
 }
 
 ucb_vector_str* ucb_path_parts(const ucb_path* path)

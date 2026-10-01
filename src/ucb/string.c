@@ -458,14 +458,21 @@ void ucb_str_append(ucb_str* str, const ucb_str* astr)
     ucb_str_append_cstr(str, astr->data, astr->size);
 }
 
-void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr)
+bool ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(str && cp);
+    bool valid = false;
 
     for (size_t i = 0; i < num_cp; i++)
     {
         if (cp[i] == 0)
-            UCB_REPORT(UCB_ERROR_INVALID_ARG, "Zero codepoint is not allowed");
+        {
+            ucb_throw_format(perr,
+                             UCB_ERROR_INVALID_CODEPOINT,
+                             "Zero codepoint is not allowed, at index %zu",
+                             i);
+            return false;
+        }
     }
 
     size_t max_size = 4 * num_cp;
@@ -477,9 +484,11 @@ void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error*
         {
             str->size += buffer.size;
             str->data[str->size] = '\0';
+            valid = true;
         }
         ucb_buffer_release(&buffer);
     }
+    return valid;
 }
 
 void ucb_str_append_cstr(ucb_str* str, const char* cstr, size_t len)

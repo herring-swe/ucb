@@ -12,8 +12,8 @@
  *   - By default these errors are written to stderr, but the program is **not** terminated.
  *   - The user can override the default error handler, with @ref ucb_error_set_func.
  *   - Examples or each type:
- *     - Fatal error: Out of memory. Functions try to return early, but no guarantee.
- *     - User error: Invalid arguments or states in input. Functions return early.
+ *     - Fatal error: Out of memory. Aborts unless user overrides.
+ *     - User error: Invalid arguments or states in input. Always aborts.
  *     - Warning: Recoverable errors where fallbacks may be used to continue.
  * - Complex errors:
  *   - For more complex errors, where input may lead to invalid results, arithmetic failures or
@@ -254,7 +254,7 @@ UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt
  * @brief Report a fatal error
  *
  * Only used for severe errors like out-of-memory or internal errors.
- * Only exits the program if the user has set a custom error handler to do so.
+ * Aborts if no error handler is set or a custom error handler does it.
  */
 #define UCB_FATAL(code, fmt, ...) ucb_report_fatal((code), "%s: " fmt, __func__, ##__VA_ARGS__)
 

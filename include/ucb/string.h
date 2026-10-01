@@ -645,8 +645,9 @@ UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
  * @param cp array of codepoints
  * @param num_cp number of codepoints
  * @param perr optional pointer that may be set on error
+ * @return true if all codepoints were valid
  */
-UCB_API void ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr);
+UCB_API bool ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, ucb_error** perr);
 
 /**
  * @brief Append a C string of a given byte length.
