@@ -56,8 +56,7 @@ typedef void (*ucb_buffer_free_func)(ucb_buffer* buf);
 typedef bool (*ucb_buffer_transfer_func)(ucb_buffer* buf,
                                          void** out_data,
                                          size_t* out_used,
-                                         size_t* out_capacity,
-                                         const ucb_error** error);
+                                         size_t* out_capacity);
 
 /**
  * @brief User-defined grow function
@@ -210,14 +209,12 @@ UCB_API bool ucb_buffer_can_transfer(ucb_buffer* buf);
  * @param out_data where to store the transferred data pointer
  * @param out_size where to store the transferred used size, may be UCB_NULL
  * @param out_capacity where to store the transferred capacity, may be UCB_NULL
- * @param perr optional location to store the error on failure
  * @return true on success
  */
 UCB_API bool ucb_buffer_transfer(ucb_buffer* buf,
                                  void** out_data,
                                  size_t* out_size,
-                                 size_t* out_capacity,
-                                 const ucb_error** perr);
+                                 size_t* out_capacity);
 
 /**
  * @brief Check if the buffer can be resized

@@ -16,9 +16,10 @@ function(ucb_target_init name)
         endif()
     endforeach()
 
-    # Change to PUBLIC if features are needed in headers
+    # Public headers require C11 (_Noreturn, restrict, _Generic), so consumers
+    # must build with it too.
     if("C" IN_LIST ARGS_LANGUAGE)
-        target_compile_features(${name} PRIVATE c_std_11)
+        target_compile_features(${name} PUBLIC c_std_11)
     endif()
 
     if("CXX" IN_LIST ARGS_LANGUAGE)

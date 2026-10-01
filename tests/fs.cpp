@@ -380,14 +380,14 @@ TEST_CASE("fs - cwd")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_str* before = ucb_fs_cwd(&err);
+    ucb_str* before = ucb_fs_cwd();
     REQUIRE(before != UCB_NULL);
     CHECK(before->size > 0);
 
     FsTmp tmp("fs_cwd");
     REQUIRE(ucb_fs_chdir(tmp.dir().c_str(), &err));
 
-    ucb_str* here = ucb_fs_cwd(&err);
+    ucb_str* here = ucb_fs_cwd();
     REQUIRE(here != UCB_NULL);
     CHECK(here->size > 0);
 

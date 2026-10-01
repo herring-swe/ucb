@@ -188,7 +188,7 @@ bool ucb_fs_plat_create_link(const char* target,
     return true;
 }
 
-ucb_str* ucb_fs_plat_cwd(ucb_error** perr)
+ucb_str* ucb_fs_plat_cwd(void)
 {
     size_t cap = 256;
     char* buf = ucb_malloc(cap);
@@ -201,7 +201,6 @@ ucb_str* ucb_fs_plat_cwd(ucb_error** perr)
             break;
         if (errno != ERANGE)
         {
-            ucb_throw_errno(perr, errno, "ucb_fs_cwd: getcwd failed");
             ucb_free(buf);
             return UCB_NULL;
         }

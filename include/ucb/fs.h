@@ -353,10 +353,13 @@ UCB_API bool ucb_fs_move(const char* src, const char* dst, unsigned flags, ucb_e
 /**
  * @brief Get the current working directory
  *
- * @param perr optional location to store the error on failure
+ * This is a trivial query: it returns UCB_NULL on failure without setting an
+ * error, because the only realistic failures are unexpected system errors and an
+ * allocation failure that is fatal on its own.
+ *
  * @return a new owned string, or UCB_NULL on failure
  */
-UCB_API ucb_str* ucb_fs_cwd(ucb_error** perr);
+UCB_API ucb_str* ucb_fs_cwd(void);
 
 /**
  * @brief Change the current working directory

@@ -499,14 +499,11 @@ bool ucb_fs_plat_create_link(const char* target,
     return true;
 }
 
-ucb_str* ucb_fs_plat_cwd(ucb_error** perr)
+ucb_str* ucb_fs_plat_cwd(void)
 {
     DWORD cap = GetCurrentDirectoryW(0, UCB_NULL);
     if (cap == 0)
-    {
-        ucb_throw_win32(perr, GetLastError(), "ucb_fs_cwd: GetCurrentDirectory failed");
         return UCB_NULL;
-    }
 
     wchar_t* wbuf = ucb_malloc((size_t)cap * sizeof(wchar_t));
     if (!wbuf)
@@ -515,13 +512,11 @@ ucb_str* ucb_fs_plat_cwd(ucb_error** perr)
     DWORD len = GetCurrentDirectoryW(cap, wbuf);
     if (len == 0 || len >= cap)
     {
-        DWORD err = GetLastError();
         ucb_free(wbuf);
-        ucb_throw_win32(perr, err, "ucb_fs_cwd: GetCurrentDirectory failed");
         return UCB_NULL;
     }
 
-    char* utf8 = ucb_cstr_from_wchar(wbuf, 0, UCB_NULL, perr);
+    char* utf8 = ucb_cstr_from_wchar(wbuf, 0, UCB_NULL, UCB_NULL);
     ucb_free(wbuf);
     if (!utf8)
         return UCB_NULL;

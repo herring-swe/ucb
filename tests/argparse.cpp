@@ -72,7 +72,7 @@ TEST_CASE("argparse - flags and bundles")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     int verbose = 0;
@@ -85,21 +85,21 @@ TEST_CASE("argparse - flags and bundles")
     opt.long_name = "verbose";
     opt.action = UCB_ARG_ACTION_COUNT;
     opt.dest = &verbose;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "all";
     opt.short_name = 'a';
     opt.action = UCB_ARG_ACTION_STORE_TRUE;
     opt.dest = &all;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "brief";
     opt.short_name = 'b';
     opt.action = UCB_ARG_ACTION_STORE_FALSE;
     opt.dest = &brief;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"-vvv", "-ab"});
@@ -123,7 +123,7 @@ TEST_CASE("argparse - typed values")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     int i = 0;
@@ -141,63 +141,63 @@ TEST_CASE("argparse - typed values")
     opt.long_name = "int";
     opt.type = UCB_ARG_TYPE_INT;
     opt.dest = &i;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "uint";
     opt.long_name = "uint";
     opt.type = UCB_ARG_TYPE_UINT;
     opt.dest = &u;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "long";
     opt.long_name = "long";
     opt.type = UCB_ARG_TYPE_LONG;
     opt.dest = &l;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "ull";
     opt.long_name = "ull";
     opt.type = UCB_ARG_TYPE_ULLONG;
     opt.dest = &ull;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "size";
     opt.long_name = "size";
     opt.type = UCB_ARG_TYPE_SIZE;
     opt.dest = &sz;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "float";
     opt.long_name = "float";
     opt.type = UCB_ARG_TYPE_FLOAT;
     opt.dest = &f;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "double";
     opt.long_name = "double";
     opt.type = UCB_ARG_TYPE_DOUBLE;
     opt.dest = &d;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "bool";
     opt.long_name = "bool";
     opt.type = UCB_ARG_TYPE_BOOL;
     opt.dest = &b;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "str";
     opt.long_name = "str";
     opt.type = UCB_ARG_TYPE_STR;
     opt.dest = &s;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"--int=-42",
@@ -236,7 +236,7 @@ TEST_CASE("argparse - value forms")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     ucb_str out = ucb_str_make();
@@ -246,7 +246,7 @@ TEST_CASE("argparse - value forms")
     opt.long_name = "output";
     opt.type = UCB_ARG_TYPE_STR;
     opt.dest = &out;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"--output=file1"});
@@ -272,7 +272,7 @@ TEST_CASE("argparse - append action")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     ucb_vector_str* inc = ucb_vector_str_new();
@@ -284,7 +284,7 @@ TEST_CASE("argparse - append action")
     opt.long_name = "include";
     opt.action = UCB_ARG_ACTION_APPEND;
     opt.dest = inc;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"-I", "a", "--include=b", "-Ic"});
@@ -311,7 +311,7 @@ TEST_CASE("argparse - positionals")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     bool verbose = false;
@@ -320,7 +320,7 @@ TEST_CASE("argparse - positionals")
     opt.short_name = 'v';
     opt.action = UCB_ARG_ACTION_STORE_TRUE;
     opt.dest = &verbose;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"one", "--", "-x", "--flag", "two"});
@@ -359,7 +359,7 @@ TEST_CASE("argparse - defaults and interpolation")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("/usr/bin/myprog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("/usr/bin/myprog");
     REQUIRE(p != UCB_NULL);
     REQUIRE(ucb_arg_parser_set_description(p, "The %prog tool"));
 
@@ -373,7 +373,7 @@ TEST_CASE("argparse - defaults and interpolation")
     opt.dest = &num;
     opt.def = "42";
     opt.help = "Number of items";
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "name";
@@ -383,7 +383,7 @@ TEST_CASE("argparse - defaults and interpolation")
     opt.dest = &name;
     opt.def = "default-name";
     opt.help = "%(name)s value";
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({});
@@ -391,7 +391,7 @@ TEST_CASE("argparse - defaults and interpolation")
     CHECK(num == 42);
     CHECK(str_text(&name) == "default-name");
 
-    ucb_str* help = ucb_arg_parser_help_str(p, &err);
+    ucb_str* help = ucb_arg_parser_help_str(p);
     REQUIRE(help != UCB_NULL);
     std::string text = str_text(help);
     CHECK(text.find("The myprog tool") != std::string::npos);
@@ -413,14 +413,14 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
 
     // Unsigned converters reject a negative sign even after leading whitespace.
     {
-        ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+        ucb_arg_parser* p = ucb_arg_parser_new("prog");
         size_t sz = 5;
         ucb_arg_opt opt = ucb_arg_opt_make();
         opt.name = "size";
         opt.long_name = "size";
         opt.type = UCB_ARG_TYPE_SIZE;
         opt.dest = &sz;
-        REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+        REQUIRE(ucb_arg_parser_add(p, &opt));
 
         std::vector<const char*> argv;
         std::vector<std::string> args = args_with_prog({"--size=-1"});
@@ -442,7 +442,7 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
 
     // An invalid string default is reported instead of silently ignored.
     {
-        ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+        ucb_arg_parser* p = ucb_arg_parser_new("prog");
         int num = 123;
         ucb_arg_opt opt = ucb_arg_opt_make();
         opt.name = "num";
@@ -450,7 +450,7 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
         opt.type = UCB_ARG_TYPE_INT;
         opt.dest = &num;
         opt.def = "abc";
-        REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+        REQUIRE(ucb_arg_parser_add(p, &opt));
 
         std::vector<const char*> argv;
         std::vector<std::string> args = args_with_prog({});
@@ -463,7 +463,7 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
 
     // Help rendering does not duplicate whitespace, explicit defaults or malformed fields.
     {
-        ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+        ucb_arg_parser* p = ucb_arg_parser_new("prog");
         REQUIRE(ucb_arg_parser_set_description(p, "  alpha beta"));
 
         int num = 0;
@@ -474,7 +474,7 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
         opt.dest = &num;
         opt.def = "7";
         opt.help = "value %(default)s";
-        REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+        REQUIRE(ucb_arg_parser_add(p, &opt));
 
         opt = ucb_arg_opt_make();
         opt.name = "raw";
@@ -483,9 +483,9 @@ TEST_CASE("argparse - defaults and interpolation edge cases")
         ucb_str raw = ucb_str_make();
         opt.dest = &raw;
         opt.help = "%()s";
-        REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+        REQUIRE(ucb_arg_parser_add(p, &opt));
 
-        ucb_str* help = ucb_arg_parser_help_str(p, &err);
+        ucb_str* help = ucb_arg_parser_help_str(p);
         REQUIRE(help != UCB_NULL);
         std::string text = str_text(help);
 
@@ -510,7 +510,7 @@ TEST_CASE("argparse - choices and required")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     static const char* const color_choices[] = {"red", "green"};
@@ -524,7 +524,7 @@ TEST_CASE("argparse - choices and required")
     opt.dest = &color;
     opt.choices = color_choices;
     opt.num_choices = 2;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "req";
@@ -532,7 +532,7 @@ TEST_CASE("argparse - choices and required")
     opt.type = UCB_ARG_TYPE_STR;
     opt.dest = &req;
     opt.required = true;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"--color=red", "--req=ok"});
@@ -563,7 +563,7 @@ TEST_CASE("argparse - errors")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
 
     int num = 0;
@@ -574,14 +574,14 @@ TEST_CASE("argparse - errors")
     opt.long_name = "num";
     opt.type = UCB_ARG_TYPE_INT;
     opt.dest = &num;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "flag";
     opt.long_name = "flag";
     opt.action = UCB_ARG_ACTION_STORE_TRUE;
     opt.dest = &flag;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args;
@@ -602,37 +602,8 @@ TEST_CASE("argparse - errors")
     expect_error({"--num=99999999999999999999"});
     expect_error({"--flag=1"});
 
-    // Duplicate and reserved names are rejected at add time.
-    opt = ucb_arg_opt_make();
-    opt.name = "num2";
-    opt.long_name = "num";
-    opt.type = UCB_ARG_TYPE_INT;
-    opt.dest = &num;
-    CHECK_FALSE(ucb_arg_parser_add(p, &opt, &err));
-    REQUIRE(err != UCB_NULL);
-    CHECK(err->code == UCB_ERROR_INVALID_ARG);
-    ucb_error_clear(&err);
-
-    opt = ucb_arg_opt_make();
-    opt.name = "help2";
-    opt.long_name = "help";
-    opt.type = UCB_ARG_TYPE_INT;
-    opt.dest = &num;
-    CHECK_FALSE(ucb_arg_parser_add(p, &opt, &err));
-    REQUIRE(err != UCB_NULL);
-    CHECK(err->code == UCB_ERROR_INVALID_ARG);
-    ucb_error_clear(&err);
-
-    opt = ucb_arg_opt_make();
-    opt.name = "novalue";
-    opt.long_name = "novalue";
-    opt.type = UCB_ARG_TYPE_NONE;
-    opt.action = UCB_ARG_ACTION_STORE;
-    opt.dest = &num;
-    CHECK_FALSE(ucb_arg_parser_add(p, &opt, &err));
-    REQUIRE(err != UCB_NULL);
-    CHECK(err->code == UCB_ERROR_INVALID_ARG);
-    ucb_error_clear(&err);
+    // Malformed descriptors are programming errors and abort at add time, so
+    // they are not exercised here.
 
     ucb_arg_parser_free(p);
 
@@ -674,9 +645,9 @@ TEST_CASE("argparse - add_options table")
     };
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
-    REQUIRE(ucb_arg_parser_add_options(p, s_table, 2, &err));
+    REQUIRE(ucb_arg_parser_add_options(p, s_table, 2));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"-cc", "-f"});
@@ -694,7 +665,7 @@ TEST_CASE("argparse - help formatting")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("/usr/bin/myprog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("/usr/bin/myprog");
     REQUIRE(p != UCB_NULL);
     REQUIRE(ucb_arg_parser_set_usage(p, "%prog [options] FILE"));
     REQUIRE(ucb_arg_parser_set_description(p, "Does a thing with FILE."));
@@ -703,6 +674,7 @@ TEST_CASE("argparse - help formatting")
     ucb_str out = ucb_str_make();
     int num = 0;
     bool flag = false;
+    bool help_flag = false;
 
     ucb_arg_opt opt = ucb_arg_opt_make();
     opt.name = "output";
@@ -712,7 +684,7 @@ TEST_CASE("argparse - help formatting")
     opt.dest = &out;
     opt.metavar = "FILE";
     opt.help = "Write the result to FILE.";
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "num";
@@ -721,7 +693,7 @@ TEST_CASE("argparse - help formatting")
     opt.dest = &num;
     opt.def = "5";
     opt.help = "Number of items to process in one go, wrapped when long.";
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     opt = ucb_arg_opt_make();
     opt.name = "flag";
@@ -729,9 +701,19 @@ TEST_CASE("argparse - help formatting")
     opt.action = UCB_ARG_ACTION_STORE_TRUE;
     opt.dest = &flag;
     opt.help = "Set the flag.";
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
-    ucb_str* help = ucb_arg_parser_help_str(p, &err);
+    // -h/--help is an ordinary option the caller declares.
+    opt = ucb_arg_opt_make();
+    opt.name = "help";
+    opt.short_name = 'h';
+    opt.long_name = "help";
+    opt.action = UCB_ARG_ACTION_STORE_TRUE;
+    opt.dest = &help_flag;
+    opt.help = "Show this help message and exit.";
+    REQUIRE(ucb_arg_parser_add(p, &opt));
+
+    ucb_str* help = ucb_arg_parser_help_str(p);
     REQUIRE(help != UCB_NULL);
     std::string text = str_text(help);
 
@@ -751,7 +733,7 @@ TEST_CASE("argparse - help formatting")
                       UCB_FILE_WRITE | UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_BINARY,
                       &err);
     REQUIRE(file != UCB_NULL);
-    CHECK(ucb_arg_parser_print_help(p, file, &err) == true);
+    CHECK(ucb_arg_parser_print_help(p, file) == true);
     ucb_file_free(file);
 
     std::string readback;
@@ -765,25 +747,39 @@ TEST_CASE("argparse - help formatting")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE("argparse - version and help status")
+TEST_CASE("argparse - user-declared help and version")
 {
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("prog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("prog");
     REQUIRE(p != UCB_NULL);
     REQUIRE(ucb_arg_parser_set_version(p, "1.2.3"));
 
-    ucb_str* version = ucb_arg_parser_version_str(p, &err);
+    ucb_str* version = ucb_arg_parser_version_str(p);
     REQUIRE(version != UCB_NULL);
     CHECK(str_text(version) == "prog version 1.2.3\n");
     ucb_str_free(version);
+
+    ucb_arg_opt opt = ucb_arg_opt_make();
+    opt.name = "help";
+    opt.short_name = 'h';
+    opt.long_name = "help";
+    opt.action = UCB_ARG_ACTION_HELP;
+    REQUIRE(ucb_arg_parser_add(p, &opt));
+
+    opt = ucb_arg_opt_make();
+    opt.name = "version";
+    opt.long_name = "version";
+    opt.action = UCB_ARG_ACTION_VERSION;
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"--version"});
     CHECK(run_parse(p, args, argv, UCB_NULL, &err) == UCB_ARG_VERSION);
     CHECK(err == UCB_NULL);
 
+    // A HELP action option stops parsing immediately, before later tokens.
     args = args_with_prog({"--help", "--bogus"});
     CHECK(run_parse(p, args, argv, UCB_NULL, &err) == UCB_ARG_HELP);
     CHECK(err == UCB_NULL);
@@ -801,7 +797,7 @@ TEST_CASE("argparse - print error")
     UCB_MEMTRACK_PUSH();
 
     ucb_error* err = UCB_NULL;
-    ucb_arg_parser* p = ucb_arg_parser_new("myprog", &err);
+    ucb_arg_parser* p = ucb_arg_parser_new("myprog");
     REQUIRE(p != UCB_NULL);
 
     int num = 0;
@@ -810,7 +806,7 @@ TEST_CASE("argparse - print error")
     opt.long_name = "num";
     opt.type = UCB_ARG_TYPE_INT;
     opt.dest = &num;
-    REQUIRE(ucb_arg_parser_add(p, &opt, &err));
+    REQUIRE(ucb_arg_parser_add(p, &opt));
 
     std::vector<const char*> argv;
     std::vector<std::string> args = args_with_prog({"--num=abc"});
@@ -823,7 +819,7 @@ TEST_CASE("argparse - print error")
                       UCB_FILE_WRITE | UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_BINARY,
                       &err);
     REQUIRE(file != UCB_NULL);
-    CHECK(ucb_arg_parser_print_error(p, err, file, &err));
+    CHECK(ucb_arg_parser_print_error(p, err, file));
     ucb_file_free(file);
 
     std::string readback;

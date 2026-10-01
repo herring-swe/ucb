@@ -1105,9 +1105,9 @@ done:
 /*                             Working directory                              */
 /* -------------------------------------------------------------------------- */
 
-ucb_str* ucb_fs_cwd(ucb_error** perr)
+ucb_str* ucb_fs_cwd(void)
 {
-    return ucb_fs_plat_cwd(perr);
+    return ucb_fs_plat_cwd();
 }
 
 bool ucb_fs_chdir(const char* path, ucb_error** perr)

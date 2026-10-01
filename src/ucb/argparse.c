@@ -47,7 +47,6 @@ struct ucb_arg_parser
     ucb_str usage;
     ucb_str description;
     ucb_str version;
-    bool has_version;
     int width;
     ucb_vector_ptr* opts;
 };
@@ -479,9 +478,8 @@ static void opt_impl_free(ucb_arg_opt_impl* o)
     ucb_free(o);
 }
 
-ucb_arg_parser* ucb_arg_parser_new(const char* prog, ucb_error** perr)
+ucb_arg_parser* ucb_arg_parser_new(const char* prog)
 {
-    UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(prog);
 
     ucb_arg_parser* p = ucb_calloc_type(1, ucb_arg_parser);
@@ -557,13 +555,9 @@ bool ucb_arg_parser_set_version(ucb_arg_parser* p, const char* version)
     if (!version)
     {
         ucb_str_clear(&p->version);
-        p->has_version = false;
         return true;
     }
-    if (!ucb_str_assign_c(&p->version, version))
-        return false;
-    p->has_version = p->version.size > 0;
-    return true;
+    return ucb_str_assign_c(&p->version, version);
 }
 
 void ucb_arg_parser_set_width(ucb_arg_parser* p, int width)
@@ -600,112 +594,58 @@ static ucb_arg_opt_impl* find_long(ucb_arg_parser* p, const char* name, size_t l
     return UCB_NULL;
 }
 
-static bool is_reserved(char short_name, const char* long_name)
-{
-    if (short_name == 'h')
-        return true;
-    if (long_name)
-    {
-        if (strcmp(long_name, "help") == 0)
-            return true;
-        if (strcmp(long_name, "version") == 0)
-            return true;
-    }
-    return false;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                              Option declaration                            */
 /* -------------------------------------------------------------------------- */
 
-bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_error** perr)
+bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt)
 {
     UCB_VERIFY_ARGS(p && opt);
 
     if (!opt->name || !*opt->name)
-    {
-        ucb_throw(perr, UCB_ERROR_INVALID_ARG, "option name is required");
-        return false;
-    }
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "option name is required");
     if (opt->short_name == 0 && !opt->long_name)
-    {
-        ucb_throw(perr, UCB_ERROR_INVALID_ARG, "option requires a short or long name");
-        return false;
-    }
-    if (is_reserved(opt->short_name, opt->long_name))
-    {
-        ucb_throw(perr, UCB_ERROR_INVALID_ARG, "option name is reserved (-h/--help/--version)");
-        return false;
-    }
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "option requires a short or long name");
     if (opt->short_name && find_short(p, opt->short_name))
-    {
-        ucb_throw_format(perr,
-                         UCB_ERROR_INVALID_ARG,
-                         "duplicate short option '-%c'",
-                         opt->short_name);
-        return false;
-    }
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "duplicate short option '-%c'", opt->short_name);
     if (opt->long_name && find_long(p, opt->long_name, strlen(opt->long_name)))
-    {
-        ucb_throw_format(perr,
-                         UCB_ERROR_INVALID_ARG,
-                         "duplicate long option '--%s'",
-                         opt->long_name);
-        return false;
-    }
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "duplicate long option '--%s'", opt->long_name);
 
     switch (opt->action)
     {
     case UCB_ARG_ACTION_STORE:
         if (opt->type == UCB_ARG_TYPE_NONE)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "STORE requires a value type");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "STORE requires a value type");
         if (!opt->dest)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "STORE requires a destination");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "STORE requires a destination");
         break;
     case UCB_ARG_ACTION_STORE_TRUE:
     case UCB_ARG_ACTION_STORE_FALSE:
     case UCB_ARG_ACTION_COUNT:
         if (!opt->dest)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "option requires a destination");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "option requires a destination");
         break;
     case UCB_ARG_ACTION_APPEND:
         if (!opt->dest)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "APPEND requires a destination");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "APPEND requires a destination");
         if (opt->type != UCB_ARG_TYPE_NONE && opt->type != UCB_ARG_TYPE_STR)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "APPEND only supports NONE or STR type");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "APPEND only supports NONE or STR type");
+        break;
+    case UCB_ARG_ACTION_HELP:
+    case UCB_ARG_ACTION_VERSION:
+        if (opt->type != UCB_ARG_TYPE_NONE)
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "HELP/VERSION do not take a value type");
         break;
     default:
-        ucb_throw(perr, UCB_ERROR_INVALID_ARG, "unknown option action");
-        return false;
+        UCB_REPORT(UCB_ERROR_INVALID_ARG, "unknown option action");
     }
 
     if (opt->num_choices)
     {
         if (!opt->choices)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "choices array is NULL");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "choices array is NULL");
         if (opt->action != UCB_ARG_ACTION_STORE && opt->action != UCB_ARG_ACTION_APPEND)
-        {
-            ucb_throw(perr, UCB_ERROR_INVALID_ARG, "choices require a STORE or APPEND action");
-            return false;
-        }
+            UCB_REPORT(UCB_ERROR_INVALID_ARG, "choices require a STORE or APPEND action");
     }
 
     ucb_arg_opt_impl* o = ucb_calloc_type(1, ucb_arg_opt_impl);
@@ -775,19 +715,14 @@ bool ucb_arg_parser_add(ucb_arg_parser* p, const ucb_arg_opt* opt, ucb_error** p
     return true;
 }
 
-bool ucb_arg_parser_add_options(ucb_arg_parser* p,
-                                const ucb_arg_opt* opts,
-                                size_t count,
-                                ucb_error** perr)
+bool ucb_arg_parser_add_options(ucb_arg_parser* p, const ucb_arg_opt* opts, size_t count)
 {
     UCB_VERIFY_ARGS(p);
-    if (count && !opts)
-    {
+    if (count)
         UCB_VERIFY_ARGS(opts);
-    }
     for (size_t i = 0; i < count; ++i)
     {
-        if (!ucb_arg_parser_add(p, &opts[i], perr))
+        if (!ucb_arg_parser_add(p, &opts[i]))
             return false;
     }
     return true;
@@ -826,25 +761,28 @@ static bool check_choices(const ucb_arg_opt_impl* o, const char* v, ucb_error** 
     return false;
 }
 
-static bool apply_option(ucb_arg_opt_impl* o, const char* value, ucb_error** perr)
+static ucb_arg_status apply_option(ucb_arg_parser* p,
+                                   ucb_arg_opt_impl* o,
+                                   const char* value,
+                                   ucb_error** perr)
 {
     switch (o->action)
     {
     case UCB_ARG_ACTION_STORE:
         if (!check_choices(o, value, perr))
-            return false;
+            return UCB_ARG_ERROR;
         if (!convert_store(o, value, perr))
-            return false;
+            return UCB_ARG_ERROR;
         break;
     case UCB_ARG_ACTION_APPEND:
         if (!check_choices(o, value, perr))
-            return false;
+            return UCB_ARG_ERROR;
         {
             ucb_str* s = ucb_str_new_c(value);
             if (!s)
             {
                 ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "out of memory");
-                return false;
+                return UCB_ARG_ERROR;
             }
             ucb_vector_str_push_back((ucb_vector_str*)o->dest, s);
         }
@@ -858,11 +796,19 @@ static bool apply_option(ucb_arg_opt_impl* o, const char* value, ucb_error** per
     case UCB_ARG_ACTION_COUNT:
         (*(int*)o->dest)++;
         break;
+    case UCB_ARG_ACTION_HELP:
+        o->seen = true;
+        ucb_arg_parser_print_help(p, ucb_file_stdout());
+        return UCB_ARG_HELP;
+    case UCB_ARG_ACTION_VERSION:
+        o->seen = true;
+        ucb_arg_parser_print_version(p, ucb_file_stdout());
+        return UCB_ARG_VERSION;
     default:
-        return false;
+        return UCB_ARG_ERROR;
     }
     o->seen = true;
-    return true;
+    return UCB_ARG_OK;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -926,29 +872,6 @@ ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
             const char* eq = strchr(body, '=');
             size_t name_len = eq ? (size_t)(eq - body) : strlen(body);
 
-            if (name_len == 4 && strncmp(body, "help", 4) == 0)
-            {
-                if (eq)
-                {
-                    ucb_throw(perr,
-                              UCB_ERROR_INVALID_ARG,
-                              "option '--help' does not take an argument");
-                    return UCB_ARG_ERROR;
-                }
-                return UCB_ARG_HELP;
-            }
-            if (p->has_version && name_len == 7 && strncmp(body, "version", 7) == 0)
-            {
-                if (eq)
-                {
-                    ucb_throw(perr,
-                              UCB_ERROR_INVALID_ARG,
-                              "option '--version' does not take an argument");
-                    return UCB_ARG_ERROR;
-                }
-                return UCB_ARG_VERSION;
-            }
-
             ucb_arg_opt_impl* o = find_long(p, body, name_len);
             if (!o)
             {
@@ -975,8 +898,9 @@ ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
                                      o->canon.data);
                     return UCB_ARG_ERROR;
                 }
-                if (!apply_option(o, value, perr))
-                    return UCB_ARG_ERROR;
+                ucb_arg_status status = apply_option(p, o, value, perr);
+                if (status != UCB_ARG_OK)
+                    return status;
             }
             else
             {
@@ -988,8 +912,9 @@ ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
                                      o->canon.data);
                     return UCB_ARG_ERROR;
                 }
-                if (!apply_option(o, UCB_NULL, perr))
-                    return UCB_ARG_ERROR;
+                ucb_arg_status status = apply_option(p, o, UCB_NULL, perr);
+                if (status != UCB_ARG_OK)
+                    return status;
             }
             continue;
         }
@@ -1001,8 +926,6 @@ ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
             for (size_t k = 0; body[k] != '\0'; ++k)
             {
                 char c = body[k];
-                if (c == 'h')
-                    return UCB_ARG_HELP;
 
                 ucb_arg_opt_impl* o = find_short(p, c);
                 if (!o)
@@ -1030,12 +953,14 @@ ucb_arg_status ucb_arg_parser_parse(ucb_arg_parser* p,
                                          o->canon.data);
                         return UCB_ARG_ERROR;
                     }
-                    if (!apply_option(o, value, perr))
-                        return UCB_ARG_ERROR;
+                    ucb_arg_status status = apply_option(p, o, value, perr);
+                    if (status != UCB_ARG_OK)
+                        return status;
                     break;
                 }
-                if (!apply_option(o, UCB_NULL, perr))
-                    return UCB_ARG_ERROR;
+                ucb_arg_status status = apply_option(p, o, UCB_NULL, perr);
+                if (status != UCB_ARG_OK)
+                    return status;
             }
             continue;
         }
@@ -1277,19 +1202,8 @@ static void append_wrapped(ucb_str* out, const char* text, size_t indent, size_t
     ucb_str_append_c(out, "\n");
 }
 
-static void format_left(ucb_str* out, const ucb_arg_opt_impl* o, int builtin)
+static void format_left(ucb_str* out, const ucb_arg_opt_impl* o)
 {
-    if (builtin == 1)
-    {
-        ucb_str_append_c(out, "-h, --help");
-        return;
-    }
-    if (builtin == 2)
-    {
-        ucb_str_append_c(out, "    --version");
-        return;
-    }
-
     bool has_short = o->short_name != 0;
     bool has_long = o->long_name.size > 0;
 
@@ -1326,7 +1240,6 @@ typedef struct help_entry
 {
     ucb_str left;
     const ucb_arg_opt_impl* opt;
-    int builtin; /* 0 user, 1 help, 2 version */
 } help_entry;
 
 static void append_usage_line(ucb_str* out, const ucb_arg_parser* p)
@@ -1371,7 +1284,10 @@ static ucb_str* build_help(const ucb_arg_parser* p)
 
     ucb_str_append_c(out, "Options:\n");
 
-    size_t count = p->opts->size + 1 + (p->has_version ? 1 : 0);
+    size_t count = p->opts->size;
+    if (count == 0)
+        return out;
+
     help_entry* entries = ucb_calloc(count, sizeof(help_entry));
     if (!entries)
     {
@@ -1379,28 +1295,12 @@ static ucb_str* build_help(const ucb_arg_parser* p)
         return UCB_NULL;
     }
 
-    size_t idx = 0;
-    ucb_str_init_empty(&entries[idx].left);
-    entries[idx].builtin = 1;
-    format_left(&entries[idx].left, UCB_NULL, 1);
-    ++idx;
-
-    for (size_t i = 0; i < p->opts->size; ++i)
+    for (size_t i = 0; i < count; ++i)
     {
         ucb_arg_opt_impl* o = (ucb_arg_opt_impl*)ucb_vector_ptr_get(p->opts, i);
-        ucb_str_init_empty(&entries[idx].left);
-        entries[idx].opt = o;
-        entries[idx].builtin = 0;
-        format_left(&entries[idx].left, o, 0);
-        ++idx;
-    }
-
-    if (p->has_version)
-    {
-        ucb_str_init_empty(&entries[idx].left);
-        entries[idx].builtin = 2;
-        format_left(&entries[idx].left, UCB_NULL, 2);
-        ++idx;
+        ucb_str_init_empty(&entries[i].left);
+        entries[i].opt = o;
+        format_left(&entries[i].left, o);
     }
 
     size_t max_left = 0;
@@ -1421,24 +1321,16 @@ static ucb_str* build_help(const ucb_arg_parser* p)
     for (size_t i = 0; i < count; ++i)
     {
         help_entry* e = &entries[i];
-        ucb_str* help = UCB_NULL;
-        if (e->builtin == 1)
-            help = ucb_str_new_c("show this help message and exit");
-        else if (e->builtin == 2)
-            help = ucb_str_new_c("show program's version number and exit");
-        else
+        ucb_str* help = interp_text(p, e->opt, &e->opt->help);
+        if (help && e->opt->has_def &&
+            (e->opt->action == UCB_ARG_ACTION_STORE || e->opt->action == UCB_ARG_ACTION_APPEND))
         {
-            help = interp_text(p, e->opt, &e->opt->help);
-            if (help && e->opt->has_def &&
-                (e->opt->action == UCB_ARG_ACTION_STORE || e->opt->action == UCB_ARG_ACTION_APPEND))
+            const char* raw = e->opt->help.size ? e->opt->help.data : "";
+            if (!strstr(raw, "%default") && !strstr(raw, "%(default)"))
             {
-                const char* raw = e->opt->help.size ? e->opt->help.data : "";
-                if (!strstr(raw, "%default") && !strstr(raw, "%(default)"))
-                {
-                    ucb_str_append_c(help, " (default: ");
-                    append_default(help, e->opt);
-                    ucb_str_append_c(help, ")");
-                }
+                ucb_str_append_c(help, " (default: ");
+                append_default(help, e->opt);
+                ucb_str_append_c(help, ")");
             }
         }
         if (!help)
@@ -1475,23 +1367,21 @@ static ucb_str* build_help(const ucb_arg_parser* p)
 /*                                   Output                                   */
 /* -------------------------------------------------------------------------- */
 
-static bool write_str(ucb_file* out, const ucb_str* s, ucb_error** perr)
+static bool write_str(ucb_file* out, const ucb_str* s)
 {
     if (s->size == 0)
         return true;
-    return ucb_file_write_full(out, s->data, s->size, perr);
+    return ucb_file_write_full(out, s->data, s->size, UCB_NULL);
 }
 
-ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_help_str(const ucb_arg_parser* p)
 {
-    UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
     return build_help(p);
 }
 
-ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p)
 {
-    UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
     ucb_str* out = ucb_str_new_empty();
     if (!out)
@@ -1500,9 +1390,8 @@ ucb_str* ucb_arg_parser_usage_str(const ucb_arg_parser* p, ucb_error** perr)
     return out;
 }
 
-ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error** perr)
+ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p)
 {
-    UCB_UNUSED(perr);
     UCB_VERIFY_ARGS(p);
 
     ucb_str* out = ucb_str_new_empty();
@@ -1525,43 +1414,41 @@ ucb_str* ucb_arg_parser_version_str(const ucb_arg_parser* p, ucb_error** perr)
     return out;
 }
 
-bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_help(const ucb_arg_parser* p, ucb_file* out)
 {
     UCB_VERIFY_ARGS(p && out);
     ucb_str* s = build_help(p);
     if (!s)
         return false;
-    bool ok = write_str(out, s, perr);
+    bool ok = write_str(out, s);
     ucb_str_free(s);
     return ok;
 }
 
-bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_usage(const ucb_arg_parser* p, ucb_file* out)
 {
     UCB_VERIFY_ARGS(p && out);
-    ucb_str* s = ucb_arg_parser_usage_str(p, perr);
+    ucb_str* s = ucb_arg_parser_usage_str(p);
     if (!s)
         return false;
-    bool ok = write_str(out, s, perr);
+    bool ok = write_str(out, s);
     ucb_str_free(s);
     return ok;
 }
 
-bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out, ucb_error** perr)
+bool ucb_arg_parser_print_version(const ucb_arg_parser* p, ucb_file* out)
 {
     UCB_VERIFY_ARGS(p && out);
-    ucb_str* s = ucb_arg_parser_version_str(p, perr);
+    UCB_VERIFY_ARGS(p->version.size > 0);
+    ucb_str* s = ucb_arg_parser_version_str(p);
     if (!s)
         return false;
-    bool ok = write_str(out, s, perr);
+    bool ok = write_str(out, s);
     ucb_str_free(s);
     return ok;
 }
 
-bool ucb_arg_parser_print_error(const ucb_arg_parser* p,
-                                const ucb_error* err,
-                                ucb_file* out,
-                                ucb_error** perr)
+bool ucb_arg_parser_print_error(const ucb_arg_parser* p, const ucb_error* err, ucb_file* out)
 {
     UCB_VERIFY_ARGS(p && err && out);
 
@@ -1574,7 +1461,7 @@ bool ucb_arg_parser_print_error(const ucb_arg_parser* p,
     ucb_str_append_c(s, err->msg ? err->msg : "(no message)");
     ucb_str_append_c(s, "\n");
 
-    bool ok = write_str(out, s, perr);
+    bool ok = write_str(out, s);
     ucb_str_free(s);
     return ok;
 }

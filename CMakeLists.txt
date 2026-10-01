@@ -20,6 +20,7 @@ option(BUILD_TESTING "Build tests" ON)
 # Internal options and details
 option(UCB_CLANG_TIDY "Use clang-tidy" OFF)
 option(UCB_WITH_BEAVER "Beaver mode" OFF)
+option(UCB_SAMPLES "Build samples" ON)
 option(UCB_DEVEL "Enables development logging and assertions for debug builds" ON)
 option(UCB_MEMTRACK_BACKTRACE "Enable backtrace support for memory tracking (SLOW)" OFF)
 option(UCB_FAST "Enable performance optimizations" ON)
@@ -79,6 +80,10 @@ add_subdirectory(src)
 if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(UCB_SAMPLES)
+    add_subdirectory(samples)
 endif()
 
 # ---------------------------------- Export ---------------------------------- #

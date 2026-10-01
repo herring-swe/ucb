@@ -77,7 +77,7 @@ int main(int argc, char** argv)
 {
     ucb_init_console();
     ucb_error_set_func(testing_errfunc);
-    UCB_MEMTRACK_ENABLE();
+    UCB_MEMTRACK_ENABLE(false);
     s_default_mem_report = UCB_MEMTRACK_SET_FUNC(testing_memreport);
     int ret = doctest::Context(argc, argv).run();
     UCB_MEMTRACK_SET_FUNC(testing_memreport_final);

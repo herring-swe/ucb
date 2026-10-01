@@ -77,7 +77,8 @@ The trivial predicates (`ucb_fs_exists()`, `ucb_fs_is_file()`,
 filesystem failure, including a permission error, resolves to `false`, so they
 cannot distinguish "missing" from "unreadable". Use the error-aware queries when
 that distinction matters. A `UCB_NULL` path is still misuse and aborts via
-`UCB_VERIFY_ARGS`, matching the rest of the API.
+`UCB_VERIFY_ARGS`, matching the rest of the API. `ucb_fs_cwd()` is trivial in the
+same spirit: it returns `UCB_NULL` on failure without setting an error.
 
 The remaining functions throw into the optional `ucb_error** perr`. The table
 lists the notable codes; an OS error not listed here is mapped by
@@ -93,7 +94,7 @@ lists the notable codes; an OS error not listed here is mapped by
 | `ucb_fs_copy_file` | `UCB_ERRSYS_ENOENT`, `UCB_ERRSYS_EISDIR` (dir source or dest), `UCB_ERRSYS_EEXIST` (dest exists without `UCB_FS_OVERWRITE`) |
 | `ucb_fs_copy_tree` | `UCB_ERROR_INVALID_ARG` (dest equal to or inside src), `UCB_ERRSYS_ENOTDIR` (non-dir source or dest), `UCB_ERRSYS_EEXIST` (dest dir exists without `UCB_FS_OVERWRITE`) |
 | `ucb_fs_move` | `UCB_ERRSYS_ENOENT`, `UCB_ERRSYS_EEXIST` (dest is a directory, even with `UCB_FS_OVERWRITE`), `UCB_ERRSYS_ENOTDIR` (dir onto file) |
-| `ucb_fs_chdir` / `ucb_fs_cwd` | OS errors only |
+| `ucb_fs_chdir` | OS errors only |
 
 ## Copy and move contract
 

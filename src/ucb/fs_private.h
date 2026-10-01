@@ -84,7 +84,7 @@ bool ucb_fs_plat_create_link(const char* target,
                              const char* linkpath,
                              bool target_is_dir,
                              ucb_error** perr);
-ucb_str* ucb_fs_plat_cwd(ucb_error** perr);
+ucb_str* ucb_fs_plat_cwd(void);
 bool ucb_fs_plat_chdir(const char* path, ucb_error** perr);
 
 #endif // UCB_FS_PRIVATE_H
