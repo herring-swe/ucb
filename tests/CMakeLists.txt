@@ -97,6 +97,8 @@ target_compile_definitions(ucb_tests PRIVATE UCB_TEST_EXPECTED_VERSION="${PROJEC
 
 target_link_libraries(ucb_tests PRIVATE ucb)
 
+target_include_directories(ucb_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+
 if(OpenMP_FOUND)
     target_link_libraries(ucb_tests PRIVATE OpenMP::OpenMP_CXX)
     target_compile_definitions(ucb_tests PRIVATE USE_OPENMP)

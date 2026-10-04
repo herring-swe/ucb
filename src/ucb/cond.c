@@ -8,6 +8,7 @@
  */
 
 #include "cond_private.h"
+#include "error_private.h"
 #include "mutex_private.h"
 
 #include "ucb/error.h"

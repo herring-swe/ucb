@@ -10,6 +10,8 @@
 
 #include "ucb/cstring.h"
 
+#include "error_private.h"
+
 #include "ucb/defines.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"

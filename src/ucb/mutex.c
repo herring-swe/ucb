@@ -12,6 +12,7 @@
 #define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #endif
 
+#include "error_private.h"
 #include "mutex_private.h"
 
 #include "ucb/error.h"

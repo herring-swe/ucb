@@ -10,6 +10,8 @@
 
 #include "ucb/buffer.h"
 
+#include "error_private.h"
+
 #include "ucb/error.h"
 #include "ucb/memory.h"
 

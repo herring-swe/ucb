@@ -8,6 +8,8 @@
  * @brief Error handling errno implementation
  */
 
+#include "error_private.h"
+
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
 #include "ucb/error.h"
@@ -601,11 +603,6 @@ ucb_ecode ucb_err_wrap_errno(int err)
         UCB_DPRINT("UCB: Unhandled errno: %d\n", err);
         return UCB_ERRSYS_UNKNOWN;
     }
-}
-
-ucb_ecode ucb_err_get_errno(void)
-{
-    return ucb_err_wrap_errno(errno);
 }
 
 bool ucb_report_errno(int status, const char* UCB_RESTRICT msg, const char* UCB_RESTRICT function)

@@ -24,6 +24,12 @@
 
 #define UCB_FILE_READ_CHUNK 4096
 
+// Cached standard stream singletons. The pointers are set once and never
+// change; see ucb_file_is_std.
+static ucb_file* s_ucb_std[3];
+static ucb_once s_ucb_std_once = UCB_ONCE_INIT;
+static void ucb_file_std_init(void);
+
 ucb_file* ucb_file_alloc(void)
 {
     ucb_file* file = ucb_calloc_type(1, ucb_file);
@@ -34,7 +40,6 @@ ucb_file* ucb_file_alloc(void)
     file->caps = 0;
     file->flags = 0;
     file->own = false;
-    file->is_static = false;
 #ifdef _WIN32
     file->handle = UCB_NULL;
     file->crt_fd = -1;
@@ -79,6 +84,28 @@ static void ucb_file_throw_closed(ucb_error** perr, const char* op)
     ucb_throw_format(perr, UCB_ERROR_INVALID_STATE, "ucb_file_%s: handle is not open", op);
 }
 
+/**
+ * @brief Check if a handle is one of the process-wide standard stream singletons
+ *
+ * The singletons are shared for the whole process, so closing or freeing them
+ * must never invalidate the underlying wrapper. Ensures the singletons are
+ * initialized before comparing, so reading the cache is race-free even if no
+ * standard stream has been requested yet.
+ */
+static bool ucb_file_is_std(const ucb_file* file)
+{
+    ucb_once_run(&s_ucb_std_once, ucb_file_std_init);
+
+    if (!file)
+        return false;
+    for (unsigned i = 0; i < 3; i++)
+    {
+        if (s_ucb_std[i] == file)
+            return true;
+    }
+    return false;
+}
+
 static void ucb_file_throw_cap(ucb_error** perr, const char* op, const char* cap)
 {
     ucb_throw_format(perr,
@@ -114,7 +141,7 @@ ucb_file* ucb_file_open(const char* path, unsigned flags, ucb_error** perr)
 
 bool ucb_file_close(ucb_file* file, ucb_error** perr)
 {
-    if (!file || file->is_static)
+    if (!file || ucb_file_is_std(file))
         return true;
 
     if (file->own && ucb_file_plat_has_resource(file))
@@ -129,7 +156,7 @@ bool ucb_file_close(ucb_file* file, ucb_error** perr)
 
 void ucb_file_free(ucb_file* file)
 {
-    if (!file || file->is_static)
+    if (!file || ucb_file_is_std(file))
         return;
 
     if (file->own && ucb_file_plat_has_resource(file))
@@ -501,9 +528,6 @@ bool ucb_file_is_valid(const ucb_file* file)
 /* -------------------------------------------------------------------------- */
 /*                              Standard streams                              */
 /* -------------------------------------------------------------------------- */
-
-static ucb_file* s_ucb_std[3];
-static ucb_once s_ucb_std_once = UCB_ONCE_INIT;
 
 static void ucb_file_std_init(void)
 {

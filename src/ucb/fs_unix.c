@@ -15,6 +15,7 @@
 #define _POSIX_C_SOURCE 200809L
 #endif
 
+#include "error_private.h"
 #include "fs_private.h"
 
 #include <ucb/errcodes.h>

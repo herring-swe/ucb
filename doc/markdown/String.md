@@ -15,7 +15,11 @@ A `ucb_str` is always owned, with one special case:
   is 0. It requires no deallocation.
 
 There is no borrowed/wrapped state. Every explicit-length constructor and
-mutator rejects an embedded null character as a user error.
+mutator rejects invalid input (an embedded null character, or text that is not
+valid UTF-8) as API misuse: the operation aborts. Use `ucb_str_is_valid()` to
+test untrusted input before passing it in; it reports the exact reason through
+`ucb_str_cstr_error` (`UCB_STR_CSTR_ERROR_EMBEDDED_NUL` or
+`UCB_STR_CSTR_ERROR_INVALID_UTF8`).
 
 Use `UCB_CSTR(x)` to coerce a C string, a `ucb_str` pointer, or (in C++) a type
 exposing `c_str()` such as `std::string` to a `const char*`. It is part of the

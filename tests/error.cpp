@@ -7,9 +7,9 @@
  *
  * @brief Error handling tests
  *
- * NOTE: Allocation failure paths (out-of-memory while building or copying an
- * error) cannot be exercised because there is no allocator failure hook. Those
- * paths are covered by inspection only.
+ * NOTE: Allocation failure paths (out-of-memory while building an error)
+ * cannot be exercised because there is no allocator failure hook. Those paths
+ * are covered by inspection only.
  */
 
 #include "ucb/error.h"
@@ -18,6 +18,7 @@
 
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
+#include "ucb/error_private.h"
 
 #include <doctest.h>
 
@@ -124,41 +125,6 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error - throw")
     }
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "error - copy and free")
-{
-    const ucb_error* src = ucb_error_format(UCB_ERROR_INVALID_ARG, "copy me");
-    REQUIRE(src != nullptr);
-
-    ucb_error* cpy = ucb_error_copy(src);
-    REQUIRE(cpy != nullptr);
-    CHECK(cpy->code == src->code);
-    CHECK(std::string(cpy->msg) == "copy me");
-    CHECK_FALSE(cpy->is_static);
-    ucb_error_free(cpy);
-    CHECK(num_error == 0);
-
-    SUBCASE("copy of NULL is NULL")
-    {
-        CHECK(ucb_error_copy(nullptr) == nullptr);
-    }
-
-    SUBCASE("free NULL aborts")
-    {
-        CHECK_ABORTS(ucb_error_free(nullptr));
-        REQUIRE(num_aborts == 1);
-        REQUIRE(num_error == 1);
-        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
-    }
-
-    SUBCASE("free a static error aborts")
-    {
-        CHECK_ABORTS(ucb_error_free((ucb_error*)src));
-        REQUIRE(num_aborts == 1);
-        REQUIRE(num_error == 1);
-        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
-    }
-}
-
 TEST_CASE_FIXTURE(TestFailureFixture, "error - format")
 {
     SUBCASE("format truncates")
@@ -234,7 +200,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "error - report")
 
     SUBCASE("report error macro tolerates a missing message")
     {
-        ucb_error no_msg = {nullptr, UCB_ERROR_INTERNAL, true};
+        ucb_error no_msg = {nullptr, UCB_ERROR_INTERNAL};
         CHECK_ABORTS(UCB_REPORT_ERROR(&no_msg));
         REQUIRE(num_aborts == 1);
         REQUIRE(num_error == 1);

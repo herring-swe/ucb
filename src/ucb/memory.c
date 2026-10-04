@@ -12,6 +12,8 @@
 
 #include "ucb/memory.h"
 
+#include "error_private.h"
+
 #include "ucb/error.h"
 
 #include <assert.h>

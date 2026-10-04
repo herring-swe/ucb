@@ -6,6 +6,10 @@
  *
  * @brief Error handling
  *
+ * This header defines the public error contract: the severity levels, the
+ * @ref ucb_error value and its lifecycle, the report macros and the throw
+ * functions used to create errors.
+ *
  * UCB handles errors in the following way:
  * - Fatal errors, user errors and warnings:
  *   - Are **reported** to a single error handling function.
@@ -33,13 +37,19 @@
  * - Misuse of the API (NULL where not allowed, a zero error code, a NULL format
  *   string, or freeing an error that is not owned) is reported as a user error,
  *   which always aborts.
- * - Internal allocation failures while building or copying an error are reported
+ * - Internal allocation failures while building an error are reported
  *   as fatal errors. These abort with the default handler but can be overridden.
  *   An error is never silently dropped.
  * - Unknown error levels and codes are not misuse: @ref ucb_error_lvlstr and
  *   @ref ucb_error_codestr return static fallbacks instead of aborting.
- * - @ref ucb_error_report suppresses reentrant reports made from an error
- *   handler, to avoid unbounded recursion.
+ * - Reentrant reports made from an error handler are suppressed to avoid
+ *   unbounded recursion.
+ *
+ * The reporting and throwing machinery behind these guarantees lives in the
+ * library's private headers and is not installed. @ref ucb_error_print is the
+ * printer a custom handler can reuse for its default output; the internal
+ * dispatcher that selects between the handler and the default output is not
+ * public.
  */
 
 #ifndef UCB_ERROR_H
@@ -92,9 +102,8 @@ typedef enum ucb_errlvl
  */
 typedef struct ucb_error
 {
-    const char* msg;      ///< Error message.
-    ucb_ecode code;       ///< Error code.
-    const bool is_static; ///< Used internally.
+    const char* msg; ///< Error message.
+    ucb_ecode code;  ///< Error code.
 } ucb_error;
 
 typedef void (*ucb_error_func)(ucb_errlvl lvl, const ucb_error* error);
@@ -135,49 +144,10 @@ UCB_API const char* ucb_error_codestr(ucb_ecode code);
 /* -------------------------------------------------------------------------- */
 
 /**
- * @brief Copy an error so it can be stored
- * @param err Error to copy
- * @return Pointer to new error, which must be free'd with ucb_error_free
- */
-UCB_API ucb_error* ucb_error_copy(const ucb_error* err);
-/**
- * @brief Free an error
+ * @brief Print an error using the default output
  *
- * Can only be called on errors returned by @ref ucb_error_copy() or manual
- * allocation with ucb memory functions. Then is_static must be false.
- * Do not use with errors from reports or returned from functions.
- * This method will report a user error if either err is UCB_NULL or err->is_static is true.
- * @param err Error to free
- */
-UCB_API void ucb_error_free(ucb_error* err);
-
-/**
- * @brief Prepares an error for reporting with formatted message.
- *
- * This will set a thread-local error object.
- * The message will be formatted on an internal buffer, of max
- * UCB_BUFSIZE_ERROR_MSG-1 characters.
- *
- * See general documentation about the lifetime of the error object.
- *
- * @warning A zero @p code or a UCB_NULL @p fmt is misuse and aborts. The
- * returned object is valid until the next call to @ref ucb_error_format or
- * @ref ucb_error_formatv on the same thread.
- *
- * @param code the error code, must be non-zero.
- * @param fmt the format string, must be non-NULL
- * @param ... the format arguments
- * @return a pointer to the thread-local error object.
- */
-UCB_API const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...);
-/**
- * @brief Prepares an error for reporting with formatted message using va_list.
- * @see ucb_error_format
- */
-UCB_API const ucb_error* ucb_error_formatv(ucb_ecode code, const char* fmt, va_list args);
-
-/**
- * @brief Print error to stderr
+ * This is the printer a custom error handler can reuse. It writes to stderr in
+ * a fixed severity format.
  *
  * @warning A UCB_NULL @p error is misuse and aborts.
  *
@@ -198,10 +168,6 @@ UCB_API void ucb_error_print(ucb_errlvl lvl, const ucb_error* error);
 
 /**
  * @brief Clear an error previously thrown error from a function
- *
- * This is ment to be used in intermediate functions that handles an error
- * before returning to the caller.
- * For the top-level function, use @ref ucb_error_free() instead.
  *
  * The error will be free'd and the pointer set to UCB_NULL.
  * @param perr pointer to error to clear
@@ -259,24 +225,6 @@ UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt
 #define UCB_FATAL(code, fmt, ...) ucb_report_fatal((code), "%s: " fmt, __func__, ##__VA_ARGS__)
 
 /**
- * @brief Report a errno code as a system error
- *
- * The value is verified to be non-zero before reporting.
- * Value can either be errno or the return value from a function.
- */
-#define UCB_REPORT_ERRNO(value, msg) ucb_report_errno((value), (msg), __func__)
-
-#ifdef _WIN32
-/**
- * @brief Report a Win32 error code
- *
- * The value is verified to be non-zero before reporting.
- * Value can either be GetLastError() or the return value from a function.
- */
-#define UCB_REPORT_WIN32(value, msg) ucb_report_win32((value), (msg), __func__)
-#endif
-
-/**
  * @brief Report a warning
  */
 #define UCB_WARN(fmt, ...) ucb_report_warning("%s: " fmt, __func__, ##__VA_ARGS__)
@@ -314,23 +262,10 @@ UCB_API void ucb_throw_formatv(ucb_error** perr, ucb_ecode code, const char* fmt
             UCB_REPORT_MSG(code, msg);  \
     } while (0)
 
-#define UCB_VERIFY_ERROR(expr, err) UCB_VERIFY_MSG(expr, err->code, err->msg)
-
 /**
  * @brief Verify an expression and report invalid arguments if it fails
  */
 #define UCB_VERIFY_ARGS(expr) UCB_VERIFY(expr, UCB_ERROR_INVALID_ARG, "Invalid arguments")
-
-/**
- * @brief Report an error. Not to be called directly.
- *
- * @warning A UCB_NULL @p err is misuse and aborts. Reports made while already
- * inside an error report (for example from a custom handler) are suppressed to
- * avoid unbounded recursion.
- *
- * @see UCB_FATAL, UCB_REPORT, UCB_WARN
- */
-UCB_API void ucb_error_report(ucb_errlvl lvl, const ucb_error* err);
 
 /**
  * @brief Report a fatal error
@@ -357,13 +292,7 @@ UCB_API void ucb_report_warning(const char* fmt, ...);
 /*                           Functions to wrap errno                          */
 /* -------------------------------------------------------------------------- */
 
-ucb_ecode ucb_err_wrap_errno(int err);
-ucb_ecode ucb_err_get_errno(void);
-
-UCB_API bool ucb_report_errno(int status,
-                              const char* UCB_RESTRICT msg,
-                              const char* UCB_RESTRICT function);
-UCB_API bool ucb_throw_errno(ucb_error** perr, int status, const char* msg);
+UCB_API ucb_ecode ucb_err_wrap_errno(int err);
 
 #ifdef _WIN32
 
@@ -372,18 +301,6 @@ UCB_API bool ucb_throw_errno(ucb_error** perr, int status, const char* msg);
 /* -------------------------------------------------------------------------- */
 
 UCB_API ucb_ecode ucb_err_wrap_win32(uint32_t err);
-UCB_API ucb_ecode ucb_err_get_win32(void);
-/**
- * @brief Format a message from Windows error code into UTF-8
- *
- * Must be free'd with ucb_free
- */
-UCB_API char* ucb_err_msg_win32(uint32_t err);
-
-UCB_API bool ucb_report_win32(uint32_t status,
-                              const char* UCB_RESTRICT msg,
-                              const char* UCB_RESTRICT function);
-UCB_API bool ucb_throw_win32(ucb_error** perr, uint32_t status, const char* msg);
 
 #endif
 

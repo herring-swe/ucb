@@ -10,6 +10,8 @@
 
 #include "ucb/threads.h"
 
+#include "error_private.h"
+
 #include "ucb/cstring.h"
 #include "ucb/debug.h"
 #include "ucb/defines.h"

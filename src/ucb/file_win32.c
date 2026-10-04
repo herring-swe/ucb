@@ -17,6 +17,7 @@
 #error "This file is only for Windows"
 #endif
 
+#include "error_private.h"
 #include "file_private.h"
 
 #include <ucb/cstring.h>
@@ -401,7 +402,6 @@ ucb_file* ucb_file_plat_std(unsigned std_id)
     file->handle = (void*)GetStdHandle(std_ids[std_id]);
     file->crt_fd = (int)std_id;
     file->own = false;
-    file->is_static = true;
     file->flags = std_flags[std_id];
 
     if (!ucb_file_win32_valid_handle(file->handle))

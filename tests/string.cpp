@@ -692,7 +692,7 @@ TEST_CASE("string - append and insert variants")
         ucb_str str;
         ucb_str_init_empty(&str);
         const ucb_cp cps[] = {0x48, 0xE9, 0x1F600}; // H, é, 😀
-        ucb_str_append_cp(&str, cps, 3, nullptr);
+        CHECK(ucb_str_append_cp(&str, cps, 3, nullptr));
 
         CHECK(ucb_str_len(&str) == 7); // 1 + 2 + 4 bytes
         CHECK(ucb_str_num_char(&str) == 3);
@@ -706,7 +706,7 @@ TEST_CASE("string - append and insert variants")
         ucb_str_init_empty(&str);
         const ucb_cp bad[] = {0x41, 0x110000};
         ucb_error* err = nullptr;
-        ucb_str_append_cp(&str, bad, 2, &err);
+        CHECK_FALSE(ucb_str_append_cp(&str, bad, 2, &err));
         CHECK(UCB_IS_THROWN(err));
         ucb_error_clear(&err);
         // Encoding is all-or-nothing on error: nothing is appended
@@ -728,9 +728,29 @@ TEST_CASE("string - append and insert variants")
         ucb_str str;
         ucb_str_init_c(&str, "hello");
         const ucb_cp cps[] = {0x58}; // 'X'
-        ucb_str_insert_cp(&str, 2, cps, 1, nullptr);
+        CHECK(ucb_str_insert_cp(&str, 2, cps, 1, nullptr));
         CHECK(strcmp(ucb_str_cstr(&str), "heXllo") == 0);
         ucb_str_release(&str);
+    }
+
+    SUBCASE("multi-byte insert at end character index")
+    {
+        // "Héllo" is 5 characters but 6 bytes (é is two bytes).
+        ucb_str str;
+        ucb_str_init_c(&str, "H\xC3\xA9llo");
+        REQUIRE(ucb_str_num_char(&str) == 5);
+        REQUIRE(ucb_str_len(&str) == 6);
+
+        const ucb_cp x[] = {0x58}; // 'X'
+        CHECK(ucb_str_insert_cp(&str, 5, x, 1, nullptr));
+        CHECK(strcmp(ucb_str_cstr(&str), "H\xC3\xA9lloX") == 0);
+        ucb_str_release(&str);
+
+        ucb_str str2;
+        ucb_str_init_c(&str2, "H\xC3\xA9llo");
+        ucb_str_insert_cstr(&str2, 5, "Y", 1);
+        CHECK(strcmp(ucb_str_cstr(&str2), "H\xC3\xA9lloY") == 0);
+        ucb_str_release(&str2);
     }
 
     UCB_MEMTRACK_POP();
@@ -1062,25 +1082,28 @@ TEST_CASE("string - UCB_CSTR")
     UCB_MEMTRACK_POP();
 }
 
-TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
+TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input")
 {
     UCB_MEMTRACK_PUSH();
 
+    // An embedded null character or invalid UTF-8 in an explicit-length input
+    // is API misuse: the operation aborts. Out-of-range positions keep their
+    // perr/false reporting.
     SUBCASE("init with embedded null")
     {
-        ucb_str str;
+        ucb_str str = ucb_str_make();
         CHECK_ABORTS(ucb_str_init(&str, "a\0b", 3));
-        CHECK(num_aborts == 1);
-        REQUIRE(num_error == 1);
-        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
+        CHECK(strcmp(ucb_str_cstr(&str), "") == 0);
+        ucb_str_release(&str);
     }
 
     SUBCASE("assign with embedded null")
     {
         ucb_str str;
-        ucb_str_init_empty(&str);
+        ucb_str_init_c(&str, "abc");
+        // assign releases the old data before validating the new input, so
+        // after the abort the string must not be touched.
         CHECK_ABORTS(ucb_str_assign(&str, "a\0b", 3));
-        ucb_str_release(&str);
     }
 
     SUBCASE("append_cstr with embedded null")
@@ -1088,6 +1111,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
         ucb_str str;
         ucb_str_init_c(&str, "abc");
         CHECK_ABORTS(ucb_str_append_cstr(&str, "a\0b", 3));
+        CHECK(strcmp(ucb_str_cstr(&str), "abc") == 0);
         ucb_str_release(&str);
     }
 
@@ -1096,6 +1120,46 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
         ucb_str str;
         ucb_str_init_c(&str, "abcdef");
         CHECK_ABORTS(ucb_str_insert_cstr(&str, 3, "a\0b", 3));
+        CHECK(strcmp(ucb_str_cstr(&str), "abcdef") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert with invalid position")
+    {
+        ucb_str str, istr;
+        ucb_str_init_c(&str, "abc");
+        ucb_str_init_c(&istr, "X");
+        CHECK_ABORTS(ucb_str_insert(&str, 99, &istr));
+        REQUIRE(num_error == 1);
+        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
+        ucb_str_release(&str);
+        ucb_str_release(&istr);
+    }
+
+    SUBCASE("insert_cstr invalid position")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "abc");
+        CHECK_ABORTS(ucb_str_insert_cstr(&str, 5, "X", 1));
+        REQUIRE(num_error == 1);
+        CHECK(errors[0].code == UCB_ERROR_INVALID_ARG);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("init with invalid UTF-8 aborts")
+    {
+        ucb_str str = ucb_str_make();
+        CHECK_ABORTS(ucb_str_init(&str, "\xff\xfe", 2));
+        CHECK(ucb_str_is_empty(&str));
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert_cstr with invalid UTF-8 aborts")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "abcdef");
+        CHECK_ABORTS(ucb_str_insert_cstr(&str, 1, "\xff\xfe", 2));
+        CHECK(strcmp(ucb_str_cstr(&str), "abcdef") == 0);
         ucb_str_release(&str);
     }
 
@@ -1105,6 +1169,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
         ucb_str_init_empty(&str);
         const ucb_cp cps[] = {0x41, 0x0};
         CHECK_ABORTS(ucb_str_append_cp(&str, cps, 2, nullptr));
+        CHECK(ucb_str_len(&str) == 0);
         ucb_str_release(&str);
     }
 
@@ -1114,6 +1179,46 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
         ucb_str_init_c(&str, "hello");
         const ucb_cp cps[] = {0x0};
         CHECK_ABORTS(ucb_str_insert_cp(&str, 2, cps, 1, nullptr));
+        CHECK(strcmp(ucb_str_cstr(&str), "hello") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert_cp out-of-range position")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "hello");
+        const ucb_cp cps[] = {0x58}; // 'X'
+        ucb_error* err = nullptr;
+        CHECK_FALSE(ucb_str_insert_cp(&str, 99, cps, 1, &err));
+        CHECK(UCB_IS_THROWN(err));
+        CHECK(err->code == UCB_ERROR_INVALID_ARG);
+        ucb_error_clear(&err);
+        CHECK(num_aborts == 0);
+        CHECK(num_error == 0);
+        CHECK(strcmp(ucb_str_cstr(&str), "hello") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("append_cstr with invalid UTF-8 aborts")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "abc");
+        CHECK_ABORTS(ucb_str_append_cstr(&str, "\xff\xfe", 2));
+        CHECK(strcmp(ucb_str_cstr(&str), "abc") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("adopt with embedded null")
+    {
+        char* data = (char*)ucb_malloc(6);
+        REQUIRE(data != nullptr);
+        memcpy(data, "a\0cde", 6);
+
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 6));
+        // Aborted before taking ownership; caller still owns data
+        ucb_free(data);
         ucb_str_release(&str);
     }
 
@@ -1141,6 +1246,96 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input aborts")
         ucb_str_init_empty(&str);
         CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 5));
         ucb_free(data);
+    }
+
+    SUBCASE("insert_cp at num_char + 1 fails")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "H\xC3\xA9llo"); // 5 characters
+        const ucb_cp cps[] = {0x58};          // 'X'
+        ucb_error* err = nullptr;
+        CHECK_FALSE(ucb_str_insert_cp(&str, 6, cps, 1, &err));
+        CHECK(UCB_IS_THROWN(err));
+        CHECK(err->code == UCB_ERROR_INVALID_ARG);
+        ucb_error_clear(&err);
+        CHECK(strcmp(ucb_str_cstr(&str), "H\xC3\xA9llo") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("insert_cstr at num_char + 1 aborts")
+    {
+        ucb_str str;
+        ucb_str_init_c(&str, "H\xC3\xA9llo"); // 5 characters
+        CHECK_ABORTS(ucb_str_insert_cstr(&str, 6, "X", 1));
+        CHECK(strcmp(ucb_str_cstr(&str), "H\xC3\xA9llo") == 0);
+        ucb_str_release(&str);
+    }
+
+    SUBCASE("adopt with invalid UTF-8 aborts")
+    {
+        char* cstr = (char*)ucb_malloc(3);
+        REQUIRE(cstr != nullptr);
+        memcpy(cstr, "\xff\xfe", 3);
+
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        CHECK_ABORTS(ucb_str_adopt(&str, cstr, 2, 3));
+        // Aborted before taking ownership; caller still owns cstr
+        ucb_free(cstr);
+        ucb_str_release(&str);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("string - is_valid")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("valid input")
+    {
+        ucb_str_cstr_error etype = UCB_STR_CSTR_ERROR_EMBEDDED_NUL;
+        CHECK(ucb_str_is_valid("abc", 3, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+        CHECK(ucb_str_is_valid("abc", 0, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+        CHECK(ucb_str_is_valid("", 0, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+        // UCB_NULL is treated as the empty string regardless of len.
+        CHECK(ucb_str_is_valid(nullptr, 0, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+        CHECK(ucb_str_is_valid(nullptr, 7, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+        // Multi-byte UTF-8 ("Héllo").
+        CHECK(ucb_str_is_valid("H\xC3\xA9llo", 6, &etype));
+        CHECK(etype == UCB_STR_CSTR_OK);
+    }
+
+    SUBCASE("etype is optional")
+    {
+        CHECK(ucb_str_is_valid("abc", 3, nullptr));
+        CHECK_FALSE(ucb_str_is_valid("a\0b", 3, nullptr));
+    }
+
+    SUBCASE("embedded null")
+    {
+        ucb_str_cstr_error etype = UCB_STR_CSTR_OK;
+        CHECK_FALSE(ucb_str_is_valid("a\0b", 3, &etype));
+        CHECK(etype == UCB_STR_CSTR_ERROR_EMBEDDED_NUL);
+    }
+
+    SUBCASE("invalid UTF-8")
+    {
+        ucb_str_cstr_error etype = UCB_STR_CSTR_OK;
+        CHECK_FALSE(ucb_str_is_valid("\xff\xfe", 2, &etype));
+        CHECK(etype == UCB_STR_CSTR_ERROR_INVALID_UTF8);
+    }
+
+    SUBCASE("embedded null takes precedence over invalid UTF-8")
+    {
+        ucb_str_cstr_error etype = UCB_STR_CSTR_OK;
+        CHECK_FALSE(ucb_str_is_valid("\xff\0\xfe", 3, &etype));
+        CHECK(etype == UCB_STR_CSTR_ERROR_EMBEDDED_NUL);
     }
 
     UCB_MEMTRACK_POP();

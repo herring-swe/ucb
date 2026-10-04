@@ -7,6 +7,7 @@
  * @brief Cross platform one-time initialization implementation
  */
 
+#include "error_private.h"
 #include "once_private.h"
 
 #include "ucb/error.h"

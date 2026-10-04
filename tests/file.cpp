@@ -490,6 +490,11 @@ TEST_CASE("file - std streams")
     ucb_file_free(out);
     CHECK(ucb_file_is_valid(out) == ucb_file_is_valid(ucb_file_stdout()));
 
+    // Closing a standard stream singleton is a no-op and must not invalidate it.
+    CHECK(ucb_file_close(out, UCB_NULL));
+    CHECK(ucb_file_is_valid(out));
+    CHECK(ucb_file_get_fd(out) == 1);
+
 #ifdef _WIN32
     CHECK(ucb_file_get_fd(ucb_file_stdout()) == 1);
 #else

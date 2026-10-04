@@ -10,6 +10,7 @@
 
 #include "ucb/error.h"
 
+#include "error_private.h"
 #include "mutex_private.h"
 #include "once_private.h"
 
@@ -33,7 +34,6 @@ static UCB_THREAD_LOCAL char s_buf[UCB_BUFSIZE_ERROR_MSG];
 static UCB_THREAD_LOCAL struct ucb_error s_err = {
     .code = UCB_OK,
     .msg = UCB_NULL,
-    .is_static = true,
 };
 
 // Guards output to stderr for the default handler. The mutex is recursive so a
@@ -51,13 +51,6 @@ static void s_report_lock_init(void)
 
 static ucb_error* ucb_error_get(void)
 {
-    if (!s_err.is_static)
-    {
-        s_err.code = UCB_ERROR_INVALID_STATE;
-        s_err.msg = "Static ucb_error has been manipulated. Forcing abort.";
-        ucb_error_report(UCB_ERRLVL_USER, &s_err);
-        abort();
-    }
     return &s_err;
 }
 
@@ -70,7 +63,7 @@ static ucb_error* ucb_error_prepare_throw(ucb_error** perr)
         {
             UCB_WARN(
                 "Found unhandled error when preparing a new error. All errors returned from "
-                "functions must be free'd with ucb_error_free().");
+                "functions must be cleared with ucb_error_clear().");
             ucb_error_clear(perr);
         }
         err = ucb_calloc_type(1, ucb_error);
@@ -101,41 +94,15 @@ ucb_error_func ucb_error_get_func(void)
 /*                                    Error                                   */
 /* -------------------------------------------------------------------------- */
 
-ucb_error* ucb_error_copy(const ucb_error* err)
+static void ucb_error_free(ucb_error* err)
 {
-    ucb_error* ret = UCB_NULL;
-    if (err)
-    {
-        ret = ucb_calloc_type(1, ucb_error);
-        if (!ret)
-        {
-            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to allocate error copy");
-            return UCB_NULL;
-        }
-        ret->code = err->code;
-        ret->msg = ucb_cstr_dup(err->msg);
-        if (err->msg && !ret->msg)
-        {
-            UCB_FATAL(UCB_ERROR_OUT_OF_MEMORY, "Failed to copy error message");
-            ucb_free(ret);
-            return UCB_NULL;
-        }
-        // ret->is_static = false; // Const value set by calloc.
-    }
-    return ret;
-}
-
-void ucb_error_free(ucb_error* err)
-{
-    if (err && !err->is_static)
-    {
-        ucb_free((void*)err->msg);
-        ucb_free(err);
-    }
-    else
+    if (!err)
     {
         UCB_REPORT(UCB_ERROR_INVALID_ARG, "Invalid error object");
+        return;
     }
+    ucb_free((void*)err->msg);
+    ucb_free(err);
 }
 
 const ucb_error* ucb_error_format(ucb_ecode code, const char* fmt, ...)

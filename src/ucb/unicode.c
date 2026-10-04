@@ -10,6 +10,7 @@
 
 #include "ucb/unicode.h"
 
+#include "error_private.h"
 #include "unicode_combine.h"
 #include "unicode_decomp.h"
 #include "unicode_defines.h"
