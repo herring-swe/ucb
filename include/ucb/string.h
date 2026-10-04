@@ -57,7 +57,8 @@
  * null-terminated strings.
  *
  * Passing an explicit length that contains an embedded null character, or
- * appending or inserting one, is a user error and always aborts.
+ * appending or inserting one, is API misuse and aborts, as is input that is not
+ * valid UTF-8. See @ref ucb_str_new() for the canonical input rules.
  *
  * ### Length of string
  *
@@ -177,18 +178,26 @@ static inline ucb_str ucb_str_make()
 /**
  * @brief Allocate and initialize a new owned string from a C string.
  *
- * If @p cstr is UCB_NULL, it is treated as the empty string and @p len will be
- * ignored.
+ * This documents the canonical input rules shared by every ucb_str function
+ * that takes a @c (cstr, len) pair:
  *
- * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string must not contain an embedded null
- * character; passing one is a user error and always aborts.
+ * - If @p cstr is UCB_NULL, the result is the interned empty string and @p len
+ *   is ignored.
+ * - If @p len is zero, @p cstr must be null-terminated and its length is
+ *   measured with strlen.
+ * - If @p len is non-zero, @p cstr must not contain an embedded null
+ *   character.
+ * - @p cstr must be valid UTF-8.
  *
- * The returned pointer must always be freed with @ref ucb_str_free()
+ * Invalid input is API misuse and aborts. Use @ref ucb_str_is_valid() to test
+ * untrusted input before passing it in.
  *
- * @param cstr a C string or literal
+ * The returned string owns its data and must be freed with @ref ucb_str_free().
+ * UCB_NULL is returned only on allocation failure.
+ *
+ * @param cstr a C string or literal, or UCB_NULL
  * @param len 0 or length of string excluding null-terminator
- * @return pointer to new ucb_str or UCB_NULL on error.
+ * @return pointer to new ucb_str or UCB_NULL on allocation failure.
  */
 UCB_API ucb_str* ucb_str_new(const char* cstr, size_t len);
 static inline ucb_str* ucb_str_new_c(const char* cstr)
@@ -217,12 +226,10 @@ UCB_API ucb_str* ucb_str_clone(const ucb_str* src);
 /**
  * @brief Initialize an owned string from a C string.
  *
- * If @p cstr is UCB_NULL, it is treated as the empty string and @p len will be
- * ignored.
- *
- * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string must not contain an embedded null
- * character; passing one is a user error and always aborts.
+ * Follows the input rules of @ref ucb_str_new(): @p cstr may be UCB_NULL for
+ * the interned empty string, @p len zero measures @p cstr with strlen, and a
+ * non-zero @p len must not contain an embedded null character. @p cstr must be
+ * valid UTF-8. Invalid input is API misuse and aborts.
  *
  * str must always be released with @ref ucb_str_release().
  *
@@ -246,6 +253,45 @@ static inline void ucb_str_init_empty(ucb_str* str)
 {
     ucb_str_init(str, UCB_NULL, 0);
 }
+
+/** @} */
+
+/**
+ * @name Validation
+ * @{
+ */
+
+/**
+ * @brief Why a C string is not valid input for the ucb_str API.
+ * @see ucb_str_is_valid()
+ */
+typedef enum ucb_str_cstr_error
+{
+    UCB_STR_CSTR_OK = 0,             ///< The C string is valid input.
+    UCB_STR_CSTR_ERROR_EMBEDDED_NUL, ///< Contains an embedded null character.
+    UCB_STR_CSTR_ERROR_INVALID_UTF8, ///< Is not valid UTF-8.
+} ucb_str_cstr_error;
+
+/**
+ * @brief Validate a C string before passing it to the ucb_str API.
+ *
+ * Applies the canonical input rules of @ref ucb_str_new() and additionally
+ * requires valid UTF-8. Use this to test untrusted input before constructing,
+ * adopting or inserting, since the ucb_str functions treat invalid input as API
+ * misuse and abort.
+ *
+ * - @p cstr UCB_NULL is valid and treated as the empty string.
+ * - If @p len is zero, @p cstr must be null-terminated and is measured with
+ *   strlen.
+ * - @p cstr must not contain an embedded null character.
+ * - @p cstr must be valid UTF-8.
+ *
+ * @param cstr C string to validate, or UCB_NULL
+ * @param len 0 or length of string excluding null-terminator
+ * @param etype optional pointer; set to the exact error type when invalid
+ * @return true if @p cstr is valid input
+ */
+UCB_API bool ucb_str_is_valid(const char* cstr, size_t len, ucb_str_cstr_error* etype);
 
 /** @} */
 
@@ -295,10 +341,14 @@ UCB_API bool ucb_str_copy(ucb_str* dst, const ucb_str* src);
  * @brief Assign a C string.
  *
  * Behaves as if calling @ref ucb_str_release() followed by @ref ucb_str_init().
+ * Follows the input rules of @ref ucb_str_new(): a non-zero @p len must not
+ * contain an embedded null character and @p cstr must be valid UTF-8. Invalid
+ * input is API misuse and aborts.
  *
- * If @p len is zero, the string must be null-terminated and will be measured.
- * If @p len is non-zero, the string must not contain an embedded null
- * character; passing one is a user error and always aborts.
+ * @param str string to update
+ * @param cstr a C string or literal
+ * @param len 0 or length of string excluding null-terminator
+ * @return true on success, false on allocation error
  */
 UCB_API bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len);
 static inline bool ucb_str_assign_c(ucb_str* str, const char* cstr)
@@ -335,28 +385,29 @@ UCB_API bool ucb_str_reserve(ucb_str* str, size_t size);
 /**
  * @brief Adopt memory as a string.
  *
- * Release current data and take ownership of @p data, which will be
+ * Release current data and take ownership of @p cstr, which will be
  * freed when @ref ucb_str_free() or @ref ucb_str_release() is called.
  *
- * The @p data must be allocated with ucb functions.
- * The caller must not manipulate @p data after this call.
+ * The @p cstr must be allocated with ucb functions.
+ * The caller must not manipulate @p cstr after this call.
  *
  * If @p len is zero, the string must be null-terminated and will be measured
  * with strlen.
  *
- * @p data must be null-terminated at @c data[len] and must be large enough to
- * hold it: @p alloc must be at least <tt>len + 1</tt>. In addition, the string
- * up to @p len must not contain an embedded null character. Violating any of
- * these is a user error and always aborts.
+ * @p cstr must be valid input (see @ref ucb_str_is_valid): no embedded null
+ * character and valid UTF-8, otherwise it is API misuse and aborts. It must
+ * also be null-terminated at @c cstr[len] and be large enough to hold it:
+ * @p alloc must be at least <tt>len + 1</tt>. Violating these is a user error
+ * and always aborts.
  *
  * @todo Add pointer verification in <ucb/memdbg.h> for debug builds
  *
  * @param str string to update
- * @param data string data to adopt
+ * @param cstr string data to adopt
  * @param len 0 or length of string excluding null-terminator
  * @param alloc size of allocation, must be at least <tt>len + 1</tt>
  */
-UCB_API void ucb_str_adopt(ucb_str* str, char* data, size_t len, size_t alloc);
+UCB_API void ucb_str_adopt(ucb_str* str, char* cstr, size_t len, size_t alloc);
 
 /**
  * @brief Adopt a null-terminated C string
@@ -636,10 +687,9 @@ UCB_API void ucb_str_append(ucb_str* str, const ucb_str* append);
 /**
  * @brief Append an array of codepoints, encoded as UTF-8.
  *
- * On an invalid codepoint, @p perr is set and nothing is appended.
- *
- * A codepoint of zero (U+0000) is rejected as a user error and always aborts,
- * since ucb_str never contains embedded null characters.
+ * A zero codepoint (U+0000) is API misuse and aborts, since ucb_str never
+ * contains embedded null characters. On an invalid codepoint, @p perr is set,
+ * nothing is appended and false is returned.
  *
  * @param str string to append to
  * @param cp array of codepoints
@@ -653,8 +703,8 @@ UCB_API bool ucb_str_append_cp(ucb_str* str, const ucb_cp* cp, size_t num_cp, uc
  * @brief Append a C string of a given byte length.
  *
  * If @p len is 0, @p cstr must be null-terminated and its length is measured.
- * If @p len is non-zero, @p cstr must not contain an embedded null character;
- * passing one is a user error and always aborts.
+ * @p cstr must be valid input (see @ref ucb_str_is_valid): no embedded null
+ * character and valid UTF-8, otherwise it is API misuse and aborts.
  *
  * This is safe when @p cstr points into this string (for example when appending
  * a slice of the string to itself).
@@ -672,6 +722,8 @@ static inline void ucb_str_append_c(ucb_str* str, const char* cstr)
 /**
  * @brief Insert a string into another string at a specific character index
  *
+ * An @p index past the last character is an invalid argument and aborts.
+ *
  * @note Insert at character index, not byte index
  * @param str string to insert into
  * @param index character index to insert at
@@ -682,10 +734,10 @@ UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
 /**
  * @brief Insert an array of codepoints, encoded as UTF-8, at a character index.
  *
- * On an invalid codepoint, @p perr is set and nothing is inserted.
- *
- * A codepoint of zero (U+0000) is rejected as a user error and always aborts,
- * since ucb_str never contains embedded null characters.
+ * A zero codepoint (U+0000) is API misuse and aborts, since ucb_str never
+ * contains embedded null characters. On an invalid codepoint, @p perr is set,
+ * nothing is inserted and false is returned. @p perr is also set when
+ * @p index is past the last character or @p str is not valid UTF-8.
  *
  * @note Insert at character index, not byte index
  * @param str string to insert into
@@ -693,8 +745,9 @@ UCB_API void ucb_str_insert(ucb_str* str, size_t index, const ucb_str* insert);
  * @param cp array of codepoints
  * @param num_cp number of codepoints
  * @param perr optional pointer that may be set on error
+ * @return true if the codepoints were valid and inserted
  */
-UCB_API void ucb_str_insert_cp(ucb_str* str,
+UCB_API bool ucb_str_insert_cp(ucb_str* str,
                                size_t index,
                                const ucb_cp* cp,
                                size_t num_cp,
@@ -704,8 +757,10 @@ UCB_API void ucb_str_insert_cp(ucb_str* str,
  * @brief Insert a C string at a character index.
  *
  * If @p len is 0, @p cstr must be null-terminated and its length is measured.
- * If @p len is non-zero, @p cstr must not contain an embedded null character;
- * passing one is a user error and always aborts.
+ * @p cstr must be valid input (see @ref ucb_str_is_valid): no embedded null
+ * character and valid UTF-8, otherwise it is API misuse and aborts. If @p str
+ * is not valid UTF-8, nothing is inserted. An @p index past the last character
+ * is an invalid argument and aborts.
  *
  * This is safe when @p cstr points into this string (for example when inserting
  * a slice of the string into itself).
@@ -771,7 +826,7 @@ UCB_API ucb_str* ucb_str_substr(const ucb_str* str, size_t start, size_t end);
  *
  * @param str string to convert
  * @return true on success
- * @return false on error or out of memory
+ * @return false on error or out of memory; the string is left unchanged
  */
 UCB_API bool ucb_str_to_lower(ucb_str* str);
 
@@ -811,7 +866,7 @@ UCB_API bool ucb_str_casefold(ucb_str* str);
  * @param str string to normalize; must be valid UTF-8
  * @param form the normalization form to apply
  * @return true on success
- * @return false on error or out of memory
+ * @return false on error or out of memory; the string is left unchanged
  */
 UCB_API bool ucb_str_normalize(ucb_str* str, ucb_norm_form form);
 

@@ -13,6 +13,7 @@
 #endif
 
 #include "dir_private.h"
+#include "error_private.h"
 #include "fs_private.h"
 
 #include <ucb/cstring.h>

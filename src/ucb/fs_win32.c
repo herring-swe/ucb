@@ -16,6 +16,7 @@
 #error "This file is only for Windows"
 #endif
 
+#include "error_private.h"
 #include "fs_private.h"
 
 #include <ucb/cstring.h>

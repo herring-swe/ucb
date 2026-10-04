@@ -12,6 +12,7 @@
 #define _FILE_OFFSET_BITS 64
 #endif
 
+#include "error_private.h"
 #include "file_private.h"
 
 #include <ucb/errcodes.h>
@@ -421,7 +422,6 @@ ucb_file* ucb_file_plat_std(unsigned std_id)
 
     file->fd = (int)std_id;
     file->own = false;
-    file->is_static = true;
     ucb_file_unix_detect_flags(file);
     ucb_file_set_io_caps(file);
     if (ucb_file_unix_query(file) != 0)

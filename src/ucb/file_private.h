@@ -29,7 +29,6 @@ struct ucb_file
     unsigned caps;      ///< Bitwise OR of ucb_file_caps
     unsigned flags;     ///< Open flags as normalized by the backend
     bool own;           ///< True if close/free releases the OS resource
-    bool is_static;     ///< True for the process-wide standard stream singletons
 #ifdef _WIN32
     void* handle; ///< Windows HANDLE, or UCB_NULL
     int crt_fd;   ///< CRT descriptor if known, otherwise -1

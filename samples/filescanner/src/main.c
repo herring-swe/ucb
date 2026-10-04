@@ -56,11 +56,6 @@ int main(int argc, char** argv)
     {
         // Adding options is not user input; malformed descriptors abort inside
         // the add call, so a false return is only an internal allocation failure.
-        //
-        // These are internal error print methods...
-        // Need to be a distinction, like ucb_error_print_internal (uses levels) and ucb_error_print
-        // (up to implementor).
-        // Probably should hide internal API from public headers.
         ucb_arg_parser_free(parser);
         ucb_vector_str_free_full(paths);
         return 1;
@@ -69,19 +64,10 @@ int main(int argc, char** argv)
     ucb_arg_status status = ucb_arg_parser_parse(parser, argc, argv, paths, &err);
     if (status != UCB_ARG_OK)
     {
-        if (status == UCB_ARG_ERROR)
+        if (UCB_IS_THROWN(err))
         {
-            if (err->code == UCB_ERROR_INVALID_ARG)
-            {
-                // User error
-                printf("%s\n", err->msg);
-                ucb_arg_parser_print_help(parser, ucb_file_stdout());
-            }
-            else
-            {
-                // Internal error, shouldn't happen.
-                printf("Error: %s - %s\n", ucb_error_codestr(err->code), err->msg);
-            }
+            ucb_arg_parser_print_error(parser, err, ucb_file_stderr());
+            ucb_arg_parser_print_help(parser, ucb_file_stdout());
             ucb_error_clear(&err);
         }
         ucb_arg_parser_free(parser);
@@ -93,7 +79,7 @@ int main(int argc, char** argv)
     if (ucb_vector_str_is_empty(paths))
     {
         ucb_str* pwd = ucb_fs_cwd();
-        printf("Path: %s", UCB_CSTR(pwd));
+        printf("Path: %s\n", UCB_CSTR(pwd));
         ucb_str_free(pwd);
     }
     else

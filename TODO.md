@@ -54,24 +54,25 @@ Order: release first, priority second.
 - [x] Filesystem: Filesystem API initial usable feature set
 - [x] Process: Process launching API initial usable feature set
 
-#### P1
-- [ ] Samples: Project integration samples for new features
-- [ ] Build: Packaging artifacts include API docs and changelog
-
 ### 0.4.0
 
 #### P0
 - [x] Argument Parsing: Argument parsing API initial usable feature set
 
+#### P1
+- [ ] Samples: Project integration samples for new features
+- [ ] Build: Packaging artifacts include API docs and changelog
+
 ### 0.5.0
-
-#### P0
-- [ ] Settings: Settings helper API initial usable feature set
-
-### 0.6.0
 
 ### P0
 - [ ] Encoding: Encoding API initial usable feature set
+- [ ] POSIX: Add detection of non-UTF-8 locales and conversion to UTF-8
+
+### 0.6.0
+
+#### P0
+- [ ] Settings: Settings helper API initial usable feature set
 
 ### 1.0.0
 

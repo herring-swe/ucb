@@ -82,10 +82,12 @@ ucb_target_public_headers(ucb FILES
     ucb/dir.h
     ucb/env.h
     ucb/envmap.h
+    ucb/errcodes.h
     ucb/error.h
     ucb/file.h
     ucb/fs.h
     ucb/fs_ex.h
+    ucb/generics.h
     ucb/memdbg.h
     ucb/memory.h
     ucb/mutex.h
@@ -101,6 +103,7 @@ ucb_target_public_headers(ucb FILES
     ucb/threads.h
     ucb/time.h
     ucb/tls.h
+    ucb/types.h
     ucb/ucb.h
     ucb/unicode_enum.h
     ucb/unicode.h
@@ -112,6 +115,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/cond_private.h
     ucb/dir_private.h
     ucb/envmap_private.h
+    ucb/error_private.h
     ucb/file_private.h
     ucb/fs_private.h
     ucb/mutex_private.h

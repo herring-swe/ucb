@@ -8,6 +8,8 @@
  * @brief Cross-platform C string functions implementation
  */
 
+#include "error_private.h"
+
 #include "ucb/cstring.h"
 #include "ucb/defines.h"
 #include "ucb/error.h"

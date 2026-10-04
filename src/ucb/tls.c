@@ -18,6 +18,8 @@
 
 #include "ucb/tls.h"
 
+#include "error_private.h"
+
 #include "ucb/error.h"
 #include "ucb/memory.h"
 

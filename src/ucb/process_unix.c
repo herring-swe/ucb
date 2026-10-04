@@ -13,6 +13,7 @@
  */
 
 #include "envmap_private.h"
+#include "error_private.h"
 #include "process_private.h"
 
 #include <ucb/cstring.h>

@@ -12,6 +12,8 @@
 #error "This file is only for Windows"
 #endif
 
+#include "error_private.h"
+
 #include "ucb/debug.h"
 #include "ucb/errcodes.h"
 #include "ucb/error.h"
@@ -171,11 +173,6 @@ ucb_ecode ucb_err_wrap_win32(uint32_t err)
         UCB_DPRINT("UCB: Unhandled windows error code: %d\n", err);
         return UCB_ERRSYS_WIN_GENERIC;
     }
-}
-
-ucb_ecode ucb_err_get_win32(void)
-{
-    return ucb_err_wrap_win32(GetLastError());
 }
 
 char* ucb_err_msg_win32(uint32_t err)
