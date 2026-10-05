@@ -372,6 +372,38 @@ TEST_CASE_FIXTURE(MemTrackFixture, "memory - double free")
     s_mutex.unlock();
 }
 
+TEST_CASE_FIXTURE(MemTrackFixture, "memory - is alloc")
+{
+    s_mutex.lock();
+
+    if (UCB_MEMTRACK_IS_ENABLED())
+    {
+        UCB_MEMTRACK_RESET();
+
+        void* ptr = ucb_malloc(32);
+        REQUIRE(ptr != nullptr);
+
+        size_t size = 0;
+        CHECK(UCB_MEM_IS_ALLOC(ptr, &size));
+        CHECK(size == 32);
+        CHECK(UCB_MEM_IS_ALLOC(ptr, UCB_NULL));
+
+        // Foreign memory is not a tracked allocation
+        CHECK_FALSE(UCB_MEM_IS_ALLOC(&size, &size));
+
+        // Freed memory is no longer a tracked allocation
+        ucb_free(ptr);
+        CHECK_FALSE(UCB_MEM_IS_ALLOC(ptr, &size));
+    }
+    else
+    {
+        // Release builds turn the macro into a no-op
+        CHECK_FALSE(UCB_MEM_IS_ALLOC((void*)&s_state, UCB_NULL));
+    }
+
+    s_mutex.unlock();
+}
+
 TEST_CASE_FIXTURE(MemTrackFixture, "memory - tracking stress")
 {
     s_mutex.lock();
