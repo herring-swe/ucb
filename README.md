@@ -110,8 +110,6 @@ This section needs verification.
 Development requirements (additional from above):
 
 - Python 3.10 or later
-- Linux distribution able to run clang-format 21.1.8 (GLIBCXX_3.4.29, GLIBC_2.34)
-  - TODO: Should custom compile it on Rocky 8 and ship libstdc++ if required.
 - Install python requirements:
   - python -m pip install -r tools/pyreq-dev.txt
   
