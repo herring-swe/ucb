@@ -257,7 +257,7 @@ cleanup:
          * frames * sizeof(char*)
          * followed by each string + null terminator
          *
-         * TODO: Verify above or create our own layout
+         * This is true for glibc, but not guaranteed by the standard.
          */
         strs = backtrace_symbols(&callstack[1], frames - 1);
         frames--;
