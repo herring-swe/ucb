@@ -545,6 +545,40 @@ int ucb_mem_tracking_level(void)
     return level;
 }
 
+bool ucb_mem_is_alloc(const void* ptr, size_t* size)
+{
+    if (!ptr || !s_tracking_enabled)
+        return false;
+
+    bool found = false;
+
+    ucb_mutex_lock(&s_mutex);
+
+    // Walk the live allocation lists instead of probing a header at ptr. The
+    // pointer may be foreign or interior, so dereferencing memory before ptr is
+    // not safe here.
+    for (int level = 0; level <= s_trace_level && !found; level++)
+    {
+        ucb_tracepoint_t* tp = s_trace_points[level];
+        if (!tp)
+            continue;
+
+        for (ucb_alloc_meta* entry = tp->alloc; entry; entry = entry->next)
+        {
+            if ((const void*)(entry + 1) == ptr)
+            {
+                found = true;
+                if (size)
+                    *size = entry->size;
+                break;
+            }
+        }
+    }
+
+    ucb_mutex_unlock(&s_mutex);
+    return found;
+}
+
 void ucb_mem_tracking_push(void)
 {
     ucb_mem_tracking_push_name(UCB_NULL);

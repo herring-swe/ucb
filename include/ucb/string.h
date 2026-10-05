@@ -400,7 +400,9 @@ UCB_API bool ucb_str_reserve(ucb_str* str, size_t size);
  * @p alloc must be at least <tt>len + 1</tt>. Violating these is a user error
  * and always aborts.
  *
- * @todo Add pointer verification in <ucb/memdbg.h> for debug builds
+ * In debug builds, if @p cstr is a tracked ucb allocation (see
+ * @ref UCB_MEM_IS_ALLOC), the real allocation size is used instead of
+ * @p alloc. In release builds no verification is performed.
  *
  * @param str string to update
  * @param cstr string data to adopt

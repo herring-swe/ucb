@@ -555,6 +555,26 @@ TEST_CASE("string - adopt and abandon")
         ucb_str_release(&str);
     }
 
+    SUBCASE("ucb_str_adopt uses tracked allocation size")
+    {
+        // Debug builds with tracking enabled recover the real allocation size
+        // even when the caller reports a smaller one.
+        if (UCB_MEMTRACK_IS_ENABLED())
+        {
+            char* data = (char*)ucb_malloc(16);
+            REQUIRE(data != nullptr);
+            memcpy(data, "hello", 6);
+
+            ucb_str str;
+            ucb_str_init_empty(&str);
+            ucb_str_adopt(&str, data, 5, 6);
+
+            CHECK(ucb_str_len(&str) == 5);
+            CHECK(ucb_str_capacity(&str) == 16);
+            ucb_str_release(&str);
+        }
+    }
+
     SUBCASE("ucb_str_adopt_c")
     {
         char* data = (char*)ucb_malloc(6);

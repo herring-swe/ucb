@@ -95,6 +95,7 @@ UCB_DIAG_IGN_UNUSED_VALUE()
 #define UCB_MEMTRACK_POP() ((void)0)
 #define UCB_MEMTRACK_REPORT() ((void)0)
 #define UCB_MEMTRACK_FINAL() ((void)0)
+#define UCB_MEM_IS_ALLOC(ptr, size) false
 UCB_DIAG_POP()
 #else // Debug build
 
@@ -197,6 +198,35 @@ UCB_DIAG_POP()
  * @note No actual cleanup is done and levels remain intact.
  */
 #define UCB_MEMTRACK_FINAL() ucb_mem_tracking_report(true)
+
+/**
+ * @brief Check whether a pointer is a tracked ucb allocation
+ *
+ * Returns true when @p ptr is the user data pointer of a live allocation made
+ * with a ucb memory function while memory tracking is enabled. A pointer that
+ * was freed, was never tracked, or belongs to a foreign allocation returns
+ * false. This is a debug aid and never aborts.
+ *
+ * @param ptr pointer to test, may be UCB_NULL
+ * @param size optional output, may be UCB_NULL. When @p ptr is a tracked
+ * allocation, the allocation size in bytes is stored in @p *size.
+ * @return true if @p ptr is a tracked ucb allocation
+ * @note Debug builds only. Requires memory tracking to be enabled, see
+ * @ref UCB_MEMTRACK_ENABLE.
+ */
+UCB_API bool ucb_mem_is_alloc(const void* ptr, size_t* size);
+
+/**
+ * @brief Check whether a pointer is a tracked ucb allocation
+ *
+ * Debug builds expand to @ref ucb_mem_is_alloc. Release builds expand to
+ * @c false and perform no check, so callers must treat a false result as
+ * "not verified" rather than "definitely not an allocation".
+ *
+ * @param ptr pointer to test
+ * @param size optional output for the allocation size, may be UCB_NULL
+ */
+#define UCB_MEM_IS_ALLOC(ptr, size) ucb_mem_is_alloc((ptr), (size))
 #endif // NDEBUG
 
 /**

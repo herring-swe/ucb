@@ -15,6 +15,7 @@
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
 #include "ucb/error.h"
+#include "ucb/memdbg.h"
 #include "ucb/memory.h"
 #include "ucb/unicode.h"
 
@@ -362,8 +363,19 @@ bool ucb_str_reserve(ucb_str* str, size_t size)
 void ucb_str_adopt(ucb_str* str, char* cstr, size_t len, size_t alloc)
 {
     UCB_VERIFY_ARGS(str && cstr);
-    // TODO Verify that the cstr is allocated with ucb functions
-    // UCB_MEM_IS_ALLOC(cstr, alloc);
+
+    if (UCB_MEMTRACK_IS_ENABLED())
+    {
+        size_t tracked_alloc = 0;
+        UCB_VERIFY(UCB_MEM_IS_ALLOC(cstr, &tracked_alloc),
+                   UCB_ERROR_INVALID_ARG,
+                   "cstr must be a UCB allocation");
+        UCB_VERIFY(alloc == tracked_alloc,
+                   UCB_ERROR_INVALID_ARG,
+                   "alloc doesn't match the allocated size (%zu != %zu)",
+                   alloc,
+                   tracked_alloc);
+    }
 
     if (!len)
         len = strlen(cstr);
@@ -387,13 +399,7 @@ void ucb_str_adopt_c(ucb_str* str, char* cstr)
     UCB_VERIFY_ARGS(str && cstr);
 
     size_t len = strlen(cstr);
-    ucb_str_verify_cstr(cstr, len, "cstr");
-
-    ucb_str_release_common(str);
-
-    str->data = cstr;
-    str->size = len;
-    str->alloc = len + 1;
+    ucb_str_adopt(str, cstr, len, len + 1);
 }
 
 bool ucb_str_abandon(ucb_str* str, char** data, size_t* len, size_t* alloc)
