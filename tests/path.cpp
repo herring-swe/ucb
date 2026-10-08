@@ -87,7 +87,7 @@ TEST_CASE("path - lifetime")
         REQUIRE(path != nullptr);
         ucb_path* clone = ucb_path_clone(path);
         REQUIRE(clone != nullptr);
-        CHECK(ucb_path_equal(path, clone));
+        CHECK(ucb_path_equals(path, clone));
         check_path(clone, "a/b", "c", ".txt");
         ucb_path_free(path);
         ucb_path_free(clone);
@@ -99,7 +99,7 @@ TEST_CASE("path - lifetime")
         ucb_path dst = ucb_path_make();
         REQUIRE(ucb_path_init_style(&src, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
         REQUIRE(ucb_path_copy(&dst, &src));
-        CHECK(ucb_path_equal(&src, &dst));
+        CHECK(ucb_path_equals(&src, &dst));
         check_path(&dst, "a/b", "c", ".txt");
         ucb_path_release(&src);
         ucb_path_release(&dst);
@@ -301,6 +301,22 @@ TEST_CASE("path - styles")
         REQUIRE(path != nullptr);
         check_cstr(path, "a\\b\\c.txt");
         ucb_path_free(path);
+
+        ucb_conf_set(&prev);
+    }
+
+    SUBCASE("default separator")
+    {
+        ucb_config prev = ucb_conf_get();
+
+        ucb_config cfg = ucb_conf_get();
+        cfg.default_path_style = UCB_PATH_STYLE_POSIX;
+        ucb_conf_set(&cfg);
+        CHECK(ucb_path_sep() == '/');
+
+        cfg.default_path_style = UCB_PATH_STYLE_WINDOWS;
+        ucb_conf_set(&cfg);
+        CHECK(ucb_path_sep() == '\\');
 
         ucb_conf_set(&prev);
     }
@@ -545,8 +561,8 @@ TEST_CASE("path - compare")
     REQUIRE(b != nullptr);
     REQUIRE(c != nullptr);
 
-    CHECK(ucb_path_equal(a, b));
-    CHECK_FALSE(ucb_path_equal(a, c));
+    CHECK(ucb_path_equals(a, b));
+    CHECK_FALSE(ucb_path_equals(a, c));
     CHECK(ucb_path_comp(a, b) == 0);
     CHECK(ucb_path_comp(a, c) < 0);
 
@@ -559,14 +575,45 @@ TEST_CASE("path - compare")
     CHECK(ucb_path_comp(a, up) != 0);
     ucb_path_free(up);
 
-    CHECK(ucb_path_equal_c("a/b", "a/b"));
-    CHECK_FALSE(ucb_path_equal_c("a/b", "a/c"));
+    CHECK(ucb_path_equals_c("a/b", "a/b"));
+    CHECK_FALSE(ucb_path_equals_c("a/b", "a/c"));
     CHECK(ucb_path_comp_c("a", "b") < 0);
     CHECK(ucb_path_icomp_c("A", "a") == 0);
 
     ucb_path_free(a);
     ucb_path_free(b);
     ucb_path_free(c);
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("path - is_inside")
+{
+    UCB_MEMTRACK_PUSH();
+
+    ucb_path* dir = ucb_path_new_style("/a/b", UCB_PATH_STYLE_POSIX);
+    ucb_path* child = ucb_path_new_style("/a/b/c.txt", UCB_PATH_STYLE_POSIX);
+    ucb_path* sibling = ucb_path_new_style("/a/x", UCB_PATH_STYLE_POSIX);
+    ucb_path* root = ucb_path_new_style("/", UCB_PATH_STYLE_POSIX);
+    ucb_path* relative = ucb_path_new_style("a/b", UCB_PATH_STYLE_POSIX);
+    REQUIRE(dir != nullptr);
+    REQUIRE(child != nullptr);
+    REQUIRE(sibling != nullptr);
+    REQUIRE(root != nullptr);
+    REQUIRE(relative != nullptr);
+
+    CHECK(ucb_path_is_inside(child, dir));
+    CHECK(ucb_path_is_inside(dir, child));
+    CHECK_FALSE(ucb_path_is_inside(dir, sibling));
+    CHECK_FALSE(ucb_path_is_inside(dir, dir));
+    CHECK(ucb_path_is_inside(root, child));
+    CHECK_FALSE(ucb_path_is_inside(dir, relative));
+
+    ucb_path_free(dir);
+    ucb_path_free(child);
+    ucb_path_free(sibling);
+    ucb_path_free(root);
+    ucb_path_free(relative);
 
     UCB_MEMTRACK_POP();
 }

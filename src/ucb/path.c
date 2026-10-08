@@ -866,6 +866,29 @@ ucb_path_style ucb_path_get_style(const ucb_path* path)
     return path->style;
 }
 
+char ucb_path_sep(void)
+{
+    return path_sep_of(UCB_PATH_STYLE_DEFAULT);
+}
+
+const char* ucb_path_sep_cstr(void)
+{
+    switch (path_resolve_style(UCB_PATH_STYLE_DEFAULT))
+    {
+    case UCB_PATH_STYLE_POSIX:
+        return "/";
+    case UCB_PATH_STYLE_WINDOWS:
+        return "\\";
+    case UCB_PATH_STYLE_NATIVE:
+    default:
+#ifdef _WIN32
+        return "\\";
+#else
+        return "/";
+#endif
+    }
+}
+
 const ucb_str* ucb_path_dir(const ucb_path* path)
 {
     UCB_VERIFY_ARGS(path);
@@ -1173,7 +1196,7 @@ ucb_str* ucb_path_normalize_c(const char* cstr)
     return ucb_path_normalize_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
 }
 
-bool ucb_path_equal(const ucb_path* a, const ucb_path* b)
+bool ucb_path_equals(const ucb_path* a, const ucb_path* b)
 {
     UCB_VERIFY_ARGS(a && b);
 
@@ -1218,17 +1241,48 @@ int ucb_path_icomp(const ucb_path* a, const ucb_path* b)
     return result;
 }
 
-bool ucb_path_equal_c(const char* a, const char* b)
+bool ucb_path_equals_c(const char* a, const char* b)
 {
     ucb_path pa = ucb_path_make();
     ucb_path pb = ucb_path_make();
     bool ok = path_init_ex(&pa, a, 0, UCB_PATH_STYLE_DEFAULT);
     if (ok)
         ok = path_init_ex(&pb, b, 0, UCB_PATH_STYLE_DEFAULT);
-    bool result = ok && ucb_path_equal(&pa, &pb);
+    bool result = ok && ucb_path_equals(&pa, &pb);
     ucb_path_release(&pa);
     ucb_path_release(&pb);
     return result;
+}
+
+/**
+ * Internal. True if @p inner is a proper descendant of @p outer. Compares the
+ * part sequences; equal or shorter paths are not inside.
+ */
+static bool path_inside_one(const ucb_path* inner, const ucb_path* outer)
+{
+    size_t ni = ucb_path_num_parts(inner);
+    size_t no = ucb_path_num_parts(outer);
+    if (ni == 0 || no == 0 || ni <= no)
+        return false;
+
+    for (size_t i = 0; i < no; i++)
+    {
+        ucb_str* pi = ucb_path_part(inner, i);
+        ucb_str* po = ucb_path_part(outer, i);
+        bool same = pi && po && ucb_str_equal(pi, po);
+        ucb_str_free(pi);
+        ucb_str_free(po);
+        if (!same)
+            return false;
+    }
+    return true;
+}
+
+bool ucb_path_is_inside(const ucb_path* a, const ucb_path* b)
+{
+    UCB_VERIFY_ARGS(a && b);
+
+    return path_inside_one(a, b) || path_inside_one(b, a);
 }
 
 int ucb_path_comp_c(const char* a, const char* b)
@@ -1505,7 +1559,7 @@ ucb_vector_str* ucb_path_parents(const ucb_path* path)
             return UCB_NULL;
         }
 
-        if (ucb_path_is_empty(parent) || ucb_path_equal(cur, parent))
+        if (ucb_path_is_empty(parent) || ucb_path_equals(cur, parent))
         {
             ucb_path_free(parent);
             break;
