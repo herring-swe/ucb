@@ -7,8 +7,8 @@
  * @brief Task for thread pool and other async operations
  */
 
-#ifndef UCB_TASK_H
-#define UCB_TASK_H
+#ifndef UCB_THREADS_TASK_H
+#define UCB_THREADS_TASK_H
 
 #include <ucb/export.h>
 
@@ -156,4 +156,4 @@ UCB_API void ucb_task_set_priority(ucb_task* task, int priority);
  */
 UCB_API int ucb_task_run(ucb_task* task);
 
-#endif // UCB_TASK_H
+#endif // UCB_THREADS_TASK_H

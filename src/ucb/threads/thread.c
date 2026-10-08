@@ -8,14 +8,13 @@
  * @brief Cross-platform threading implementation
  */
 
-#include "ucb/threads.h"
-
-#include "error_private.h"
+#include "ucb/threads/thread.h"
 
 #include "ucb/cstring.h"
 #include "ucb/debug.h"
 #include "ucb/defines.h"
 #include "ucb/error.h"
+#include "ucb/error_private.h"
 #include "ucb/memory.h"
 #include "ucb/sys_private.h"
 

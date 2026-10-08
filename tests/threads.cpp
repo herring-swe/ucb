@@ -8,13 +8,12 @@
  * @brief threads tests
  */
 
-#include "ucb/threads.h"
-
 #include "common.h"
 #include "test_threads.h"
 
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
+#include "ucb/threads/mutex.h"
+#include "ucb/threads/thread.h"
 #include "ucb/time.h"
 
 #include <doctest.h>

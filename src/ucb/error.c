@@ -11,14 +11,14 @@
 #include "ucb/error.h"
 
 #include "error_private.h"
-#include "mutex_private.h"
-#include "once_private.h"
 
 #include "ucb/cstring.h"
 #include "ucb/defines.h"
 #include "ucb/errcodes.h"
 #include "ucb/memory.h"
-#include "ucb/threads.h"
+#include "ucb/threads/mutex_private.h"
+#include "ucb/threads/once_private.h"
+#include "ucb/threads/thread.h"
 #include "ucb/types.h"
 
 #include <assert.h>

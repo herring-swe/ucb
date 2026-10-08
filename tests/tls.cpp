@@ -8,12 +8,12 @@
  * @brief TLS tests
  */
 
-#include "ucb/tls.h"
+#include "ucb/threads/tls.h"
 
 #include "common.h"
 
 #include "ucb/memory.h"
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <doctest.h>
 

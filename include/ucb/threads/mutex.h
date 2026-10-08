@@ -28,8 +28,8 @@
  * is reported as @ref UCB_ERROR_MUTEX_LOCKED and aborts.
  */
 
-#ifndef UCB_MUTEX_H
-#define UCB_MUTEX_H
+#ifndef UCB_THREADS_MUTEX_H
+#define UCB_THREADS_MUTEX_H
 
 #include <ucb/export.h>
 
@@ -151,4 +151,4 @@ UCB_API bool ucb_mutex_trylock(ucb_mutex* mutex);
  */
 UCB_API void ucb_mutex_unlock(ucb_mutex* mutex);
 
-#endif // UCB_MUTEX_H
+#endif // UCB_THREADS_MUTEX_H

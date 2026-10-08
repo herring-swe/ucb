@@ -12,7 +12,7 @@
 #include "ucb/debug.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
+#include "ucb/threads/mutex.h"
 
 #include <stdint.h>
 #include <stdlib.h>

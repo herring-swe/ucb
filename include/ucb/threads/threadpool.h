@@ -7,11 +7,11 @@
  * @brief Cross-platform thread pool
  */
 
-#ifndef UCB_THREADPOOL_H
-#define UCB_THREADPOOL_H
+#ifndef UCB_THREADS_THREADPOOL_H
+#define UCB_THREADS_THREADPOOL_H
 
 #include <ucb/export.h>
-#include <ucb/threads.h>
+#include <ucb/threads/thread.h>
 
 #include <stdbool.h>
 
@@ -143,4 +143,4 @@ UCB_API void ucb_threadpool_wait_all(ucb_threadpool* pool);
  */
 UCB_API void ucb_threadpool_join(ucb_threadpool* pool);
 
-#endif // UCB_THREADPOOL_H
+#endif // UCB_THREADS_THREADPOOL_H

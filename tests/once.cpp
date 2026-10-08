@@ -8,12 +8,12 @@
  * @brief once tests
  */
 
-#include "ucb/once.h"
+#include "ucb/threads/once.h"
 
 #include "common.h"
 
 #include "ucb/memory.h"
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <doctest.h>
 

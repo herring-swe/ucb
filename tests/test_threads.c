@@ -13,9 +13,9 @@
 
 #include "test_threads.h"
 
-#include "ucb/cond.h"
-#include "ucb/mutex.h"
-#include "ucb/once.h"
+#include "ucb/threads/cond.h"
+#include "ucb/threads/mutex.h"
+#include "ucb/threads/once.h"
 
 static int s_once_calls = 0;
 

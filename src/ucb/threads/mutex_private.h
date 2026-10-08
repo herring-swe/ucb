@@ -8,10 +8,10 @@
  * @brief Private mutex implementation layout
  */
 
-#ifndef UCB_MUTEX_PRIVATE_H
-#define UCB_MUTEX_PRIVATE_H
+#ifndef UCB_THREADS_MUTEX_PRIVATE_H
+#define UCB_THREADS_MUTEX_PRIVATE_H
 
-#include "ucb/mutex.h"
+#include "ucb/threads/mutex.h"
 #include "ucb/types.h"
 
 #if defined(_WIN32)
@@ -42,4 +42,4 @@ struct ucb_mutex_impl
 #define UCB_MUTEX_IMPL(mutex) ((struct ucb_mutex_impl*)(void*)(mutex))
 #define UCB_MUTEX_IMPL_CONST(mutex) ((const struct ucb_mutex_impl*)(const void*)(mutex))
 
-#endif // UCB_MUTEX_PRIVATE_H
+#endif // UCB_THREADS_MUTEX_PRIVATE_H

@@ -64,8 +64,8 @@
  *   that may be held by other threads at that point.
  */
 
-#ifndef UCB_TLS_H
-#define UCB_TLS_H
+#ifndef UCB_THREADS_TLS_H
+#define UCB_THREADS_TLS_H
 
 #include <ucb/export.h>
 
@@ -132,4 +132,4 @@ UCB_API void ucb_tls_set(ucb_tls_key* key, void* value);
  */
 UCB_API void* ucb_tls_get(const ucb_tls_key* key);
 
-#endif // UCB_TLS_H
+#endif // UCB_THREADS_TLS_H

@@ -8,13 +8,13 @@
  * @brief threadpool tests
  */
 
-#include "ucb/threadpool.h"
+#include "ucb/threads/threadpool.h"
 
 #include "common.h"
 
-#include "ucb/cond.h"
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
+#include "ucb/threads/cond.h"
+#include "ucb/threads/mutex.h"
 #include "ucb/time.h"
 
 #include <doctest.h>

@@ -16,11 +16,10 @@
  * user destructor.
  */
 
-#include "ucb/tls.h"
-
-#include "error_private.h"
+#include "ucb/threads/tls.h"
 
 #include "ucb/error.h"
+#include "ucb/error_private.h"
 #include "ucb/memory.h"
 
 #ifdef _WIN32

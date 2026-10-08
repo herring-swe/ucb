@@ -7,10 +7,10 @@
  * @brief Cross platform one-time initialization implementation
  */
 
-#include "error_private.h"
 #include "once_private.h"
 
 #include "ucb/error.h"
+#include "ucb/error_private.h"
 #include "ucb/memory.h"
 
 _Static_assert(sizeof(struct ucb_once_impl) <= UCB_ONCE_STORAGE_SIZE,

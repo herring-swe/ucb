@@ -7,10 +7,10 @@
  * @brief Condition private header
  */
 
-#ifndef UCB_COND_PRIVATE_H
-#define UCB_COND_PRIVATE_H
+#ifndef UCB_THREADS_COND_PRIVATE_H
+#define UCB_THREADS_COND_PRIVATE_H
 
-#include "ucb/cond.h"
+#include "ucb/threads/cond.h"
 
 #if defined(_WIN32)
 #ifndef WIN32_LEAN_AND_MEAN
@@ -35,4 +35,4 @@ struct ucb_cond_impl
 
 #define UCB_COND_IMPL(cond) ((struct ucb_cond_impl*)(void*)(cond))
 
-#endif // UCB_COND_PRIVATE_H
+#endif // UCB_THREADS_COND_PRIVATE_H

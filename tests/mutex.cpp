@@ -8,13 +8,13 @@
  * @brief mutex tests
  */
 
-#include "ucb/mutex.h"
+#include "ucb/threads/mutex.h"
 
 #include "common.h"
 #include <condition_variable>
 
 #include "ucb/memory.h"
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <doctest.h>
 

@@ -8,13 +8,13 @@
  * @brief condition variable tests
  */
 
-#include "ucb/cond.h"
+#include "ucb/threads/cond.h"
 
 #include "common.h"
 
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
-#include "ucb/threads.h"
+#include "ucb/threads/mutex.h"
+#include "ucb/threads/thread.h"
 
 #include <doctest.h>
 

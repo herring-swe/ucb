@@ -7,7 +7,7 @@
  * @brief Task implementation
  */
 
-#include "ucb/task.h"
+#include "ucb/threads/task.h"
 
 #include "ucb/debug.h"
 #include "ucb/error.h"
