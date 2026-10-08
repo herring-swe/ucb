@@ -295,6 +295,17 @@ UCB_API bool ucb_buffer_ensure(ucb_buffer* buf, size_t size);
 UCB_API void ucb_buffer_read(ucb_buffer* buf, void* out_data, size_t size, size_t offset);
 
 /**
+ * @brief Get the raw buffer memory.
+ *
+ * Returns a borrowed pointer to the buffer storage. It is valid until the next
+ * resize or grow (which may reallocate) or until the buffer is released. The
+ * data is not null-terminated; only @c buf->size bytes are meaningful.
+ * @param buf the buffer
+ * @return borrowed pointer to the buffer data, or UCB_NULL if @p buf is UCB_NULL
+ */
+UCB_API void* ucb_buffer_data(ucb_buffer* buf);
+
+/**
  * Push data to the end of the buffer, growing the buffer if needed.
  * Calls ucb_buffer_grow if needed. @p buf and @p data must be non-NULL even
  * when @p size is 0; a zero-size push is a successful no-op.
@@ -326,6 +337,13 @@ UCB_API int ucb_buffer_push_format(ucb_buffer* buf, const char* fmt, ...);
 UCB_API int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args);
 
 /**
+ * Pushes a null terminator to the buffer. The buffer may grow as needed.
+ * @param buf the buffer
+ * @return true on success, false if buffer is full and cannot grow
+ */
+UCB_API int ucb_buffer_push_null(ucb_buffer* buf);
+
+/**
  * Copies the last size data from the buffer and reduce the buffers used size.
  * Does not shrink the buffers capacity or modify it's data. @p out_data must be
  * non-NULL even when @p size is 0.
@@ -336,10 +354,23 @@ UCB_API int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list ar
 UCB_API void ucb_buffer_pop(ucb_buffer* buf, void* out_data, size_t size);
 
 /**
- * Marks the buffer as unused but does not shrink the buffer capacity.
+ * @brief Reduce the used size without shrinking the capacity.
+ *
+ * Sets @c buf->size to @p new_size, which must not exceed the current used
+ * size. The data bytes and the capacity are left unchanged; use
+ * @ref ucb_buffer_clear to reset the used size to zero and @ref ucb_buffer_fit
+ * to shrink the capacity.
+ * @param buf the buffer
+ * @param new_size the new used size, in bytes
+ */
+UCB_API void ucb_buffer_truncate(ucb_buffer* buf, size_t new_size);
+
+/**
+ * @brief Marks the buffer as unused but does not shrink the buffer capacity.
  * @param buf the buffer
  */
 UCB_API void ucb_buffer_clear(ucb_buffer* buf);
+
 
 /**
  * Resize the capacity of the buffer to the size of the data.

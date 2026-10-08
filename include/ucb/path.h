@@ -317,6 +317,26 @@ UCB_API void ucb_path_set_style(ucb_path* path, ucb_path_style style);
  */
 UCB_API ucb_path_style ucb_path_get_style(const ucb_path* path);
 
+/**
+ * @brief Get the path separator character for the default style.
+ *
+ * Resolves the thread-local @ref ucb_config default style; when that is
+ * @ref UCB_PATH_STYLE_DEFAULT, the native separator is used (`\` on Windows,
+ * `/` elsewhere).
+ * @return the separator character
+ */
+UCB_API char ucb_path_sep(void);
+
+/**
+ * @brief Get the path separator for the default style as a C string.
+ *
+ * Resolves the thread-local @ref ucb_config default style; when that is
+ * @ref UCB_PATH_STYLE_DEFAULT, the native separator is used ("\"" on Windows,
+ * "/"" elsewhere).
+ * @return the separator character as a C string
+ */
+UCB_API const char* ucb_path_sep_cstr(void);
+
 /** @} */
 
 /**
@@ -599,7 +619,7 @@ UCB_API ucb_str* ucb_path_normalize_cstyle(const char* cstr, ucb_path_style styl
  * @param b second path
  * @return true if equal
  */
-UCB_API bool ucb_path_equal(const ucb_path* a, const ucb_path* b);
+UCB_API bool ucb_path_equals(const ucb_path* a, const ucb_path* b);
 
 /**
  * @brief Compare two C strings as paths for equality.
@@ -607,7 +627,22 @@ UCB_API bool ucb_path_equal(const ucb_path* a, const ucb_path* b);
  * @param b second C string or literal
  * @return true if equal
  */
-UCB_API bool ucb_path_equal_c(const char* a, const char* b);
+UCB_API bool ucb_path_equals_c(const char* a, const char* b);
+
+/**
+ * @brief Check whether one path is inside the other, lexically.
+ *
+ * Returns true when either @p a is a proper descendant of @p b or @p b is a
+ * proper descendant of @p a, compared part by part. The comparison is
+ * lexical/type-level: it never touches the filesystem, does not resolve
+ * symlinks and does not normalize the inputs, so callers should normalize
+ * beforehand when needed. Equal paths are not considered "inside" (use
+ * @ref ucb_path_equals() for that).
+ * @param a first path
+ * @param b second path
+ * @return true if one path is inside the other
+ */
+UCB_API bool ucb_path_is_inside(const ucb_path* a, const ucb_path* b);
 
 /**
  * @brief Compare two paths by their composed form.

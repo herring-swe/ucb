@@ -569,4 +569,44 @@ TEST_CASE("buffer - zero")
     UCB_MEMTRACK_POP();
 }
 
+TEST_CASE("buffer - data and truncate")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("data")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        CHECK(ucb_buffer_data(buf) == buf->data);
+
+        ucb_buffer* null_buf = nullptr;
+        CHECK(ucb_buffer_data(null_buf) == nullptr);
+
+        ucb_buffer_free(buf);
+    }
+
+    SUBCASE("truncate keeps capacity and bytes")
+    {
+        ucb_buffer* buf = ucb_buffer_new_heap(16);
+        REQUIRE(buf != nullptr);
+        REQUIRE(ucb_buffer_push(buf, "abcdef", 6));
+        const size_t cap = buf->alloc;
+        char* data = buf->data;
+
+        ucb_buffer_truncate(buf, 3);
+        CHECK(buf->size == 3);
+        CHECK(buf->alloc == cap);
+        CHECK(buf->data == data);
+        CHECK(memcmp(buf->data, "abc", 3) == 0);
+
+        ucb_buffer_truncate(buf, 0);
+        CHECK(buf->size == 0);
+        CHECK(buf->alloc == cap);
+
+        ucb_buffer_free(buf);
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
 TEST_SUITE_END();

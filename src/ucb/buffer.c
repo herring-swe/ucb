@@ -284,6 +284,14 @@ int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
     return size;
 }
 
+int ucb_buffer_push_null(ucb_buffer* buf)
+{
+    if (!ucb_buffer_ensure(buf, 1))
+        return -1;
+    buf->data[buf->size++] = '\0';
+    return 0;
+}
+
 void ucb_buffer_pop(ucb_buffer* buf, void* out_data, size_t size)
 {
     UCB_VERIFY_ARGS(buf && out_data);
@@ -307,6 +315,21 @@ void ucb_buffer_zero(ucb_buffer* buf)
 {
     if (buf && buf->data && buf->size > 0)
         memset(buf->data, 0, buf->size);
+}
+
+void* ucb_buffer_data(ucb_buffer* buf)
+{
+    if (!buf)
+        return UCB_NULL;
+    return buf->data;
+}
+
+void ucb_buffer_truncate(ucb_buffer* buf, size_t new_size)
+{
+    UCB_VERIFY_ARGS(buf);
+    UCB_VERIFY(new_size <= buf->size, UCB_ERROR_OUT_OF_BOUNDS, "Truncate size exceeds used size");
+
+    buf->size = new_size;
 }
 
 bool ucb_buffer_fit(ucb_buffer* buf)
