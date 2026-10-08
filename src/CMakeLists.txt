@@ -63,19 +63,26 @@ ucb_target_public_headers(ucb FILES
     ucb/container/impl/vector_int.h
     ucb/container/impl/vector_ptr.h
     ucb/container/impl/vector_str.h
-    
+
     ucb/container/templates/vector_template.h
 
     ucb/container/pqueue.h
     ucb/container/vector_generic.h
     ucb/container/vector.h
-    
+
+    ucb/threads/cond.h
+    ucb/threads/mutex.h
+    ucb/threads/once.h
+    ucb/threads/task.h
+    ucb/threads/thread.h
+    ucb/threads/threadpool.h
+    ucb/threads/tls.h
+
     ucb/algorithm.h
     ucb/argparse.h
     ucb/btrace.h
     ucb/buffer.h
     ucb/bufutil.h
-    ucb/cond.h
     ucb/cstring.h
     ucb/debug.h
     ucb/defines.h
@@ -90,19 +97,14 @@ ucb_target_public_headers(ucb FILES
     ucb/generics.h
     ucb/memdbg.h
     ucb/memory.h
-    ucb/mutex.h
-    ucb/once.h
     ucb/path.h
     ucb/pipe.h
     ucb/process.h
     ucb/string.h
     ucb/string_ex.h
-    ucb/task.h
     ucb/tgfunc.h
-    ucb/threadpool.h
     ucb/threads.h
     ucb/time.h
-    ucb/tls.h
     ucb/types.h
     ucb/ucb.h
     ucb/unicode_enum.h
@@ -112,20 +114,21 @@ ucb_target_public_headers(ucb FILES
 ucb_target_sources(ucb PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     ucb/buffer_private.h
-    ucb/cond_private.h
     ucb/dir_private.h
     ucb/envmap_private.h
     ucb/error_private.h
     ucb/file_private.h
     ucb/fs_private.h
-    ucb/mutex_private.h
-    ucb/once_private.h
     ucb/process_private.h
     ucb/sys_private.h
     ucb/unicode_private.h
 
     ucb/container/common_private.h
     ucb/container/pqueue_private.h
+
+    ucb/threads/cond_private.h
+    ucb/threads/mutex_private.h
+    ucb/threads/once_private.h
 
     FILE_SET generated_data TYPE HEADERS BASE_DIRS "${UNICODE_DATA_DIR}" FILES
     ${UNICODE_HEADERS}
@@ -137,9 +140,17 @@ ucb_target_sources(ucb PRIVATE
     ucb/container/impl/vector_int.c
     ucb/container/impl/vector_ptr.c
     ucb/container/impl/vector_str.c
-    
+
     ucb/container/pqueue.c
     ucb/container/vector_generic.c
+
+    ucb/threads/cond.c
+    ucb/threads/mutex.c
+    ucb/threads/once.c
+    ucb/threads/task.c
+    ucb/threads/thread.c
+    ucb/threads/threadpool.c
+    ucb/threads/tls.c
 
     ucb/algorithm.c
     ucb/argparse.c
@@ -147,7 +158,6 @@ ucb_target_sources(ucb PRIVATE
     ucb/buffer_private.c
     ucb/buffer.c
     ucb/bufutil.c
-    ucb/cond.c
     ucb/cstring.c
     ucb/dir.c
     ucb/env.c
@@ -159,17 +169,11 @@ ucb_target_sources(ucb PRIVATE
     ucb/fs.c
     ucb/memdbg.c
     ucb/memory.c
-    ucb/mutex.c
-    ucb/once.c
     ucb/path.c
     ucb/process.c
     ucb/string.c
     ucb/sys_private.c
-    ucb/task.c
-    ucb/threadpool.c
-    ucb/threads.c
     ucb/time.c
-    ucb/tls.c
     ucb/ucb.c
     ucb/unicode_enum.c
     ucb/unicode.c

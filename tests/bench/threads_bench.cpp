@@ -11,7 +11,7 @@
 
 #include "microbench.h"
 
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <cstdint>
 #include <thread>

@@ -19,8 +19,8 @@
 #include "ucb/debug.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
-#include "ucb/mutex_private.h"
+#include "ucb/threads/mutex.h"
+#include "ucb/threads/mutex_private.h"
 
 #include <assert.h>
 #include <stdarg.h>

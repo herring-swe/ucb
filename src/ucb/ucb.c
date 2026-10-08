@@ -10,7 +10,7 @@
 
 #include "ucb/ucb.h"
 
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <stdio.h>
 

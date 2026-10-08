@@ -7,10 +7,10 @@
  * @brief One-time initialization private header
  */
 
-#ifndef UCB_ONCE_PRIVATE_H
-#define UCB_ONCE_PRIVATE_H
+#ifndef UCB_THREADS_ONCE_PRIVATE_H
+#define UCB_THREADS_ONCE_PRIVATE_H
 
-#include "ucb/once.h"
+#include "ucb/threads/once.h"
 
 #if defined(_WIN32)
 #ifndef WIN32_LEAN_AND_MEAN
@@ -35,4 +35,4 @@ struct ucb_once_impl
 
 #define UCB_ONCE_IMPL(once) ((struct ucb_once_impl*)(void*)(once))
 
-#endif // UCB_ONCE_PRIVATE_H
+#endif // UCB_THREADS_ONCE_PRIVATE_H

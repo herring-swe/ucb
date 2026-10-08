@@ -14,8 +14,8 @@
 #include <ucb/errcodes.h>
 #include <ucb/memory.h>
 #include <ucb/pipe.h>
-#include <ucb/task.h>
-#include <ucb/threads.h>
+#include <ucb/threads/task.h>
+#include <ucb/threads/thread.h>
 
 #include <string.h>
 

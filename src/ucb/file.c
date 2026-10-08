@@ -17,8 +17,8 @@
 #include <ucb/buffer.h>
 #include <ucb/errcodes.h>
 #include <ucb/memory.h>
-#include <ucb/once.h>
 #include <ucb/pipe.h>
+#include <ucb/threads/once.h>
 
 #include <string.h>
 

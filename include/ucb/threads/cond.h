@@ -20,11 +20,11 @@
  * @endcode
  */
 
-#ifndef UCB_COND_H
-#define UCB_COND_H
+#ifndef UCB_THREADS_COND_H
+#define UCB_THREADS_COND_H
 
 #include <ucb/export.h>
-#include <ucb/mutex.h>
+#include <ucb/threads/mutex.h>
 #include <ucb/time.h>
 
 #include <stdbool.h>
@@ -140,4 +140,4 @@ UCB_API ucb_cond_result ucb_cond_timedwait(ucb_cond* cond,
                                            ucb_mutex* mutex,
                                            ucb_stime_ms timeout_ms);
 
-#endif // UCB_COND_H
+#endif // UCB_THREADS_COND_H

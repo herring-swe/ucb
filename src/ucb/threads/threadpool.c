@@ -7,13 +7,13 @@
  * @brief Thread pool implementation
  */
 
-#include "ucb/threadpool.h"
+#include "ucb/threads/threadpool.h"
 
-#include "ucb/cond.h"
 #include "ucb/container/pqueue_private.h"
 #include "ucb/error.h"
 #include "ucb/memory.h"
-#include "ucb/mutex.h"
+#include "ucb/threads/cond.h"
+#include "ucb/threads/mutex.h"
 
 struct ucb_threadpool
 {

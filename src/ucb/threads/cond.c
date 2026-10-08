@@ -8,12 +8,12 @@
  */
 
 #include "cond_private.h"
-#include "error_private.h"
 #include "mutex_private.h"
 
 #include "ucb/error.h"
+#include "ucb/error_private.h"
 #include "ucb/memory.h"
-#include "ucb/threads.h"
+#include "ucb/threads/thread.h"
 
 #include <errno.h>
 #include <time.h>

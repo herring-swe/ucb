@@ -12,7 +12,7 @@
 
 #include "ucb/container/common_private.h"
 #include "ucb/container/pqueue.h"
-#include "ucb/mutex.h"
+#include "ucb/threads/mutex.h"
 
 typedef struct ucb_pqueue_bucket
 {

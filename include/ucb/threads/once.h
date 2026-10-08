@@ -25,8 +25,8 @@
  * @endcode
  */
 
-#ifndef UCB_ONCE_H
-#define UCB_ONCE_H
+#ifndef UCB_THREADS_ONCE_H
+#define UCB_THREADS_ONCE_H
 
 #include <ucb/export.h>
 
@@ -100,4 +100,4 @@ UCB_API void ucb_once_free(ucb_once* once);
  */
 UCB_API void ucb_once_run(ucb_once* once, void (*func)(void));
 
-#endif // UCB_ONCE_H
+#endif // UCB_THREADS_ONCE_H
