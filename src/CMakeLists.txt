@@ -200,6 +200,9 @@ elseif(UNIX)
         ucb/dir_unix.c
     )
     # target_compile_options(ucb PRIVATE -rdynamic)
+
+    # Math functions (e.g. floor) live in libm on most Unix systems
+    target_link_libraries(ucb PUBLIC m)
 endif()
 
 target_link_libraries(ucb PUBLIC Threads::Threads)
