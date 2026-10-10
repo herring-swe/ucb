@@ -8,6 +8,7 @@
 #include <ucb/path.h>
 #include <ucb/string_ex.h>
 #include <ucb/ucb.h>
+#include <ucb/units/bytes.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -84,7 +85,9 @@ static void report_entry(const char* fn, const ucb_fs_stat* st, const char* lead
         printf("%sd: %s/\n", lead, fn);
         break;
     case UCB_FS_KIND_FILE:
-        printf("%sf: %s\n", lead, fn);
+        ucb_str* size_str = ucb_bytes_to_str(ucb_bytes_convert(st->size, UCB_BYTES_AUTO_IEC), 2);
+        printf("%sf: %s - %s\n", lead, fn, UCB_CSTR(size_str));
+        ucb_str_free(size_str);
         break;
     case UCB_FS_KIND_SYMLINK:
         printf("%sl: %s\n", lead, fn);

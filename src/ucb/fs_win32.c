@@ -177,7 +177,7 @@ bool ucb_fs_plat_stat(const char* path, unsigned flags, ucb_fs_stat* out, ucb_er
 
     memset(out, 0, sizeof(*out));
     out->kind = fs_win32_kind_from_attrs(basic.FileAttributes);
-    out->size = standard.Directory ? 0u : (uint64_t)standard.EndOfFile.QuadPart;
+    out->size = standard.Directory ? 0u : (ucb_bytes)standard.EndOfFile.QuadPart;
     out->mtime = (ucb_time)(mtime_ns / 1000000000);
     out->atime = (ucb_time)(atime_ns / 1000000000);
     out->ctime = (ucb_time)(ctime_ns / 1000000000);

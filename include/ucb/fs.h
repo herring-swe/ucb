@@ -107,7 +107,7 @@ typedef enum ucb_fs_flags
 typedef struct ucb_fs_stat
 {
     ucb_fs_kind kind; ///< Entry kind (affected by @ref UCB_FS_NOFOLLOW)
-    uint64_t size;    ///< Size in bytes for a regular file, 0 otherwise
+    ucb_bytes size;   ///< Size in bytes for a regular file, 0 otherwise
     ucb_time mtime;   ///< Last modification time in seconds
     ucb_time atime;   ///< Last access time in seconds
     ucb_time ctime;   ///< Last status change time in seconds

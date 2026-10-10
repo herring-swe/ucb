@@ -40,6 +40,11 @@ typedef uint32_t ucb_pid;
 typedef uint32_t ucb_cp;
 
 /**
+ * Byte sizes
+ */
+typedef uint64_t ucb_bytes;
+
+/**
  * Signed size_t
  */
 typedef ptrdiff_t ucb_ssize;
