@@ -34,6 +34,7 @@ ucb_target_sources(ucb_tests PRIVATE
     FILE_SET private_headers TYPE HEADERS BASE_DIRS . FILES
     common.h
     fs_tmp.h
+    test_bytes_c.h
     test_cast.h
     test_string_c.h
     test_tgfunc.h
@@ -82,6 +83,7 @@ ucb_target_sources(ucb_tests PRIVATE
     container/vector.cpp
 
     # Pure C tests
+    test_bytes_c.c
     test_cast.c
     test_string_c.c
     test_tgfunc.c
