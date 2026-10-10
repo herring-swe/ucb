@@ -269,7 +269,7 @@ int main(int argc, char** argv)
                 report_entry(path, UCB_NULL, "");
                 continue;
             }
-            
+
             report_entry(path, &st, "");
             if (recursive && st.kind == UCB_FS_KIND_DIR)
             {

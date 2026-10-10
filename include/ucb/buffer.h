@@ -371,7 +371,6 @@ UCB_API void ucb_buffer_truncate(ucb_buffer* buf, size_t new_size);
  */
 UCB_API void ucb_buffer_clear(ucb_buffer* buf);
 
-
 /**
  * Resize the capacity of the buffer to the size of the data.
  * An empty buffer is resized to capacity 0.
