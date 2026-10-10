@@ -149,6 +149,84 @@ UCB_API ucb_bytes_value ucb_bytes_convert(ucb_bytes bytes, ucb_bytes_unit unit);
  */
 UCB_API ucb_str* ucb_bytes_to_str(ucb_bytes_value value, int precision);
 
+/**
+ * Convencience wrapper for auto si string
+ *
+ * @param bytes size in bytes
+ * @param precision decimals to print
+ * @return a new string, or UCB_NULL on allocation failure
+ */
+static inline ucb_str* ucb_bytes_str_si(ucb_bytes bytes, int precision)
+{
+    return ucb_bytes_to_str(ucb_bytes_convert(bytes, UCB_BYTES_AUTO_SI), precision);
+}
+
+/**
+ * Convencience wrapper for auto iec string
+ *
+ * @param bytes size in bytes
+ * @param precision decimals to print
+ * @return a new string, or UCB_NULL on allocation failure
+ */
+static inline ucb_str* ucb_bytes_str_iec(ucb_bytes bytes, int precision)
+{
+    return ucb_bytes_to_str(ucb_bytes_convert(bytes, UCB_BYTES_AUTO_IEC), precision);
+}
+
+/**
+ * @brief Buffer size sufficient for a rendered byte size.
+ *
+ * Covers values such as @c "1023.99 EiB" plus the null terminator for any
+ * reasonable @p precision (up to about 24 decimals). Used by @ref UCB_BYTES_CSTR.
+ */
+#define UCB_BYTES_STRLEN 32
+
+/**
+ * @brief Render a byte size into a caller-provided buffer.
+ *
+ * Converts @p bytes to @p unit (a concrete unit or @ref UCB_BYTES_AUTO_SI /
+ * @ref UCB_BYTES_AUTO_IEC) and writes the human-readable result into @p buf.
+ * The result is always null-terminated when @p size is non-zero; if it does
+ * not fit, it is truncated.
+ *
+ * @param buf destination buffer, must be non-NULL
+ * @param size size of @p buf in bytes, must be non-zero
+ * @param bytes size in bytes
+ * @param unit a concrete @ref ucb_bytes_unit, or an auto sentinel
+ * @param precision decimals to print; @c 0 prints an integer, must be non-negative
+ * @return @p buf
+ */
+UCB_API char* ucb_bytes_str_buf(char* buf,
+                                size_t size,
+                                ucb_bytes bytes,
+                                ucb_bytes_unit unit,
+                                int precision);
+
+/**
+ * @def UCB_BYTES_CSTR
+ * @brief Render a byte size into a short-lived C string (C only).
+ *
+ * Expands to a @c char* backed by an unnamed stack buffer whose lifetime is the
+ * enclosing block, so no allocation or @ref ucb_str_free is needed:
+ *
+ * @code
+ * printf("%s", UCB_BYTES_CSTR(size, UCB_BYTES_AUTO_IEC, 2));
+ * @endcode
+ *
+ * The pointer must not outlive the enclosing block. Multiple uses in one
+ * expression each get their own buffer. Not available in C++ (compound
+ * literals are non-standard there); C++ callers use @ref ucb_bytes_str_si,
+ * @ref ucb_bytes_str_iec or @ref ucb_bytes_to_str instead.
+ *
+ * @param bytes size in bytes
+ * @param unit a concrete @ref ucb_bytes_unit, or an auto sentinel
+ * @param precision decimals to print; @c 0 prints an integer
+ */
+#ifndef __cplusplus
+#define UCB_BYTES_CSTR(bytes, unit, precision) \
+    ucb_bytes_str_buf((char[UCB_BYTES_STRLEN]){0}, UCB_BYTES_STRLEN, (bytes), (unit), (precision))
+#endif
+
 /* -------------------------------------------------------------------------- */
 /*                                   Parsing                                  */
 /* -------------------------------------------------------------------------- */

@@ -116,6 +116,23 @@ ucb_str* ucb_bytes_to_str(ucb_bytes_value value, int precision)
     return str;
 }
 
+char* ucb_bytes_str_buf(char* buf, size_t size, ucb_bytes bytes, ucb_bytes_unit unit, int precision)
+{
+    UCB_VERIFY_ARGS(buf && size > 0);
+    UCB_VERIFY(precision >= 0, UCB_ERROR_INVALID_ARG, "precision must be non-negative");
+
+    ucb_bytes_value value = ucb_bytes_convert(bytes, unit);
+    int n = ucb_cstr_snprintf(buf,
+                              size,
+                              "%.*f %s",
+                              precision,
+                              value.value,
+                              BYTES_UNITS[(int)value.unit].suffix);
+    if (n < 0)
+        buf[0] = '\0';
+    return buf;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   Parsing                                  */
 /* -------------------------------------------------------------------------- */

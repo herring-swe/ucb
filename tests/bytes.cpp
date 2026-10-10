@@ -8,6 +8,8 @@
  * @brief byte size unit tests
  */
 
+#include "test_bytes_c.h"
+
 #include <ucb/error.h>
 #include <ucb/memdbg.h>
 #include <ucb/string.h>
@@ -217,6 +219,45 @@ TEST_CASE("bytes - parse errors")
     }
 
     UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("bytes - str_buf")
+{
+    UCB_MEMTRACK_PUSH();
+
+    char buf[UCB_BYTES_STRLEN];
+
+    SUBCASE("auto si")
+    {
+        CHECK(ucb_bytes_str_buf(buf, sizeof buf, 1500, UCB_BYTES_AUTO_SI, 1) == buf);
+        CHECK(std::string(buf) == "1.5 kB");
+    }
+
+    SUBCASE("auto iec")
+    {
+        CHECK(std::string(ucb_bytes_str_buf(buf, sizeof buf, 1536, UCB_BYTES_AUTO_IEC, 0)) ==
+              "2 KiB");
+    }
+
+    SUBCASE("explicit unit")
+    {
+        CHECK(std::string(ucb_bytes_str_buf(buf, sizeof buf, 2000000, UCB_BYTES_MB, 2)) ==
+              "2.00 MB");
+    }
+
+    SUBCASE("truncates and null-terminates")
+    {
+        char small[4];
+        ucb_bytes_str_buf(small, sizeof small, 1500, UCB_BYTES_AUTO_SI, 1);
+        CHECK(small[sizeof small - 1] == '\0');
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
+TEST_CASE("bytes - UCB_BYTES_CSTR (C)")
+{
+    CHECK(test_bytes_c() == 0);
 }
 
 TEST_SUITE_END();
