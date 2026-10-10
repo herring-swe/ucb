@@ -35,7 +35,7 @@ void* ucb_bufcast_align(void* buf,
     // If already aligned, return as-is
     uintptr_t addr = (uintptr_t)buf;
     if (addr % align_size == 0 || size == 0)
-        return (void*)buf;
+        return buf;
 
     // Truncate according to count
     size_t new_size = count * elem_size;

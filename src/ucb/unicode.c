@@ -224,7 +224,7 @@ bool ucb_uc_validate(const char* str, size_t len, ucb_error** perr)
             i++;
             continue;
         }
-        else if ((c & 0xE0u) == 0xC0u) // 110x xxxx, 2 bytes
+        if ((c & 0xE0u) == 0xC0u) // 110x xxxx, 2 bytes
         {
             if (i + 1 >= len) // Truncated
             {
@@ -423,13 +423,10 @@ bool ucb_uc_encode_codepoints(ucb_buffer* buf,
                                  codepoints[i]);
             return false;
         }
-        else
-        {
-            bytes_len += (size_t)res;
-        }
+        bytes_len += (size_t)res;
 
         // Push to buffer if next pass might overflow
-        if (bytes_len >= 4 * UCB_UC_MAX_MULTI_LEN)
+        if (bytes_len >= (size_t)(4 * UCB_UC_MAX_MULTI_LEN))
         {
             if (!ucb_buffer_push(buf, bytes, bytes_len))
                 return false;
@@ -1308,15 +1305,13 @@ static size_t norm_compose(ucb_cp* cps, size_t count)
                 i--; // recheck same index
                 break;
             }
-            else
-            {
-                // If we can't compose with current j, we must check
-                // That it doesn't block the composition chain
-                uint8_t ccc_i = prop ? prop->ccc : 0;
-                uint8_t ccc_j = prev_prop ? prev_prop->ccc : 0;
-                if (ccc_j == 0 || ccc_j >= ccc_i)
-                    break;
-            }
+
+            // If we can't compose with current j, we must check
+            // That it doesn't block the composition chain
+            uint8_t ccc_i = prop ? prop->ccc : 0;
+            uint8_t ccc_j = prev_prop ? prev_prop->ccc : 0;
+            if (ccc_j == 0 || ccc_j >= ccc_i)
+                break;
         }
     }
     return count;

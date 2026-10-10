@@ -880,7 +880,7 @@ void UCB_VECTOR_T_FREE(_UCB_T_TYPE* vec)
     if (vec)
     {
         UCB_VECTOR_T_CLEAR(vec);
-        ucb_free(vec->data);
+        ucb_free((void*)vec->data);
         ucb_free(vec);
     }
 }
@@ -891,7 +891,7 @@ void UCB_VECTOR_T_FREE_FULL(_UCB_T_TYPE* vec)
     if (vec)
     {
         UCB_VECTOR_T_CLEAR_FULL(vec);
-        ucb_free(vec->data);
+        ucb_free((void*)vec->data);
         ucb_free(vec);
     }
 }
@@ -911,7 +911,7 @@ bool UCB_VECTOR_T_COPY(_UCB_T_TYPE* dst, const _UCB_T_TYPE* src)
 
     dst->size = src->size;
 
-    memcpy(dst->data, src->data, src->size * sizeof(_UCB_T));
+    memcpy((void*)dst->data, (void*)src->data, src->size * sizeof(_UCB_T));
 
     return true;
 }
@@ -988,7 +988,7 @@ void UCB_VECTOR_T_MOVE(_UCB_T_TYPE* dst, _UCB_T_TYPE* src)
     UCB_VERIFY_ARGS(dst && src && dst != src);
 
     UCB_VECTOR_T_CLEAR(dst);
-    ucb_free(dst->data);
+    ucb_free((void*)dst->data);
 
     dst->data = src->data;
     dst->size = src->size;
@@ -1010,7 +1010,7 @@ bool UCB_VECTOR_T_RESERVE(_UCB_T_TYPE* vec, size_t new_capacity)
     if (new_capacity <= vec->capacity)
         return true;
 
-    _UCB_T* new_data = ucb_realloc_type(vec->data, new_capacity, _UCB_T);
+    _UCB_T* new_data = ucb_realloc_type((void*)vec->data, new_capacity, _UCB_T);
     if (!new_data)
         return false;
 
@@ -1062,7 +1062,7 @@ void UCB_VECTOR_T_FIT(_UCB_T_TYPE* vec)
     UCB_VERIFY_ARGS(vec);
     if (vec->capacity > vec->size)
     {
-        _UCB_T* new_data = ucb_realloc_type(vec->data, vec->size, _UCB_T);
+        _UCB_T* new_data = ucb_realloc_type((void*)vec->data, vec->size, _UCB_T);
         if (new_data)
         {
             vec->data = new_data;
@@ -1083,7 +1083,9 @@ void UCB_VECTOR_T_INSERT(_UCB_T_TYPE* vec, size_t index, _UCB_T data)
     }
     if (index < vec->size)
     {
-        memmove(vec->data + (index + 1), vec->data + index, (vec->size - index) * sizeof(_UCB_T));
+        void* dst = (void*)(vec->data + (index + 1));
+        void* src = (void*)(vec->data + index);
+        memmove(dst, src, (vec->size - index) * sizeof(_UCB_T));
     }
     vec->data[index] = data;
     vec->size++;
@@ -1096,7 +1098,9 @@ _UCB_T UCB_VECTOR_T_REMOVE(_UCB_T_TYPE* vec, size_t index)
     _UCB_T data = vec->data[index];
     if (index < vec->size - 1)
     {
-        memmove(vec->data + index, vec->data + index + 1, (vec->size - index - 1) * sizeof(_UCB_T));
+        void* dst = (void*)(vec->data + index);
+        void* src = (void*)(vec->data + index + 1);
+        memmove(dst, src, (vec->size - index - 1) * sizeof(_UCB_T));
     }
     vec->size--;
     return data;
@@ -1142,7 +1146,9 @@ _UCB_T UCB_VECTOR_T_POP_FRONT(_UCB_T_TYPE* vec)
     _UCB_T ret = vec->data[0];
     if (vec->size > 0)
     {
-        memmove(vec->data, vec->data + 1, vec->size * sizeof(_UCB_T));
+        void* dst = (void*)vec->data;
+        void* src = (void*)(vec->data + 1);
+        memmove(dst, src, vec->size * sizeof(_UCB_T));
     }
     return ret;
 }
@@ -1211,7 +1217,7 @@ void UCB_VECTOR_T_SORT(_UCB_T_TYPE* vec)
 #ifndef UCB_T_IS_POD
 int _UCB_T_FUNC(cmp_wrapper)(const void* a, const void* b, void* ctx)
 {
-    ucb_cmp_func func = (ucb_cmp_func)ctx;
+    ucb_cmp_func func = *(const ucb_cmp_func*)ctx;
     const void* a_ptr = *(void**)a;
     const void* b_ptr = *(void**)b;
     return func(a_ptr, b_ptr);
@@ -1231,11 +1237,11 @@ void UCB_VECTOR_T_SORT_WITH(_UCB_T_TYPE* vec, ucb_cmp_func func)
      * the caller of this function. Therefore, we will handle the extra pointer level
      * using an intermediate wrapper.
      */
-    ucb_qsort_ctx(vec->data,
+    ucb_qsort_ctx((void*)vec->data,
                   vec->size,
                   sizeof(_UCB_T),
                   _UCB_T_FUNC(cmp_wrapper),
-                  (void*)(uintptr_t)func);
+                  (void*)&func);
 #endif
 }
 
@@ -1281,10 +1287,10 @@ ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec, const _UCB_T_PTR val, u
     UCB_VERIFY_ARGS(vec && func);
     // return rightmost index if found, otherwise -(index + 1)
     ucb_ssize low = 0;
-    ucb_ssize high = UCB_VECTOR_T_SIZE(vec) - 1;
+    ucb_ssize high = (ucb_ssize)UCB_VECTOR_T_SIZE(vec) - 1;
     while (low <= high)
     {
-        ucb_ssize mid = low + (high - low) / 2;
+        ucb_ssize mid = low + ((high - low) / 2);
 #ifdef UCB_T_IS_POD
         int cmp = func(val, &vec->data[mid]);
 #else
@@ -1302,7 +1308,7 @@ ucb_ssize UCB_VECTOR_T_FIND_WITH(const _UCB_T_TYPE* vec, const _UCB_T_PTR val, u
             }
             return mid;
         }
-        else if (cmp < 0)
+        if (cmp < 0)
         {
             high = mid - 1;
         }

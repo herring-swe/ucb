@@ -152,7 +152,7 @@ static wchar_t* process_win32_build_env_block(const ucb_envmap* env, ucb_error**
         {
             for (size_t j = 0; j < converted; ++j)
                 ucb_free(wide[j]);
-            ucb_free(wide);
+            ucb_free((void*)wide);
             ucb_envmap_envp_free(envp);
             return UCB_NULL;
         }
@@ -167,7 +167,7 @@ static wchar_t* process_win32_build_env_block(const ucb_envmap* env, ucb_error**
     {
         for (size_t j = 0; j < converted; ++j)
             ucb_free(wide[j]);
-        ucb_free(wide);
+        ucb_free((void*)wide);
         ucb_envmap_envp_free(envp);
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_process_spawn: allocation failed");
         return UCB_NULL;
@@ -186,7 +186,7 @@ static wchar_t* process_win32_build_env_block(const ucb_envmap* env, ucb_error**
     if (cursor == block)
         cursor[1] = L'\0'; /* keep the empty environment double-NUL */
 
-    ucb_free(wide);
+    ucb_free((void*)wide);
     ucb_envmap_envp_free(envp);
     return block;
 }
@@ -310,7 +310,7 @@ ucb_process* ucb_process_plat_spawn(const ucb_process_opts* opts, ucb_error** pe
         if (!UpdateProcThreadAttribute(attrs,
                                        0,
                                        PROC_THREAD_ATTRIBUTE_HANDLE_LIST,
-                                       inherit_list,
+                                       (void*)inherit_list,
                                        (SIZE_T)(inherit_count * sizeof(HANDLE)),
                                        UCB_NULL,
                                        UCB_NULL))

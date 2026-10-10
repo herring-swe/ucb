@@ -40,7 +40,7 @@ static int resolve_scan_dirs(ucb_vector_str* dirs, bool recursive, ucb_path*** o
                     path = NULL;
                     break;
                 }
-                else if (recursive && ucb_path_is_inside(path, paths[ip]))
+                if (recursive && ucb_path_is_inside(path, paths[ip]))
                 {
                     // Keep the shortest
                     if (ucb_path_len(path) < ucb_path_len(paths[ip]))
@@ -227,7 +227,8 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    ucb_arg_status status = ucb_arg_parser_parse(parser, argc, argv, spaths, &err);
+    ucb_arg_status status =
+        ucb_arg_parser_parse(parser, argc, (const char* const*)argv, spaths, &err);
     if (status != UCB_ARG_OK)
     {
         if (UCB_IS_THROWN(err))
@@ -260,6 +261,7 @@ int main(int argc, char** argv)
         {
             const char* path = UCB_CSTR(paths[i]);
             ucb_fs_stat st;
+
             if (!ucb_fs_get_stat(path, UCB_FS_NOFOLLOW, &st, &err))
             {
                 fprintf(stderr, "Failed to read %s: %s\n", path, err->msg);
@@ -267,18 +269,16 @@ int main(int argc, char** argv)
                 report_entry(path, UCB_NULL, "");
                 continue;
             }
-            else
+            
+            report_entry(path, &st, "");
+            if (recursive && st.kind == UCB_FS_KIND_DIR)
             {
-                report_entry(path, &st, "");
-                if (recursive && st.kind == UCB_FS_KIND_DIR)
-                {
-                    scan_dir(path, recursive, 1);
-                }
+                scan_dir(path, recursive, 1);
             }
             ucb_path_free(paths[i]);
         }
     }
-    ucb_free(paths);
+    ucb_free((void*)paths);
 
     // if (ucb_vector_str_is_empty(paths))
     // {

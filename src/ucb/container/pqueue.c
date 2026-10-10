@@ -29,8 +29,8 @@
  */
 
 // clang-format off
-#define LOCK_MUTEX(pq)   do { if (pq->mutex) ucb_mutex_lock(pq->mutex); } while (0)
-#define UNLOCK_MUTEX(pq) do { if (pq->mutex) ucb_mutex_unlock(pq->mutex); } while (0)
+#define LOCK_MUTEX(pq)   do { if ((pq)->mutex) ucb_mutex_lock((pq)->mutex); } while (0)
+#define UNLOCK_MUTEX(pq) do { if ((pq)->mutex) ucb_mutex_unlock((pq)->mutex); } while (0)
 // clang-format on
 
 #define PQUEUE_INITIAL_NUM_BUCKETS_INITIAL 16
@@ -74,7 +74,7 @@ static int ucb_pqueue_search_bucket(ucb_pqueue* pq, int prio)
         int mid = low + (high - low) / 2;
         if (pq->buckets[mid].priority == prio)
             return mid;
-        else if (pq->buckets[mid].priority >= prio)
+        if (pq->buckets[mid].priority >= prio)
             low = mid + 1;
         else
             high = mid - 1;

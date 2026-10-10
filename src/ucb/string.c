@@ -274,7 +274,7 @@ bool ucb_str_assign(ucb_str* str, const char* cstr, size_t len)
             tmp = ucb_malloc(real_len);
             if (!tmp)
                 return false;
-            memcpy(tmp, cstr, real_len);
+            memcpy(tmp, cstr, real_len); // NOLINT(bugprone-not-null-terminated-result)
         }
 
         ucb_str_release_common(str);
@@ -770,6 +770,7 @@ ucb_str* ucb_str_concatv(const ucb_str* str, va_list args)
         size += next->size;
         next = va_arg(args_copy, ucb_str*);
     }
+    va_end(args_copy);
 
     if (!size)
         return ucb_str_new_empty();

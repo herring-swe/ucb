@@ -114,7 +114,7 @@ void ucb_btrace_release(ucb_btrace* bt)
     if (bt)
     {
         if (bt->strs)
-            free(bt->strs);
+            free((void*)bt->strs);
         bt->count = 0;
         bt->strs = UCB_NULL;
     }
@@ -154,8 +154,8 @@ void ucb_btrace_copy(ucb_btrace* dst, const ucb_btrace* src)
         total_size += strlen(src->strs[i]) + 1;
 
     // Allocate and copy whole memory block
-    dst->strs = malloc(total_size);
-    ucb_memcpy_s(dst->strs, total_size, src->strs, total_size);
+    dst->strs = (char**)malloc(total_size);
+    ucb_memcpy_s((void*)dst->strs, total_size, (void*)src->strs, total_size);
 
     // Update dst->strs to point to its own memory
     char* str = (char*)dst->strs + array_size;

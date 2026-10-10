@@ -278,7 +278,7 @@ int ucb_buffer_push_formatv(ucb_buffer* buf, const char* fmt, va_list args)
     {
         if (!ucb_buffer_ensure(buf, (size_t)size + 1))
             return -1;
-        vsnprintf((char*)buf->data + buf->size, (size_t)size + 1, fmt, args);
+        vsnprintf(buf->data + buf->size, (size_t)size + 1, fmt, args);
         buf->size += (size_t)size + 1;
     }
     return size;

@@ -191,6 +191,9 @@ int ucb_file_get_fd(const ucb_file* file)
 #ifdef _WIN32
 ucb_file* ucb_file_from_handle(void* handle, bool own, ucb_error** perr)
 {
+    // Windows handles are pointer-sized integers; this compares against the
+    // INVALID_HANDLE_VALUE sentinel.
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
     if (!handle || handle == (void*)(intptr_t)-1)
     {
         ucb_throw(perr, UCB_ERROR_INVALID_ARG, "ucb_file_from_handle: handle is invalid");

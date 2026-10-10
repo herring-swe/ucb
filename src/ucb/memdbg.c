@@ -100,11 +100,13 @@ static bool s_always_report = false;
 static bool s_final_done = false;
 
 // Free log (guarded by s_mutex)
+// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
 static ucb_free_meta* s_free_pool = UCB_NULL;
 static ucb_free_meta* s_free_slots = UCB_NULL;
 static ucb_free_meta* s_free_buckets[UCB_MEMTRACK_FREE_CAPACITY];
 static ucb_free_meta* s_free_newest = UCB_NULL;
 static ucb_free_meta* s_free_oldest = UCB_NULL;
+// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 #define UCB_MAX(a, b) ((a) > (b) ? (a) : (b))
 
@@ -278,7 +280,7 @@ static void free_table_clear_locked(void)
         ucb_btrace_release(&node->bt);
 #endif
 
-    memset(s_free_buckets, 0, sizeof(s_free_buckets));
+    memset((void*)s_free_buckets, 0, sizeof(s_free_buckets));
     s_free_newest = UCB_NULL;
     s_free_oldest = UCB_NULL;
 
@@ -963,7 +965,7 @@ void* ucb_realloc2_debug(void* ptr, size_t size, bool free_on_failure, const cha
 #endif
         return register_alloc(entry);
     }
-    else if (!free_on_failure)
+    if (!free_on_failure)
     {
         // Re-register the old allocation
         // The old_entry pointer is still valid and contains the old data

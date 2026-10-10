@@ -263,7 +263,7 @@ void ucb_vector_remove(ucb_vector* vec, size_t index, void* out_data)
         if (vec->is_pointer)
         {
             void* item = ((void**)vec->data)[index];
-            memcpy(out_data, &item, sizeof(void*));
+            memcpy(out_data, (void*)&item, sizeof(void*));
         }
         else
         {
@@ -340,7 +340,7 @@ bool ucb_vector_get(const ucb_vector* vec, size_t index, void* out_data)
         if (vec->is_pointer)
         {
             void* item = ((void**)vec->data)[index];
-            memcpy(out_data, &item, sizeof(void*));
+            memcpy(out_data, (void*)&item, sizeof(void*));
         }
         else
         {

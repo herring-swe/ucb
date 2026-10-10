@@ -555,24 +555,21 @@ TEST_CASE("string - adopt and abandon")
         ucb_str_release(&str);
     }
 
-    SUBCASE("ucb_str_adopt uses tracked allocation size")
+    SUBCASE("ucb_str_adopt with larger allocation")
     {
-        // Debug builds with tracking enabled recover the real allocation size
-        // even when the caller reports a smaller one.
-        if (UCB_MEMTRACK_IS_ENABLED())
-        {
-            char* data = (char*)ucb_malloc(16);
-            REQUIRE(data != nullptr);
-            memcpy(data, "hello", 6);
+        // The caller reports the real allocation size; adopt keeps it as the
+        // capacity.
+        char* data = (char*)ucb_malloc(16);
+        REQUIRE(data != nullptr);
+        memcpy(data, "hello", 6);
 
-            ucb_str str;
-            ucb_str_init_empty(&str);
-            ucb_str_adopt(&str, data, 5, 6);
+        ucb_str str;
+        ucb_str_init_empty(&str);
+        ucb_str_adopt(&str, data, 5, 16);
 
-            CHECK(ucb_str_len(&str) == 5);
-            CHECK(ucb_str_capacity(&str) == 16);
-            ucb_str_release(&str);
-        }
+        CHECK(ucb_str_len(&str) == 5);
+        CHECK(ucb_str_capacity(&str) == 16);
+        ucb_str_release(&str);
     }
 
     SUBCASE("ucb_str_adopt_c")
@@ -1266,6 +1263,25 @@ TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input")
         ucb_str_init_empty(&str);
         CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 5));
         ucb_free(data);
+    }
+
+    SUBCASE("adopt with wrong allocation size")
+    {
+        // With tracking enabled the reported size is verified against the real
+        // allocation, so a mismatch is caught in debug builds.
+        if (UCB_MEMTRACK_IS_ENABLED())
+        {
+            char* data = (char*)ucb_malloc(16);
+            REQUIRE(data != nullptr);
+            memcpy(data, "hello", 6);
+
+            ucb_str str;
+            ucb_str_init_empty(&str);
+            CHECK_ABORTS(ucb_str_adopt(&str, data, 5, 6));
+            // Aborted before taking ownership; caller still owns data
+            ucb_free(data);
+            ucb_str_release(&str);
+        }
     }
 
     SUBCASE("insert_cp at num_char + 1 fails")

@@ -111,6 +111,7 @@ char* ucb_cstr_concatv(const char* str, va_list args)
         size += strlen(next);
         next = va_arg(args_copy, const char*);
     }
+    va_end(args_copy);
 
     if (!size)
         return UCB_NULL;
