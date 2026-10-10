@@ -21,7 +21,8 @@
 #include <Windows.h>
 #endif
 
-UCB_THREAD_LOCAL ucb_config s_config = { // NOLINT(cppcoreguidelines-avoid-non-const-global-variables)
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+UCB_THREAD_LOCAL ucb_config s_config = {
     .default_path_style = UCB_PATH_STYLE_DEFAULT,
 };
 
