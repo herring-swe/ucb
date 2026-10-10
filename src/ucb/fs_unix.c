@@ -73,7 +73,7 @@ bool ucb_fs_plat_stat(const char* path, unsigned flags, ucb_fs_stat* out, ucb_er
 
     memset(out, 0, sizeof(*out));
     out->kind = fs_unix_kind_from_mode(st.st_mode);
-    out->size = S_ISREG(st.st_mode) ? (uint64_t)st.st_size : 0u;
+    out->size = S_ISREG(st.st_mode) ? (ucb_bytes)st.st_size : 0u;
     out->mtime = (ucb_time)st.st_mtime;
     out->atime = (ucb_time)st.st_atime;
     out->ctime = (ucb_time)st.st_ctime;

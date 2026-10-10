@@ -109,6 +109,7 @@ ucb_target_public_headers(ucb FILES
     ucb/ucb.h
     ucb/unicode_enum.h
     ucb/unicode.h
+    ucb/units/bytes.h
 )
 
 ucb_target_sources(ucb PRIVATE
@@ -177,6 +178,7 @@ ucb_target_sources(ucb PRIVATE
     ucb/ucb.c
     ucb/unicode_enum.c
     ucb/unicode.c
+    ucb/units/bytes.c
 )
 
 if(WIN32)

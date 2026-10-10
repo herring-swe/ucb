@@ -52,6 +52,7 @@ ucb_target_sources(ucb_tests PRIVATE
     argparse.cpp
     btrace.cpp
     buffer.cpp
+    bytes.cpp
     cast.cpp
     common.cpp
     cond.cpp
