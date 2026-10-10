@@ -1,17 +1,46 @@
 ---
-Checks: "*,
-         -llvmlibc-restrict-system-libc-headers,
+# Opt in to the check families that matter for a cross-platform C11 library
+# (clang-tidy runs on the C sources only). Families for other projects'/
+# languages' standards (altera, llvmlibc, fuchsia, llvm, hicpp, boost, abseil,
+# zircon, darwin, android, objc, openmp) and the C++-oriented ones
+# (cppcoreguidelines, modernize) are intentionally absent, so they stay off.
+#
+# The trailing exclusions drop, within the kept families:
+#  - formatting checks owned by clang-format (magic-numbers, braces),
+#  - style preferences that fight the existing conventions,
+#  - checks that are too noisy or C++-only.
+Checks: "bugprone-*,
+         cert-*,
+         clang-analyzer-*,
+         clang-diagnostic-*,
+         concurrency-*,
+         google-*,
+         misc-*,
+         performance-*,
+         portability-*,
+         readability-*,
+         cppcoreguidelines-avoid-non-const-global-variables,
          -*-magic-numbers,
-         -bugprone-easily-swappable-parameters,
-         -google-readability-todo,
          -*-braces-around-statements,
+         -bugprone-easily-swappable-parameters,
+         -bugprone-signed-bitwise,
+         -bugprone-casting-through-void,
+         -cert-err33-c,
+         -misc-no-recursion,
+         -misc-include-cleaner,
+         -readability-identifier-length,
+         -readability-function-cognitive-complexity,
+         -readability-uppercase-literal-suffix,
+         -readability-math-missing-parentheses,
+         -readability-avoid-nested-conditional-operator,
+         -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
          -clang-diagnostic-declaration-after-statement,
-         -altera-*"
+         -google-readability-todo"
 # Enforce m_ prefix, but public members collide with struct
 # So all public members are allowed to be without prefix.
 CheckOptions:
   - key: readability-identifier-naming.PublicMemberPrefix
-    value: ''    
+    value: ''
   - key: readability-identifier-naming.MemberPrefix
     value: 'm_'
   - key: readability-identifier-naming.ClassMemberPrefix
