@@ -305,7 +305,7 @@ const char* ucb_envmap_get(const ucb_envmap* map, const char* name)
     if (idx == UCB_NPOS)
         return UCB_NULL;
 
-    ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, (size_t)idx);
+    ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
     if (!entry || !entry->value)
         return UCB_NULL;
 
@@ -321,7 +321,7 @@ bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value)
     if (idx != UCB_NPOS)
     {
         /* Update existing entry's value */
-        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, (size_t)idx);
+        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
         return ucb_str_assign_c(entry->value, value);
     }
 
@@ -343,7 +343,7 @@ bool ucb_envmap_unset(ucb_envmap* map, const char* name)
     if (idx == UCB_NPOS)
         return false;
 
-    void* removed = ucb_vector_ptr_remove(map->entries, (size_t)idx);
+    void* removed = ucb_vector_ptr_remove(map->entries, idx);
     envmap_entry_free((ucb_envmap_entry*)removed);
     return true;
 }
@@ -357,7 +357,7 @@ bool ucb_envmap_append(ucb_envmap* map, const char* name, const char* value, con
     if (idx != UCB_NPOS)
     {
         /* Variable exists — append with optional separator */
-        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, (size_t)idx);
+        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
 
         if (sep && !ucb_str_is_empty(entry->value))
             ucb_str_append_cstr(entry->value, sep, 0);
@@ -379,7 +379,7 @@ bool ucb_envmap_prepend(ucb_envmap* map, const char* name, const char* value, co
     if (idx != UCB_NPOS)
     {
         /* Variable exists — prepend with optional separator */
-        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, (size_t)idx);
+        ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
 
         /* Build new value: value + sep + old_value */
         ucb_str new_val;
@@ -482,5 +482,5 @@ void ucb_envmap_envp_free(char** envp)
 
     for (char** p = envp; *p; ++p)
         ucb_free(*p);
-    ucb_free(envp);
+    ucb_free((void*)envp);
 }

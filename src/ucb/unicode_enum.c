@@ -23,8 +23,6 @@ const char* ucb_uc_norm_form_to_str(ucb_norm_form form)
         return "NFKC";
     case UCB_NORM_NFKD:
         return "NFKD";
-    case UCB_NORM_INVALID:
-        break;
     default:
         break;
     }
@@ -35,12 +33,11 @@ ucb_norm_form ucb_uc_norm_form_from_str(const char* str)
 {
     if (ucb_cstr_icomp(str, "NFC") == 0)
         return UCB_NORM_NFC;
-    else if (ucb_cstr_icomp(str, "NFD") == 0)
+    if (ucb_cstr_icomp(str, "NFD") == 0)
         return UCB_NORM_NFD;
-    else if (ucb_cstr_icomp(str, "NFKC") == 0)
+    if (ucb_cstr_icomp(str, "NFKC") == 0)
         return UCB_NORM_NFKC;
-    else if (ucb_cstr_icomp(str, "NFKD") == 0)
+    if (ucb_cstr_icomp(str, "NFKD") == 0)
         return UCB_NORM_NFKD;
-    else
-        return UCB_NORM_INVALID;
+    return UCB_NORM_INVALID;
 }

@@ -75,7 +75,12 @@ const char* ucb_env_get(const char* name)
     }
 
     GetEnvironmentVariableW(name_w, buffer, size);
-    if (!ucb_cstr_from_wchar_buf(buffer, size - 1, s_envval, UCB_ENV_BUFSIZE, UCB_NULL, UCB_NULL))
+    if (!ucb_cstr_from_wchar_buf(buffer,
+                                 size - 1,
+                                 s_envval,
+                                 (size_t)UCB_ENV_BUFSIZE,
+                                 UCB_NULL,
+                                 UCB_NULL))
     {
         // Conversion failed. Could be invalid unicode or buffer too small.
         ucb_free(buffer);

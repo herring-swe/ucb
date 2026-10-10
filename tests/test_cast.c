@@ -16,7 +16,7 @@ int test_c_cast()
 {
     int i;
     int int_vals[] = {1234, INT_MIN, INT_MAX, 0, INT_MIN + 1, INT_MAX - 1};
-    float flt_vals[] = {1234.5678f, FLT_MIN, FLT_MAX, 0.0, FLT_MIN + 1, FLT_MAX - 1};
+    float flt_vals[] = {1234.5678f, FLT_MIN, FLT_MAX, 0.0f, FLT_MIN + 1.f, FLT_MAX - 1.f};
     double dbl_vals[] = {1234.5678, DBL_MIN, DBL_MAX, 0.0, DBL_MIN + 1, DBL_MAX - 1};
 
     for (i = 0; i < sizeof(int_vals) / sizeof(int_vals[0]); i++)

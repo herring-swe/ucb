@@ -71,7 +71,8 @@ struct ucb_thread
 size_t ucb_thread_get_current_stack_size(void)
 {
 #ifdef _WIN32
-    ULONG_PTR low, high;
+    ULONG_PTR low;
+    ULONG_PTR high;
     GetCurrentThreadStackLimits(&low, &high);
     return (size_t)(high - low);
 #else
@@ -358,7 +359,10 @@ bool ucb_thread_start(ucb_thread* th, ucb_task task)
     unsigned threadaddr;
     unsigned stack_size =
         th->stack_size > (size_t)INT_MAX ? (unsigned)INT_MAX : (unsigned)th->stack_size;
+    // _beginthreadex returns a pointer-sized integer; casting to HANDLE is the
+    // documented usage.
     HANDLE handle =
+        // NOLINTNEXTLINE(performance-no-int-to-ptr)
         (HANDLE)_beginthreadex(NULL, stack_size, win_thread_wrapper, th, 0, &threadaddr);
     if (!handle)
     {

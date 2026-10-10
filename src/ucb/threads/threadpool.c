@@ -141,7 +141,7 @@ static void ucb_threadpool_destroy(ucb_threadpool* pool)
         {
             ucb_thread_free(pool->threads[i]);
         }
-        ucb_free(pool->threads);
+        ucb_free((void*)pool->threads);
     }
     ucb_pqueue_release(&pool->tasks);
     ucb_cond_release(&pool->finished_notify);
@@ -227,7 +227,7 @@ void ucb_threadpool_free(ucb_threadpool* pool)
     {
         ucb_thread_free(pool->threads[i]);
     }
-    ucb_free(pool->threads);
+    ucb_free((void*)pool->threads);
     ucb_free(pool);
 }
 

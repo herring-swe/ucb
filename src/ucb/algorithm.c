@@ -32,8 +32,8 @@ void ucb_qsort_ctx(void* base, size_t num, size_t size, ucb_cmp_func_ctx func, v
         .func = func,
         .ctx = ctx,
     };
-    return qsort_s(base, num, size, cmp_func_ctx_wrapper, &ctx_wrap);
+    qsort_s(base, num, size, cmp_func_ctx_wrapper, &ctx_wrap);
 #else
-    return qsort_r(base, num, size, func, ctx);
+    qsort_r(base, num, size, func, ctx);
 #endif
 }

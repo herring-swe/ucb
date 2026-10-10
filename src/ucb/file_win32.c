@@ -293,6 +293,9 @@ ucb_file* ucb_file_plat_from_fd(int fd, bool own, ucb_error** perr)
         return UCB_NULL;
     }
 
+    // _get_osfhandle returns a pointer-sized integer; casting to HANDLE is the
+    // documented usage.
+    // NOLINTNEXTLINE(performance-no-int-to-ptr)
     return ucb_file_win32_build((HANDLE)os_handle, own, UCB_FILE_READ | UCB_FILE_WRITE, fd, perr);
 }
 

@@ -266,7 +266,7 @@ static char* fs_temp_sibling(const char* dst)
         if (!tmp)
             return UCB_NULL;
 
-        memcpy(tmp, dst, dst_len);
+        memcpy(tmp, dst, dst_len); // NOLINT(bugprone-not-null-terminated-result): terminated below
         memcpy(tmp + dst_len, suffix, suffix_len + 1);
 
         ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;

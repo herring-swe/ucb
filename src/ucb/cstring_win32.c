@@ -34,46 +34,39 @@ char* ucb_cstr_from_wchar(const wchar_t* wstr, size_t wlen, size_t* slen_out, uc
     if (slen_out)
         *slen_out = 0;
 
-    // Check string length if needed, once
-    // Include NULL character in query and the output will also include it
-    int query_wlen = (int)wlen;
-    if (wlen == 0)
-    {
-        // Special case, empty string
-        if (wstr[0] == L'\0')
-        {
-            return ucb_calloc_type(1, char);
-        }
+    // Special case, empty string
+    if (wlen == 0 && wstr[0] == L'\0')
+        return ucb_calloc_type(1, char);
 
-        wlen = wcslen(wstr);
-        query_wlen = (int)wlen + 1;
-    }
-    else if (wstr[wlen] != L'\0')
-    {
-        wlen = 0; // Indicate the need for extra NULL character
-    }
+    // A length of 0 means "null-terminated"; the size query then includes the
+    // terminating null character.
+    int src_len = (wlen == 0) ? -1 : (int)wlen;
 
-    size_t str_size = 0;
     int ret =
-        WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstr, query_wlen, NULL, 0, NULL, NULL);
+        WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, wstr, src_len, NULL, 0, NULL, NULL);
     if (ret == 0)
     {
         ucb_throw_win32(perr, GetLastError(), UCB_NULL);
         return UCB_NULL;
     }
-    str_size = (size_t)ret;
-    if (wlen == 0)
-        str_size += 1;
-    char* buffer = ucb_calloc_type(str_size + 1, char);
+
+    size_t content = (size_t)ret;
+    if (src_len < 0)
+        content -= 1; // Query included the null character
+
+    // Allocate exactly content + 1 bytes so the caller's `len + 1` matches the
+    // real allocation. calloc keeps the buffer null-terminated even when the
+    // conversion does not write the terminator (explicit-length input).
+    char* buffer = ucb_calloc_type(content + 1, char);
     if (!buffer)
         return UCB_NULL;
 
     ret = WideCharToMultiByte(CP_UTF8,
                               WC_ERR_INVALID_CHARS,
                               wstr,
-                              query_wlen,
+                              src_len,
                               buffer,
-                              (int)str_size,
+                              (int)content + 1,
                               NULL,
                               NULL);
     if (ret == 0)
@@ -84,7 +77,7 @@ char* ucb_cstr_from_wchar(const wchar_t* wstr, size_t wlen, size_t* slen_out, uc
     }
 
     if (slen_out)
-        *slen_out = str_size - 1; // Exclude NULL character
+        *slen_out = content;
     return buffer;
 }
 

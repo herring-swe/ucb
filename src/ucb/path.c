@@ -76,14 +76,15 @@ static char path_sep_of(ucb_path_style style)
         return '/';
     case UCB_PATH_STYLE_WINDOWS:
         return '\\';
-    case UCB_PATH_STYLE_NATIVE:
     default:
-#ifdef _WIN32
-        return '\\';
-#else
-        return '/';
-#endif
+        break;
     }
+
+#ifdef _WIN32
+    return '\\';
+#else
+    return '/';
+#endif
 }
 
 typedef enum path_anchor_kind
@@ -252,7 +253,7 @@ static bool path_build_dir(ucb_str* out, const char* cstr, size_t len, char sep)
 
     for (size_t i = 0; i < anchor_len && ok; i++)
     {
-        char c = path_is_sep(cstr[i]) ? sep : cstr[i];
+        char c = (char)(path_is_sep(cstr[i]) ? sep : cstr[i]);
         ok = path_append_cstr(&tmp, &c, 1);
     }
 
@@ -509,7 +510,7 @@ static bool path_build_anchor(const char* dir,
     ucb_str_clear(out);
     for (size_t i = 0; i < anchor_len; i++)
     {
-        char c = path_sep_match(dir[i], sep) ? sep : dir[i];
+        char c = (char)(path_sep_match(dir[i], sep) ? sep : dir[i]);
         if (!path_append_cstr(out, &c, 1))
             return false;
     }
@@ -533,7 +534,7 @@ static bool path_normalize_lexical(ucb_str* out, const char* path, size_t len, c
 
     for (size_t i = 0; i < anchor_len; i++)
     {
-        char c = path_sep_match(path[i], sep) ? sep : path[i];
+        char c = (char)(path_sep_match(path[i], sep) ? sep : path[i]);
         if (!path_append_cstr(out, &c, 1))
             return false;
     }
@@ -873,20 +874,7 @@ char ucb_path_sep(void)
 
 const char* ucb_path_sep_cstr(void)
 {
-    switch (path_resolve_style(UCB_PATH_STYLE_DEFAULT))
-    {
-    case UCB_PATH_STYLE_POSIX:
-        return "/";
-    case UCB_PATH_STYLE_WINDOWS:
-        return "\\";
-    case UCB_PATH_STYLE_NATIVE:
-    default:
-#ifdef _WIN32
-        return "\\";
-#else
-        return "/";
-#endif
-    }
+    return ucb_path_sep() == '/' ? "/" : "\\";
 }
 
 const ucb_str* ucb_path_dir(const ucb_path* path)
