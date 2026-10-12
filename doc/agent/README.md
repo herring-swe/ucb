@@ -3,7 +3,7 @@
 Files here hold the details referenced from AGENTS.md, keeping that file brief.
 Each file is focused on one category and stays short.
 
-- `c.md` — C rules and formatting
+- `c.md` — C rules, API input and naming conventions, formatting
 - `python.md` — Python rules and formatting
 - `building.md` — build system
 - `testing.md` — doctest naming, targets, shared helpers

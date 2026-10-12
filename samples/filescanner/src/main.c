@@ -281,23 +281,6 @@ int main(int argc, char** argv)
     }
     ucb_free((void*)paths);
 
-    // if (ucb_vector_str_is_empty(paths))
-    // {
-    //     ucb_str* pwd = ucb_fs_cwd();
-    //     printf("Path: %s\n", UCB_CSTR(pwd));
-    //     scan_dir(UCB_CSTR(pwd), recursive, 0);
-    //     ucb_str_free(pwd);
-    // }
-    // else
-    // {
-    //     for (size_t i = 0; i < ucb_vector_str_size(paths); i++)
-    //     {
-    //         const char* path = UCB_CSTR(ucb_vector_str_get(paths, i));
-    //         printf("Path: %s\n", path);
-    //         scan_dir(path, recursive, 0);
-    //     }
-    // }
-
     ucb_arg_parser_free(parser);
     ucb_vector_str_free_full(spaths);
 
