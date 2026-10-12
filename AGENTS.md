@@ -15,7 +15,7 @@ Cross-platform foundation C library.
 Keep this file brief. Details live in doc/agent/:
 
 - Workspace-specific rules (optional): AGENTS-WS.md
-- C rules: doc/agent/c.md
+- C rules, API input and naming conventions: doc/agent/c.md
 - Python rules: doc/agent/python.md
 - Building: doc/agent/building.md
 - Testing: doc/agent/testing.md
