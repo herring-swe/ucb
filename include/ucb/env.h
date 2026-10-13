@@ -13,6 +13,7 @@
 #define UCB_ENV_H
 
 #include <ucb/export.h>
+#include <ucb/string.h>
 
 #include <stdbool.h>
 
@@ -21,20 +22,19 @@
  * @param name Variable name
  * @return true if variable exist
  */
-UCB_API bool ucb_env_has(const char* name);
+UCB_API bool ucb_env_has(const ucb_str* name);
 
 /**
  * @brief Get environment variable value
  *
- * The returned string is referring to internal memory and should not be freed.
- * It is only valid until the next call to this function.
- *
- * Use ucb_env_getdup, to get a copy of the value.
+ * The returned string is owned by the caller and must be released with
+ * @ref ucb_str_free. It is an independent copy, so it is safe to keep and to
+ * call this function again while holding it.
  *
  * @param name Variable name
- * @return Variable value, or UCB_NULL if not found
+ * @return owned variable value, or UCB_NULL if not found or on allocation error
  */
-UCB_API const char* ucb_env_get(const char* name);
+UCB_API ucb_str* ucb_env_get(const ucb_str* name);
 
 /**
  * @brief Set an environment variable value
@@ -43,14 +43,14 @@ UCB_API const char* ucb_env_get(const char* name);
  * @param overwrite If true, will overwrite any existing value, otherwise leave it unchanged.
  * @return true if the variable was set
  */
-UCB_API bool ucb_env_set(const char* name, const char* value, bool overwrite);
+UCB_API bool ucb_env_set(const ucb_str* name, const ucb_str* value, bool overwrite);
 
 /**
  * @brief Unset an environment variable
  * @param name Variable name
  * @return true if the variable was unset
  */
-UCB_API bool ucb_env_unset(const char* name);
+UCB_API bool ucb_env_unset(const ucb_str* name);
 
 /**
  * @brief Append a string to environment variable
@@ -61,7 +61,7 @@ UCB_API bool ucb_env_unset(const char* name);
  * @param sep Optional separator between values (NULL okay)
  * @return true if the variable was set
  */
-UCB_API bool ucb_env_append(const char* name, const char* value, const char* sep);
+UCB_API bool ucb_env_append(const ucb_str* name, const ucb_str* value, const ucb_str* sep);
 
 /**
  * @brief Prepend a string to environment variable
@@ -72,6 +72,6 @@ UCB_API bool ucb_env_append(const char* name, const char* value, const char* sep
  * @param sep Optional separator between values (NULL okay)
  * @return true if the variable was set
  */
-UCB_API bool ucb_env_prepend(const char* name, const char* value, const char* sep);
+UCB_API bool ucb_env_prepend(const ucb_str* name, const ucb_str* value, const ucb_str* sep);
 
 #endif // UCB_ENV_H

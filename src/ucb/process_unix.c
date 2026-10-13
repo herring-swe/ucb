@@ -86,7 +86,12 @@ static char* process_unix_resolve(const char* program, const ucb_envmap* env, uc
         return UCB_NULL;
     }
 
-    const char* path = env ? ucb_envmap_get(env, "PATH") : UCB_NULL;
+    ucb_str path_key = ucb_str_make();
+    ucb_str_init_c(&path_key, "PATH");
+    const ucb_str* env_path = env ? ucb_envmap_get(env, &path_key) : UCB_NULL;
+    ucb_str_release(&path_key);
+
+    const char* path = env_path ? ucb_str_cstr(env_path) : UCB_NULL;
     if (!path)
         path = getenv("PATH");
     if (!path)

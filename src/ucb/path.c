@@ -99,14 +99,14 @@ typedef enum path_anchor_kind
  * Internal. Detect the leading anchor of @p cstr[0, len) and store its byte
  * length in @p out_len. Returns the anchor kind or @ref PATH_ANCHOR_NONE.
  */
-static path_anchor_kind path_detect_anchor(const char* cstr,
-                                           size_t len,
-                                           char extra_sep,
-                                           size_t* out_len)
+static path_anchor_kind path_detect_anchor(const ucb_str* str, char extra_sep, size_t* out_len)
 {
     *out_len = 0;
-    if (len == 0 || cstr == UCB_NULL)
+    if (!str || str->size == 0)
         return PATH_ANCHOR_NONE;
+
+    char* cstr = str->data;
+    size_t len = str->size;
 
 #ifdef _WIN32
     if (len >= 2 && path_sep_match(cstr[0], extra_sep) && path_sep_match(cstr[1], extra_sep))
@@ -174,16 +174,6 @@ static bool path_aliases(const ucb_path* path, const char* ptr)
 }
 
 /**
- * Internal. Report a user error (aborts) when an explicit-length string
- * contains an embedded null character.
- */
-static void path_check_no_nul(const char* cstr, size_t len)
-{
-    if (len && memchr(cstr, '\0', len) != UCB_NULL)
-        UCB_REPORT(UCB_ERROR_INVALID_ARG, "Embedded null character");
-}
-
-/**
  * Internal. Ensure @p str has room for @p extra more bytes. Grows
  * geometrically so repeated appends amortize, and works around
  * ucb_str_reserve() reporting "no reallocation happened" as failure.
@@ -242,14 +232,26 @@ static bool path_append_segment(ucb_str* dir, const char* seg, size_t len, char 
  * Internal. Normalize a raw directory region into @p out: collapse repeated
  * separators, strip a trailing separator unless the value is a root, and
  * normalize the anchor.
+ *
+ * Might operate on a sub-region of @p str, so @p len is the length of the
+ * region to process.
  */
-static bool path_build_dir(ucb_str* out, const char* cstr, size_t len, char sep)
+static bool path_build_dir(ucb_str* out, const ucb_str* str, size_t len, char sep)
 {
+    // Detect the anchor within the processed region only: @p len may end before
+    // the full string (for example a bare Windows drive root like "C:").
+    ucb_str region = ucb_str_make();
+    region.data = str->data;
+    region.size = len;
+    region.alloc = 0;
+
     size_t anchor_len = 0;
-    path_anchor_kind ak = path_detect_anchor(cstr, len, 0, &anchor_len);
+    path_anchor_kind ak = path_detect_anchor(&region, 0, &anchor_len);
 
     ucb_str tmp = ucb_str_make();
     bool ok = true;
+
+    const char* cstr = str->data;
 
     for (size_t i = 0; i < anchor_len && ok; i++)
     {
@@ -336,15 +338,12 @@ static bool path_parse_filename(ucb_path* path, const char* cstr, size_t len)
 /**
  * Internal. Parse @p cstr[0, len) into @p path using @p style.
  */
-static bool path_parse(ucb_path* path, const char* cstr, size_t len, ucb_path_style style)
+static bool path_parse(ucb_path* path, const ucb_str* str, ucb_path_style style)
 {
     char sep = path_sep_of(style);
     path->style = path_resolve_style(style);
 
-    if (cstr == UCB_NULL)
-        len = 0;
-
-    if (len == 0)
+    if (str->size == 0)
     {
         bool ok = ucb_str_assign(&path->dir, UCB_NULL, 0);
         ok = ucb_str_assign(&path->stem, UCB_NULL, 0) && ok;
@@ -352,6 +351,9 @@ static bool path_parse(ucb_path* path, const char* cstr, size_t len, ucb_path_st
         path->_dirty = true;
         return ok;
     }
+
+    const char* cstr = str->data;
+    size_t len = str->size;
 
     size_t last = UCB_NPOS;
     for (size_t i = len; i-- > 0;)
@@ -365,7 +367,7 @@ static bool path_parse(ucb_path* path, const char* cstr, size_t len, ucb_path_st
 
     size_t raw_dir_len = (last == UCB_NPOS) ? 0 : last + 1;
 
-    bool ok = path_build_dir(&path->dir, cstr, raw_dir_len, sep);
+    bool ok = path_build_dir(&path->dir, str, raw_dir_len, sep);
 
     const char* fname;
     size_t flen;
@@ -386,25 +388,13 @@ static bool path_parse(ucb_path* path, const char* cstr, size_t len, ucb_path_st
     return ok;
 }
 
-static bool path_init_ex(ucb_path* path, const char* cstr, size_t len, ucb_path_style style)
+static bool path_init_ex(ucb_path* path, const ucb_str* str, ucb_path_style style)
 {
     UCB_VERIFY_ARGS(path);
+    UCB_VERIFY_ARGS(str);
 
     *path = ucb_path_make();
-
-    if (cstr == UCB_NULL)
-    {
-        path->style = path_resolve_style(style);
-        path->_dirty = true;
-        return true;
-    }
-
-    if (len == 0)
-        len = strlen(cstr);
-    else
-        path_check_no_nul(cstr, len);
-
-    return path_parse(path, cstr, len, style);
+    return path_parse(path, str, style);
 }
 
 /**
@@ -525,21 +515,24 @@ static bool path_build_anchor(const char* dir,
 /**
  * Internal. Lexically normalize @p path[0, len) into @p out.
  */
-static bool path_normalize_lexical(ucb_str* out, const char* path, size_t len, char sep)
+static bool path_normalize_lexical(ucb_str* out, const ucb_str* path, char sep)
 {
     ucb_str_clear(out);
 
     size_t anchor_len = 0;
-    path_anchor_kind ak = path_detect_anchor(path, len, sep, &anchor_len);
+    path_anchor_kind ak = path_detect_anchor(path, sep, &anchor_len);
+
+    const char* pcstr = path->data;
+    size_t plen = path->size;
 
     for (size_t i = 0; i < anchor_len; i++)
     {
-        char c = (char)(path_sep_match(path[i], sep) ? sep : path[i]);
+        char c = (char)(path_sep_match(pcstr[i], sep) ? sep : pcstr[i]);
         if (!path_append_cstr(out, &c, 1))
             return false;
     }
 
-    size_t* starts = ucb_malloc((len + 1) * sizeof(size_t));
+    size_t* starts = ucb_malloc((plen + 1) * sizeof(size_t));
     if (!starts)
         return false;
 
@@ -547,18 +540,18 @@ static bool path_normalize_lexical(ucb_str* out, const char* path, size_t len, c
     size_t depth = 0;
     size_t base = 0;
     size_t i = anchor_len;
-    while (i < len)
+    while (i < plen)
     {
-        while (i < len && path_sep_match(path[i], sep))
+        while (i < plen && path_sep_match(pcstr[i], sep))
             i++;
-        if (i >= len)
+        if (i >= plen)
             break;
 
         size_t s = i;
-        while (i < len && !path_sep_match(path[i], sep))
+        while (i < plen && !path_sep_match(pcstr[i], sep))
             i++;
         size_t seg_len = i - s;
-        const char* seg = path + s;
+        const char* seg = pcstr + s;
 
         if (seg_len == 1 && seg[0] == '.')
             continue;
@@ -622,7 +615,7 @@ static bool path_normalize_lexical(ucb_str* out, const char* path, size_t len, c
     }
 
     // An empty relative result denotes the current directory.
-    if (out->size == 0 && len > 0 && ak == PATH_ANCHOR_NONE)
+    if (out->size == 0 && plen > 0 && ak == PATH_ANCHOR_NONE)
     {
         if (!path_append_cstr(out, ".", 1))
             return false;
@@ -634,13 +627,15 @@ static bool path_normalize_lexical(ucb_str* out, const char* path, size_t len, c
 /*                                Construction                                */
 /* -------------------------------------------------------------------------- */
 
-ucb_path* ucb_path_new(const char* cstr, size_t len)
+ucb_path* ucb_path_new(const ucb_str* str)
 {
+    UCB_VERIFY_ARGS(str);
+
     ucb_path* path = ucb_malloc_type(1, ucb_path);
     if (!path)
         return UCB_NULL;
     *path = ucb_path_make();
-    if (!ucb_path_init(path, cstr, len))
+    if (!ucb_path_init(path, str))
     {
         ucb_path_free(path);
         return UCB_NULL;
@@ -648,13 +643,15 @@ ucb_path* ucb_path_new(const char* cstr, size_t len)
     return path;
 }
 
-ucb_path* ucb_path_new_style(const char* cstr, ucb_path_style style)
+ucb_path* ucb_path_new_style(const ucb_str* str, ucb_path_style style)
 {
+    UCB_VERIFY_ARGS(str);
+
     ucb_path* path = ucb_malloc_type(1, ucb_path);
     if (!path)
         return UCB_NULL;
     *path = ucb_path_make();
-    if (!ucb_path_init_style(path, cstr, style))
+    if (!ucb_path_init_style(path, str, style))
     {
         ucb_path_free(path);
         return UCB_NULL;
@@ -678,14 +675,14 @@ ucb_path* ucb_path_clone(const ucb_path* src)
     return dst;
 }
 
-bool ucb_path_init(ucb_path* path, const char* cstr, size_t len)
+bool ucb_path_init(ucb_path* path, const ucb_str* str)
 {
-    return path_init_ex(path, cstr, len, UCB_PATH_STYLE_DEFAULT);
+    return ucb_path_init_style(path, str, UCB_PATH_STYLE_DEFAULT);
 }
 
-bool ucb_path_init_style(ucb_path* path, const char* cstr, ucb_path_style style)
+bool ucb_path_init_style(ucb_path* path, const ucb_str* str, ucb_path_style style)
 {
-    return path_init_ex(path, cstr, 0, style);
+    return path_init_ex(path, str, style);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -735,34 +732,18 @@ bool ucb_path_copy(ucb_path* dst, const ucb_path* src)
     return ok;
 }
 
-bool ucb_path_assign(ucb_path* path, const char* cstr, size_t len)
+bool ucb_path_assign(ucb_path* path, const ucb_str* str)
 {
-    UCB_VERIFY_ARGS(path);
+    UCB_VERIFY_ARGS(path && str);
 
-    if (cstr)
+    if (path_aliases(path, str->data))
     {
-        if (len == 0)
-            len = strlen(cstr);
-        else
-            path_check_no_nul(cstr, len);
-    }
-
-    if (path_aliases(path, cstr))
-    {
-        char* tmp = UCB_NULL;
-        if (len)
-        {
-            tmp = ucb_malloc(len + 1);
-            if (!tmp)
-                return false;
-            memcpy(tmp, cstr, len);
-            tmp[len] = '\0';
-        }
-        bool ok = path_parse(path, tmp, len, path->style);
-        ucb_free(tmp);
+        ucb_str* clone = ucb_str_clone(str);
+        bool ok = path_parse(path, clone, path->style);
+        ucb_str_free(clone);
         return ok;
     }
-    return path_parse(path, cstr, len, path->style);
+    return path_parse(path, str, path->style);
 }
 
 void ucb_path_clear(ucb_path* path)
@@ -801,6 +782,13 @@ ucb_str* ucb_path_to_str(const ucb_path* path)
         return UCB_NULL;
     }
     return out;
+}
+
+const ucb_str* ucb_path_str(ucb_path* path)
+{
+    UCB_VERIFY_ARGS(path);
+    path_update(path);
+    return &path->_cache;
 }
 
 size_t ucb_path_len(const ucb_path* path)
@@ -902,63 +890,6 @@ const ucb_str* ucb_path_filename(ucb_path* path)
     return &path->_name;
 }
 
-ucb_str* ucb_path_dir_cstyle(const char* cstr, ucb_path_style style)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, style))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_str* result = ucb_str_clone(&path.dir);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_str* ucb_path_dir_c(const char* cstr)
-{
-    return ucb_path_dir_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
-}
-
-ucb_str* ucb_path_stem_c(const char* cstr)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, UCB_PATH_STYLE_DEFAULT))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_str* result = ucb_str_clone(&path.stem);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_str* ucb_path_ext_c(const char* cstr)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, UCB_PATH_STYLE_DEFAULT))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_str* result = ucb_str_clone(&path.ext);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_str* ucb_path_filename_c(const char* cstr)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, UCB_PATH_STYLE_DEFAULT))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_str* result = ucb_str_clone(ucb_path_filename(&path));
-    ucb_path_release(&path);
-    return result;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                                  Setters                                   */
 /* -------------------------------------------------------------------------- */
@@ -967,12 +898,7 @@ bool ucb_path_set_dir(ucb_path* path, const ucb_str* dir)
 {
     UCB_VERIFY_ARGS(path && dir);
 
-    ucb_str tmp = ucb_str_make();
-    bool ok = ucb_str_copy(&tmp, dir);
-    if (ok)
-        ok = path_build_dir(&path->dir, tmp.data, tmp.size, path_sep_of(path->style));
-    ucb_str_release(&tmp);
-
+    bool ok = path_build_dir(&path->dir, dir, dir->size, path_sep_of(path->style));
     path->_dirty = true;
     return ok;
 }
@@ -1111,27 +1037,27 @@ ucb_path* ucb_path_join(const ucb_path* base, const ucb_path* other)
     return result;
 }
 
-ucb_path* ucb_path_join_c(const ucb_path* base, const char* other)
+ucb_path* ucb_path_join_str(const ucb_str* base, const ucb_str* other)
 {
-    UCB_VERIFY_ARGS(base);
+    UCB_VERIFY_ARGS(base && other);
 
-    ucb_path tmp = ucb_path_make();
-    if (!path_init_ex(&tmp, other, 0, base->style))
+    ucb_path* result = ucb_path_new(base);
+    if (!result)
+        return UCB_NULL;
+    if (!ucb_path_append_str(result, other))
     {
-        ucb_path_release(&tmp);
+        ucb_path_free(result);
         return UCB_NULL;
     }
-    ucb_path* result = ucb_path_join(base, &tmp);
-    ucb_path_release(&tmp);
     return result;
 }
 
-bool ucb_path_append_c(ucb_path* path, const char* other)
+bool ucb_path_append_str(ucb_path* path, const ucb_str* other)
 {
-    UCB_VERIFY_ARGS(path);
+    UCB_VERIFY_ARGS(path && other);
 
     ucb_path tmp = ucb_path_make();
-    if (!path_init_ex(&tmp, other, 0, path->style))
+    if (!ucb_path_init_style(&tmp, other, path->style))
     {
         ucb_path_release(&tmp);
         return false;
@@ -1151,37 +1077,14 @@ bool ucb_path_normalize(ucb_path* path)
     if (ok)
     {
         ucb_str norm = ucb_str_make();
-        ok = path_normalize_lexical(&norm, cur.data, cur.size, sep);
+        ok = path_normalize_lexical(&norm, &cur, sep);
         if (ok)
-            ok = path_parse(path, norm.data, norm.size, path->style);
+            ok = path_parse(path, &norm, path->style);
         ucb_str_release(&norm);
     }
     ucb_str_release(&cur);
     path->_dirty = true;
     return ok;
-}
-
-ucb_str* ucb_path_normalize_cstyle(const char* cstr, ucb_path_style style)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, style))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    if (!ucb_path_normalize(&path))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_str* result = ucb_path_to_str(&path);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_str* ucb_path_normalize_c(const char* cstr)
-{
-    return ucb_path_normalize_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
 }
 
 bool ucb_path_equals(const ucb_path* a, const ucb_path* b)
@@ -1229,19 +1132,6 @@ int ucb_path_icomp(const ucb_path* a, const ucb_path* b)
     return result;
 }
 
-bool ucb_path_equals_c(const char* a, const char* b)
-{
-    ucb_path pa = ucb_path_make();
-    ucb_path pb = ucb_path_make();
-    bool ok = path_init_ex(&pa, a, 0, UCB_PATH_STYLE_DEFAULT);
-    if (ok)
-        ok = path_init_ex(&pb, b, 0, UCB_PATH_STYLE_DEFAULT);
-    bool result = ok && ucb_path_equals(&pa, &pb);
-    ucb_path_release(&pa);
-    ucb_path_release(&pb);
-    return result;
-}
-
 /**
  * Internal. True if @p inner is a proper descendant of @p outer. Compares the
  * part sequences; equal or shorter paths are not inside.
@@ -1273,32 +1163,6 @@ bool ucb_path_is_inside(const ucb_path* a, const ucb_path* b)
     return path_inside_one(a, b) || path_inside_one(b, a);
 }
 
-int ucb_path_comp_c(const char* a, const char* b)
-{
-    ucb_path pa = ucb_path_make();
-    ucb_path pb = ucb_path_make();
-    bool ok = path_init_ex(&pa, a, 0, UCB_PATH_STYLE_DEFAULT);
-    if (ok)
-        ok = path_init_ex(&pb, b, 0, UCB_PATH_STYLE_DEFAULT);
-    int result = ok ? ucb_path_comp(&pa, &pb) : 0;
-    ucb_path_release(&pa);
-    ucb_path_release(&pb);
-    return result;
-}
-
-int ucb_path_icomp_c(const char* a, const char* b)
-{
-    ucb_path pa = ucb_path_make();
-    ucb_path pb = ucb_path_make();
-    bool ok = path_init_ex(&pa, a, 0, UCB_PATH_STYLE_DEFAULT);
-    if (ok)
-        ok = path_init_ex(&pb, b, 0, UCB_PATH_STYLE_DEFAULT);
-    int result = ok ? ucb_path_icomp(&pa, &pb) : 0;
-    ucb_path_release(&pa);
-    ucb_path_release(&pb);
-    return result;
-}
-
 /* -------------------------------------------------------------------------- */
 /*                              Parts and parents                             */
 /* -------------------------------------------------------------------------- */
@@ -1311,7 +1175,7 @@ size_t ucb_path_num_parts(const ucb_path* path)
     const char* d = path->dir.data;
     size_t n = path->dir.size;
     size_t anchor_len = 0;
-    path_anchor_kind ak = path_detect_anchor(d, n, sep, &anchor_len);
+    path_anchor_kind ak = path_detect_anchor(&path->dir, sep, &anchor_len);
 
     size_t count = 0;
     if (ak != PATH_ANCHOR_NONE)
@@ -1342,7 +1206,7 @@ ucb_str* ucb_path_part(const ucb_path* path, size_t index)
     const char* d = path->dir.data;
     size_t n = path->dir.size;
     size_t anchor_len = 0;
-    path_anchor_kind ak = path_detect_anchor(d, n, sep, &anchor_len);
+    path_anchor_kind ak = path_detect_anchor(&path->dir, sep, &anchor_len);
 
     size_t pos = 0;
     if (ak != PATH_ANCHOR_NONE)
@@ -1420,24 +1284,6 @@ ucb_vector_str* ucb_path_parts(const ucb_path* path)
     return vec;
 }
 
-ucb_vector_str* ucb_path_parts_cstyle(const char* cstr, ucb_path_style style)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, style))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_vector_str* result = ucb_path_parts(&path);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_vector_str* ucb_path_parts_c(const char* cstr)
-{
-    return ucb_path_parts_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
-}
-
 ucb_path* ucb_path_parent(const ucb_path* path)
 {
     UCB_VERIFY_ARGS(path);
@@ -1458,7 +1304,7 @@ ucb_path* ucb_path_parent(const ucb_path* path)
     const char* d = result->dir.data;
     size_t n = result->dir.size;
     size_t anchor_len = 0;
-    path_anchor_kind ak = path_detect_anchor(d, n, sep, &anchor_len);
+    path_anchor_kind ak = path_detect_anchor(&result->dir, sep, &anchor_len);
 
     size_t cut = UCB_NPOS;
     for (size_t i = n; i-- > anchor_len;)
@@ -1498,28 +1344,6 @@ ucb_path* ucb_path_parent(const ucb_path* path)
 
     result->_dirty = true;
     return result;
-}
-
-ucb_str* ucb_path_parent_cstyle(const char* cstr, ucb_path_style style)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, style))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_path* parent = ucb_path_parent(&path);
-    ucb_path_release(&path);
-    if (!parent)
-        return UCB_NULL;
-    ucb_str* result = ucb_path_to_str(parent);
-    ucb_path_free(parent);
-    return result;
-}
-
-ucb_str* ucb_path_parent_c(const char* cstr)
-{
-    return ucb_path_parent_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
 }
 
 ucb_vector_str* ucb_path_parents(const ucb_path* path)
@@ -1569,22 +1393,4 @@ ucb_vector_str* ucb_path_parents(const ucb_path* path)
 
     ucb_path_free(cur);
     return vec;
-}
-
-ucb_vector_str* ucb_path_parents_cstyle(const char* cstr, ucb_path_style style)
-{
-    ucb_path path = ucb_path_make();
-    if (!path_init_ex(&path, cstr, 0, style))
-    {
-        ucb_path_release(&path);
-        return UCB_NULL;
-    }
-    ucb_vector_str* result = ucb_path_parents(&path);
-    ucb_path_release(&path);
-    return result;
-}
-
-ucb_vector_str* ucb_path_parents_c(const char* cstr)
-{
-    return ucb_path_parents_cstyle(cstr, UCB_PATH_STYLE_DEFAULT);
 }

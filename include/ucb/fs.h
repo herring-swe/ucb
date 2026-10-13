@@ -8,10 +8,10 @@
  * @brief Portable filesystem query and modification API
  *
  * The filesystem API is a string based, filesystem aware companion to @ref path.h
- * and @ref file.h. All path-like inputs are UTF-8 encoded @c const char* values,
- * consistent with @ref file.h, @ref env.h and @ref pipe.h. @ref ucb_path stays
- * lexical-only and is not required to use this module, although callers may pass
- * a @ref ucb_path through @ref UCB_CSTR when convenient.
+ * and @ref file.h. All path-like inputs are @ref ucb_str values, consistent with
+ * @ref file.h, @ref env.h and @ref pipe.h; a @ref ucb_path is composed into a
+ * @ref ucb_str with @ref ucb_path_to_str. @ref ucb_path stays lexical-only and is
+ * not required to use this module.
  *
  * @section fs_path_semantics Path semantics
  *
@@ -30,7 +30,7 @@
  * - A destination is always the **exact** result path. There is no @c "into" or
  *   @c "contents-only" interpretation: @c ucb_fs_copy_tree("a", "b/c") makes
  *   @c b/c a copy of @c a. To copy into an existing directory, compose the final
- *   name first, for example with @ref ucb_path_join_c.
+ *   name first, for example with @ref ucb_path_append_str.
  *
  * An empty path string is invalid for every operation and throws
  * @ref UCB_ERROR_INVALID_ARG.
@@ -129,10 +129,10 @@ typedef struct ucb_fs_stat
  * "unreadable". Use @ref ucb_fs_get_kind or @ref ucb_fs_get_stat when that
  * distinction matters.
  *
- * @param path UTF-8 path, must not be UCB_NULL (an empty path returns false)
+ * @param path a @ref ucb_str path, must not be UCB_NULL (an empty path returns false)
  * @return true if the entry exists
  */
-UCB_API bool ucb_fs_exists(const char* path);
+UCB_API bool ucb_fs_exists(const ucb_str* path);
 
 /**
  * @brief Check whether a path names a regular file
@@ -140,10 +140,10 @@ UCB_API bool ucb_fs_exists(const char* path);
  * Follows a final symbolic link. See @ref ucb_fs_exists for the validation and
  * trivial-error contract.
  *
- * @param path UTF-8 path, must not be UCB_NULL (an empty path returns false)
+ * @param path a @ref ucb_str path, must not be UCB_NULL (an empty path returns false)
  * @return true if the entry is a regular file
  */
-UCB_API bool ucb_fs_is_file(const char* path);
+UCB_API bool ucb_fs_is_file(const ucb_str* path);
 
 /**
  * @brief Check whether a path names a directory
@@ -151,10 +151,10 @@ UCB_API bool ucb_fs_is_file(const char* path);
  * Follows a final symbolic link. See @ref ucb_fs_exists for the validation and
  * trivial-error contract.
  *
- * @param path UTF-8 path, must not be UCB_NULL (an empty path returns false)
+ * @param path a @ref ucb_str path, must not be UCB_NULL (an empty path returns false)
  * @return true if the entry is a directory
  */
-UCB_API bool ucb_fs_is_dir(const char* path);
+UCB_API bool ucb_fs_is_dir(const ucb_str* path);
 
 /**
  * @brief Check whether a path names a symbolic link
@@ -164,10 +164,10 @@ UCB_API bool ucb_fs_is_dir(const char* path);
  * link and a junction (both reparse points) are reported as a link. See
  * @ref ucb_fs_exists for the validation and trivial-error contract.
  *
- * @param path UTF-8 path, must not be UCB_NULL (an empty path returns false)
+ * @param path a @ref ucb_str path, must not be UCB_NULL (an empty path returns false)
  * @return true if the entry is a symbolic link
  */
-UCB_API bool ucb_fs_is_symlink(const char* path);
+UCB_API bool ucb_fs_is_symlink(const ucb_str* path);
 
 /* -------------------------------------------------------------------------- */
 /*                              Error-aware query                             */
@@ -180,13 +180,16 @@ UCB_API bool ucb_fs_is_symlink(const char* path);
  * entry throws into @p perr. Pass @ref UCB_FS_NOFOLLOW to classify a final
  * symbolic link itself.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0 or @ref UCB_FS_NOFOLLOW
  * @param out destination for the kind, must be non-NULL
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_get_kind(const char* path, unsigned flags, ucb_fs_kind* out, ucb_error** perr);
+UCB_API bool ucb_fs_get_kind(const ucb_str* path,
+                             unsigned flags,
+                             ucb_fs_kind* out,
+                             ucb_error** perr);
 
 /**
  * @brief Query metadata for a path
@@ -194,13 +197,16 @@ UCB_API bool ucb_fs_get_kind(const char* path, unsigned flags, ucb_fs_kind* out,
  * Follows a final symbolic link unless @ref UCB_FS_NOFOLLOW is set. A missing
  * entry throws @ref UCB_ERRSYS_ENOENT.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0 or @ref UCB_FS_NOFOLLOW
  * @param out destination for the metadata, must be non-NULL
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_get_stat(const char* path, unsigned flags, ucb_fs_stat* out, ucb_error** perr);
+UCB_API bool ucb_fs_get_stat(const ucb_str* path,
+                             unsigned flags,
+                             ucb_fs_stat* out,
+                             ucb_error** perr);
 
 /**
  * @brief Check whether a kind denotes a regular file
@@ -233,11 +239,11 @@ static inline bool ucb_fs_kind_is_dir(ucb_fs_kind kind)
  * @ref UCB_ERRSYS_EEXIST (even when it is a directory); use
  * @ref ucb_fs_mkdir_p to tolerate an existing directory.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_mkdir(const char* path, ucb_error** perr);
+UCB_API bool ucb_fs_mkdir(const ucb_str* path, ucb_error** perr);
 
 /**
  * @brief Create a directory and any missing parents
@@ -245,11 +251,11 @@ UCB_API bool ucb_fs_mkdir(const char* path, ucb_error** perr);
  * Idempotent: an existing directory is a success. An existing non-directory
  * component throws @ref UCB_ERRSYS_ENOTDIR.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_mkdir_p(const char* path, ucb_error** perr);
+UCB_API bool ucb_fs_mkdir_p(const ucb_str* path, ucb_error** perr);
 
 /**
  * @brief Remove a file, symbolic link or empty directory
@@ -259,11 +265,11 @@ UCB_API bool ucb_fs_mkdir_p(const char* path, ucb_error** perr);
  * @ref UCB_ERRSYS_ENOTEMPTY. Use @ref ucb_fs_remove_all for a recursive,
  * idempotent removal.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_remove(const char* path, ucb_error** perr);
+UCB_API bool ucb_fs_remove(const ucb_str* path, ucb_error** perr);
 
 /**
  * @brief Remove a path recursively
@@ -274,11 +280,11 @@ UCB_API bool ucb_fs_remove(const char* path, ucb_error** perr);
  * path such as @c "/tmp/.." is recognized as a root and refused too. Symbolic
  * links are removed without being followed.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_remove_all(const char* path, ucb_error** perr);
+UCB_API bool ucb_fs_remove_all(const ucb_str* path, ucb_error** perr);
 
 /**
  * @brief Copy a single file
@@ -297,13 +303,16 @@ UCB_API bool ucb_fs_remove_all(const char* path, ucb_error** perr);
  * success the POSIX mode (where available) and the modification time of the
  * source are applied to the destination.
  *
- * @param src UTF-8 source path, must be non-NULL and non-empty
- * @param dst UTF-8 destination path, must be non-NULL and non-empty
+ * @param src source @ref ucb_str path, must be non-NULL and non-empty
+ * @param dst destination @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0, @ref UCB_FS_OVERWRITE and/or @ref UCB_FS_FOLLOW
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_copy_file(const char* src, const char* dst, unsigned flags, ucb_error** perr);
+UCB_API bool ucb_fs_copy_file(const ucb_str* src,
+                              const ucb_str* dst,
+                              unsigned flags,
+                              ucb_error** perr);
 
 /**
  * @brief Copy a directory tree
@@ -317,13 +326,16 @@ UCB_API bool ucb_fs_copy_file(const char* src, const char* dst, unsigned flags, 
  * Symbolic links are recreated by default and followed only with
  * @ref UCB_FS_FOLLOW.
  *
- * @param src UTF-8 source path, must be non-NULL and non-empty
- * @param dst UTF-8 destination path, must be non-NULL and non-empty
+ * @param src source @ref ucb_str path, must be non-NULL and non-empty
+ * @param dst destination @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0, @ref UCB_FS_OVERWRITE and/or @ref UCB_FS_FOLLOW
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_copy_tree(const char* src, const char* dst, unsigned flags, ucb_error** perr);
+UCB_API bool ucb_fs_copy_tree(const ucb_str* src,
+                              const ucb_str* dst,
+                              unsigned flags,
+                              ucb_error** perr);
 
 /**
  * @brief Move or rename a path
@@ -338,13 +350,13 @@ UCB_API bool ucb_fs_copy_tree(const char* src, const char* dst, unsigned flags, 
  * caller must remove it first. Moving a directory onto an existing file throws
  * @ref UCB_ERRSYS_ENOTDIR.
  *
- * @param src UTF-8 source path, must be non-NULL and non-empty
- * @param dst UTF-8 destination path, must be non-NULL and non-empty
+ * @param src source @ref ucb_str path, must be non-NULL and non-empty
+ * @param dst destination @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0 or @ref UCB_FS_OVERWRITE for an existing file destination
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_move(const char* src, const char* dst, unsigned flags, ucb_error** perr);
+UCB_API bool ucb_fs_move(const ucb_str* src, const ucb_str* dst, unsigned flags, ucb_error** perr);
 
 /* -------------------------------------------------------------------------- */
 /*                             Working directory                              */
@@ -366,10 +378,10 @@ UCB_API ucb_str* ucb_fs_cwd(void);
  *
  * This is process-global and not thread-safe.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_chdir(const char* path, ucb_error** perr);
+UCB_API bool ucb_fs_chdir(const ucb_str* path, ucb_error** perr);
 
 #endif // UCB_FS_H

@@ -128,6 +128,9 @@ For Documentation only Doxygen is considered necessary.
 - [ ] Future: `ucb_str_view`, a strictly borrowed, non-owning view for zero-copy
       slicing. Not part of `ucb_str` and not a priority; the owned-only `ucb_str`
       is the current model.
+- [ ] Future: `ucb_strbuf`, an always null-terminated growable buffer companion
+      to `ucb_str` (like `ucb_buffer` but guaranteeing a trailing NUL). Enables
+      allocation-free in-place APIs such as `ucb_env_get_buf`.
 
 ### Unicode - Unicode (Target: 0.1.0, improve in 0.2.0)
 - [x] Validate, iterate, normalize, map baseline
@@ -182,6 +185,8 @@ For Documentation only Doxygen is considered necessary.
 - [x] Environment map for copy/restore
 - [x] Testing
 - [x] Documentation
+- [ ] Future: `ucb_env_get_buf` writing into a caller-provided `ucb_strbuf`, once
+      `ucb_strbuf` exists. Avoids the allocation every owned `ucb_env_get` makes.
 
 ### Path - Path Abstraction API (Target: 0.3.0, required by 1.0.0)
 - [x] Path object model (`ucb_path`: path, name, extension)

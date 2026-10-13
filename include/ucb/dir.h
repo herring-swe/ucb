@@ -63,8 +63,8 @@ typedef enum ucb_dir_flags
  */
 typedef struct ucb_dir_entry
 {
-    const char* name; ///< Borrowed name, valid until the next next/close call
-    ucb_fs_kind kind; ///< Best-effort kind from the directory metadata
+    const ucb_str* name; ///< Borrowed name, valid until the next next/close call
+    ucb_fs_kind kind;    ///< Best-effort kind from the directory metadata
 } ucb_dir_entry;
 
 /**
@@ -73,12 +73,12 @@ typedef struct ucb_dir_entry
  * The path is canonicalized exactly like @ref fs.h inputs. @c "." and ".." are
  * skipped unless @ref UCB_DIR_INCLUDE_DOT is set.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0 or @ref UCB_DIR_INCLUDE_DOT
  * @param perr optional location to store the error on failure
  * @return a new iterator, or UCB_NULL on failure
  */
-UCB_API ucb_dir* ucb_dir_open(const char* path, unsigned flags, ucb_error** perr);
+UCB_API ucb_dir* ucb_dir_open(const ucb_str* path, unsigned flags, ucb_error** perr);
 
 /**
  * @brief Advance to the next directory entry
@@ -126,11 +126,11 @@ UCB_API void ucb_dir_free(ucb_dir* dir);
  * vector of owned @ref ucb_str values. @c "." and ".." are not included. Free
  * the result with @ref ucb_vector_str_free_full.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param out destination for the vector, must be non-NULL
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_dir_list(const char* path, ucb_vector_str** out, ucb_error** perr);
+UCB_API bool ucb_dir_list(const ucb_str* path, ucb_vector_str** out, ucb_error** perr);
 
 #endif // UCB_DIR_H

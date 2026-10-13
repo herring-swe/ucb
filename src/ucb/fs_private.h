@@ -14,6 +14,7 @@
 #include <ucb/error.h>
 #include <ucb/fs.h>
 #include <ucb/fs_ex.h>
+#include <ucb/string.h>
 
 #include <stdbool.h>
 
@@ -28,10 +29,10 @@
  * value is a root. @c . and @c .. are left untouched. The result is handed
  * directly to the operating system.
  *
- * @param path UTF-8 path, may be UCB_NULL
- * @return an owned string to free with ucb_free, or UCB_NULL
+ * @param path a valid UTF-8 path, may be UCB_NULL
+ * @return an owned string to free with @ref ucb_str_free, or UCB_NULL
  */
-char* ucb_fs_canon(const char* path);
+ucb_str* ucb_fs_canon(const ucb_str* path);
 
 /**
  * @brief Get the lexically canonical parent of a canonical path.
@@ -40,9 +41,9 @@ char* ucb_fs_canon(const char* path);
  * to detect the top. Also used by @ref ucb_fs_mkdir_p.
  *
  * @param canon a canonical path
- * @return an owned string to free with ucb_free, or UCB_NULL
+ * @return an owned string to free with @ref ucb_str_free, or UCB_NULL
  */
-char* ucb_fs_parent(const char* canon);
+ucb_str* ucb_fs_parent(const ucb_str* canon);
 
 /**
  * @brief Join a canonical directory and a single entry name.
@@ -51,9 +52,9 @@ char* ucb_fs_parent(const char* canon);
  *
  * @param dir canonical directory path
  * @param name entry name
- * @return an owned string to free with ucb_free, or UCB_NULL
+ * @return an owned string to free with @ref ucb_str_free, or UCB_NULL
  */
-char* ucb_fs_join(const char* dir, const char* name);
+ucb_str* ucb_fs_join(const ucb_str* dir, const ucb_str* name);
 
 /**
  * @brief Check whether a canonical path is a filesystem root.
@@ -64,7 +65,7 @@ char* ucb_fs_join(const char* dir, const char* name);
  * @param canon a canonical path
  * @return true if @p canon is a root
  */
-bool ucb_fs_is_root(const char* canon);
+bool ucb_fs_is_root(const ucb_str* canon);
 
 /* -------------------------------------------------------------------------- */
 /*                          Platform backend interface                        */

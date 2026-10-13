@@ -124,11 +124,7 @@ static const char* ucb_str_cstr_error_msg(ucb_str_cstr_error etype)
     return "is invalid";
 }
 
-/**
- * Internal helper. Aborts with a descriptive argument error when @p cstr is not
- * valid input. See @ref ucb_str_is_valid.
- */
-static void ucb_str_verify_cstr(const char* cstr, size_t len, const char* param)
+void ucb_str_verify_cstr(const char* cstr, size_t len, const char* param)
 {
     ucb_str_cstr_error etype = ucb_str_cstr_validate(cstr, len);
     UCB_VERIFY(etype == UCB_STR_CSTR_OK,

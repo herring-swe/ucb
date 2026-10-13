@@ -16,6 +16,7 @@
 #include <ucb/memdbg.h>
 #include <ucb/memory.h>
 #include <ucb/pipe.h>
+#include <ucb/string_ex.h>
 
 #include <doctest.h>
 
@@ -85,7 +86,7 @@ TEST_CASE("file - open close")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
     CHECK(err == UCB_NULL);
     CHECK(ucb_file_is_valid(file));
@@ -100,7 +101,7 @@ TEST_CASE("file - open close")
     CHECK_FALSE(ucb_file_is_valid(file));
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     std::string content;
     REQUIRE(read_all_string(file, content));
@@ -120,7 +121,7 @@ TEST_CASE("file - read write")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(),
+        ucb_file_open(UCB_STR(path),
                       UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_READ | UCB_FILE_WRITE,
                       &err);
     REQUIRE(file != UCB_NULL);
@@ -155,7 +156,7 @@ TEST_CASE("file - read all growth")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(),
+        ucb_file_open(UCB_STR(path),
                       UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_READ | UCB_FILE_WRITE,
                       &err);
     REQUIRE(file != UCB_NULL);
@@ -187,7 +188,7 @@ TEST_CASE("file - write_buffer")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
 
     ucb_buffer* buf = ucb_buffer_new_heap(8);
@@ -198,7 +199,7 @@ TEST_CASE("file - write_buffer")
     ucb_buffer_free(buf);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     std::string content;
     REQUIRE(read_all_string(file, content));
@@ -206,7 +207,7 @@ TEST_CASE("file - write_buffer")
     ucb_file_free(file);
 
     // An empty buffer is a successful no-op.
-    file = ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
     ucb_buffer* empty = ucb_buffer_new_heap(4);
     REQUIRE(empty != UCB_NULL);
@@ -227,7 +228,7 @@ TEST_CASE("file - write_full")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
 
     CHECK(ucb_file_write_full(file, "full", 4, &err));
@@ -251,7 +252,7 @@ TEST_CASE("file - read_full")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(),
+        ucb_file_open(UCB_STR(path),
                       UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_READ | UCB_FILE_WRITE,
                       &err);
     REQUIRE(file != UCB_NULL);
@@ -324,7 +325,7 @@ TEST_CASE("file - seek")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(),
+        ucb_file_open(UCB_STR(path),
                       UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_READ | UCB_FILE_WRITE,
                       &err);
     REQUIRE(file != UCB_NULL);
@@ -365,28 +366,28 @@ TEST_CASE("file - append truncate")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
     REQUIRE(ucb_file_write(file, "abc", 3, &err) == 3);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_WRITE | UCB_FILE_APPEND, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_WRITE | UCB_FILE_APPEND, &err);
     REQUIRE(file != UCB_NULL);
     REQUIRE(ucb_file_write(file, "def", 3, &err) == 3);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     std::string content;
     REQUIRE(read_all_string(file, content));
     CHECK(content == "abcdef");
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_WRITE | UCB_FILE_TRUNCATE, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_WRITE | UCB_FILE_TRUNCATE, &err);
     REQUIRE(file != UCB_NULL);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     content.clear();
     REQUIRE(read_all_string(file, content));
@@ -395,12 +396,12 @@ TEST_CASE("file - append truncate")
 
     // Truncate combined with append must open on all platforms. On Windows this
     // previously requested FILE_APPEND_DATA without GENERIC_WRITE and failed.
-    file = ucb_file_open(path.c_str(), UCB_FILE_WRITE | UCB_FILE_APPEND | UCB_FILE_TRUNCATE, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_WRITE | UCB_FILE_APPEND | UCB_FILE_TRUNCATE, &err);
     REQUIRE(file != UCB_NULL);
     REQUIRE(ucb_file_write(file, "xy", 2, &err) == 2);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     content.clear();
     REQUIRE(read_all_string(file, content));
@@ -421,7 +422,7 @@ TEST_CASE("file - errors")
 
     SUBCASE("missing file")
     {
-        ucb_file* file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+        ucb_file* file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
         CHECK(file == UCB_NULL);
         REQUIRE(err != UCB_NULL);
         CHECK(err->code == UCB_ERRSYS_ENOENT);
@@ -430,8 +431,9 @@ TEST_CASE("file - errors")
 
     SUBCASE("read on write only")
     {
-        ucb_file* file =
-            ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file* file = ucb_file_open(UCB_STR(path),
+                                       UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE,
+                                       &err);
         REQUIRE(file != UCB_NULL);
         char buf[4];
         CHECK(ucb_file_read(file, buf, sizeof(buf), &err) == -1);
@@ -444,7 +446,7 @@ TEST_CASE("file - errors")
 
     SUBCASE("directory for write")
     {
-        ucb_file* file = ucb_file_open(".", UCB_FILE_WRITE, &err);
+        ucb_file* file = ucb_file_open(UCB_STR("."), UCB_FILE_WRITE, &err);
         CHECK(file == UCB_NULL);
         REQUIRE(err != UCB_NULL);
         ucb_error_clear(&err);
@@ -462,7 +464,7 @@ TEST_CASE("file - unsupported type")
     // A directory is not a supported ucb_file resource; opening one for reading
     // must be rejected rather than exposed with a device capability set.
     ucb_error* err = UCB_NULL;
-    ucb_file* file = ucb_file_open(".", UCB_FILE_READ, &err);
+    ucb_file* file = ucb_file_open(UCB_STR("."), UCB_FILE_READ, &err);
     CHECK(file == UCB_NULL);
     REQUIRE(err != UCB_NULL);
     CHECK(err->code == UCB_ERROR_NOT_IMPLEMENTED);
@@ -658,13 +660,13 @@ TEST_CASE("file - unicode path")
     ucb_error* err = UCB_NULL;
 
     ucb_file* file =
-        ucb_file_open(path.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(path), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     REQUIRE(file != UCB_NULL);
     CHECK(err == UCB_NULL);
     REQUIRE(ucb_file_write(file, "unicode", 7, &err) == 7);
     ucb_file_free(file);
 
-    file = ucb_file_open(path.c_str(), UCB_FILE_READ, &err);
+    file = ucb_file_open(UCB_STR(path), UCB_FILE_READ, &err);
     REQUIRE(file != UCB_NULL);
     std::string content;
     REQUIRE(read_all_string(file, content));

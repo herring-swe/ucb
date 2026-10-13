@@ -211,6 +211,8 @@ ucb_str* ucb_fs_plat_cwd(void)
             return UCB_NULL;
     }
 
+    // TODO(utf8): getcwd returns raw bytes; validate or convert to UTF-8 so a
+    // non-UTF-8 working directory does not abort the process.
     ucb_str* result = ucb_str_new(buf, 0);
     ucb_free(buf);
     return result;

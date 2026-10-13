@@ -205,11 +205,14 @@ bool ucb_process_capture(const ucb_process_capture_opts* opts,
     const char* null_path = "/dev/null";
 #endif
 
-    devnull_r = ucb_file_open(null_path, UCB_FILE_READ | UCB_FILE_CLOEXEC, perr);
+    ucb_str null_str = ucb_str_make();
+    ucb_str_init_c(&null_str, null_path);
+
+    devnull_r = ucb_file_open(&null_str, UCB_FILE_READ | UCB_FILE_CLOEXEC, perr);
     if (!devnull_r)
         goto done;
 
-    devnull_w = ucb_file_open(null_path, UCB_FILE_WRITE | UCB_FILE_CLOEXEC, perr);
+    devnull_w = ucb_file_open(&null_str, UCB_FILE_WRITE | UCB_FILE_CLOEXEC, perr);
     if (!devnull_w)
         goto done;
 
@@ -341,6 +344,8 @@ done:
     ucb_file_free(err_rd);
     ucb_file_free(devnull_r);
     ucb_file_free(devnull_w);
+
+    ucb_str_release(&null_str);
 
     process_take_error(perr, &io_err);
     process_take_error(perr, &wait_err);

@@ -30,6 +30,7 @@
 #include <ucb/defines.h>
 #include <ucb/error.h>
 #include <ucb/export.h>
+#include <ucb/string.h>
 #include <ucb/types.h>
 
 #include <stdbool.h>
@@ -116,12 +117,12 @@ typedef enum ucb_file_whence
  * for the owner, read for others, subject to the platform umask), the same as
  * @ref ucb_file_open_mode with @c mode @c 0666.
  *
- * @param path UTF-8 encoded path to open, must be non-NULL
+ * @param path a @ref ucb_str path to open, must be non-NULL
  * @param flags bitwise OR of @ref ucb_file_open_flags
  * @param perr optional location to store the error on failure
  * @return a new owning handle, or UCB_NULL on failure
  */
-UCB_API ucb_file* ucb_file_open(const char* path, unsigned flags, ucb_error** perr);
+UCB_API ucb_file* ucb_file_open(const ucb_str* path, unsigned flags, ucb_error** perr);
 
 /**
  * @brief Open or create a regular file with an explicit creation mode
@@ -129,13 +130,13 @@ UCB_API ucb_file* ucb_file_open(const char* path, unsigned flags, ucb_error** pe
  * Like @ref ucb_file_open but uses @p mode for newly created files. On Windows
  * @p mode is ignored.
  *
- * @param path UTF-8 encoded path to open, must be non-NULL
+ * @param path a @ref ucb_str path to open, must be non-NULL
  * @param flags bitwise OR of @ref ucb_file_open_flags
  * @param mode POSIX creation mode (permission bits) for new files
  * @param perr optional location to store the error on failure
  * @return a new owning handle, or UCB_NULL on failure
  */
-UCB_API ucb_file* ucb_file_open_mode(const char* path,
+UCB_API ucb_file* ucb_file_open_mode(const ucb_str* path,
                                      unsigned flags,
                                      unsigned mode,
                                      ucb_error** perr);

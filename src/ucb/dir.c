@@ -15,16 +15,16 @@
 #include <ucb/error.h>
 #include <ucb/memory.h>
 
-ucb_dir* ucb_dir_open(const char* path, unsigned flags, ucb_error** perr)
+ucb_dir* ucb_dir_open(const ucb_str* path, unsigned flags, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
-    if (!*path)
+    if (ucb_str_is_empty(path))
     {
         ucb_throw(perr, UCB_ERROR_INVALID_ARG, "ucb_dir_open: path must be non-empty");
         return UCB_NULL;
     }
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_dir_open: out of memory");
@@ -34,7 +34,7 @@ ucb_dir* ucb_dir_open(const char* path, unsigned flags, ucb_error** perr)
     ucb_dir* dir = ucb_calloc_type(1, ucb_dir);
     if (!dir)
     {
-        ucb_free(canon);
+        ucb_str_free(canon);
         return UCB_NULL;
     }
 
@@ -42,7 +42,7 @@ ucb_dir* ucb_dir_open(const char* path, unsigned flags, ucb_error** perr)
     dir->flags = flags;
     dir->closed = false;
     dir->state = UCB_NULL;
-    dir->name = UCB_NULL;
+    dir->name = ucb_str_make();
 
     if (!ucb_dir_plat_open(dir, perr))
     {
@@ -85,12 +85,12 @@ void ucb_dir_free(ucb_dir* dir)
     if (!dir->closed)
         (void)ucb_dir_plat_close(dir, UCB_NULL);
 
-    ucb_free(dir->name);
-    ucb_free(dir->path);
+    ucb_str_release(&dir->name);
+    ucb_str_free(dir->path);
     ucb_free(dir);
 }
 
-bool ucb_dir_list(const char* path, ucb_vector_str** out, ucb_error** perr)
+bool ucb_dir_list(const ucb_str* path, ucb_vector_str** out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(out);
     *out = UCB_NULL;
@@ -112,7 +112,7 @@ bool ucb_dir_list(const char* path, ucb_vector_str** out, ucb_error** perr)
     ucb_dir_entry entry;
     while (ucb_dir_next(dir, &entry, &derr))
     {
-        ucb_str* name = ucb_str_new_c(entry.name);
+        ucb_str* name = ucb_str_clone(entry.name);
         if (!name)
         {
             ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_dir_list: out of memory");

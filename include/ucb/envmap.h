@@ -13,6 +13,7 @@
 #define UCB_ENVMAP_H
 
 #include <ucb/export.h>
+#include <ucb/string.h>
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -70,19 +71,19 @@ UCB_API void ucb_envmap_copy(ucb_envmap* dst, const ucb_envmap* src);
  * @param name Variable name
  * @return true if the variable exists in the map
  */
-UCB_API bool ucb_envmap_has(const ucb_envmap* map, const char* name);
+UCB_API bool ucb_envmap_has(const ucb_envmap* map, const ucb_str* name);
 
 /**
  * @brief Get an environment variable value from the map
  *
- * The returned string refers to internal memory and should not be freed.
- * It is only valid as long as the map is not modified.
+ * The returned string is owned by the map and must not be freed. It is only
+ * valid as long as the map is not modified.
  *
  * @param map The environment map
  * @param name Variable name
- * @return Variable value, or UCB_NULL if not found
+ * @return borrowed variable value, or UCB_NULL if not found
  */
-UCB_API const char* ucb_envmap_get(const ucb_envmap* map, const char* name);
+UCB_API const ucb_str* ucb_envmap_get(const ucb_envmap* map, const ucb_str* name);
 
 /**
  * @brief Set an environment variable value in the map
@@ -91,7 +92,7 @@ UCB_API const char* ucb_envmap_get(const ucb_envmap* map, const char* name);
  * @param value Value to set
  * @return true if the variable was set
  */
-UCB_API bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value);
+UCB_API bool ucb_envmap_set(ucb_envmap* map, const ucb_str* name, const ucb_str* value);
 
 /**
  * @brief Unset an environment variable from the map
@@ -99,7 +100,7 @@ UCB_API bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value
  * @param name Variable name
  * @return true if the variable was unset
  */
-UCB_API bool ucb_envmap_unset(ucb_envmap* map, const char* name);
+UCB_API bool ucb_envmap_unset(ucb_envmap* map, const ucb_str* name);
 
 /**
  * @brief Append a string to an environment variable in the map
@@ -112,9 +113,9 @@ UCB_API bool ucb_envmap_unset(ucb_envmap* map, const char* name);
  * @return true if the variable was set
  */
 UCB_API bool ucb_envmap_append(ucb_envmap* map,
-                               const char* name,
-                               const char* value,
-                               const char* sep);
+                               const ucb_str* name,
+                               const ucb_str* value,
+                               const ucb_str* sep);
 
 /**
  * @brief Prepend a string to an environment variable in the map
@@ -127,9 +128,9 @@ UCB_API bool ucb_envmap_append(ucb_envmap* map,
  * @return true if the variable was set
  */
 UCB_API bool ucb_envmap_prepend(ucb_envmap* map,
-                                const char* name,
-                                const char* value,
-                                const char* sep);
+                                const ucb_str* name,
+                                const ucb_str* value,
+                                const ucb_str* sep);
 
 /**
  * @brief Apply all environment variables from the map to the current process environment

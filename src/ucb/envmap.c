@@ -41,7 +41,7 @@ typedef struct ucb_envmap_entry
 
 /* ---- Helper: find entry index by name, returns -1 if not found ---- */
 
-static size_t envmap_find(const ucb_envmap* map, const char* name)
+static size_t envmap_find(const ucb_envmap* map, const ucb_str* name)
 {
     if (!map || !name || !map->entries)
         return UCB_NPOS;
@@ -49,7 +49,7 @@ static size_t envmap_find(const ucb_envmap* map, const char* name)
     for (size_t i = 0; i < ucb_vector_ptr_size(map->entries); ++i)
     {
         ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, i);
-        if (entry && entry->name && strcmp(ucb_str_cstr(entry->name), name) == 0)
+        if (entry && entry->name && ucb_str_equal(entry->name, name))
         {
             return i;
         }
@@ -124,22 +124,25 @@ static ucb_envmap_entry* envmap_entry_from_nv(const char* nv)
     return entry;
 }
 
-/* ---- Helper: create a new entry from name/value C strings ---- */
+/* ---- Helper: create a new entry from name/value strings ---- */
 
-static ucb_envmap_entry* envmap_entry_new(const char* name, const char* value)
+static ucb_envmap_entry* envmap_entry_new(const ucb_str* name, const ucb_str* value)
 {
+    if (!name || !value)
+        return UCB_NULL;
+
     ucb_envmap_entry* entry = (ucb_envmap_entry*)malloc(sizeof(ucb_envmap_entry));
     if (!entry)
         return UCB_NULL;
 
-    entry->name = ucb_str_new_c(name ? name : "");
+    entry->name = ucb_str_clone(name);
     if (!entry->name)
     {
         free(entry);
         return UCB_NULL;
     }
 
-    entry->value = ucb_str_new_c(value ? value : "");
+    entry->value = ucb_str_clone(value);
     if (!entry->value)
     {
         ucb_str_free(entry->name);
@@ -242,7 +245,9 @@ void ucb_envmap_init_from_current(ucb_envmap* map)
     {
         for (char** env = environ; *env != UCB_NULL; ++env)
         {
-            /* Split the entire "NAME=VALUE" string */
+            /* Split the entire "NAME=VALUE" string.
+             * TODO(utf8): environ entries are raw bytes; validate or convert to
+             * UTF-8 so a non-UTF-8 entry does not abort the process. */
             ucb_envmap_entry* entry = envmap_entry_from_nv(*env);
             if (entry)
                 ucb_vector_ptr_push_back(map->entries, entry);
@@ -294,12 +299,12 @@ void ucb_envmap_copy(ucb_envmap* dst, const ucb_envmap* src)
     }
 }
 
-bool ucb_envmap_has(const ucb_envmap* map, const char* name)
+bool ucb_envmap_has(const ucb_envmap* map, const ucb_str* name)
 {
     return envmap_find(map, name) != UCB_NPOS;
 }
 
-const char* ucb_envmap_get(const ucb_envmap* map, const char* name)
+const ucb_str* ucb_envmap_get(const ucb_envmap* map, const ucb_str* name)
 {
     size_t idx = envmap_find(map, name);
     if (idx == UCB_NPOS)
@@ -309,12 +314,12 @@ const char* ucb_envmap_get(const ucb_envmap* map, const char* name)
     if (!entry || !entry->value)
         return UCB_NULL;
 
-    return ucb_str_cstr(entry->value);
+    return entry->value;
 }
 
-bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value)
+bool ucb_envmap_set(ucb_envmap* map, const ucb_str* name, const ucb_str* value)
 {
-    if (!map || !name || !map->entries)
+    if (!map || !name || !value || !map->entries)
         return false;
 
     size_t idx = envmap_find(map, name);
@@ -322,7 +327,7 @@ bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value)
     {
         /* Update existing entry's value */
         ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
-        return ucb_str_assign_c(entry->value, value);
+        return ucb_str_copy(entry->value, value);
     }
 
     /* Insert new entry */
@@ -334,7 +339,7 @@ bool ucb_envmap_set(ucb_envmap* map, const char* name, const char* value)
     return true;
 }
 
-bool ucb_envmap_unset(ucb_envmap* map, const char* name)
+bool ucb_envmap_unset(ucb_envmap* map, const ucb_str* name)
 {
     if (!map || !name || !map->entries)
         return false;
@@ -348,7 +353,10 @@ bool ucb_envmap_unset(ucb_envmap* map, const char* name)
     return true;
 }
 
-bool ucb_envmap_append(ucb_envmap* map, const char* name, const char* value, const char* sep)
+bool ucb_envmap_append(ucb_envmap* map,
+                       const ucb_str* name,
+                       const ucb_str* value,
+                       const ucb_str* sep)
 {
     if (!map || !name || !value || !map->entries)
         return false;
@@ -360,9 +368,9 @@ bool ucb_envmap_append(ucb_envmap* map, const char* name, const char* value, con
         ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
 
         if (sep && !ucb_str_is_empty(entry->value))
-            ucb_str_append_cstr(entry->value, sep, 0);
+            ucb_str_append(entry->value, sep);
 
-        ucb_str_append_cstr(entry->value, value, 0);
+        ucb_str_append(entry->value, value);
         return true;
     }
 
@@ -370,7 +378,10 @@ bool ucb_envmap_append(ucb_envmap* map, const char* name, const char* value, con
     return ucb_envmap_set(map, name, value);
 }
 
-bool ucb_envmap_prepend(ucb_envmap* map, const char* name, const char* value, const char* sep)
+bool ucb_envmap_prepend(ucb_envmap* map,
+                        const ucb_str* name,
+                        const ucb_str* value,
+                        const ucb_str* sep)
 {
     if (!map || !name || !value || !map->entries)
         return false;
@@ -382,12 +393,12 @@ bool ucb_envmap_prepend(ucb_envmap* map, const char* name, const char* value, co
         ucb_envmap_entry* entry = (ucb_envmap_entry*)ucb_vector_ptr_get(map->entries, idx);
 
         /* Build new value: value + sep + old_value */
-        ucb_str new_val;
-        if (!ucb_str_init(&new_val, value, 0))
+        ucb_str new_val = ucb_str_make();
+        if (!ucb_str_init(&new_val, ucb_str_cstr(value), ucb_str_len(value)))
             return false;
 
         if (sep && !ucb_str_is_empty(entry->value))
-            ucb_str_append_c(&new_val, sep);
+            ucb_str_append(&new_val, sep);
         ucb_str_append(&new_val, entry->value);
 
         bool ok = ucb_str_copy(entry->value, &new_val);
@@ -410,16 +421,13 @@ void ucb_envmap_apply(const ucb_envmap* map)
         if (!entry || !entry->name || !entry->value)
             continue;
 
-        const char* name = ucb_str_cstr(entry->name);
-        const char* value = ucb_str_cstr(entry->value);
-
         if (ucb_str_is_empty(entry->value))
         {
-            ucb_env_unset(name);
+            ucb_env_unset(entry->name);
         }
         else
         {
-            ucb_env_set(name, value, true);
+            ucb_env_set(entry->name, entry->value, true);
         }
     }
 }

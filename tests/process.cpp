@@ -19,6 +19,7 @@
 #include <ucb/memdbg.h>
 #include <ucb/pipe.h>
 #include <ucb/process.h>
+#include <ucb/string_ex.h>
 
 #include <doctest.h>
 
@@ -110,9 +111,12 @@ static std::vector<std::string> long_running_args(void)
 #ifdef _WIN32
 static void copy_parent_var(ucb_envmap* env, const char* name)
 {
-    const char* value = ucb_env_get(name);
+    ucb_str* value = ucb_env_get(UCB_STR(name));
     if (value)
-        ucb_envmap_set(env, name, value);
+    {
+        ucb_envmap_set(env, UCB_STR(name), value);
+        ucb_str_free(value);
+    }
 }
 #endif
 
@@ -234,7 +238,7 @@ TEST_CASE("process - environment")
 
     ucb_envmap* env = ucb_envmap_new();
     REQUIRE(env != UCB_NULL);
-    REQUIRE(ucb_envmap_set(env, "UCB_PROC_TEST", "custom-value"));
+    REQUIRE(ucb_envmap_set(env, UCB_STR("UCB_PROC_TEST"), UCB_STR("custom-value")));
 
 #ifdef _WIN32
     // cmd.exe needs a minimal environment to initialize.
@@ -246,7 +250,7 @@ TEST_CASE("process - environment")
 #endif
 
     // A variable that exists in the parent but not in the replaced environment.
-    REQUIRE(ucb_env_set("UCB_PROC_PARENT_ONLY", "leaked-from-parent", true));
+    REQUIRE(ucb_env_set(UCB_STR("UCB_PROC_PARENT_ONLY"), UCB_STR("leaked-from-parent"), true));
 
 #ifdef _WIN32
     std::vector<std::string> args = make_shell_args("echo %UCB_PROC_TEST%/%UCB_PROC_PARENT_ONLY%");
@@ -271,7 +275,7 @@ TEST_CASE("process - environment")
 
     ucb_buffer_free(out);
     ucb_envmap_free(env);
-    ucb_env_unset("UCB_PROC_PARENT_ONLY");
+    ucb_env_unset(UCB_STR("UCB_PROC_PARENT_ONLY"));
 
     UCB_MEMTRACK_POP();
 }
@@ -354,7 +358,7 @@ TEST_CASE("process - wait timeout")
     ucb_error* err = UCB_NULL;
 
     // Discard the child's output so it cannot keep a test harness pipe open.
-    ucb_file* devnull = ucb_file_open(null_device(), UCB_FILE_WRITE, &err);
+    ucb_file* devnull = ucb_file_open(UCB_STR(null_device()), UCB_FILE_WRITE, &err);
     REQUIRE(devnull != UCB_NULL);
 
     ucb_process_opts opts = ucb_process_opts_make();
@@ -520,7 +524,7 @@ TEST_CASE_FIXTURE(TestFailureFixture, "process - invalid args")
         SUBCASE("invalid redirect handle")
         {
             ucb_error* err = UCB_NULL;
-            ucb_file* closed = ucb_file_open(null_device(), UCB_FILE_READ, &err);
+            ucb_file* closed = ucb_file_open(UCB_STR(null_device()), UCB_FILE_READ, &err);
             REQUIRE(closed != UCB_NULL);
             REQUIRE(ucb_file_close(closed, &err));
 

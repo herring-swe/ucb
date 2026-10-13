@@ -16,6 +16,7 @@
 #include <ucb/file.h>
 #include <ucb/fs.h>
 #include <ucb/memory.h>
+#include <ucb/string_ex.h>
 
 #include <cstdio>
 #include <cstdlib>
@@ -70,13 +71,13 @@ FsTmp::FsTmp(const char* prefix)
     m_dir = buf;
 
     // Clear a stale leftover from a previous crash, then create.
-    (void)ucb_fs_remove_all(m_dir.c_str(), UCB_NULL);
-    (void)ucb_fs_mkdir_p(m_dir.c_str(), UCB_NULL);
+    (void)ucb_fs_remove_all(UCB_STR(m_dir), UCB_NULL);
+    (void)ucb_fs_mkdir_p(UCB_STR(m_dir), UCB_NULL);
 }
 
 FsTmp::~FsTmp()
 {
-    (void)ucb_fs_remove_all(m_dir.c_str(), UCB_NULL);
+    (void)ucb_fs_remove_all(UCB_STR(m_dir), UCB_NULL);
 }
 
 std::string FsTmp::path(const char* leaf) const
@@ -91,7 +92,7 @@ bool FsTmp::write(const char* leaf, const std::string& data) const
     std::string p = path(leaf);
     ucb_error* err = UCB_NULL;
     ucb_file* file =
-        ucb_file_open(p.c_str(), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
+        ucb_file_open(UCB_STR(p), UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_WRITE, &err);
     if (!file)
     {
         ucb_error_clear(&err);
@@ -108,7 +109,7 @@ bool FsTmp::read(const char* leaf, std::string& out) const
 {
     std::string p = path(leaf);
     ucb_error* err = UCB_NULL;
-    ucb_file* file = ucb_file_open(p.c_str(), UCB_FILE_READ, &err);
+    ucb_file* file = ucb_file_open(UCB_STR(p), UCB_FILE_READ, &err);
     if (!file)
     {
         ucb_error_clear(&err);

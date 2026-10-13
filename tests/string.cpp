@@ -1099,6 +1099,47 @@ TEST_CASE("string - UCB_CSTR")
     UCB_MEMTRACK_POP();
 }
 
+TEST_CASE("string - UCB_STR")
+{
+    UCB_MEMTRACK_PUSH();
+
+    SUBCASE("literal")
+    {
+        CHECK(ucb_str_len(UCB_STR("literal")) == 7);
+        CHECK(strcmp(ucb_str_cstr(UCB_STR("literal")), "literal") == 0);
+    }
+
+    SUBCASE("runtime const char*")
+    {
+        const char* cstr = "runtime";
+        CHECK(ucb_str_len(UCB_STR(cstr)) == 7);
+        CHECK(ucb_str_cstr(UCB_STR(cstr)) == cstr);
+    }
+
+    SUBCASE("char array")
+    {
+        char buf[] = "buffer";
+        CHECK(ucb_str_len(UCB_STR(buf)) == 6);
+        CHECK(ucb_str_cstr(UCB_STR(buf)) == buf);
+    }
+
+    SUBCASE("std::string")
+    {
+        std::string s("std_string");
+        CHECK(ucb_str_len(UCB_STR(s)) == 10);
+        CHECK(ucb_str_cstr(UCB_STR(s)) == s.c_str());
+    }
+
+    SUBCASE("empty and null")
+    {
+        CHECK(ucb_str_len(UCB_STR("")) == 0);
+        CHECK(ucb_str_len(UCB_STR((const char*)nullptr)) == 0);
+        CHECK(ucb_str_cstr(UCB_STR((const char*)nullptr))[0] == '\0');
+    }
+
+    UCB_MEMTRACK_POP();
+}
+
 TEST_CASE_FIXTURE(TestFailureFixture, "string - invalid input")
 {
     UCB_MEMTRACK_PUSH();

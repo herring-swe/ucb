@@ -26,14 +26,17 @@ system:
   on another (for example `"/tmp/.."` names the root). A `.` component with no
   `..` is left as written.
 
+All path-like inputs are `ucb_str` values, so a caller holding a literal first
+wraps it with `ucb_str_init_c`/`ucb_str_new_c` (or composes it with `ucb_path`).
+
 Because canonicalization is lexical, the byte string you pass in is not echoed
 back verbatim, and a trailing separator carries no meaning:
 
 - `"/my/path/"` and `"/my/path"` name the same entry.
 - A destination is always the **exact** result path. There is no "into" or
-  "contents-only" interpretation: `ucb_fs_copy_tree("a", "b/c")` makes `b/c` a
-  copy of `a`. To copy into an existing directory, compose the final name first,
-  for example with `ucb_path_join_c()`.
+  "contents-only" interpretation: `ucb_fs_copy_tree(src, dst)` with `dst` equal
+  to `b/c` makes `b/c` a copy of `src`. To copy into an existing directory,
+  compose the final name first, for example with `ucb_path_append_str()`.
 
 An empty path string is invalid for every operation and throws
 `UCB_ERROR_INVALID_ARG`. The trivial predicates are the exception: they return
