@@ -45,13 +45,13 @@ typedef struct ucb_fs_stat_ns
  * timestamps are returned; use @ref ucb_fs_get_stat for the remaining metadata.
  * A missing entry throws @ref UCB_ERRSYS_ENOENT.
  *
- * @param path UTF-8 path, must be non-NULL and non-empty
+ * @param path a @ref ucb_str path, must be non-NULL and non-empty
  * @param flags 0 or @ref UCB_FS_NOFOLLOW
  * @param out destination for the timestamps, must be non-NULL
  * @param perr optional location to store the error on failure
  * @return true on success
  */
-UCB_API bool ucb_fs_get_stat_ns(const char* path,
+UCB_API bool ucb_fs_get_stat_ns(const ucb_str* path,
                                 unsigned flags,
                                 ucb_fs_stat_ns* out,
                                 ucb_error** perr);

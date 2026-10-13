@@ -16,6 +16,7 @@
 #include <ucb/file.h>
 #include <ucb/memory.h>
 #include <ucb/path.h>
+#include <ucb/string_ex.h>
 
 #include <ctype.h>
 #include <stdio.h>
@@ -37,22 +38,12 @@ static bool fs_has_parent_component(const char* path);
 /*                              Shared helpers                                */
 /* -------------------------------------------------------------------------- */
 
-static char* fs_strdup(const char* str)
-{
-    size_t len = strlen(str);
-    char* out = ucb_malloc(len + 1);
-    if (!out)
-        return UCB_NULL;
-    memcpy(out, str, len + 1);
-    return out;
-}
-
-char* ucb_fs_canon(const char* path)
+ucb_str* ucb_fs_canon(const ucb_str* path)
 {
     if (!path)
         return UCB_NULL;
 
-    ucb_path* parsed = ucb_path_new_c(path);
+    ucb_path* parsed = ucb_path_new(path);
     if (!parsed)
         return UCB_NULL;
 
@@ -70,17 +61,17 @@ char* ucb_fs_canon(const char* path)
         }
     }
 
-    char* out = fs_strdup(ucb_path_cstr(parsed));
+    ucb_str* out = ucb_path_to_str(parsed);
     ucb_path_free(parsed);
     return out;
 }
 
-char* ucb_fs_parent(const char* canon)
+ucb_str* ucb_fs_parent(const ucb_str* canon)
 {
     if (!canon)
         return UCB_NULL;
 
-    ucb_path* parsed = ucb_path_new_c(canon);
+    ucb_path* parsed = ucb_path_new(canon);
     if (!parsed)
         return UCB_NULL;
 
@@ -89,37 +80,33 @@ char* ucb_fs_parent(const char* canon)
     if (!parent)
         return UCB_NULL;
 
-    char* out = fs_strdup(ucb_path_cstr(parent));
+    ucb_str* out = ucb_path_to_str(parent);
     ucb_path_free(parent);
     return out;
 }
 
-char* ucb_fs_join(const char* dir, const char* name)
+ucb_str* ucb_fs_join(const ucb_str* dir, const ucb_str* name)
 {
     if (!dir || !name)
         return UCB_NULL;
 
-    size_t dir_len = strlen(dir);
-    size_t name_len = strlen(name);
+    size_t dir_len = ucb_str_len(dir);
+    const char* d = ucb_str_cstr(dir);
 #ifdef _WIN32
     char sep = '\\';
-    bool ends_sep = dir_len > 0 && (dir[dir_len - 1] == '\\' || dir[dir_len - 1] == '/');
+    bool ends_sep = dir_len > 0 && (d[dir_len - 1] == '\\' || d[dir_len - 1] == '/');
 #else
     char sep = '/';
-    bool ends_sep = dir_len > 0 && dir[dir_len - 1] == '/';
+    bool ends_sep = dir_len > 0 && d[dir_len - 1] == '/';
 #endif
 
-    bool need_sep = dir_len > 0 && !ends_sep;
-    char* out = ucb_malloc(dir_len + (need_sep ? 1u : 0u) + name_len + 1);
+    ucb_str* out = ucb_str_clone(dir);
     if (!out)
         return UCB_NULL;
 
-    memcpy(out, dir, dir_len);
-    size_t off = dir_len;
-    if (need_sep)
-        out[off++] = sep;
-    memcpy(out + off, name, name_len);
-    out[off + name_len] = '\0';
+    if (dir_len > 0 && !ends_sep)
+        ucb_str_append_cstr(out, &sep, 1);
+    ucb_str_append(out, name);
     return out;
 }
 
@@ -134,37 +121,40 @@ static bool fs_is_sep(char c)
     return false;
 }
 
-bool ucb_fs_is_root(const char* canon)
+bool ucb_fs_is_root(const ucb_str* canon)
 {
-    if (!canon || !*canon)
+    if (!canon)
         return false;
 
-    size_t len = strlen(canon);
+    const char* c = ucb_str_cstr(canon);
+    size_t len = ucb_str_len(canon);
+    if (len == 0)
+        return false;
 
 #ifdef _WIN32
     // UNC share root: \\server\share with nothing after it.
-    if (len >= 2 && fs_is_sep(canon[0]) && fs_is_sep(canon[1]))
+    if (len >= 2 && fs_is_sep(c[0]) && fs_is_sep(c[1]))
     {
         size_t i = 2;
         size_t server = i;
-        while (i < len && !fs_is_sep(canon[i]))
+        while (i < len && !fs_is_sep(c[i]))
             i++;
         if (i == server || i >= len)
             return false;
         i++;
         size_t share = i;
-        while (i < len && !fs_is_sep(canon[i]))
+        while (i < len && !fs_is_sep(c[i]))
             i++;
         if (i == share)
             return false;
         return i == len;
     }
     // Drive root: X: or X: with a trailing separator
-    if (len >= 2 && isalpha((unsigned char)canon[0]) && canon[1] == ':')
+    if (len >= 2 && isalpha((unsigned char)c[0]) && c[1] == ':')
     {
         if (len == 2)
             return true;
-        if (len == 3 && fs_is_sep(canon[2]))
+        if (len == 3 && fs_is_sep(c[2]))
             return true;
         return false;
     }
@@ -172,7 +162,7 @@ bool ucb_fs_is_root(const char* canon)
 
     for (size_t i = 0; i < len; i++)
     {
-        if (!fs_is_sep(canon[i]))
+        if (!fs_is_sep(c[i]))
             return false;
     }
     return true;
@@ -182,8 +172,8 @@ bool ucb_fs_is_root(const char* canon)
 /*                              Internal helpers                              */
 /* -------------------------------------------------------------------------- */
 
-static bool fs_copy_link(const char* src, const char* dst, ucb_error** perr);
-static bool fs_copy_meta(const char* src, const char* dst, ucb_error** perr);
+static bool fs_copy_link(const ucb_str* src, const ucb_str* dst, ucb_error** perr);
+static bool fs_copy_meta(const ucb_str* src, const ucb_str* dst, ucb_error** perr);
 
 /**
  * @brief Check whether a canonical path contains a `..` component.
@@ -230,18 +220,20 @@ static bool fs_component_equal(const char* a, const char* b, size_t len)
  * Both inputs must be canonical so separator handling is consistent. The
  * comparison is case-insensitive on Windows.
  */
-static bool fs_is_within(const char* child, const char* parent)
+static bool fs_is_within(const ucb_str* child, const ucb_str* parent)
 {
-    size_t parent_len = strlen(parent);
-    if (parent_len == 0 || strlen(child) < parent_len)
+    const char* cp = ucb_str_cstr(child);
+    const char* pp = ucb_str_cstr(parent);
+    size_t parent_len = ucb_str_len(parent);
+    if (parent_len == 0 || ucb_str_len(child) < parent_len)
         return false;
-    if (!fs_component_equal(child, parent, parent_len))
+    if (!fs_component_equal(cp, pp, parent_len))
         return false;
-    if (child[parent_len] == '\0')
+    if (cp[parent_len] == '\0')
         return true;
-    if (parent[parent_len - 1] == '/' || parent[parent_len - 1] == '\\')
+    if (pp[parent_len - 1] == '/' || pp[parent_len - 1] == '\\')
         return true;
-    return child[parent_len] == '/' || child[parent_len] == '\\';
+    return cp[parent_len] == '/' || cp[parent_len] == '\\';
 }
 
 /**
@@ -251,39 +243,38 @@ static bool fs_is_within(const char* child, const char* parent)
  * replaced only after the new contents are complete. The caller must keep the
  * returned path on the same volume as @p dst.
  */
-static char* fs_temp_sibling(const char* dst)
+static ucb_str* fs_temp_sibling(const ucb_str* dst)
 {
     static unsigned counter = 0;
-    size_t dst_len = strlen(dst);
 
     for (unsigned attempt = 0; attempt < 64; attempt++)
     {
         char suffix[64];
         snprintf(suffix, sizeof(suffix), ".ucb-tmp-%u-%u", fs_getpid(), counter++);
 
-        size_t suffix_len = strlen(suffix);
-        char* tmp = ucb_malloc(dst_len + suffix_len + 1);
+        ucb_str* tmp = ucb_str_clone(dst);
         if (!tmp)
             return UCB_NULL;
-
-        memcpy(tmp, dst, dst_len); // NOLINT(bugprone-not-null-terminated-result): terminated below
-        memcpy(tmp + dst_len, suffix, suffix_len + 1);
+        ucb_str_append_cstr(tmp, suffix, 0);
 
         ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
         ucb_error* lerr = UCB_NULL;
-        if (!ucb_fs_plat_kind(tmp, UCB_FS_NOFOLLOW, &kind, &lerr))
+        if (!ucb_fs_plat_kind(ucb_str_cstr(tmp), UCB_FS_NOFOLLOW, &kind, &lerr))
         {
             bool missing = UCB_IS_THROWN(lerr) && lerr->code == UCB_ERRSYS_ENOENT;
             ucb_error_clear(&lerr);
             if (missing)
                 return tmp;
         }
-        ucb_free(tmp);
+        ucb_str_free(tmp);
     }
     return UCB_NULL;
 }
 
-static bool fs_stream_copy(const char* src, const char* dst, unsigned open_flags, ucb_error** perr)
+static bool fs_stream_copy(const ucb_str* src,
+                           const ucb_str* dst,
+                           unsigned open_flags,
+                           ucb_error** perr)
 {
     ucb_file* in = ucb_file_open(src, UCB_FILE_READ, perr);
     if (!in)
@@ -326,10 +317,10 @@ static bool fs_stream_copy(const char* src, const char* dst, unsigned open_flags
  * Symbolic links are recreated unless @ref UCB_FS_FOLLOW is set. Metadata is
  * applied only to a copied payload, never to a recreated link.
  */
-static bool fs_copy_payload(const char* src,
+static bool fs_copy_payload(const ucb_str* src,
                             ucb_fs_kind src_kind,
                             unsigned flags,
-                            const char* dst,
+                            const ucb_str* dst,
                             bool exclusive,
                             ucb_error** perr)
 {
@@ -344,9 +335,9 @@ static bool fs_copy_payload(const char* src,
     return fs_copy_meta(src, dst, perr);
 }
 
-static bool fs_check_path(const char* path, ucb_error** perr)
+static bool fs_check_path(const ucb_str* path, ucb_error** perr)
 {
-    if (!*path)
+    if (ucb_str_is_empty(path))
     {
         ucb_throw(perr, UCB_ERROR_INVALID_ARG, "path must be non-empty");
         return false;
@@ -360,14 +351,14 @@ static bool fs_check_path(const char* path, ucb_error** perr)
  * Returns true when the query itself succeeded, with @p exists set to false for
  * a missing entry. On a real failure the error is propagated and false returned.
  */
-static bool fs_kind_exists(const char* canon,
+static bool fs_kind_exists(const ucb_str* canon,
                            unsigned flags,
                            ucb_fs_kind* kind,
                            bool* exists,
                            ucb_error** perr)
 {
     ucb_error* lerr = UCB_NULL;
-    if (ucb_fs_plat_kind(canon, flags, kind, &lerr))
+    if (ucb_fs_plat_kind(ucb_str_cstr(canon), flags, kind, &lerr))
     {
         *exists = true;
         return true;
@@ -392,10 +383,10 @@ static bool fs_kind_exists(const char* canon,
     return false;
 }
 
-static bool fs_mkdir_p(const char* canon, ucb_error** perr)
+static bool fs_mkdir_p(const ucb_str* canon, ucb_error** perr)
 {
     ucb_error* lerr = UCB_NULL;
-    if (ucb_fs_plat_mkdir(canon, &lerr))
+    if (ucb_fs_plat_mkdir(ucb_str_cstr(canon), &lerr))
         return true;
 
     if (UCB_IS_THROWN(lerr) && lerr->code == UCB_ERRSYS_EEXIST)
@@ -403,7 +394,7 @@ static bool fs_mkdir_p(const char* canon, ucb_error** perr)
         ucb_error_clear(&lerr);
         ucb_fs_kind kind;
         ucb_error* kerr = UCB_NULL;
-        if (!ucb_fs_plat_kind(canon, UCB_FS_NOFOLLOW, &kind, &kerr))
+        if (!ucb_fs_plat_kind(ucb_str_cstr(canon), UCB_FS_NOFOLLOW, &kind, &kerr))
         {
             if (perr)
                 *perr = kerr;
@@ -429,21 +420,21 @@ static bool fs_mkdir_p(const char* canon, ucb_error** perr)
     }
     ucb_error_clear(&lerr);
 
-    char* parent = ucb_fs_parent(canon);
-    if (!parent || !*parent || strcmp(parent, canon) == 0)
+    ucb_str* parent = ucb_fs_parent(canon);
+    if (!parent || ucb_str_is_empty(parent) || ucb_str_equal(parent, canon))
     {
-        ucb_free(parent);
+        ucb_str_free(parent);
         ucb_throw(perr, UCB_ERRSYS_ENOENT, "ucb_fs_mkdir_p: could not reach a parent directory");
         return false;
     }
 
     bool ok = fs_mkdir_p(parent, perr);
-    ucb_free(parent);
+    ucb_str_free(parent);
     if (!ok)
         return false;
 
     lerr = UCB_NULL;
-    if (ucb_fs_plat_mkdir(canon, &lerr))
+    if (ucb_fs_plat_mkdir(ucb_str_cstr(canon), &lerr))
         return true;
     if (UCB_IS_THROWN(lerr) && lerr->code == UCB_ERRSYS_EEXIST)
     {
@@ -457,55 +448,60 @@ static bool fs_mkdir_p(const char* canon, ucb_error** perr)
     return false;
 }
 
-static bool fs_copy_meta(const char* src, const char* dst, ucb_error** perr)
+static bool fs_copy_meta(const ucb_str* src, const ucb_str* dst, ucb_error** perr)
 {
     ucb_fs_stat st;
-    if (!ucb_fs_plat_stat(src, 0, &st, perr))
+    if (!ucb_fs_plat_stat(ucb_str_cstr(src), 0, &st, perr))
         return false;
-    if (!ucb_fs_plat_set_mode(dst, st.mode, perr))
+    if (!ucb_fs_plat_set_mode(ucb_str_cstr(dst), st.mode, perr))
         return false;
-    return ucb_fs_plat_set_mtime(dst, st.mtime, perr);
+    return ucb_fs_plat_set_mtime(ucb_str_cstr(dst), st.mtime, perr);
 }
 
 #ifdef _WIN32
-static bool fs_link_target_is_dir(const char* link_path, const char* target, ucb_error** perr)
+static bool fs_link_target_is_dir(const ucb_str* link_path, const char* target, ucb_error** perr)
 {
     UCB_UNUSED(perr);
 
-    ucb_path* parsed = ucb_path_new_c(target);
+    ucb_path* parsed = ucb_path_new(UCB_STR(target));
     if (!parsed)
         return false;
     bool is_abs = ucb_path_is_absolute(parsed);
     ucb_path_free(parsed);
 
-    char* resolved = UCB_NULL;
+    ucb_str* resolved = UCB_NULL;
     if (is_abs)
     {
-        resolved = fs_strdup(target);
+        resolved = ucb_str_new_c(target);
     }
     else
     {
-        char* parent = ucb_fs_parent(link_path);
+        ucb_str* parent = ucb_fs_parent(link_path);
         if (parent)
-            resolved = ucb_fs_join(parent, target);
-        ucb_free(parent);
+        {
+            ucb_str name = ucb_str_make();
+            ucb_str_init_c(&name, target);
+            resolved = ucb_fs_join(parent, &name);
+            ucb_str_release(&name);
+        }
+        ucb_str_free(parent);
     }
     if (!resolved)
         return false;
 
     ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
     ucb_error* lerr = UCB_NULL;
-    bool ok = ucb_fs_plat_kind(resolved, 0, &kind, &lerr);
-    ucb_free(resolved);
+    bool ok = ucb_fs_plat_kind(ucb_str_cstr(resolved), 0, &kind, &lerr);
+    ucb_str_free(resolved);
     ucb_error_clear(&lerr);
     return ok && kind == UCB_FS_KIND_DIR;
 }
 #endif // _WIN32
 
-static bool fs_copy_link(const char* src, const char* dst, ucb_error** perr)
+static bool fs_copy_link(const ucb_str* src, const ucb_str* dst, ucb_error** perr)
 {
     char* target = UCB_NULL;
-    if (!ucb_fs_plat_read_link(src, &target, perr))
+    if (!ucb_fs_plat_read_link(ucb_str_cstr(src), &target, perr))
         return false;
 
     bool target_is_dir = false;
@@ -515,12 +511,12 @@ static bool fs_copy_link(const char* src, const char* dst, ucb_error** perr)
     UCB_UNUSED(src);
 #endif
 
-    bool ok = ucb_fs_plat_create_link(target, dst, target_is_dir, perr);
+    bool ok = ucb_fs_plat_create_link(target, ucb_str_cstr(dst), target_is_dir, perr);
     ucb_free(target);
     return ok;
 }
 
-static bool fs_copy_dir(const char* src, const char* dst, unsigned flags, ucb_error** perr)
+static bool fs_copy_dir(const ucb_str* src, const ucb_str* dst, unsigned flags, ucb_error** perr)
 {
     ucb_dir* dir = ucb_dir_open(src, 0, perr);
     if (!dir)
@@ -531,13 +527,13 @@ static bool fs_copy_dir(const char* src, const char* dst, unsigned flags, ucb_er
     ucb_dir_entry entry;
     while (ucb_dir_next(dir, &entry, &derr))
     {
-        char* child_src = ucb_fs_join(src, entry.name);
-        char* child_dst = ucb_fs_join(dst, entry.name);
+        ucb_str* child_src = ucb_fs_join(src, entry.name);
+        ucb_str* child_dst = ucb_fs_join(dst, entry.name);
         if (!child_src || !child_dst)
         {
             ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_copy_tree: out of memory");
-            ucb_free(child_src);
-            ucb_free(child_dst);
+            ucb_str_free(child_src);
+            ucb_str_free(child_dst);
             ok = false;
             break;
         }
@@ -545,14 +541,14 @@ static bool fs_copy_dir(const char* src, const char* dst, unsigned flags, ucb_er
         unsigned query_flags = (flags & UCB_FS_FOLLOW) ? 0u : UCB_FS_NOFOLLOW;
         ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
         ucb_error* kerr = UCB_NULL;
-        if (!ucb_fs_plat_kind(child_src, query_flags, &kind, &kerr))
+        if (!ucb_fs_plat_kind(ucb_str_cstr(child_src), query_flags, &kind, &kerr))
         {
             if (perr)
                 *perr = kerr;
             else
                 ucb_error_clear(&kerr);
-            ucb_free(child_src);
-            ucb_free(child_dst);
+            ucb_str_free(child_src);
+            ucb_str_free(child_dst);
             ok = false;
             break;
         }
@@ -567,8 +563,8 @@ static bool fs_copy_dir(const char* src, const char* dst, unsigned flags, ucb_er
             ok = ucb_fs_copy_file(child_src, child_dst, flags, perr);
         }
 
-        ucb_free(child_src);
-        ucb_free(child_dst);
+        ucb_str_free(child_src);
+        ucb_str_free(child_dst);
         if (!ok)
             break;
     }
@@ -590,11 +586,11 @@ static bool fs_copy_dir(const char* src, const char* dst, unsigned flags, ucb_er
     return ok;
 }
 
-static bool fs_remove_all(const char* canon, ucb_error** perr)
+static bool fs_remove_all(const ucb_str* canon, ucb_error** perr)
 {
     ucb_error* lerr = UCB_NULL;
     ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
-    if (!ucb_fs_plat_kind(canon, UCB_FS_NOFOLLOW, &kind, &lerr))
+    if (!ucb_fs_plat_kind(ucb_str_cstr(canon), UCB_FS_NOFOLLOW, &kind, &lerr))
     {
         if (UCB_IS_THROWN(lerr) && lerr->code == UCB_ERRSYS_ENOENT)
         {
@@ -609,7 +605,7 @@ static bool fs_remove_all(const char* canon, ucb_error** perr)
     }
 
     if (kind != UCB_FS_KIND_DIR)
-        return ucb_fs_plat_remove_file(canon, perr);
+        return ucb_fs_plat_remove_file(ucb_str_cstr(canon), perr);
 
     ucb_dir* dir = ucb_dir_open(canon, 0, perr);
     if (!dir)
@@ -620,7 +616,7 @@ static bool fs_remove_all(const char* canon, ucb_error** perr)
     ucb_dir_entry entry;
     while (ucb_dir_next(dir, &entry, &derr))
     {
-        char* child = ucb_fs_join(canon, entry.name);
+        ucb_str* child = ucb_fs_join(canon, entry.name);
         if (!child)
         {
             ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_remove_all: out of memory");
@@ -628,7 +624,7 @@ static bool fs_remove_all(const char* canon, ucb_error** perr)
             break;
         }
         ok = fs_remove_all(child, perr);
-        ucb_free(child);
+        ucb_str_free(child);
         if (!ok)
             break;
     }
@@ -650,59 +646,59 @@ static bool fs_remove_all(const char* canon, ucb_error** perr)
     if (!ok)
         return false;
 
-    return ucb_fs_plat_remove_dir(canon, perr);
+    return ucb_fs_plat_remove_dir(ucb_str_cstr(canon), perr);
 }
 
 /* -------------------------------------------------------------------------- */
 /*                             Simple predicates                              */
 /* -------------------------------------------------------------------------- */
 
-static bool fs_predicate_kind(const char* path, unsigned flags, ucb_fs_kind wanted)
+static bool fs_predicate_kind(const ucb_str* path, unsigned flags, ucb_fs_kind wanted)
 {
-    if (!*path)
+    if (ucb_str_is_empty(path))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
         return false;
 
     ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
     bool exists = false;
     bool ok = fs_kind_exists(canon, flags, &kind, &exists, UCB_NULL);
-    ucb_free(canon);
+    ucb_str_free(canon);
     return ok && exists && kind == wanted;
 }
 
-bool ucb_fs_exists(const char* path)
+bool ucb_fs_exists(const ucb_str* path)
 {
     UCB_VERIFY_ARGS(path);
-    if (!*path)
+    if (ucb_str_is_empty(path))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
         return false;
 
     ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
     bool exists = false;
     bool ok = fs_kind_exists(canon, 0, &kind, &exists, UCB_NULL);
-    ucb_free(canon);
+    ucb_str_free(canon);
     return ok && exists;
 }
 
-bool ucb_fs_is_file(const char* path)
+bool ucb_fs_is_file(const ucb_str* path)
 {
     UCB_VERIFY_ARGS(path);
     return fs_predicate_kind(path, 0, UCB_FS_KIND_FILE);
 }
 
-bool ucb_fs_is_dir(const char* path)
+bool ucb_fs_is_dir(const ucb_str* path)
 {
     UCB_VERIFY_ARGS(path);
     return fs_predicate_kind(path, 0, UCB_FS_KIND_DIR);
 }
 
-bool ucb_fs_is_symlink(const char* path)
+bool ucb_fs_is_symlink(const ucb_str* path)
 {
     UCB_VERIFY_ARGS(path);
     return fs_predicate_kind(path, UCB_FS_NOFOLLOW, UCB_FS_KIND_SYMLINK);
@@ -712,60 +708,60 @@ bool ucb_fs_is_symlink(const char* path)
 /*                              Error-aware query                             */
 /* -------------------------------------------------------------------------- */
 
-bool ucb_fs_get_kind(const char* path, unsigned flags, ucb_fs_kind* out, ucb_error** perr)
+bool ucb_fs_get_kind(const ucb_str* path, unsigned flags, ucb_fs_kind* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     UCB_VERIFY_ARGS(out);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_kind: out of memory");
         return false;
     }
 
-    bool ok = ucb_fs_plat_kind(canon, flags, out, perr);
-    ucb_free(canon);
+    bool ok = ucb_fs_plat_kind(ucb_str_cstr(canon), flags, out, perr);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_get_stat(const char* path, unsigned flags, ucb_fs_stat* out, ucb_error** perr)
+bool ucb_fs_get_stat(const ucb_str* path, unsigned flags, ucb_fs_stat* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     UCB_VERIFY_ARGS(out);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_stat: out of memory");
         return false;
     }
 
-    bool ok = ucb_fs_plat_stat(canon, flags, out, perr);
-    ucb_free(canon);
+    bool ok = ucb_fs_plat_stat(ucb_str_cstr(canon), flags, out, perr);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_get_stat_ns(const char* path, unsigned flags, ucb_fs_stat_ns* out, ucb_error** perr)
+bool ucb_fs_get_stat_ns(const ucb_str* path, unsigned flags, ucb_fs_stat_ns* out, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     UCB_VERIFY_ARGS(out);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_stat_ns: out of memory");
         return false;
     }
 
-    bool ok = ucb_fs_plat_stat_ns(canon, flags, out, perr);
-    ucb_free(canon);
+    bool ok = ucb_fs_plat_stat_ns(ucb_str_cstr(canon), flags, out, perr);
+    ucb_str_free(canon);
     return ok;
 }
 
@@ -773,31 +769,31 @@ bool ucb_fs_get_stat_ns(const char* path, unsigned flags, ucb_fs_stat_ns* out, u
 /*                                Modification                                */
 /* -------------------------------------------------------------------------- */
 
-bool ucb_fs_mkdir(const char* path, ucb_error** perr)
+bool ucb_fs_mkdir(const ucb_str* path, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_mkdir: out of memory");
         return false;
     }
 
-    bool ok = ucb_fs_plat_mkdir(canon, perr);
-    ucb_free(canon);
+    bool ok = ucb_fs_plat_mkdir(ucb_str_cstr(canon), perr);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_mkdir_p(const char* path, ucb_error** perr)
+bool ucb_fs_mkdir_p(const ucb_str* path, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_mkdir_p: out of memory");
@@ -805,17 +801,17 @@ bool ucb_fs_mkdir_p(const char* path, ucb_error** perr)
     }
 
     bool ok = fs_mkdir_p(canon, perr);
-    ucb_free(canon);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_remove(const char* path, ucb_error** perr)
+bool ucb_fs_remove(const ucb_str* path, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_remove: out of memory");
@@ -823,25 +819,25 @@ bool ucb_fs_remove(const char* path, ucb_error** perr)
     }
 
     ucb_fs_kind kind = UCB_FS_KIND_UNKNOWN;
-    bool ok = ucb_fs_plat_kind(canon, UCB_FS_NOFOLLOW, &kind, perr);
+    bool ok = ucb_fs_plat_kind(ucb_str_cstr(canon), UCB_FS_NOFOLLOW, &kind, perr);
     if (ok)
     {
         if (kind == UCB_FS_KIND_DIR)
-            ok = ucb_fs_plat_remove_dir(canon, perr);
+            ok = ucb_fs_plat_remove_dir(ucb_str_cstr(canon), perr);
         else
-            ok = ucb_fs_plat_remove_file(canon, perr);
+            ok = ucb_fs_plat_remove_file(ucb_str_cstr(canon), perr);
     }
-    ucb_free(canon);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_remove_all(const char* path, ucb_error** perr)
+bool ucb_fs_remove_all(const ucb_str* path, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_remove_all: out of memory");
@@ -851,29 +847,29 @@ bool ucb_fs_remove_all(const char* path, ucb_error** perr)
     if (ucb_fs_is_root(canon))
     {
         ucb_throw(perr, UCB_ERROR_INVALID_ARG, "ucb_fs_remove_all: refusing to remove a root");
-        ucb_free(canon);
+        ucb_str_free(canon);
         return false;
     }
 
     bool ok = fs_remove_all(canon, perr);
-    ucb_free(canon);
+    ucb_str_free(canon);
     return ok;
 }
 
-bool ucb_fs_copy_file(const char* src, const char* dst, unsigned flags, ucb_error** perr)
+bool ucb_fs_copy_file(const ucb_str* src, const ucb_str* dst, unsigned flags, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(src);
     UCB_VERIFY_ARGS(dst);
     if (!fs_check_path(src, perr) || !fs_check_path(dst, perr))
         return false;
 
-    char* canon_src = ucb_fs_canon(src);
-    char* canon_dst = ucb_fs_canon(dst);
+    ucb_str* canon_src = ucb_fs_canon(src);
+    ucb_str* canon_dst = ucb_fs_canon(dst);
     if (!canon_src || !canon_dst)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_copy_file: out of memory");
-        ucb_free(canon_src);
-        ucb_free(canon_dst);
+        ucb_str_free(canon_src);
+        ucb_str_free(canon_dst);
         return false;
     }
 
@@ -913,7 +909,7 @@ bool ucb_fs_copy_file(const char* src, const char* dst, unsigned flags, ucb_erro
     {
         // Stage next to the destination and rename over it, so the original is
         // preserved until the new copy is complete.
-        char* tmp = fs_temp_sibling(canon_dst);
+        ucb_str* tmp = fs_temp_sibling(canon_dst);
         if (!tmp)
         {
             ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_copy_file: out of memory");
@@ -922,38 +918,41 @@ bool ucb_fs_copy_file(const char* src, const char* dst, unsigned flags, ucb_erro
 
         ok = fs_copy_payload(canon_src, src_kind, flags, tmp, true, perr);
         if (ok)
-            ok = ucb_fs_plat_rename(tmp, canon_dst, UCB_FS_OVERWRITE, perr);
+            ok = ucb_fs_plat_rename(ucb_str_cstr(tmp),
+                                    ucb_str_cstr(canon_dst),
+                                    UCB_FS_OVERWRITE,
+                                    perr);
         if (!ok)
-            (void)ucb_fs_plat_remove_file(tmp, UCB_NULL);
-        ucb_free(tmp);
+            (void)ucb_fs_plat_remove_file(ucb_str_cstr(tmp), UCB_NULL);
+        ucb_str_free(tmp);
     }
     else
     {
         ok = fs_copy_payload(canon_src, src_kind, flags, canon_dst, false, perr);
         if (!ok)
-            (void)ucb_fs_plat_remove_file(canon_dst, UCB_NULL);
+            (void)ucb_fs_plat_remove_file(ucb_str_cstr(canon_dst), UCB_NULL);
     }
 
 done:
-    ucb_free(canon_src);
-    ucb_free(canon_dst);
+    ucb_str_free(canon_src);
+    ucb_str_free(canon_dst);
     return ok;
 }
 
-bool ucb_fs_copy_tree(const char* src, const char* dst, unsigned flags, ucb_error** perr)
+bool ucb_fs_copy_tree(const ucb_str* src, const ucb_str* dst, unsigned flags, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(src);
     UCB_VERIFY_ARGS(dst);
     if (!fs_check_path(src, perr) || !fs_check_path(dst, perr))
         return false;
 
-    char* canon_src = ucb_fs_canon(src);
-    char* canon_dst = ucb_fs_canon(dst);
+    ucb_str* canon_src = ucb_fs_canon(src);
+    ucb_str* canon_dst = ucb_fs_canon(dst);
     if (!canon_src || !canon_dst)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_copy_tree: out of memory");
-        ucb_free(canon_src);
-        ucb_free(canon_dst);
+        ucb_str_free(canon_src);
+        ucb_str_free(canon_dst);
         return false;
     }
 
@@ -962,15 +961,15 @@ bool ucb_fs_copy_tree(const char* src, const char* dst, unsigned flags, ucb_erro
         ucb_throw(perr,
                   UCB_ERROR_INVALID_ARG,
                   "ucb_fs_copy_tree: destination is inside the source");
-        ucb_free(canon_src);
-        ucb_free(canon_dst);
+        ucb_str_free(canon_src);
+        ucb_str_free(canon_dst);
         return false;
     }
 
     bool ok = false;
 
     ucb_fs_kind src_kind = UCB_FS_KIND_UNKNOWN;
-    if (!ucb_fs_plat_kind(canon_src, 0, &src_kind, perr))
+    if (!ucb_fs_plat_kind(ucb_str_cstr(canon_src), 0, &src_kind, perr))
         goto done;
     if (src_kind != UCB_FS_KIND_DIR)
     {
@@ -1006,25 +1005,25 @@ bool ucb_fs_copy_tree(const char* src, const char* dst, unsigned flags, ucb_erro
         ok = fs_copy_meta(canon_src, canon_dst, perr);
 
 done:
-    ucb_free(canon_src);
-    ucb_free(canon_dst);
+    ucb_str_free(canon_src);
+    ucb_str_free(canon_dst);
     return ok;
 }
 
-bool ucb_fs_move(const char* src, const char* dst, unsigned flags, ucb_error** perr)
+bool ucb_fs_move(const ucb_str* src, const ucb_str* dst, unsigned flags, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(src);
     UCB_VERIFY_ARGS(dst);
     if (!fs_check_path(src, perr) || !fs_check_path(dst, perr))
         return false;
 
-    char* canon_src = ucb_fs_canon(src);
-    char* canon_dst = ucb_fs_canon(dst);
+    ucb_str* canon_src = ucb_fs_canon(src);
+    ucb_str* canon_dst = ucb_fs_canon(dst);
     if (!canon_src || !canon_dst)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_move: out of memory");
-        ucb_free(canon_src);
-        ucb_free(canon_dst);
+        ucb_str_free(canon_src);
+        ucb_str_free(canon_dst);
         return false;
     }
 
@@ -1065,7 +1064,7 @@ bool ucb_fs_move(const char* src, const char* dst, unsigned flags, ucb_error** p
 
     {
         ucb_error* lerr = UCB_NULL;
-        if (ucb_fs_plat_rename(canon_src, canon_dst, flags, &lerr))
+        if (ucb_fs_plat_rename(ucb_str_cstr(canon_src), ucb_str_cstr(canon_dst), flags, &lerr))
         {
             ok = true;
             goto done;
@@ -1096,8 +1095,8 @@ bool ucb_fs_move(const char* src, const char* dst, unsigned flags, ucb_error** p
         ok = ucb_fs_remove(canon_src, perr);
 
 done:
-    ucb_free(canon_src);
-    ucb_free(canon_dst);
+    ucb_str_free(canon_src);
+    ucb_str_free(canon_dst);
     return ok;
 }
 
@@ -1110,20 +1109,20 @@ ucb_str* ucb_fs_cwd(void)
     return ucb_fs_plat_cwd();
 }
 
-bool ucb_fs_chdir(const char* path, ucb_error** perr)
+bool ucb_fs_chdir(const ucb_str* path, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
     if (!fs_check_path(path, perr))
         return false;
 
-    char* canon = ucb_fs_canon(path);
+    ucb_str* canon = ucb_fs_canon(path);
     if (!canon)
     {
         ucb_throw(perr, UCB_ERROR_OUT_OF_MEMORY, "ucb_fs_chdir: out of memory");
         return false;
     }
 
-    bool ok = ucb_fs_plat_chdir(canon, perr);
-    ucb_free(canon);
+    bool ok = ucb_fs_plat_chdir(ucb_str_cstr(canon), perr);
+    ucb_str_free(canon);
     return ok;
 }

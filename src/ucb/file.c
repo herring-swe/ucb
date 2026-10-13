@@ -119,7 +119,7 @@ static void ucb_file_throw_cap(ucb_error** perr, const char* op, const char* cap
 /*                              Open and lifetime                             */
 /* -------------------------------------------------------------------------- */
 
-ucb_file* ucb_file_open_mode(const char* path, unsigned flags, unsigned mode, ucb_error** perr)
+ucb_file* ucb_file_open_mode(const ucb_str* path, unsigned flags, unsigned mode, ucb_error** perr)
 {
     UCB_VERIFY_ARGS(path);
 
@@ -131,10 +131,10 @@ ucb_file* ucb_file_open_mode(const char* path, unsigned flags, unsigned mode, uc
         return UCB_NULL;
     }
 
-    return ucb_file_plat_open(path, flags, mode, perr);
+    return ucb_file_plat_open(ucb_str_cstr(path), flags, mode, perr);
 }
 
-ucb_file* ucb_file_open(const char* path, unsigned flags, ucb_error** perr)
+ucb_file* ucb_file_open(const ucb_str* path, unsigned flags, ucb_error** perr)
 {
     return ucb_file_open_mode(path, flags, 0666u, perr);
 }

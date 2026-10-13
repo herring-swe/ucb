@@ -75,17 +75,20 @@
  *
  * Stack allocation
  * @code
- * ucb_path path = ucb_path_make();          // Empty path
- * ucb_path_init_c(&path, "a/b/c.txt");      // Parse into components
- * ucb_path_release(&path);                  // Free components and zero
+ * ucb_path path = ucb_path_make();              // Empty path
+ * ucb_path_init(&path, UCB_STR("a/b/c.txt"));   // Parse into components
+ * ucb_path_release(&path);                      // Free components and zero
  * @endcode
  *
  * Heap allocation
  * @code
- * ucb_path* path = ucb_path_new_c("a/b/c.txt"); // Allocates and parses
- * const char* cstr = ucb_path_cstr(path);       // Borrowed, rebuilds cache
- * ucb_path_free(path);                          // Frees components and path
+ * ucb_path* path = ucb_path_new(UCB_STR("a/b/c.txt")); // Allocates and parses
+ * const char* cstr = ucb_path_cstr(path);             // Borrowed, rebuilds cache
+ * ucb_path_free(path);                                // Frees components and path
  * @endcode
+ *
+ * @note @ref UCB_STR is provided by @ref string_ex.h and must be included for
+ * the literal helpers above.
  */
 typedef struct ucb_path
 {
@@ -121,27 +124,22 @@ static inline ucb_path ucb_path_make(void)
 }
 
 /**
- * @brief Allocate and initialize a new path from a C string.
+ * @brief Allocate and initialize a new path from a string.
  *
  * The style is taken from the thread-local @ref ucb_config default.
  *
- * @param cstr a C string or literal, or UCB_NULL for an empty path
- * @param len 0 or length of string excluding null-terminator
+ * @param str a @ref ucb_str path string
  * @return pointer to new ucb_path or UCB_NULL on error.
  */
-UCB_API ucb_path* ucb_path_new(const char* cstr, size_t len);
-static inline ucb_path* ucb_path_new_c(const char* cstr)
-{
-    return ucb_path_new(cstr, 0);
-}
+UCB_API ucb_path* ucb_path_new(const ucb_str* str);
 
 /**
- * @brief Allocate and initialize a new path from a C string with a style.
- * @param cstr a C string or literal, or UCB_NULL for an empty path
+ * @brief Allocate and initialize a new path from a string with a style.
+ * @param str a @ref ucb_str path string
  * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
  * @return pointer to new ucb_path or UCB_NULL on error.
  */
-UCB_API ucb_path* ucb_path_new_style(const char* cstr, ucb_path_style style);
+UCB_API ucb_path* ucb_path_new_style(const ucb_str* str, ucb_path_style style);
 
 /**
  * @brief Allocate and initialize a heap path as a deep copy of another path.
@@ -151,31 +149,26 @@ UCB_API ucb_path* ucb_path_new_style(const char* cstr, ucb_path_style style);
 UCB_API ucb_path* ucb_path_clone(const ucb_path* src);
 
 /**
- * @brief Initialize an owned path from a C string.
+ * @brief Initialize an owned path from a string.
  *
  * The style is taken from the thread-local @ref ucb_config default.
  *
  * @warning It doesn't perform any verifications on @p path, which may lead to
  * leaks if the path is already initialized.
  * @param path path to initialize
- * @param cstr a C string or literal, or UCB_NULL for an empty path
- * @param len 0 or length of string excluding null-terminator
+ * @param str a @ref ucb_str path string
  * @return true on success, false on allocation error
  */
-UCB_API bool ucb_path_init(ucb_path* path, const char* cstr, size_t len);
-static inline void ucb_path_init_c(ucb_path* path, const char* cstr)
-{
-    ucb_path_init(path, cstr, 0);
-}
+UCB_API bool ucb_path_init(ucb_path* path, const ucb_str* str);
 
 /**
- * @brief Initialize an owned path from a C string with a style.
+ * @brief Initialize an owned path from a string with a style.
  * @param path path to initialize
- * @param cstr a C string or literal, or UCB_NULL for an empty path
+ * @param str a @ref ucb_str path string
  * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
  * @return true on success, false on allocation error
  */
-UCB_API bool ucb_path_init_style(ucb_path* path, const char* cstr, ucb_path_style style);
+UCB_API bool ucb_path_init_style(ucb_path* path, const ucb_str* str, ucb_path_style style);
 
 /** @} */
 
@@ -217,19 +210,14 @@ UCB_API void ucb_path_free(ucb_path* path);
 UCB_API bool ucb_path_copy(ucb_path* dst, const ucb_path* src);
 
 /**
- * @brief Assign a C string, re-parsing it.
+ * @brief Assign a string, re-parsing it.
  *
  * Preserves the current output style of @p path.
  * @param path path to update
- * @param cstr a C string or literal, or UCB_NULL for an empty path
- * @param len 0 or length of string excluding null-terminator
+ * @param str a @ref ucb_str path string
  * @return true on success, false on allocation error
  */
-UCB_API bool ucb_path_assign(ucb_path* path, const char* cstr, size_t len);
-static inline bool ucb_path_assign_c(ucb_path* path, const char* cstr)
-{
-    return ucb_path_assign(path, cstr, 0);
-}
+UCB_API bool ucb_path_assign(ucb_path* path, const ucb_str* str);
 
 /**
  * @brief Clear all components, keeping the style.
@@ -264,6 +252,20 @@ UCB_API const char* ucb_path_cstr(ucb_path* path);
  * @return pointer to new ucb_str or UCB_NULL on error
  */
 UCB_API ucb_str* ucb_path_to_str(const ucb_path* path);
+
+/**
+ * @brief Borrow the composed path as a @ref ucb_str.
+ *
+ * Like @ref ucb_path_cstr(), this rebuilds the caches if needed and may mutate
+ * @p path, but returns the composed path as a borrowed @ref ucb_str so it can be
+ * passed directly to string APIs that take a @c const ucb_str* (for example
+ * @ref fs.h) without allocating. The borrowed string stays valid until @p path
+ * is mutated or freed.
+ *
+ * @param path path to query
+ * @return borrowed string, never UCB_NULL
+ */
+UCB_API const ucb_str* ucb_path_str(ucb_path* path);
 
 /**
  * @brief Get the byte length of the composed path.
@@ -374,42 +376,6 @@ UCB_API const ucb_str* ucb_path_ext(const ucb_path* path);
  */
 UCB_API const ucb_str* ucb_path_filename(ucb_path* path);
 
-/**
- * @brief Parse a C string and return its directory as a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_dir_c(const char* cstr);
-
-/**
- * @brief Parse a C string with a style and return its directory as a new owned string.
- * @param cstr a C string or literal
- * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_dir_cstyle(const char* cstr, ucb_path_style style);
-
-/**
- * @brief Parse a C string and return its stem as a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_stem_c(const char* cstr);
-
-/**
- * @brief Parse a C string and return its extension as a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_ext_c(const char* cstr);
-
-/**
- * @brief Parse a C string and return its filename as a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_filename_c(const char* cstr);
-
 /** @} */
 
 /**
@@ -426,21 +392,6 @@ UCB_API ucb_str* ucb_path_filename_c(const char* cstr);
  * @return pointer to new ucb_path or UCB_NULL on error
  */
 UCB_API ucb_path* ucb_path_parent(const ucb_path* path);
-
-/**
- * @brief Parse a C string and return its parent as a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_parent_c(const char* cstr);
-
-/**
- * @brief Parse a C string with a style and return its parent as a new owned string.
- * @param cstr a C string or literal
- * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_parent_cstyle(const char* cstr, ucb_path_style style);
 
 /** @} */
 
@@ -459,15 +410,6 @@ UCB_API ucb_str* ucb_path_parent_cstyle(const char* cstr, ucb_path_style style);
  * @return true on success, false on allocation error
  */
 UCB_API bool ucb_path_set_dir(ucb_path* path, const ucb_str* dir);
-static inline bool ucb_path_set_dir_c(ucb_path* path, const char* dir)
-{
-    ucb_str tmp = ucb_str_make();
-    if (!ucb_str_assign_c(&tmp, dir))
-        return false;
-    bool ok = ucb_path_set_dir(path, &tmp);
-    ucb_str_release(&tmp);
-    return ok;
-}
 
 /**
  * @brief Set the stem component.
@@ -476,15 +418,6 @@ static inline bool ucb_path_set_dir_c(ucb_path* path, const char* dir)
  * @return true on success, false on allocation error
  */
 UCB_API bool ucb_path_set_stem(ucb_path* path, const ucb_str* stem);
-static inline bool ucb_path_set_stem_c(ucb_path* path, const char* stem)
-{
-    ucb_str tmp = ucb_str_make();
-    if (!ucb_str_assign_c(&tmp, stem))
-        return false;
-    bool ok = ucb_path_set_stem(path, &tmp);
-    ucb_str_release(&tmp);
-    return ok;
-}
 
 /**
  * @brief Set the extension component.
@@ -496,15 +429,6 @@ static inline bool ucb_path_set_stem_c(ucb_path* path, const char* stem)
  * @return true on success, false on allocation error
  */
 UCB_API bool ucb_path_set_ext(ucb_path* path, const ucb_str* ext);
-static inline bool ucb_path_set_ext_c(ucb_path* path, const char* ext)
-{
-    ucb_str tmp = ucb_str_make();
-    if (!ucb_str_assign_c(&tmp, ext))
-        return false;
-    bool ok = ucb_path_set_ext(path, &tmp);
-    ucb_str_release(&tmp);
-    return ok;
-}
 
 /**
  * @brief Set the filename, re-parsing stem and extension.
@@ -513,15 +437,6 @@ static inline bool ucb_path_set_ext_c(ucb_path* path, const char* ext)
  * @return true on success, false on allocation error
  */
 UCB_API bool ucb_path_set_filename(ucb_path* path, const ucb_str* name);
-static inline bool ucb_path_set_filename_c(ucb_path* path, const char* name)
-{
-    ucb_str tmp = ucb_str_make();
-    if (!ucb_str_assign_c(&tmp, name))
-        return false;
-    bool ok = ucb_path_set_filename(path, &tmp);
-    ucb_str_release(&tmp);
-    return ok;
-}
 
 /**
  * @brief Replace the extension.
@@ -532,15 +447,6 @@ static inline bool ucb_path_set_filename_c(ucb_path* path, const char* name)
  * @return true on success, false on allocation error
  */
 UCB_API bool ucb_path_replace_ext(ucb_path* path, const ucb_str* ext);
-static inline bool ucb_path_replace_ext_c(ucb_path* path, const char* ext)
-{
-    ucb_str tmp = ucb_str_make();
-    if (!ucb_str_assign_c(&tmp, ext))
-        return false;
-    bool ok = ucb_path_replace_ext(path, &tmp);
-    ucb_str_release(&tmp);
-    return ok;
-}
 
 /** @} */
 
@@ -561,12 +467,12 @@ static inline bool ucb_path_replace_ext_c(ucb_path* path, const char* ext)
 UCB_API ucb_path* ucb_path_join(const ucb_path* base, const ucb_path* other);
 
 /**
- * @brief Join a base path with a C string.
+ * @brief Join a base path with a string.
  * @param base base path
- * @param other a C string or literal
+ * @param other a string path to join
  * @return pointer to new ucb_path or UCB_NULL on error
  */
-UCB_API ucb_path* ucb_path_join_c(const ucb_path* base, const char* other);
+UCB_API ucb_path* ucb_path_join_str(const ucb_str* base, const ucb_str* other);
 
 /**
  * @brief Append a path in place.
@@ -580,12 +486,12 @@ UCB_API ucb_path* ucb_path_join_c(const ucb_path* base, const char* other);
 UCB_API bool ucb_path_append(ucb_path* path, const ucb_path* other);
 
 /**
- * @brief Append a C string in place.
+ * @brief Append a string in place.
  * @param path path to modify
- * @param other a C string or literal
+ * @param other string to append
  * @return true on success, false on allocation error
  */
-UCB_API bool ucb_path_append_c(ucb_path* path, const char* other);
+UCB_API bool ucb_path_append_str(ucb_path* path, const ucb_str* other);
 
 /**
  * @brief Normalize the path lexically, in place.
@@ -599,35 +505,12 @@ UCB_API bool ucb_path_append_c(ucb_path* path, const char* other);
 UCB_API bool ucb_path_normalize(ucb_path* path);
 
 /**
- * @brief Parse and normalize a C string, returning a new owned string.
- * @param cstr a C string or literal
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_normalize_c(const char* cstr);
-
-/**
- * @brief Parse and normalize a C string with a style, returning a new owned string.
- * @param cstr a C string or literal
- * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
- * @return pointer to new ucb_str or UCB_NULL on error
- */
-UCB_API ucb_str* ucb_path_normalize_cstyle(const char* cstr, ucb_path_style style);
-
-/**
  * @brief Compare two paths for equality by their composed form.
  * @param a first path
  * @param b second path
  * @return true if equal
  */
 UCB_API bool ucb_path_equals(const ucb_path* a, const ucb_path* b);
-
-/**
- * @brief Compare two C strings as paths for equality.
- * @param a first C string or literal
- * @param b second C string or literal
- * @return true if equal
- */
-UCB_API bool ucb_path_equals_c(const char* a, const char* b);
 
 /**
  * @brief Check whether one path is inside the other, lexically.
@@ -653,28 +536,12 @@ UCB_API bool ucb_path_is_inside(const ucb_path* a, const ucb_path* b);
 UCB_API int ucb_path_comp(const ucb_path* a, const ucb_path* b);
 
 /**
- * @brief Compare two C strings as paths.
- * @param a first C string or literal
- * @param b second C string or literal
- * @return 0 if equal, negative if @p a sorts before @p b, positive otherwise
- */
-UCB_API int ucb_path_comp_c(const char* a, const char* b);
-
-/**
  * @brief Compare two paths case-insensitively by their composed form.
  * @param a first path
  * @param b second path
  * @return 0 if equal, negative if @p a sorts before @p b, positive otherwise
  */
 UCB_API int ucb_path_icomp(const ucb_path* a, const ucb_path* b);
-
-/**
- * @brief Compare two C strings as paths case-insensitively.
- * @param a first C string or literal
- * @param b second C string or literal
- * @return 0 if equal, negative if @p a sorts before @p b, positive otherwise
- */
-UCB_API int ucb_path_icomp_c(const char* a, const char* b);
 
 /** @} */
 
@@ -712,23 +579,6 @@ UCB_API ucb_str* ucb_path_part(const ucb_path* path, size_t index);
 UCB_API ucb_vector_str* ucb_path_parts(const ucb_path* path);
 
 /**
- * @brief Parse a C string and get all its parts.
- * @see ucb_path_parts()
- * @param cstr a C string or literal
- * @return pointer to new vector or UCB_NULL on error
- */
-UCB_API ucb_vector_str* ucb_path_parts_c(const char* cstr);
-
-/**
- * @brief Parse a C string with a style and get all its parts.
- * @see ucb_path_parts()
- * @param cstr a C string or literal
- * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
- * @return pointer to new vector or UCB_NULL on error
- */
-UCB_API ucb_vector_str* ucb_path_parts_cstyle(const char* cstr, ucb_path_style style);
-
-/**
  * @brief Get all ancestors as a vector of new owned strings.
  *
  * The list starts with the immediate parent and ends at the anchor. The
@@ -738,23 +588,6 @@ UCB_API ucb_vector_str* ucb_path_parts_cstyle(const char* cstr, ucb_path_style s
  * @return pointer to new vector or UCB_NULL on error
  */
 UCB_API ucb_vector_str* ucb_path_parents(const ucb_path* path);
-
-/**
- * @brief Parse a C string and get all its ancestors.
- * @see ucb_path_parents()
- * @param cstr a C string or literal
- * @return pointer to new vector or UCB_NULL on error
- */
-UCB_API ucb_vector_str* ucb_path_parents_c(const char* cstr);
-
-/**
- * @brief Parse a C string with a style and get all its ancestors.
- * @see ucb_path_parents()
- * @param cstr a C string or literal
- * @param style output style, or UCB_PATH_STYLE_DEFAULT for the config default
- * @return pointer to new vector or UCB_NULL on error
- */
-UCB_API ucb_vector_str* ucb_path_parents_cstyle(const char* cstr, ucb_path_style style);
 
 /** @} */
 

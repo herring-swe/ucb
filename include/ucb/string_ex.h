@@ -21,6 +21,8 @@
 #include <ucb/path.h>
 #include <ucb/string.h>
 
+#include <string.h>
+
 /**
  * @name C string conversion
  * @{
@@ -47,7 +49,30 @@
  * const char* p = UCB_CSTR(s);
  * @endcode
  */
+
+/**
+ * @def UCB_STR
+ * @brief Helper macro to wrap a string literal, a
+ * <tt>const char*</tt> as a borrowed @ref ucb_str valid for the enclosing
+ * full expression.
+ *
+ * The C++ version can also wrap a @c std::string or other type exposing
+ * <tt>c_str()</tt> and <tt>size()</tt>.
+ *
+ * A UCB_NULL C string wraps as the interned empty string. In C the length of a
+ * runtime string is measured once with @c strlen (there is no portable way to
+ * distinguish a literal from a pointer after array-to-pointer conversion).
+ *
+ * The returned value is a non-owning view; it must only be used for the
+ * duration of the expression it appears in.
+ *
+ * @code
+ * ucb_path* p = ucb_path_new(UCB_STR("config"));
+ * @endcode
+ */
+
 #ifdef __cplusplus
+/* C++ version of UCB_CSTR */
 inline const char* ucb_cstr_of(const char* s)
 {
     return s;
@@ -80,7 +105,53 @@ inline auto ucb_cstr_of(const T& s) -> decltype(s.c_str())
     return s.c_str();
 }
 #define UCB_CSTR(x) ucb_cstr_of(x)
+
+/* C++ version of UCB_STR */
+namespace ucb_str_detail {
+struct literal
+{
+    ucb_str s;
+
+    literal(const char* c, size_t n)
+    {
+        ucb_str_verify_cstr(c, n, "literal");
+        s.data = c ? const_cast<char*>(c) : const_cast<char*>("");
+        s.size = n;
+        s.alloc = 0;
+    }
+
+    operator const ucb_str*() const
+    {
+        return &s;
+    }
+};
+
+template <size_t N>
+inline literal of(const char (&c)[N])
+{
+    return literal(c, N - 1);
+}
+
+inline literal of(const char* c)
+{
+    return literal(c, c ? strlen(c) : 0);
+}
+
+inline literal of(char* c)
+{
+    return literal(c, c ? strlen(c) : 0);
+}
+
+template <class T>
+inline auto of(const T& s) -> decltype(s.c_str(), s.size(), literal(s.c_str(), s.size()))
+{
+    return literal(s.c_str(), s.size());
+}
+} // namespace ucb_str_detail
+
+#define UCB_STR(x) ::ucb_str_detail::of(x)
 #else
+/* C version of UCB_CSTR */
 #define UCB_CSTR(x)                                        \
     _Generic((x),                                          \
         char*: (const char*)(x),                           \
@@ -89,6 +160,35 @@ inline auto ucb_cstr_of(const T& s) -> decltype(s.c_str())
         const ucb_str*: ucb_str_cstr((const ucb_str*)(x)), \
         ucb_path*: ucb_path_cstr((ucb_path*)(x)),          \
         const ucb_path*: ucb_path_cstr((ucb_path*)(x)))
+
+/* C version of UCB_STR.
+
+   Wraps @p cstr as a borrowed view in caller-provided storage and returns it.
+   The length is measured once with strlen (there is no portable way to tell a
+   string literal from a runtime pointer after array-to-pointer conversion), and
+   the value is validated once. A UCB_NULL @p cstr becomes the interned empty
+   string. The storage is a block-scope compound literal, so the returned view
+   stays valid until the end of the enclosing block. */
+static inline const ucb_str* ucb_str_wrap_view_(ucb_str* storage, const char* cstr)
+{
+    size_t len = 0;
+    if (cstr && *cstr)
+    {
+        len = strlen(cstr);
+        ucb_str_verify_cstr(cstr, len, "literal");
+    }
+    else
+    {
+        cstr = "";
+    }
+
+    storage->data = (char*)cstr;
+    storage->size = len;
+    storage->alloc = 0;
+    return storage;
+}
+
+#define UCB_STR(x) ucb_str_wrap_view_(&(ucb_str){0}, (x))
 #endif
 
 /** @} */

@@ -17,6 +17,7 @@
 #include <ucb/file.h>
 #include <ucb/memdbg.h>
 #include <ucb/string.h>
+#include <ucb/string_ex.h>
 
 #include <doctest.h>
 
@@ -729,7 +730,7 @@ TEST_CASE("argparse - help formatting")
     // Verify the printed output matches the string form.
     FsTmp tmp("ucb_argparse");
     ucb_file* file =
-        ucb_file_open(tmp.path("help.txt").c_str(),
+        ucb_file_open(UCB_STR(tmp.path("help.txt")),
                       UCB_FILE_WRITE | UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_BINARY,
                       &err);
     REQUIRE(file != UCB_NULL);
@@ -815,7 +816,7 @@ TEST_CASE("argparse - print error")
 
     FsTmp tmp("ucb_argparse_err");
     ucb_file* file =
-        ucb_file_open(tmp.path("err.txt").c_str(),
+        ucb_file_open(UCB_STR(tmp.path("err.txt")),
                       UCB_FILE_WRITE | UCB_FILE_CREATE | UCB_FILE_TRUNCATE | UCB_FILE_BINARY,
                       &err);
     REQUIRE(file != UCB_NULL);

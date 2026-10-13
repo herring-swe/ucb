@@ -57,15 +57,18 @@ bool ucb_dir_plat_open(ucb_dir* dir, ucb_error** perr)
     state->find = INVALID_HANDLE_VALUE;
     state->dot_index = (dir->flags & UCB_DIR_INCLUDE_DOT) ? 0 : 2;
 
-    char* pattern = ucb_fs_join(dir->path, "*");
+    ucb_str star = ucb_str_make();
+    ucb_str_init_c(&star, "*");
+    ucb_str* pattern = ucb_fs_join(dir->path, &star);
+    ucb_str_release(&star);
     if (!pattern)
     {
         ucb_free(state);
         return false;
     }
 
-    wchar_t* wpattern = ucb_cstr_to_wchar(pattern, 0, UCB_NULL, perr);
-    ucb_free(pattern);
+    wchar_t* wpattern = ucb_cstr_to_wchar(ucb_str_cstr(pattern), 0, UCB_NULL, perr);
+    ucb_str_free(pattern);
     if (!wpattern)
     {
         ucb_free(state);
@@ -105,7 +108,8 @@ bool ucb_dir_plat_next(ucb_dir* dir, ucb_dir_entry* out, ucb_error** perr)
     {
         if (state->dot_index < 2)
         {
-            out->name = (state->dot_index == 0) ? "." : "..";
+            ucb_str_assign_c(&dir->name, (state->dot_index == 0) ? "." : "..");
+            out->name = &dir->name;
             out->kind = UCB_FS_KIND_DIR;
             state->dot_index++;
             return true;
@@ -136,10 +140,10 @@ bool ucb_dir_plat_next(ucb_dir* dir, ucb_dir_entry* out, ucb_error** perr)
         if (!name)
             return false;
 
-        ucb_free(dir->name);
-        dir->name = name;
+        ucb_str_assign(&dir->name, name, 0);
+        ucb_free(name);
 
-        out->name = name;
+        out->name = &dir->name;
         out->kind = dir_win32_kind_from_attrs(state->entry.dwFileAttributes);
         return true;
     }

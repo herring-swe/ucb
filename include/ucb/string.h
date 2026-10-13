@@ -176,6 +176,15 @@ static inline ucb_str ucb_str_make()
 }
 
 /**
+ * Aborts with a descriptive argument error when @p cstr is not
+ * valid input. See @ref ucb_str_is_valid.
+ * @param cstr string to verify
+ * @param len length of string excluding null-terminator, or 0 to measure with strlen
+ * @param param parameter name to include in error message
+ */
+UCB_API void ucb_str_verify_cstr(const char* cstr, size_t len, const char* param);
+
+/**
  * @brief Allocate and initialize a new owned string from a C string.
  *
  * This documents the canonical input rules shared by every ucb_str function

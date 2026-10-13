@@ -14,6 +14,7 @@
 #include <ucb/memory.h>
 #include <ucb/path.h>
 #include <ucb/string.h>
+#include <ucb/string_ex.h>
 #include <ucb/ucb.h>
 
 #include <doctest.h>
@@ -59,7 +60,7 @@ TEST_CASE("path - lifetime")
     SUBCASE("init")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
         CHECK_FALSE(ucb_path_is_empty(&path));
         check_path(&path, "a/b", "c", ".txt");
         ucb_path_release(&path);
@@ -68,14 +69,14 @@ TEST_CASE("path - lifetime")
     SUBCASE("init empty")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, nullptr, UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR(""), UCB_PATH_STYLE_POSIX));
         CHECK(ucb_path_is_empty(&path));
         ucb_path_release(&path);
     }
 
     SUBCASE("new/free")
     {
-        ucb_path* path = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         check_path(path, "a/b", "c", ".txt");
         ucb_path_free(path);
@@ -83,7 +84,7 @@ TEST_CASE("path - lifetime")
 
     SUBCASE("clone")
     {
-        ucb_path* path = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         ucb_path* clone = ucb_path_clone(path);
         REQUIRE(clone != nullptr);
@@ -97,7 +98,7 @@ TEST_CASE("path - lifetime")
     {
         ucb_path src = ucb_path_make();
         ucb_path dst = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&src, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&src, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
         REQUIRE(ucb_path_copy(&dst, &src));
         CHECK(ucb_path_equals(&src, &dst));
         check_path(&dst, "a/b", "c", ".txt");
@@ -107,16 +108,27 @@ TEST_CASE("path - lifetime")
 
     SUBCASE("clear and assign")
     {
-        ucb_path* path = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         ucb_path_clear(path);
         CHECK(ucb_path_is_empty(path));
-        REQUIRE(ucb_path_assign(path, "x/y.z", 5));
+        REQUIRE(ucb_path_assign(path, UCB_STR("x/y.z")));
         check_path(path, "x", "y", ".z");
         ucb_path_free(path);
     }
 
     UCB_MEMTRACK_POP();
+}
+
+TEST_CASE_FIXTURE(TestFailureFixture, "path - null string arg validation")
+{
+    CHECK_ABORTS(ucb_path_new(nullptr));
+    CHECK_ABORTS(ucb_path_new_style(nullptr, UCB_PATH_STYLE_POSIX));
+
+    ucb_path path = ucb_path_make();
+    CHECK_ABORTS(ucb_path_init_style(&path, nullptr, UCB_PATH_STYLE_POSIX));
+    CHECK_ABORTS(ucb_path_assign(&path, nullptr));
+    ucb_path_release(&path);
 }
 
 TEST_CASE("path - parse components")
@@ -145,7 +157,7 @@ TEST_CASE("path - parse components")
     for (const case_t& c : cases)
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, c.input, UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR(c.input), UCB_PATH_STYLE_POSIX));
         CAPTURE(c.input);
         check_path(&path, c.dir, c.stem, c.ext);
         ucb_path_release(&path);
@@ -155,20 +167,22 @@ TEST_CASE("path - parse components")
     SUBCASE("windows drive and UNC")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "C:\\a\\b.txt", UCB_PATH_STYLE_WINDOWS));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("C:\\a\\b.txt"), UCB_PATH_STYLE_WINDOWS));
         check_path(&path, "C:\\a", "b", ".txt");
         check_cstr(&path, "C:\\a\\b.txt");
         CHECK(ucb_path_is_absolute(&path));
         ucb_path_release(&path);
 
         path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "C:\\b.txt", UCB_PATH_STYLE_WINDOWS));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("C:\\b.txt"), UCB_PATH_STYLE_WINDOWS));
         check_path(&path, "C:\\", "b", ".txt");
         check_cstr(&path, "C:\\b.txt");
         ucb_path_release(&path);
 
         path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "\\\\server\\share\\file.txt", UCB_PATH_STYLE_WINDOWS));
+        REQUIRE(ucb_path_init_style(&path,
+                                    UCB_STR("\\\\server\\share\\file.txt"),
+                                    UCB_PATH_STYLE_WINDOWS));
         check_path(&path, "\\\\server\\share", "file", ".txt");
         check_cstr(&path, "\\\\server\\share\\file.txt");
         CHECK(ucb_path_is_absolute(&path));
@@ -202,7 +216,7 @@ TEST_CASE("path - extensions")
     for (const case_t& c : cases)
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, c.input, UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR(c.input), UCB_PATH_STYLE_POSIX));
         CAPTURE(c.input);
         CHECK(std::strcmp(ucb_str_cstr(ucb_path_stem(&path)), c.stem) == 0);
         CHECK(std::strcmp(ucb_str_cstr(ucb_path_ext(&path)), c.ext) == 0);
@@ -212,7 +226,7 @@ TEST_CASE("path - extensions")
     SUBCASE("set_ext normalization")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a/b", UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a/b"), UCB_PATH_STYLE_POSIX));
 
         ucb_str ext = ucb_str_make();
         REQUIRE(ucb_str_assign_c(&ext, "tar.gz"));
@@ -231,8 +245,8 @@ TEST_CASE("path - extensions")
     SUBCASE("set_filename")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
-        REQUIRE(ucb_path_set_filename_c(&path, "d.tar.gz"));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_set_filename(&path, UCB_STR("d.tar.gz")));
         check_path(&path, "a/b", "d.tar", ".gz");
         ucb_path_release(&path);
     }
@@ -240,8 +254,8 @@ TEST_CASE("path - extensions")
     SUBCASE("replace_ext")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
-        REQUIRE(ucb_path_replace_ext_c(&path, "md"));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_replace_ext(&path, UCB_STR("md")));
         check_cstr(&path, "a/b/c.md");
         ucb_path_release(&path);
     }
@@ -256,7 +270,7 @@ TEST_CASE("path - styles")
     SUBCASE("explicit styles")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a/b/c.txt", UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
         CHECK(ucb_path_get_style(&path) == UCB_PATH_STYLE_POSIX);
         check_cstr(&path, "a/b/c.txt");
 
@@ -268,7 +282,7 @@ TEST_CASE("path - styles")
         check_cstr(&path, "a/b/c.txt");
         ucb_path_release(&path);
 
-        ucb_path* win = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_WINDOWS);
+        ucb_path* win = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_WINDOWS);
         REQUIRE(win != nullptr);
         CHECK(ucb_path_num_parts(win) == 3);
         ucb_str* part = ucb_path_part(win, 1);
@@ -289,7 +303,7 @@ TEST_CASE("path - styles")
         cfg.default_path_style = UCB_PATH_STYLE_POSIX;
         ucb_conf_set(&cfg);
 
-        ucb_path* path = ucb_path_new_c("a/b/c.txt");
+        ucb_path* path = ucb_path_new(UCB_STR("a/b/c.txt"));
         REQUIRE(path != nullptr);
         CHECK(ucb_path_get_style(path) == UCB_PATH_STYLE_POSIX);
         check_cstr(path, "a/b/c.txt");
@@ -297,7 +311,7 @@ TEST_CASE("path - styles")
 
         cfg.default_path_style = UCB_PATH_STYLE_WINDOWS;
         ucb_conf_set(&cfg);
-        path = ucb_path_new_c("a/b/c.txt");
+        path = ucb_path_new(UCB_STR("a/b/c.txt"));
         REQUIRE(path != nullptr);
         check_cstr(path, "a\\b\\c.txt");
         ucb_path_free(path);
@@ -325,7 +339,7 @@ TEST_CASE("path - styles")
     SUBCASE("windows input accepts both separators")
     {
         ucb_path path = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&path, "a\\b/c.txt", UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_init_style(&path, UCB_STR("a\\b/c.txt"), UCB_PATH_STYLE_POSIX));
         check_path(&path, "a/b", "c", ".txt");
         check_cstr(&path, "a/b/c.txt");
         ucb_path_release(&path);
@@ -339,7 +353,7 @@ TEST_CASE("path - cstr and to_str")
 {
     UCB_MEMTRACK_PUSH();
 
-    ucb_path* path = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
+    ucb_path* path = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
     REQUIRE(path != nullptr);
     check_cstr(path, "a/b/c.txt");
 
@@ -348,8 +362,11 @@ TEST_CASE("path - cstr and to_str")
     check_cstr_value(str, "a/b/c.txt");
     ucb_str_free(str);
 
+    const ucb_str* borrowed = ucb_path_str(path);
+    check_cstr_value(borrowed, "a/b/c.txt");
+
     // Cache invalidation after mutation
-    REQUIRE(ucb_path_set_stem_c(path, "renamed"));
+    REQUIRE(ucb_path_set_stem(path, UCB_STR("renamed")));
     check_cstr(path, "a/b/renamed.txt");
     CHECK(ucb_path_len(path) == std::strlen(ucb_path_cstr(path)));
 
@@ -365,9 +382,10 @@ TEST_CASE("path - join append")
     SUBCASE("relative join")
     {
         ucb_path base = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&base, "a/b/c", UCB_PATH_STYLE_POSIX));
-        ucb_path* joined = ucb_path_join_c(&base, "d.txt");
+        REQUIRE(ucb_path_init_style(&base, UCB_STR("a/b/c"), UCB_PATH_STYLE_POSIX));
+        ucb_path* joined = ucb_path_clone(&base);
         REQUIRE(joined != nullptr);
+        REQUIRE(ucb_path_append_str(joined, UCB_STR("d.txt")));
         check_cstr(joined, "a/b/c/d.txt");
         ucb_path_free(joined);
         ucb_path_release(&base);
@@ -376,9 +394,10 @@ TEST_CASE("path - join append")
     SUBCASE("absolute replacement")
     {
         ucb_path base = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&base, "a/b/c", UCB_PATH_STYLE_POSIX));
-        ucb_path* joined = ucb_path_join_c(&base, "/x/y.txt");
+        REQUIRE(ucb_path_init_style(&base, UCB_STR("a/b/c"), UCB_PATH_STYLE_POSIX));
+        ucb_path* joined = ucb_path_clone(&base);
         REQUIRE(joined != nullptr);
+        REQUIRE(ucb_path_append_str(joined, UCB_STR("/x/y.txt")));
         check_cstr(joined, "/x/y.txt");
         ucb_path_free(joined);
         ucb_path_release(&base);
@@ -386,9 +405,9 @@ TEST_CASE("path - join append")
 
     SUBCASE("in-place append")
     {
-        ucb_path* path = ucb_path_new_style("a/b", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
-        REQUIRE(ucb_path_append_c(path, "c/d.txt"));
+        REQUIRE(ucb_path_append_str(path, UCB_STR("c/d.txt")));
         check_cstr(path, "a/b/c/d.txt");
         ucb_path_free(path);
     }
@@ -396,9 +415,10 @@ TEST_CASE("path - join append")
     SUBCASE("join with nested dir")
     {
         ucb_path base = ucb_path_make();
-        REQUIRE(ucb_path_init_style(&base, "/a", UCB_PATH_STYLE_POSIX));
-        ucb_path* joined = ucb_path_join_c(&base, "x/y.txt");
+        REQUIRE(ucb_path_init_style(&base, UCB_STR("/a"), UCB_PATH_STYLE_POSIX));
+        ucb_path* joined = ucb_path_clone(&base);
         REQUIRE(joined != nullptr);
+        REQUIRE(ucb_path_append_str(joined, UCB_STR("x/y.txt")));
         check_cstr(joined, "/a/x/y.txt");
         ucb_path_free(joined);
         ucb_path_release(&base);
@@ -413,7 +433,7 @@ TEST_CASE("path - parent parts")
 
     SUBCASE("relative")
     {
-        ucb_path* path = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
 
         CHECK(ucb_path_num_parts(path) == 3);
@@ -452,7 +472,7 @@ TEST_CASE("path - parent parts")
 
     SUBCASE("absolute with anchor")
     {
-        ucb_path* path = ucb_path_new_style("/a/b/c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("/a/b/c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
 
         CHECK(ucb_path_num_parts(path) == 4);
@@ -478,7 +498,7 @@ TEST_CASE("path - parent parts")
 
     SUBCASE("parent of root is itself")
     {
-        ucb_path* path = ucb_path_new_style("/", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("/"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         ucb_path* parent = ucb_path_parent(path);
         REQUIRE(parent != nullptr);
@@ -489,7 +509,7 @@ TEST_CASE("path - parent parts")
 
     SUBCASE("parent drops filename only")
     {
-        ucb_path* path = ucb_path_new_style("a/b/", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/b/"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         ucb_path* parent = ucb_path_parent(path);
         REQUIRE(parent != nullptr);
@@ -532,15 +552,19 @@ TEST_CASE("path - normalize")
 
     for (const case_t& c : cases)
     {
-        ucb_str* result = ucb_path_normalize_cstyle(c.input, UCB_PATH_STYLE_POSIX);
+        ucb_path path = ucb_path_make();
+        REQUIRE(ucb_path_init_style(&path, UCB_STR(c.input), UCB_PATH_STYLE_POSIX));
+        REQUIRE(ucb_path_normalize(&path));
+        ucb_str* result = ucb_path_to_str(&path);
         CAPTURE(std::string(c.input));
         check_cstr_value(result, c.expected);
         ucb_str_free(result);
+        ucb_path_release(&path);
     }
 
     SUBCASE("in place")
     {
-        ucb_path* path = ucb_path_new_style("a/./b/../c.txt", UCB_PATH_STYLE_POSIX);
+        ucb_path* path = ucb_path_new_style(UCB_STR("a/./b/../c.txt"), UCB_PATH_STYLE_POSIX);
         REQUIRE(path != nullptr);
         REQUIRE(ucb_path_normalize(path));
         check_cstr(path, "a/c.txt");
@@ -554,9 +578,9 @@ TEST_CASE("path - compare")
 {
     UCB_MEMTRACK_PUSH();
 
-    ucb_path* a = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
-    ucb_path* b = ucb_path_new_style("a/b/c.txt", UCB_PATH_STYLE_POSIX);
-    ucb_path* c = ucb_path_new_style("a/b/d.txt", UCB_PATH_STYLE_POSIX);
+    ucb_path* a = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
+    ucb_path* b = ucb_path_new_style(UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX);
+    ucb_path* c = ucb_path_new_style(UCB_STR("a/b/d.txt"), UCB_PATH_STYLE_POSIX);
     REQUIRE(a != nullptr);
     REQUIRE(b != nullptr);
     REQUIRE(c != nullptr);
@@ -568,17 +592,42 @@ TEST_CASE("path - compare")
 
     ucb_str* upper = ucb_str_new_c("A/B/C.TXT");
     REQUIRE(upper != nullptr);
-    ucb_path* up = ucb_path_new_style(ucb_str_cstr(upper), UCB_PATH_STYLE_POSIX);
+    ucb_path* up = ucb_path_new_style(upper, UCB_PATH_STYLE_POSIX);
     ucb_str_free(upper);
     REQUIRE(up != nullptr);
     CHECK(ucb_path_icomp(a, up) == 0);
     CHECK(ucb_path_comp(a, up) != 0);
     ucb_path_free(up);
 
-    CHECK(ucb_path_equals_c("a/b", "a/b"));
-    CHECK_FALSE(ucb_path_equals_c("a/b", "a/c"));
-    CHECK(ucb_path_comp_c("a", "b") < 0);
-    CHECK(ucb_path_icomp_c("A", "a") == 0);
+    ucb_path eq_a = ucb_path_make();
+    ucb_path_init(&eq_a, UCB_STR("a/b"));
+    ucb_path eq_b = ucb_path_make();
+    ucb_path_init(&eq_b, UCB_STR("a/b"));
+    CHECK(ucb_path_equals(&eq_a, &eq_b));
+
+    ucb_path eq_c = ucb_path_make();
+    ucb_path_init(&eq_c, UCB_STR("a/c"));
+    CHECK_FALSE(ucb_path_equals(&eq_a, &eq_c));
+
+    ucb_path comp_a = ucb_path_make();
+    ucb_path_init(&comp_a, UCB_STR("a"));
+    ucb_path comp_b = ucb_path_make();
+    ucb_path_init(&comp_b, UCB_STR("b"));
+    CHECK(ucb_path_comp(&comp_a, &comp_b) < 0);
+
+    ucb_path icomp_a = ucb_path_make();
+    ucb_path_init(&icomp_a, UCB_STR("A"));
+    ucb_path icomp_b = ucb_path_make();
+    ucb_path_init(&icomp_b, UCB_STR("a"));
+    CHECK(ucb_path_icomp(&icomp_a, &icomp_b) == 0);
+
+    ucb_path_release(&eq_a);
+    ucb_path_release(&eq_b);
+    ucb_path_release(&eq_c);
+    ucb_path_release(&comp_a);
+    ucb_path_release(&comp_b);
+    ucb_path_release(&icomp_a);
+    ucb_path_release(&icomp_b);
 
     ucb_path_free(a);
     ucb_path_free(b);
@@ -591,11 +640,11 @@ TEST_CASE("path - is_inside")
 {
     UCB_MEMTRACK_PUSH();
 
-    ucb_path* dir = ucb_path_new_style("/a/b", UCB_PATH_STYLE_POSIX);
-    ucb_path* child = ucb_path_new_style("/a/b/c.txt", UCB_PATH_STYLE_POSIX);
-    ucb_path* sibling = ucb_path_new_style("/a/x", UCB_PATH_STYLE_POSIX);
-    ucb_path* root = ucb_path_new_style("/", UCB_PATH_STYLE_POSIX);
-    ucb_path* relative = ucb_path_new_style("a/b", UCB_PATH_STYLE_POSIX);
+    ucb_path* dir = ucb_path_new_style(UCB_STR("/a/b"), UCB_PATH_STYLE_POSIX);
+    ucb_path* child = ucb_path_new_style(UCB_STR("/a/b/c.txt"), UCB_PATH_STYLE_POSIX);
+    ucb_path* sibling = ucb_path_new_style(UCB_STR("/a/x"), UCB_PATH_STYLE_POSIX);
+    ucb_path* root = ucb_path_new_style(UCB_STR("/"), UCB_PATH_STYLE_POSIX);
+    ucb_path* relative = ucb_path_new_style(UCB_STR("a/b"), UCB_PATH_STYLE_POSIX);
     REQUIRE(dir != nullptr);
     REQUIRE(child != nullptr);
     REQUIRE(sibling != nullptr);
@@ -627,47 +676,64 @@ TEST_CASE("path - c string helpers")
     cfg.default_path_style = UCB_PATH_STYLE_POSIX;
     ucb_conf_set(&cfg);
 
-    ucb_str* dir = ucb_path_dir_c("a/b/c.txt");
+    ucb_path path = ucb_path_make();
+    ucb_path_init(&path, UCB_STR("a/b/c.txt"));
+
+    const ucb_str* dir = ucb_path_dir(&path);
     check_cstr_value(dir, "a/b");
-    ucb_str_free(dir);
 
-    dir = ucb_path_dir_cstyle("/a/b/c.txt", UCB_PATH_STYLE_POSIX);
-    check_cstr_value(dir, "/a/b");
-    ucb_str_free(dir);
-
-    ucb_str* stem = ucb_path_stem_c("a/b/c.txt");
+    const ucb_str* stem = ucb_path_stem(&path);
     check_cstr_value(stem, "c");
-    ucb_str_free(stem);
 
-    ucb_str* ext = ucb_path_ext_c("a/b/c.txt");
+    const ucb_str* ext = ucb_path_ext(&path);
     check_cstr_value(ext, ".txt");
-    ucb_str_free(ext);
 
-    ucb_str* filename = ucb_path_filename_c("a/b/c.txt");
+    const ucb_str* filename = ucb_path_filename(&path);
     check_cstr_value(filename, "c.txt");
-    ucb_str_free(filename);
 
-    ucb_str* parent = ucb_path_parent_cstyle("a/b/c.txt", UCB_PATH_STYLE_POSIX);
-    check_cstr_value(parent, "a/b");
-    ucb_str_free(parent);
+    ucb_path_release(&path);
 
-    ucb_str* norm = ucb_path_normalize_cstyle("a/./b/../c", UCB_PATH_STYLE_POSIX);
+    ucb_path dir_path = ucb_path_make();
+    REQUIRE(ucb_path_init_style(&dir_path, UCB_STR("/a/b/c.txt"), UCB_PATH_STYLE_POSIX));
+    dir = ucb_path_dir(&dir_path);
+    check_cstr_value(dir, "/a/b");
+    ucb_path_release(&dir_path);
+
+    ucb_path parent_path = ucb_path_make();
+    REQUIRE(ucb_path_init_style(&parent_path, UCB_STR("a/b/c.txt"), UCB_PATH_STYLE_POSIX));
+    ucb_path* parent = ucb_path_parent(&parent_path);
+    REQUIRE(parent != nullptr);
+    check_cstr(parent, "a/b");
+    ucb_path_free(parent);
+    ucb_path_release(&parent_path);
+
+    ucb_path norm_path = ucb_path_make();
+    REQUIRE(ucb_path_init_style(&norm_path, UCB_STR("a/./b/../c"), UCB_PATH_STYLE_POSIX));
+    REQUIRE(ucb_path_normalize(&norm_path));
+    ucb_str* norm = ucb_path_to_str(&norm_path);
     check_cstr_value(norm, "a/c");
     ucb_str_free(norm);
+    ucb_path_release(&norm_path);
 
-    ucb_vector_str* parts = ucb_path_parts_cstyle("a/b.txt", UCB_PATH_STYLE_POSIX);
+    ucb_path parts_path = ucb_path_make();
+    REQUIRE(ucb_path_init_style(&parts_path, UCB_STR("a/b.txt"), UCB_PATH_STYLE_POSIX));
+    ucb_vector_str* parts = ucb_path_parts(&parts_path);
     REQUIRE(parts != nullptr);
     REQUIRE(ucb_vector_str_size(parts) == 2);
     check_cstr_value(ucb_vector_str_get(parts, 0), "a");
     check_cstr_value(ucb_vector_str_get(parts, 1), "b.txt");
     ucb_vector_str_free_full(parts);
+    ucb_path_release(&parts_path);
 
-    ucb_vector_str* parents = ucb_path_parents_cstyle("a/b/c", UCB_PATH_STYLE_POSIX);
+    ucb_path parents_path = ucb_path_make();
+    REQUIRE(ucb_path_init_style(&parents_path, UCB_STR("a/b/c"), UCB_PATH_STYLE_POSIX));
+    ucb_vector_str* parents = ucb_path_parents(&parents_path);
     REQUIRE(parents != nullptr);
     REQUIRE(ucb_vector_str_size(parents) == 2);
     check_cstr_value(ucb_vector_str_get(parents, 0), "a/b");
     check_cstr_value(ucb_vector_str_get(parents, 1), "a");
     ucb_vector_str_free_full(parents);
+    ucb_path_release(&parents_path);
 
     ucb_conf_set(&prev);
 

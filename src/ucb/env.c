@@ -11,6 +11,9 @@
 
 #include "ucb/cstring.h"
 #include "ucb/memory.h"
+#include "ucb/string.h"
+
+#include <string.h>
 
 #ifdef _WIN32
 #include <stdbool.h>
@@ -20,19 +23,10 @@
 #include <stdlib.h>
 #endif
 
-#ifdef _WIN32
-// Static buffer for the last retrieved environment variable value.
-// Sized to hold realistic values in UTF-8, the documented Windows maximum of 32,767 wide
-// characters can expand to ~98 KiB in UTF-8 worst case, which will not fit and is reported
-// as not found instead of being truncated.
-#define UCB_ENV_BUFSIZE (64 * 1024)
-static char s_envval[UCB_ENV_BUFSIZE];
-#endif
-
-bool ucb_env_has(const char* name)
+bool ucb_env_has(const ucb_str* name)
 {
 #ifdef _WIN32
-    wchar_t* name_w = ucb_cstr_to_wchar(name, 0, UCB_NULL, UCB_NULL);
+    wchar_t* name_w = ucb_cstr_to_wchar(ucb_str_cstr(name), 0, UCB_NULL, UCB_NULL);
     if (!name_w)
     {
         return false;
@@ -42,14 +36,14 @@ bool ucb_env_has(const char* name)
     ucb_free(name_w);
     return size > 0;
 #else
-    return getenv(name) != NULL;
+    return getenv(ucb_str_cstr(name)) != NULL;
 #endif
 }
 
-const char* ucb_env_get(const char* name)
+ucb_str* ucb_env_get(const ucb_str* name)
 {
 #ifdef _WIN32
-    wchar_t* name_w = ucb_cstr_to_wchar(name, 0, UCB_NULL, UCB_NULL);
+    wchar_t* name_w = ucb_cstr_to_wchar(ucb_str_cstr(name), 0, UCB_NULL, UCB_NULL);
     if (!name_w)
     {
         return UCB_NULL;
@@ -75,31 +69,27 @@ const char* ucb_env_get(const char* name)
     }
 
     GetEnvironmentVariableW(name_w, buffer, size);
-    if (!ucb_cstr_from_wchar_buf(buffer,
-                                 size - 1,
-                                 s_envval,
-                                 (size_t)UCB_ENV_BUFSIZE,
-                                 UCB_NULL,
-                                 UCB_NULL))
-    {
-        // Conversion failed. Could be invalid unicode or buffer too small.
-        ucb_free(buffer);
-        ucb_free(name_w);
-        return UCB_NULL;
-    }
-
-    ucb_free(buffer);
     ucb_free(name_w);
-    return s_envval;
+
+    ucb_str* value = ucb_str_from_wchar(buffer, 0, UCB_NULL);
+    ucb_free(buffer);
+    return value;
 #else
-    return getenv(name);
+    const char* cur = getenv(ucb_str_cstr(name));
+    if (!cur)
+        return UCB_NULL;
+
+    // TODO(utf8): POSIX environment values are assumed UTF-8. A non-UTF-8 value
+    // aborts in ucb_str_new_c; detection and conversion are deferred to the
+    // Encoding API (see TODO.md).
+    return ucb_str_new_c(cur);
 #endif
 }
 
-bool ucb_env_set(const char* name, const char* value, bool overwrite)
+bool ucb_env_set(const ucb_str* name, const ucb_str* value, bool overwrite)
 {
 #ifdef _WIN32
-    wchar_t* name_w = ucb_cstr_to_wchar(name, 0, UCB_NULL, UCB_NULL);
+    wchar_t* name_w = ucb_cstr_to_wchar(ucb_str_cstr(name), 0, UCB_NULL, UCB_NULL);
     if (!overwrite)
     {
         DWORD size = GetEnvironmentVariableW(name_w, UCB_NULL, 0);
@@ -110,7 +100,7 @@ bool ucb_env_set(const char* name, const char* value, bool overwrite)
             return true;
         }
     }
-    wchar_t* value_w = ucb_cstr_to_wchar(value, 0, UCB_NULL, UCB_NULL);
+    wchar_t* value_w = ucb_cstr_to_wchar(ucb_str_cstr(value), 0, UCB_NULL, UCB_NULL);
 
     // Use _wputenv_s to set the environment variable.
     // This updates both the CRT and the Windows environment.
@@ -119,52 +109,60 @@ bool ucb_env_set(const char* name, const char* value, bool overwrite)
     ucb_free(value_w);
     return ret;
 #else
-    return setenv(name, value, overwrite ? 1 : 0) == 0;
+    return setenv(ucb_str_cstr(name), ucb_str_cstr(value), overwrite ? 1 : 0) == 0;
 #endif
 }
 
-bool ucb_env_unset(const char* name)
+bool ucb_env_unset(const ucb_str* name)
 {
 #ifdef _WIN32
-    wchar_t* name_w = ucb_cstr_to_wchar(name, 0, UCB_NULL, UCB_NULL);
+    wchar_t* name_w = ucb_cstr_to_wchar(ucb_str_cstr(name), 0, UCB_NULL, UCB_NULL);
     bool ret = _wputenv_s(name_w, L"") == 0;
     ucb_free(name_w);
     return ret;
 #else
-    return unsetenv(name) == 0;
+    return unsetenv(ucb_str_cstr(name)) == 0;
 #endif
 }
 
-bool ucb_env_append(const char* name, const char* value, const char* sep)
+bool ucb_env_append(const ucb_str* name, const ucb_str* value, const ucb_str* sep)
 {
-    const char* cur = ucb_env_get(name);
+    ucb_str* cur = ucb_env_get(name);
     if (!cur)
         return ucb_env_set(name, value, true);
 
-    char* new = UCB_NULL;
-    if (sep)
-        new = ucb_cstr_concat(cur, sep, value, UCB_NULL);
-    else
-        new = ucb_cstr_concat(cur, value, UCB_NULL);
+    ucb_str updated = ucb_str_make();
+    bool ok = ucb_str_init(&updated, ucb_str_cstr(cur), ucb_str_len(cur));
+    if (ok)
+    {
+        if (sep)
+            ucb_str_append(&updated, sep);
+        ucb_str_append(&updated, value);
+        ok = ucb_env_set(name, &updated, true);
+    }
 
-    bool res = ucb_env_set(name, new, true);
-    ucb_free(new);
-    return res;
+    ucb_str_release(&updated);
+    ucb_str_free(cur);
+    return ok;
 }
 
-bool ucb_env_prepend(const char* name, const char* value, const char* sep)
+bool ucb_env_prepend(const ucb_str* name, const ucb_str* value, const ucb_str* sep)
 {
-    const char* cur = ucb_env_get(name);
+    ucb_str* cur = ucb_env_get(name);
     if (!cur)
         return ucb_env_set(name, value, true);
 
-    char* new = UCB_NULL;
-    if (sep)
-        new = ucb_cstr_concat(value, sep, cur, UCB_NULL);
-    else
-        new = ucb_cstr_concat(value, cur, UCB_NULL);
+    ucb_str updated = ucb_str_make();
+    bool ok = ucb_str_init(&updated, ucb_str_cstr(value), ucb_str_len(value));
+    if (ok)
+    {
+        if (sep)
+            ucb_str_append(&updated, sep);
+        ucb_str_append(&updated, cur);
+        ok = ucb_env_set(name, &updated, true);
+    }
 
-    bool res = ucb_env_set(name, new, true);
-    ucb_free(new);
-    return res;
+    ucb_str_release(&updated);
+    ucb_str_free(cur);
+    return ok;
 }

@@ -25,7 +25,7 @@ int test_string_c(void)
     const char* cstr = "const";
     ucb_str* heap = ucb_str_new_c("heap");
     ucb_str stack = ucb_str_make();
-    ucb_path* path = ucb_path_new_c("some/path");
+    ucb_path* path = ucb_path_new(UCB_STR("some/path"));
 
     const char* p_buf = UCB_CSTR(buf);
     const char* p_cstr = UCB_CSTR(cstr);
@@ -49,6 +49,23 @@ int test_string_c(void)
     if (strcmp(p_stack, "") != 0)
         errs++;
     if (p_path != p_path_const)
+        errs++;
+
+    const ucb_str* s_lit = UCB_STR("literal");
+    const ucb_str* s_cstr = UCB_STR(cstr);
+    const ucb_str* s_buf = UCB_STR(buf);
+    const ucb_str* s_empty = UCB_STR("");
+    const ucb_str* s_null = UCB_STR((const char*)NULL);
+
+    if (s_lit->size != 7 || s_lit->alloc != 0 || strcmp(s_lit->data, "literal") != 0)
+        errs++;
+    if (s_cstr->size != 5 || s_cstr->data != cstr)
+        errs++;
+    if (s_buf->size != 6 || s_buf->data != buf)
+        errs++;
+    if (s_empty->size != 0 || s_empty->data[0] != '\0')
+        errs++;
+    if (s_null->size != 0 || s_null->data[0] != '\0')
         errs++;
 
     ucb_str_release(&stack);

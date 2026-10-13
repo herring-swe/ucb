@@ -12,6 +12,7 @@
 
 #include "ucb/defines.h"
 #include "ucb/env.h"
+#include <ucb/string_ex.h>
 
 #include <doctest.h>
 
@@ -34,10 +35,10 @@ TEST_CASE("envmap - general")
         ucb_envmap* map = ucb_envmap_new();
         REQUIRE(map != UCB_NULL);
 
-        CHECK(ucb_envmap_set(map, _testKey, "hello"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "hello");
-        CHECK(ucb_envmap_set(map, _testKey, "world"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "world");
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("hello")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "hello");
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("world")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "world");
 
         ucb_envmap_free(map);
     }
@@ -47,10 +48,10 @@ TEST_CASE("envmap - general")
         ucb_envmap* map = ucb_envmap_new();
         REQUIRE(map != UCB_NULL);
 
-        CHECK(ucb_envmap_set(map, _testKey, "val"));
-        CHECK(ucb_envmap_has(map, _testKey));
-        CHECK(ucb_envmap_unset(map, _testKey));
-        CHECK_FALSE(ucb_envmap_has(map, _testKey));
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("val")));
+        CHECK(ucb_envmap_has(map, UCB_STR(_testKey)));
+        CHECK(ucb_envmap_unset(map, UCB_STR(_testKey)));
+        CHECK_FALSE(ucb_envmap_has(map, UCB_STR(_testKey)));
 
         ucb_envmap_free(map);
     }
@@ -61,14 +62,15 @@ TEST_CASE("envmap - general")
         REQUIRE(map != UCB_NULL);
 
         // No previous value
-        CHECK(ucb_envmap_append(map, _testKey, "first", ":"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "first");
+        CHECK(ucb_envmap_append(map, UCB_STR(_testKey), UCB_STR("first"), UCB_STR(":")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "first");
 
-        CHECK(ucb_envmap_append(map, _testKey, "second", ":"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "first:second");
+        CHECK(ucb_envmap_append(map, UCB_STR(_testKey), UCB_STR("second"), UCB_STR(":")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "first:second");
 
-        CHECK(ucb_envmap_append(map, _testKey, "third", UCB_NULL));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "first:secondthird");
+        CHECK(ucb_envmap_append(map, UCB_STR(_testKey), UCB_STR("third"), UCB_NULL));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) ==
+              "first:secondthird");
 
         ucb_envmap_free(map);
     }
@@ -79,14 +81,15 @@ TEST_CASE("envmap - general")
         REQUIRE(map != UCB_NULL);
 
         // No previous value
-        CHECK(ucb_envmap_prepend(map, _testKey, "first", ":"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "first");
+        CHECK(ucb_envmap_prepend(map, UCB_STR(_testKey), UCB_STR("first"), UCB_STR(":")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "first");
 
-        CHECK(ucb_envmap_prepend(map, _testKey, "second", ":"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "second:first");
+        CHECK(ucb_envmap_prepend(map, UCB_STR(_testKey), UCB_STR("second"), UCB_STR(":")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "second:first");
 
-        CHECK(ucb_envmap_prepend(map, _testKey, "third", UCB_NULL));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "thirdsecond:first");
+        CHECK(ucb_envmap_prepend(map, UCB_STR(_testKey), UCB_STR("third"), UCB_NULL));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) ==
+              "thirdsecond:first");
 
         ucb_envmap_free(map);
     }
@@ -96,17 +99,17 @@ TEST_CASE("envmap - general")
         ucb_envmap* map = ucb_envmap_new();
         REQUIRE(map != UCB_NULL);
 
-        CHECK(ucb_envmap_set(map, _testKey, "original"));
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("original")));
 
         ucb_envmap* clone = ucb_envmap_clone(map);
         REQUIRE(clone != UCB_NULL);
 
-        CHECK(std::string(ucb_envmap_get(clone, _testKey)) == "original");
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(clone, UCB_STR(_testKey)))) == "original");
 
         // Modifying the clone should not affect the original
-        CHECK(ucb_envmap_set(clone, _testKey, "modified"));
-        CHECK(std::string(ucb_envmap_get(clone, _testKey)) == "modified");
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "original");
+        CHECK(ucb_envmap_set(clone, UCB_STR(_testKey), UCB_STR("modified")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(clone, UCB_STR(_testKey)))) == "modified");
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "original");
 
         ucb_envmap_free(clone);
         ucb_envmap_free(map);
@@ -119,11 +122,11 @@ TEST_CASE("envmap - general")
         REQUIRE(src != UCB_NULL);
         REQUIRE(dst != UCB_NULL);
 
-        CHECK(ucb_envmap_set(src, _testKey, "copied"));
-        CHECK(ucb_envmap_set(dst, _testKey, "original"));
+        CHECK(ucb_envmap_set(src, UCB_STR(_testKey), UCB_STR("copied")));
+        CHECK(ucb_envmap_set(dst, UCB_STR(_testKey), UCB_STR("original")));
 
         ucb_envmap_copy(dst, src);
-        CHECK(std::string(ucb_envmap_get(dst, _testKey)) == "copied");
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(dst, UCB_STR(_testKey)))) == "copied");
 
         ucb_envmap_free(src);
         ucb_envmap_free(dst);
@@ -137,9 +140,9 @@ TEST_CASE("envmap - general")
         ucb_envmap_init_from_current(map);
 
         // PATH should exist in any real environment
-        if (ucb_envmap_has(map, "PATH"))
+        if (ucb_envmap_has(map, UCB_STR("PATH")))
         {
-            CHECK(std::string(ucb_envmap_get(map, "PATH")).size() > 0);
+            CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR("PATH")))).size() > 0);
         }
 
         ucb_envmap_free(map);
@@ -153,8 +156,8 @@ TEST_CASE("envmap - general")
         ucb_envmap_reserve(map, 100);
 
         // Should still work after reserving
-        CHECK(ucb_envmap_set(map, _testKey, "value"));
-        CHECK(std::string(ucb_envmap_get(map, _testKey)) == "value");
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("value")));
+        CHECK(std::string(ucb_str_cstr(ucb_envmap_get(map, UCB_STR(_testKey)))) == "value");
 
         ucb_envmap_free(map);
     }
@@ -165,7 +168,7 @@ TEST_CASE("envmap - general")
         REQUIRE(map != UCB_NULL);
 
         // Set a value and apply it to the process environment
-        CHECK(ucb_envmap_set(map, _testKey, "applied"));
+        CHECK(ucb_envmap_set(map, UCB_STR(_testKey), UCB_STR("applied")));
         ucb_envmap_apply(map);
 
         // Now check via getenv that it was applied
@@ -174,7 +177,7 @@ TEST_CASE("envmap - general")
         CHECK(std::string(env_val) == "applied");
 
         // Clean up the process environment
-        ucb_env_unset(_testKey);
+        ucb_env_unset(UCB_STR(_testKey));
 
         ucb_envmap_free(map);
     }
@@ -184,8 +187,8 @@ TEST_CASE("envmap - general")
         ucb_envmap* map = ucb_envmap_new();
         REQUIRE(map != UCB_NULL);
 
-        CHECK(ucb_envmap_get(map, "__NONEXISTENT_KEY__") == UCB_NULL);
-        CHECK_FALSE(ucb_envmap_has(map, "__NONEXISTENT_KEY__"));
+        CHECK(ucb_envmap_get(map, UCB_STR("__NONEXISTENT_KEY__")) == UCB_NULL);
+        CHECK_FALSE(ucb_envmap_has(map, UCB_STR("__NONEXISTENT_KEY__")));
 
         ucb_envmap_free(map);
     }

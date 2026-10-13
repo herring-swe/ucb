@@ -60,7 +60,7 @@ static ucb_fs_kind dir_unix_kind_from_dtype(unsigned char dtype)
 
 bool ucb_dir_plat_open(ucb_dir* dir, ucb_error** perr)
 {
-    DIR* stream = opendir(dir->path);
+    DIR* stream = opendir(ucb_str_cstr(dir->path));
     if (!stream)
     {
         ucb_throw_errno(perr, errno, "ucb_dir_open: opendir failed");
@@ -95,21 +95,26 @@ bool ucb_dir_plat_next(ucb_dir* dir, ucb_dir_entry* out, ucb_error** perr)
                 continue;
         }
 
+        // TODO(utf8): d_name is raw bytes; validate or convert to UTF-8 so a
+        // non-UTF-8 name does not abort the process. Windows already produces
+        // valid UTF-8 via its wide-character conversion.
+        ucb_str_assign_c(&dir->name, entry->d_name);
+
         ucb_fs_kind kind = dir_unix_kind_from_dtype(entry->d_type);
         if (kind == UCB_FS_KIND_UNKNOWN)
         {
-            char* full = ucb_fs_join(dir->path, entry->d_name);
+            ucb_str* full = ucb_fs_join(dir->path, &dir->name);
             if (full)
             {
                 ucb_error* lerr = UCB_NULL;
-                if (!ucb_fs_plat_kind(full, UCB_FS_NOFOLLOW, &kind, &lerr))
+                if (!ucb_fs_plat_kind(ucb_str_cstr(full), UCB_FS_NOFOLLOW, &kind, &lerr))
                     kind = UCB_FS_KIND_UNKNOWN;
                 ucb_error_clear(&lerr);
-                ucb_free(full);
+                ucb_str_free(full);
             }
         }
 
-        out->name = entry->d_name;
+        out->name = &dir->name;
         out->kind = kind;
         return true;
     }

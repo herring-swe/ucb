@@ -26,7 +26,11 @@ static int resolve_scan_dirs(ucb_vector_str* dirs, bool recursive, ucb_path*** o
     for (int is = 0; is < ucb_vector_str_size(dirs); is++)
     {
         ucb_str* str = ucb_vector_str_get(dirs, is);
-        ucb_path* path = ucb_path_new(UCB_CSTR(str), ucb_str_len(str));
+        ucb_path* path = ucb_path_new(str);
+        if (!path)
+        {
+            continue;
+        }
         ucb_path_normalize(path);
         ucb_path_set_style(path, UCB_PATH_STYLE_POSIX);
 
@@ -71,30 +75,32 @@ static int resolve_scan_dirs(ucb_vector_str* dirs, bool recursive, ucb_path*** o
     return npaths;
 }
 
-static void report_entry(const char* fn, const ucb_fs_stat* st, const char* lead)
+static void report_entry(const ucb_str* fn, const ucb_fs_stat* st, const char* lead)
 {
+    const char* fn_cstr = UCB_CSTR(fn);
+
     if (!st)
     {
-        printf("%se: %s\n", lead, fn);
+        printf("%se: %s\n", lead, fn_cstr);
         return;
     }
 
     switch (st->kind)
     {
     case UCB_FS_KIND_DIR:
-        printf("%sd: %s/\n", lead, fn);
+        printf("%sd: %s/\n", lead, fn_cstr);
         break;
     case UCB_FS_KIND_FILE:
-        printf("%sf: %s - %s\n", lead, fn, UCB_BYTES_CSTR(st->size, UCB_BYTES_AUTO_IEC, 2));
+        printf("%sf: %s - %s\n", lead, fn_cstr, UCB_BYTES_CSTR(st->size, UCB_BYTES_AUTO_IEC, 2));
         break;
     case UCB_FS_KIND_SYMLINK:
-        printf("%sl: %s\n", lead, fn);
+        printf("%sl: %s\n", lead, fn_cstr);
         break;
     case UCB_FS_KIND_OTHER:
-        printf("%so: %s\n", lead, fn);
+        printf("%so: %s\n", lead, fn_cstr);
         break;
     case UCB_FS_KIND_UNKNOWN:
-        printf("%su: %s\n", lead, fn);
+        printf("%su: %s\n", lead, fn_cstr);
         break;
 
     default:
@@ -102,7 +108,7 @@ static void report_entry(const char* fn, const ucb_fs_stat* st, const char* lead
     }
 }
 
-static void scan_dir(const char* path, bool recursive, int level)
+static void scan_dir(const ucb_str* path, bool recursive, int level)
 {
     ucb_error* err = NULL;
 
@@ -132,23 +138,21 @@ static void scan_dir(const char* path, bool recursive, int level)
     ucb_dir_entry entry;
     ucb_fs_stat st;
 
-    size_t plen = strlen(path) + 1;
-    ucb_buffer pbuf;
-    ucb_buffer_init_heap(&pbuf, plen + 64);
-    ucb_buffer_push(&pbuf, path, plen - 1);
-    ucb_buffer_push(&pbuf, ucb_path_sep_cstr(), 2); // Null terminated
-
     while (ucb_dir_next(dir, &entry, &err))
     {
-        ucb_buffer_truncate(&pbuf, plen);
-        ucb_buffer_push(&pbuf, entry.name, strlen(entry.name));
-        ucb_buffer_push_null(&pbuf);
-
-        const char* sub_path = (const char*)ucb_buffer_data(&pbuf);
-
-        if (!ucb_fs_get_stat(sub_path, UCB_FS_NOFOLLOW, &st, &err))
+        ucb_path* sub = ucb_path_join_str(path, entry.name);
+        if (!sub)
         {
-            fprintf(stderr, "Failed to read %s: %s\n", sub_path, err->msg);
+            fprintf(stderr, "Failed to join path for %s\n", UCB_CSTR(entry.name));
+            ucb_error_clear(&err);
+            break;
+        }
+
+        const ucb_str* sub_str = ucb_path_str(sub);
+
+        if (!ucb_fs_get_stat(sub_str, UCB_FS_NOFOLLOW, &st, &err))
+        {
+            fprintf(stderr, "Failed to read %s: %s\n", UCB_CSTR(sub_str), err->msg);
             ucb_error_clear(&err);
             report_entry(entry.name, UCB_NULL, str);
         }
@@ -159,10 +163,11 @@ static void scan_dir(const char* path, bool recursive, int level)
 
         if (recursive && st.kind == UCB_FS_KIND_DIR)
         {
-            scan_dir(sub_path, recursive, level + 1);
+            scan_dir(sub_str, recursive, level + 1);
         }
+
+        ucb_path_free(sub);
     }
-    ucb_buffer_release(&pbuf);
 
     if (UCB_IS_THROWN(err))
     {
@@ -260,22 +265,24 @@ int main(int argc, char** argv)
     {
         for (int i = 0; i < nump; i++)
         {
-            const char* path = UCB_CSTR(paths[i]);
+            const ucb_str* path = ucb_path_str(paths[i]);
             ucb_fs_stat st;
 
             if (!ucb_fs_get_stat(path, UCB_FS_NOFOLLOW, &st, &err))
             {
-                fprintf(stderr, "Failed to read %s: %s\n", path, err->msg);
+                fprintf(stderr, "Failed to read %s: %s\n", UCB_CSTR(path), err->msg);
                 ucb_error_clear(&err);
                 report_entry(path, UCB_NULL, "");
-                continue;
+            }
+            else
+            {
+                report_entry(path, &st, "");
+                if (recursive && st.kind == UCB_FS_KIND_DIR)
+                {
+                    scan_dir(path, recursive, 1);
+                }
             }
 
-            report_entry(path, &st, "");
-            if (recursive && st.kind == UCB_FS_KIND_DIR)
-            {
-                scan_dir(path, recursive, 1);
-            }
             ucb_path_free(paths[i]);
         }
     }
