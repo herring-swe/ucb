@@ -7,6 +7,7 @@
 /local_ignore/
 /te?mp/
 /AGENTS-WS.md
+/ext/*
 
 # Don't push doxygen
 /doc/doxygen/html/

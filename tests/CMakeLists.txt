@@ -158,5 +158,64 @@ target_include_directories(ucb_benchmarks PRIVATE
 )
 target_compile_definitions(ucb_benchmarks PRIVATE NORM_TEST_FILE="${NORM_TEST_FILE}")
 
+# ----------------------------------------------------------------------------
+# Optional comparisons against external Unicode libraries
+#
+# Opt-in via UCB_BENCH_COMPARE. utf8proc falls back to the vendored copy in
+# ext/ when no system package is found. ICU is assumed present on Windows (the
+# in-box ICU) and otherwise located with FindICU; where it is missing the
+# comparison is skipped with a status message, never a hard failure.
+# ----------------------------------------------------------------------------
+
+if(UCB_BENCH_COMPARE)
+    find_package(utf8proc QUIET)
+    if(utf8proc_FOUND)
+        set(UCB_BENCH_UTF8PROC_TARGET utf8proc::utf8proc)
+        set(UCB_BENCH_UTF8PROC_FOUND TRUE)
+    elseif(EXISTS "${CMAKE_SOURCE_DIR}/ext/utf8proc/utf8proc.c")
+        add_library(ucb_utf8proc "${CMAKE_SOURCE_DIR}/ext/utf8proc/utf8proc.c")
+        target_include_directories(ucb_utf8proc SYSTEM PUBLIC "${CMAKE_SOURCE_DIR}/ext/utf8proc")
+        if(BUILD_SHARED_LIBS)
+            target_compile_definitions(ucb_utf8proc PRIVATE UTF8PROC_EXPORTS)
+        else()
+            target_compile_definitions(ucb_utf8proc PUBLIC UTF8PROC_STATIC)
+        endif()
+        set_target_properties(ucb_utf8proc PROPERTIES C_CLANG_TIDY "" OUTPUT_NAME utf8proc)
+        if(MSVC)
+            target_compile_options(ucb_utf8proc PRIVATE /utf-8)
+        endif()
+        set(UCB_BENCH_UTF8PROC_TARGET ucb_utf8proc)
+        set(UCB_BENCH_UTF8PROC_FOUND TRUE)
+    else()
+        set(UCB_BENCH_UTF8PROC_FOUND FALSE)
+    endif()
+
+    if(UCB_BENCH_UTF8PROC_FOUND)
+        message(STATUS "Benchmarks: utf8proc comparison enabled")
+        target_compile_definitions(ucb_benchmarks PRIVATE UCB_BENCH_UTF8PROC)
+        target_link_libraries(ucb_benchmarks PRIVATE ${UCB_BENCH_UTF8PROC_TARGET})
+    else()
+        message(STATUS "Benchmarks: utf8proc not found, comparison disabled")
+    endif()
+
+    # ICU. On Windows the in-box ICU (Windows 10 1703+) is assumed present and
+    # used through its C API, which is all it ships. Everywhere else FindICU
+    # locates a standard installation, or the comparison is skipped.
+    if(WIN32)
+        message(STATUS "Benchmarks: ICU comparison enabled (Windows in-box ICU)")
+        target_compile_definitions(ucb_benchmarks PRIVATE UCB_BENCH_ICU)
+        target_link_libraries(ucb_benchmarks PRIVATE icuuc)
+    else()
+        find_package(ICU QUIET COMPONENTS uc)
+        if(ICU_FOUND)
+            message(STATUS "Benchmarks: ICU comparison enabled (ICU ${ICU_VERSION})")
+            target_compile_definitions(ucb_benchmarks PRIVATE UCB_BENCH_ICU)
+            target_link_libraries(ucb_benchmarks PRIVATE ICU::uc)
+        else()
+            message(STATUS "Benchmarks: ICU not found, comparison disabled")
+        endif()
+    endif()
+endif()
+
 # Intentionally not registered with CTest: benchmarks are run manually, not as
 # part of the default test suite.
