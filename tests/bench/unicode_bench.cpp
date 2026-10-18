@@ -209,8 +209,8 @@ void normalize_corpus_icu()
             return 0;
 
         UErrorCode status = U_ZERO_ERROR;
-        const int32_t norm_len = unorm2_normalize(
-            normalizer, utf16.data(), utf16_len, nullptr, 0, &status);
+        const int32_t norm_len =
+            unorm2_normalize(normalizer, utf16.data(), utf16_len, nullptr, 0, &status);
         if (norm_len < 0)
             return 0;
 
